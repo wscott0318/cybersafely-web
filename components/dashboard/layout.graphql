@@ -1,0 +1,15 @@
+query me {
+  me {
+    id
+    email
+    name
+    isStaff
+    membership {
+      isAdmin
+      organization {
+        id
+        name
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+query users($page: Page, $filter: UserFilter, $order: UserOrder) {
+  users(page: $page, filter: $filter, order: $order) {
+    page {
+      index
+      count
+      total
+      hasPrev
+      hasNext
+    }
+    nodes {
+      id
+      createdAt
+      email
+      name
+      isStaff
+      membership {
+        isAdmin
+        organization {
+          id
+          name
+        }
+      }
+    }
+  }
+}

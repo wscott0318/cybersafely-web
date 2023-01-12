@@ -1,0 +1,15 @@
+overwrite: true
+schema: "http://localhost:3001/graphql"
+documents: "./**/*.graphql"
+generates:
+  ./types/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-react-apollo"
+      - "named-operations-object"
+    config:
+      enumsAsConst: true
+      scalars:
+        DateTime: Date
+        NullObject: "null"
