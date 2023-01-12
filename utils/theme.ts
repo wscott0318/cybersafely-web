@@ -1,5 +1,5 @@
 import { red } from '@mui/material/colors'
-import { createTheme } from '@mui/material/styles'
+import { createTheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
 
 export const roboto = Roboto({
@@ -20,14 +20,39 @@ export const theme = createTheme({
     error: {
       main: red.A400,
     },
+    background: {
+      default: 'rgb(250,250,250)',
+      paper: 'white',
+    },
   },
   typography: {
     fontFamily: roboto.style.fontFamily,
   },
+  shape: {
+    borderRadius: 8,
+  },
   components: {
+    MuiAppBar: {
+      defaultProps: {
+        elevation: 0,
+        variant: 'outlined',
+      },
+    },
+    MuiPaper: {
+      defaultProps: {
+        variant: 'outlined',
+      },
+    },
     MuiStack: {
       defaultProps: {
         spacing: 2,
+      },
+    },
+    MuiListSubheader: {
+      styleOverrides: {
+        root: {
+          textTransform: 'uppercase',
+        },
       },
     },
     MuiTextField: {
@@ -39,6 +64,40 @@ export const theme = createTheme({
       defaultProps: {
         variant: 'contained',
         disableElevation: true,
+      },
+    },
+    MuiChip: {
+      defaultProps: {
+        size: 'small',
+        color: 'primary',
+        variant: 'outlined',
+      },
+      styleOverrides: {
+        root: {
+          textTransform: 'uppercase',
+        },
+      },
+    },
+    MuiCheckbox: {
+      defaultProps: {
+        size: 'small',
+      },
+    },
+    // @ts-ignore
+    MuiLoadingButton: {
+      defaultProps: {
+        variant: 'contained',
+        disableElevation: true,
+      },
+    },
+    MuiDataGrid: {
+      styleOverrides: {
+        root: ({ theme }: { theme: Theme }) => ({
+          background: theme.palette.background.paper,
+          '*': {
+            outline: 'none !important',
+          },
+        }),
       },
     },
   },

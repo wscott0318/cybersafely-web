@@ -413,6 +413,15 @@ export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, name: string, isStaff: boolean, isConfirmed: boolean, memberships: Array<{ __typename?: 'Membership', isAdmin: boolean, organization: { __typename?: 'Organization', id: string, name: string } }>, children: Array<{ __typename?: 'Relationship', relation: string, childUser: { __typename?: 'User', id: string, email: string, name: string } }> } };
 
+export type UsersQueryVariables = Exact<{
+  page?: InputMaybe<Page>;
+  filter?: InputMaybe<UserFilter>;
+  order?: InputMaybe<UserOrder>;
+}>;
+
+
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, isStaff: boolean, isConfirmed: boolean, memberships: Array<{ __typename?: 'Membership', organization: { __typename?: 'Organization', id: string, name: string } }>, children: Array<{ __typename?: 'Relationship', childUser: { __typename?: 'User', id: string, email: string, name: string } }> }> } };
+
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -475,6 +484,68 @@ export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pr
 export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
+export const UsersDocument = gql`
+    query users($page: Page, $filter: UserFilter, $order: UserOrder) {
+  users(page: $page, filter: $filter, order: $order) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      email
+      name
+      isStaff
+      isConfirmed
+      memberships {
+        organization {
+          id
+          name
+        }
+      }
+      children {
+        childUser {
+          id
+          email
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useUsersQuery__
+ *
+ * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUsersQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      filter: // value for 'filter'
+ *      order: // value for 'order'
+ *   },
+ * });
+ */
+export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+      }
+export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+        }
+export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
+export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
+export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
 export const LoginDocument = gql`
     mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -518,7 +589,8 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const namedOperations = {
   Query: {
-    profile: 'profile'
+    profile: 'profile',
+    users: 'users'
   },
   Mutation: {
     login: 'login'

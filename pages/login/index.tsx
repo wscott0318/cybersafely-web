@@ -1,4 +1,5 @@
-import { Alert, Button, Container, Stack, TextField } from '@mui/material'
+import { LoadingButton } from '@mui/lab'
+import { Alert, Container, Stack, TextField } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useLoginMutation } from '../../types/graphql'
@@ -23,7 +24,7 @@ export default function Login() {
   })
 
   return (
-    <Container maxWidth="sm" sx={{ py: 2 }}>
+    <Container maxWidth="xs" sx={{ py: 2 }}>
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -40,9 +41,9 @@ export default function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
           {error && <Alert severity="error">{error.message}</Alert>}
-          <Button type="submit" disabled={loading}>
+          <LoadingButton type="submit" loading={loading}>
             Login
-          </Button>
+          </LoadingButton>
         </Stack>
       </form>
     </Container>
