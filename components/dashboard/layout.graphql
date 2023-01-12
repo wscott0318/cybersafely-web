@@ -1,13 +1,22 @@
-query me {
-  me {
+query profile {
+  profile {
     id
     email
     name
     isStaff
-    membership {
+    isConfirmed
+    memberships {
       isAdmin
       organization {
         id
+        name
+      }
+    }
+    children {
+      relation
+      childUser {
+        id
+        email
         name
       }
     }

@@ -21,6 +21,43 @@ export type ActivateInput = {
   name: Scalars['String'];
 };
 
+export type Address = {
+  __typename?: 'Address';
+  city: Scalars['String'];
+  id: Scalars['ID'];
+  state: Scalars['String'];
+  street: Scalars['String'];
+  zip: Scalars['String'];
+};
+
+export type AddressCreate = {
+  city: Scalars['String'];
+  state: Scalars['String'];
+  street: Scalars['String'];
+  zip: Scalars['String'];
+};
+
+export type AddressFilter = {
+  city?: InputMaybe<StringFilter>;
+  state?: InputMaybe<StringFilter>;
+  street?: InputMaybe<StringFilter>;
+  zip?: InputMaybe<StringFilter>;
+};
+
+export type AddressOrder = {
+  city?: InputMaybe<OrderDirection>;
+  state?: InputMaybe<OrderDirection>;
+  street?: InputMaybe<OrderDirection>;
+  zip?: InputMaybe<OrderDirection>;
+};
+
+export type AddressUpdate = {
+  city?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  street?: InputMaybe<Scalars['String']>;
+  zip?: InputMaybe<Scalars['String']>;
+};
+
 export type BooleanFilter = {
   equals?: InputMaybe<Scalars['Boolean']>;
   not?: InputMaybe<Scalars['Boolean']>;
@@ -31,16 +68,6 @@ export type DateTimeFilter = {
   gte?: InputMaybe<Scalars['DateTime']>;
   lte?: InputMaybe<Scalars['DateTime']>;
   not?: InputMaybe<Scalars['DateTime']>;
-};
-
-export type Facebook = {
-  __typename?: 'Facebook';
-  createdAt: Scalars['DateTime'];
-};
-
-export type FacebookFilter = {
-  is?: InputMaybe<Scalars['NullObject']>;
-  isNot?: InputMaybe<Scalars['NullObject']>;
 };
 
 export type FloatFilter = {
@@ -59,7 +86,7 @@ export type IntFilter = {
 
 export type Jwt = {
   __typename?: 'JWT';
-  token?: Maybe<Scalars['String']>;
+  token: Scalars['String'];
   user: User;
 };
 
@@ -68,18 +95,21 @@ export type Membership = {
   createdAt: Scalars['DateTime'];
   isAdmin: Scalars['Boolean'];
   organization: Organization;
+  user: User;
 };
 
 export type MembershipFilter = {
   createdAt?: InputMaybe<DateTimeFilter>;
   isAdmin?: InputMaybe<BooleanFilter>;
   organization?: InputMaybe<OrganizationFilter>;
+  user?: InputMaybe<UserFilter>;
 };
 
 export type MembershipOrder = {
   createdAt?: InputMaybe<OrderDirection>;
   isAdmin?: InputMaybe<OrderDirection>;
   organization?: InputMaybe<OrganizationOrder>;
+  user?: InputMaybe<UserOrder>;
 };
 
 export type MembershipUpdate = {
@@ -90,15 +120,15 @@ export type Mutation = {
   __typename?: 'Mutation';
   activate?: Maybe<Scalars['ID']>;
   inviteMember?: Maybe<Scalars['ID']>;
+  inviteParent?: Maybe<Scalars['ID']>;
   inviteStaff?: Maybe<Scalars['ID']>;
-  linkFacebook?: Maybe<Scalars['ID']>;
   login: Jwt;
   register?: Maybe<Scalars['ID']>;
   removeMember?: Maybe<Scalars['ID']>;
-  unlinkSocial?: Maybe<Scalars['ID']>;
-  updateMember?: Maybe<Scalars['ID']>;
+  removeParent?: Maybe<Scalars['ID']>;
   updateOrganization?: Maybe<Scalars['ID']>;
   updateProfile?: Maybe<Scalars['ID']>;
+  updateRelationship?: Maybe<Scalars['ID']>;
   updateUser?: Maybe<Scalars['ID']>;
 };
 
@@ -113,6 +143,13 @@ export type MutationActivateArgs = {
 export type MutationInviteMemberArgs = {
   email: Scalars['String'];
   isAdmin?: InputMaybe<Scalars['Boolean']>;
+};
+
+
+export type MutationInviteParentArgs = {
+  childId: Scalars['ID'];
+  email: Scalars['String'];
+  relation?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -139,30 +176,31 @@ export type MutationRemoveMemberArgs = {
 };
 
 
-export type MutationUnlinkSocialArgs = {
-  social?: InputMaybe<SocialType>;
-};
-
-
-export type MutationUpdateMemberArgs = {
+export type MutationRemoveParentArgs = {
+  childId: Scalars['ID'];
   id: Scalars['ID'];
-  input: MembershipUpdate;
 };
 
 
 export type MutationUpdateOrganizationArgs = {
-  input?: InputMaybe<OrganizationUpdate>;
+  input: OrganizationUpdate;
 };
 
 
 export type MutationUpdateProfileArgs = {
-  input?: InputMaybe<ProfileUpdate>;
+  input: ProfileUpdate;
+};
+
+
+export type MutationUpdateRelationshipArgs = {
+  childId: Scalars['ID'];
+  input: RelationshipUpdate;
 };
 
 
 export type MutationUpdateUserArgs = {
   id: Scalars['ID'];
-  input?: InputMaybe<UserUpdate>;
+  input: UserUpdate;
 };
 
 export const OrderDirection = {
@@ -173,22 +211,31 @@ export const OrderDirection = {
 export type OrderDirection = typeof OrderDirection[keyof typeof OrderDirection];
 export type Organization = {
   __typename?: 'Organization';
+  address: Address;
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   name: Scalars['String'];
 };
 
+export type OrganizationCreate = {
+  address: AddressCreate;
+  name: Scalars['String'];
+};
+
 export type OrganizationFilter = {
+  address?: InputMaybe<AddressFilter>;
   createdAt?: InputMaybe<DateTimeFilter>;
   name?: InputMaybe<StringFilter>;
 };
 
 export type OrganizationOrder = {
+  address?: InputMaybe<AddressOrder>;
   createdAt?: InputMaybe<OrderDirection>;
   name?: InputMaybe<OrderDirection>;
 };
 
 export type OrganizationUpdate = {
+  address?: InputMaybe<AddressUpdate>;
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -207,9 +254,21 @@ export type PageInfo = {
   total: Scalars['Int'];
 };
 
+export type PaginatedMembership = {
+  __typename?: 'PaginatedMembership';
+  nodes: Array<Membership>;
+  page: PageInfo;
+};
+
 export type PaginatedOrganization = {
   __typename?: 'PaginatedOrganization';
   nodes: Array<Organization>;
+  page: PageInfo;
+};
+
+export type PaginatedRelationship = {
+  __typename?: 'PaginatedRelationship';
+  nodes: Array<Relationship>;
   page: PageInfo;
 };
 
@@ -227,16 +286,26 @@ export type ProfileUpdate = {
 
 export type Query = {
   __typename?: 'Query';
-  me: User;
-  members: PaginatedUser;
+  children: PaginatedRelationship;
+  members: PaginatedMembership;
+  organization: Organization;
   organizations: PaginatedOrganization;
+  profile: User;
+  user: User;
   users: PaginatedUser;
 };
 
 
+export type QueryChildrenArgs = {
+  filter?: InputMaybe<RelationshipFilter>;
+  order?: InputMaybe<RelationshipOrder>;
+  page?: InputMaybe<Page>;
+};
+
+
 export type QueryMembersArgs = {
-  filter?: InputMaybe<UserFilter>;
-  order?: InputMaybe<UserOrder>;
+  filter?: InputMaybe<MembershipFilter>;
+  order?: InputMaybe<MembershipOrder>;
   page?: InputMaybe<Page>;
 };
 
@@ -248,6 +317,11 @@ export type QueryOrganizationsArgs = {
 };
 
 
+export type QueryUserArgs = {
+  id?: InputMaybe<Scalars['ID']>;
+};
+
+
 export type QueryUsersArgs = {
   filter?: InputMaybe<UserFilter>;
   order?: InputMaybe<UserOrder>;
@@ -256,14 +330,35 @@ export type QueryUsersArgs = {
 
 export type RegisterInput = {
   name: Scalars['String'];
-  organizationName: Scalars['String'];
+  organization: OrganizationCreate;
 };
 
-export const SocialType = {
-  Facebook: 'FACEBOOK'
-} as const;
+export type Relationship = {
+  __typename?: 'Relationship';
+  childUser: User;
+  createdAt: Scalars['DateTime'];
+  parentUser: User;
+  relation: Scalars['String'];
+};
 
-export type SocialType = typeof SocialType[keyof typeof SocialType];
+export type RelationshipFilter = {
+  childUser?: InputMaybe<UserFilter>;
+  createdAt?: InputMaybe<DateTimeFilter>;
+  parentUser?: InputMaybe<UserFilter>;
+  relation?: InputMaybe<StringFilter>;
+};
+
+export type RelationshipOrder = {
+  childUser?: InputMaybe<UserOrder>;
+  createdAt?: InputMaybe<OrderDirection>;
+  parentUser?: InputMaybe<UserOrder>;
+  relation?: InputMaybe<OrderDirection>;
+};
+
+export type RelationshipUpdate = {
+  relation?: InputMaybe<Scalars['String']>;
+};
+
 export type StringFilter = {
   contains?: InputMaybe<Scalars['String']>;
   equals?: InputMaybe<Scalars['String']>;
@@ -279,24 +374,22 @@ export const StringFilterMode = {
 export type StringFilterMode = typeof StringFilterMode[keyof typeof StringFilterMode];
 export type User = {
   __typename?: 'User';
+  children: Array<Relationship>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
-  facebook?: Maybe<Facebook>;
   id: Scalars['ID'];
   isConfirmed: Scalars['Boolean'];
   isStaff: Scalars['Boolean'];
-  membership?: Maybe<Membership>;
+  memberships: Array<Membership>;
   name: Scalars['String'];
+  parents: Array<Relationship>;
 };
 
 export type UserFilter = {
   createdAt?: InputMaybe<DateTimeFilter>;
   email?: InputMaybe<StringFilter>;
-  facebook?: InputMaybe<FacebookFilter>;
-  id?: InputMaybe<StringFilter>;
   isConfirmed?: InputMaybe<BooleanFilter>;
   isStaff?: InputMaybe<BooleanFilter>;
-  membership?: InputMaybe<MembershipFilter>;
   name?: InputMaybe<StringFilter>;
 };
 
@@ -305,7 +398,6 @@ export type UserOrder = {
   email?: InputMaybe<OrderDirection>;
   isConfirmed?: InputMaybe<OrderDirection>;
   isStaff?: InputMaybe<OrderDirection>;
-  membership?: InputMaybe<MembershipOrder>;
   name?: InputMaybe<OrderDirection>;
 };
 
@@ -316,19 +408,10 @@ export type UserUpdate = {
   name?: InputMaybe<Scalars['String']>;
 };
 
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me: { __typename?: 'User', id: string, email: string, name: string, isStaff: boolean, membership?: { __typename?: 'Membership', isAdmin: boolean, organization: { __typename?: 'Organization', id: string, name: string } } | null } };
-
-export type UsersQueryVariables = Exact<{
-  page?: InputMaybe<Page>;
-  filter?: InputMaybe<UserFilter>;
-  order?: InputMaybe<UserOrder>;
-}>;
-
-
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number, hasPrev: boolean, hasNext: boolean }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, isStaff: boolean, membership?: { __typename?: 'Membership', isAdmin: boolean, organization: { __typename?: 'Organization', id: string, name: string } } | null }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, name: string, isStaff: boolean, isConfirmed: boolean, memberships: Array<{ __typename?: 'Membership', isAdmin: boolean, organization: { __typename?: 'Organization', id: string, name: string } }>, children: Array<{ __typename?: 'Relationship', relation: string, childUser: { __typename?: 'User', id: string, email: string, name: string } }> } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -336,20 +419,29 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'JWT', token?: string | null } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'JWT', token: string, user: { __typename?: 'User', memberships: Array<{ __typename?: 'Membership', organization: { __typename?: 'Organization', id: string } }> } } };
 
 
-export const MeDocument = gql`
-    query me {
-  me {
+export const ProfileDocument = gql`
+    query profile {
+  profile {
     id
     email
     name
     isStaff
-    membership {
+    isConfirmed
+    memberships {
       isAdmin
       organization {
         id
+        name
+      }
+    }
+    children {
+      relation
+      childUser {
+        id
+        email
         name
       }
     }
@@ -358,92 +450,42 @@ export const MeDocument = gql`
     `;
 
 /**
- * __useMeQuery__
+ * __useProfileQuery__
  *
- * To run a query within a React component, call `useMeQuery` and pass it any options that fit your needs.
- * When your component renders, `useMeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useProfileQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProfileQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useMeQuery({
+ * const { data, loading, error } = useProfileQuery({
  *   variables: {
  *   },
  * });
  */
-export function useMeQuery(baseOptions?: Apollo.QueryHookOptions<MeQuery, MeQueryVariables>) {
+export function useProfileQuery(baseOptions?: Apollo.QueryHookOptions<ProfileQuery, ProfileQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+        return Apollo.useQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
       }
-export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery, MeQueryVariables>) {
+export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProfileQuery, ProfileQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<MeQuery, MeQueryVariables>(MeDocument, options);
+          return Apollo.useLazyQuery<ProfileQuery, ProfileQueryVariables>(ProfileDocument, options);
         }
-export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
-export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
-export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
-export const UsersDocument = gql`
-    query users($page: Page, $filter: UserFilter, $order: UserOrder) {
-  users(page: $page, filter: $filter, order: $order) {
-    page {
-      index
-      count
-      total
-      hasPrev
-      hasNext
-    }
-    nodes {
-      id
-      createdAt
-      email
-      name
-      isStaff
-      membership {
-        isAdmin
-        organization {
-          id
-          name
-        }
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useUsersQuery__
- *
- * To run a query within a React component, call `useUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useUsersQuery({
- *   variables: {
- *      page: // value for 'page'
- *      filter: // value for 'filter'
- *      order: // value for 'order'
- *   },
- * });
- */
-export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
-      }
-export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
-        }
-export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
-export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
-export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
+export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
+export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
 export const LoginDocument = gql`
     mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     token
+    user {
+      memberships {
+        organization {
+          id
+        }
+      }
+    }
   }
 }
     `;
@@ -476,8 +518,7 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const namedOperations = {
   Query: {
-    me: 'me',
-    users: 'users'
+    profile: 'profile'
   },
   Mutation: {
     login: 'login'

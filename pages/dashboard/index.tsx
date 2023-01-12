@@ -5,15 +5,20 @@ import { useUser } from '../../utils/context/auth'
 
 function Dashboard() {
   const router = useRouter()
-  const { user } = useUser()
+  const { user, membership } = useUser()
 
   useEffect(() => {
+    console.log(user)
     if (user.isStaff) {
       router.replace('/dashboard/staff/home')
-    } else if (user.membership?.isAdmin) {
-      router.replace('/dashboard/admin/home')
+    } else if (membership?.isAdmin) {
+      router.replace('/dashboard/coach/home')
+    } else if (membership) {
+      router.replace('/dashboard/athlete/home')
+    } else if (user.children.length > 0) {
+      router.replace('/dashboard/parent/home')
     } else {
-      router.replace('/dashboard/user/home')
+      throw new Error('Cannot redirect user')
     }
   }, [user])
 

@@ -5,5 +5,5 @@ function Home() {
 }
 
 export default withDashboardLayout(Home, {
-  title: 'Staff Dashboard',
+  title: 'Parent Dashboard',
 })

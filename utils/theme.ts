@@ -24,4 +24,22 @@ export const theme = createTheme({
   typography: {
     fontFamily: roboto.style.fontFamily,
   },
+  components: {
+    MuiStack: {
+      defaultProps: {
+        spacing: 2,
+      },
+    },
+    MuiTextField: {
+      defaultProps: {
+        size: 'small',
+      },
+    },
+    MuiButton: {
+      defaultProps: {
+        variant: 'contained',
+        disableElevation: true,
+      },
+    },
+  },
 })

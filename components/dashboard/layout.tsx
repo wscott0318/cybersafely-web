@@ -1,11 +1,12 @@
 import React from 'react'
-import { MeQuery, useMeQuery } from '../../types/graphql'
+import { ProfileQuery, useProfileQuery } from '../../types/graphql'
 import { AuthContextProvider } from '../../utils/context/auth'
 
 const Level = {
+  staff: (data: ProfileQuery) => data.profile.isStaff,
+  admin: (data: ProfileQuery) => true,
+  parent: (data: ProfileQuery) => true,
   any: () => true,
-  admin: (data: MeQuery) => data.me.membership?.isAdmin,
-  staff: (data: MeQuery) => data.me.isStaff,
 } as const
 
 type Level = keyof typeof Level
@@ -17,7 +18,7 @@ type DashboardLayoutProps = {
 }
 
 export function DashboardLayout(props: DashboardLayoutProps) {
-  const { data, error, refetch } = useMeQuery()
+  const { data, error, refetch } = useProfileQuery()
 
   if (error) {
     return <p>{error.message}</p>
@@ -32,7 +33,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.me} refetch={refetch}>
+    <AuthContextProvider user={data.profile} refetch={refetch}>
       {props.children}
     </AuthContextProvider>
   )
