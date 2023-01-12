@@ -1,20 +1,10 @@
 import React from 'react'
-import { ProfileQuery, useProfileQuery } from '../../types/graphql'
+import { useProfileQuery } from '../../types/graphql'
 import { AuthContextProvider } from '../../utils/context/auth'
-
-const Level = {
-  staff: (data: ProfileQuery) => data.profile.isStaff,
-  admin: (data: ProfileQuery) => true,
-  parent: (data: ProfileQuery) => true,
-  any: () => true,
-} as const
-
-type Level = keyof typeof Level
 
 type DashboardLayoutProps = {
   children: JSX.Element | JSX.Element[]
   title?: string
-  level?: Level
 }
 
 export function DashboardLayout(props: DashboardLayoutProps) {
@@ -26,10 +16,6 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 
   if (!data) {
     return <p>Loading...</p>
-  }
-
-  if (props.level && !Level[props.level](data)) {
-    return <p>You are not authorized to view this page</p>
   }
 
   return (

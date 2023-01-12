@@ -8,13 +8,20 @@ const httpLink = new HttpLink({
 const authLink = new ApolloLink((operation, forward) => {
   const context = operation.getContext()
 
-  operation.setContext({
-    ...context,
-    headers: {
-      ...context.headers,
-      'x-token': localStorage.getItem('token'),
-    },
-  })
+  const headers = {
+    ...context.headers,
+    'x-token': localStorage.getItem('token'),
+    'x-org-id': localStorage.getItem('orgId'),
+  }
+
+  if (typeof context.orgId === 'string') {
+    headers['x-org-id'] = context.orgId
+  }
+  if (typeof context.behalfId === 'string') {
+    headers['x-behalf-id'] = context.behalfId
+  }
+
+  operation.setContext({ ...context, headers })
 
   return forward(operation)
 })

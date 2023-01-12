@@ -8,7 +8,6 @@ function Dashboard() {
   const { user, membership } = useUser()
 
   useEffect(() => {
-    console.log(user)
     if (user.isStaff) {
       router.replace('/dashboard/staff/home')
     } else if (membership?.isAdmin) {
@@ -20,7 +19,7 @@ function Dashboard() {
     } else {
       throw new Error('Cannot redirect user')
     }
-  }, [user])
+  }, [])
 
   return null
 }
