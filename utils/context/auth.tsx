@@ -1,9 +1,8 @@
-import { createContext, useCallback, useContext, useMemo } from 'react'
+import { createContext, useContext } from 'react'
 import { ProfileQuery } from '../../types/graphql'
 
 type AuthContext = {
   user: ProfileQuery['profile']
-  refetch: () => void
 }
 
 const AuthContext = createContext<Partial<AuthContext>>({})
@@ -19,25 +18,11 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 }
 
 export function useUser() {
-  const { user, refetch } = useContext(AuthContext)
-
-  const logout = useCallback(() => {
-    //
-  }, [])
+  const { user } = useContext(AuthContext)
 
   if (!user) {
     throw new Error('User was not found')
   }
 
-  const membership = useMemo(() => {
-    if (localStorage) {
-      const orgId = localStorage.getItem('orgId')
-
-      if (orgId) {
-        return user.memberships.find((e) => e.organization.id === orgId)
-      }
-    }
-  }, [user])
-
-  return { user, membership, logout, refetch: refetch! }
+  return { user }
 }

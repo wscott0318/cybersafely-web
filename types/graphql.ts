@@ -17,45 +17,9 @@ export type Scalars = {
   NullObject: null;
 };
 
-export type ActivateInput = {
-  name: Scalars['String'];
-};
-
-export type Address = {
-  __typename?: 'Address';
-  city: Scalars['String'];
-  id: Scalars['ID'];
-  state: Scalars['String'];
-  street: Scalars['String'];
-  zip: Scalars['String'];
-};
-
-export type AddressCreate = {
-  city: Scalars['String'];
-  state: Scalars['String'];
-  street: Scalars['String'];
-  zip: Scalars['String'];
-};
-
-export type AddressFilter = {
-  city?: InputMaybe<StringFilter>;
-  state?: InputMaybe<StringFilter>;
-  street?: InputMaybe<StringFilter>;
-  zip?: InputMaybe<StringFilter>;
-};
-
-export type AddressOrder = {
-  city?: InputMaybe<OrderDirection>;
-  state?: InputMaybe<OrderDirection>;
-  street?: InputMaybe<OrderDirection>;
-  zip?: InputMaybe<OrderDirection>;
-};
-
-export type AddressUpdate = {
-  city?: InputMaybe<Scalars['String']>;
-  state?: InputMaybe<Scalars['String']>;
-  street?: InputMaybe<Scalars['String']>;
-  zip?: InputMaybe<Scalars['String']>;
+export type AnyUserRole = UserRole & {
+  __typename?: 'AnyUserRole';
+  role: Role;
 };
 
 export type ArrayOrder = {
@@ -94,71 +58,9 @@ export type Jwt = {
   user: User;
 };
 
-export type Membership = {
-  __typename?: 'Membership';
-  createdAt: Scalars['DateTime'];
-  isAdmin: Scalars['Boolean'];
-  organization: Organization;
-  user: User;
-};
-
-export type MembershipFilter = {
-  createdAt?: InputMaybe<DateTimeFilter>;
-  isAdmin?: InputMaybe<BooleanFilter>;
-  organization?: InputMaybe<OrganizationFilter>;
-  user?: InputMaybe<UserFilter>;
-};
-
-export type MembershipOrder = {
-  createdAt?: InputMaybe<OrderDirection>;
-  isAdmin?: InputMaybe<OrderDirection>;
-  organization?: InputMaybe<OrganizationOrder>;
-  user?: InputMaybe<UserOrder>;
-};
-
-export type MembershipUpdate = {
-  isAdmin?: InputMaybe<Scalars['Boolean']>;
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
-  activate?: Maybe<Scalars['ID']>;
-  inviteMember?: Maybe<Scalars['ID']>;
-  inviteParent?: Maybe<Scalars['ID']>;
-  inviteStaff?: Maybe<Scalars['ID']>;
   login: Jwt;
-  register?: Maybe<Scalars['ID']>;
-  removeMember?: Maybe<Scalars['ID']>;
-  removeParent?: Maybe<Scalars['ID']>;
-  updateOrganization?: Maybe<Scalars['ID']>;
-  updateProfile?: Maybe<Scalars['ID']>;
-  updateRelationship?: Maybe<Scalars['ID']>;
-  updateUser?: Maybe<Scalars['ID']>;
-};
-
-
-export type MutationActivateArgs = {
-  input: ActivateInput;
-  password: Scalars['String'];
-  token: Scalars['String'];
-};
-
-
-export type MutationInviteMemberArgs = {
-  email: Scalars['String'];
-  isAdmin?: InputMaybe<Scalars['Boolean']>;
-};
-
-
-export type MutationInviteParentArgs = {
-  childId: Scalars['ID'];
-  email: Scalars['String'];
-  relation?: InputMaybe<Scalars['String']>;
-};
-
-
-export type MutationInviteStaffArgs = {
-  email: Scalars['String'];
 };
 
 
@@ -167,82 +69,12 @@ export type MutationLoginArgs = {
   password: Scalars['String'];
 };
 
-
-export type MutationRegisterArgs = {
-  email: Scalars['String'];
-  input: RegisterInput;
-  password: Scalars['String'];
-};
-
-
-export type MutationRemoveMemberArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type MutationRemoveParentArgs = {
-  childId: Scalars['ID'];
-  id: Scalars['ID'];
-};
-
-
-export type MutationUpdateOrganizationArgs = {
-  input: OrganizationUpdate;
-};
-
-
-export type MutationUpdateProfileArgs = {
-  input: ProfileUpdate;
-};
-
-
-export type MutationUpdateRelationshipArgs = {
-  childId: Scalars['ID'];
-  input: RelationshipUpdate;
-};
-
-
-export type MutationUpdateUserArgs = {
-  id: Scalars['ID'];
-  input: UserUpdate;
-};
-
 export const OrderDirection = {
   Asc: 'ASC',
   Desc: 'DESC'
 } as const;
 
 export type OrderDirection = typeof OrderDirection[keyof typeof OrderDirection];
-export type Organization = {
-  __typename?: 'Organization';
-  address: Address;
-  createdAt: Scalars['DateTime'];
-  id: Scalars['ID'];
-  name: Scalars['String'];
-};
-
-export type OrganizationCreate = {
-  address: AddressCreate;
-  name: Scalars['String'];
-};
-
-export type OrganizationFilter = {
-  address?: InputMaybe<AddressFilter>;
-  createdAt?: InputMaybe<DateTimeFilter>;
-  name?: InputMaybe<StringFilter>;
-};
-
-export type OrganizationOrder = {
-  address?: InputMaybe<AddressOrder>;
-  createdAt?: InputMaybe<OrderDirection>;
-  name?: InputMaybe<OrderDirection>;
-};
-
-export type OrganizationUpdate = {
-  address?: InputMaybe<AddressUpdate>;
-  name?: InputMaybe<Scalars['String']>;
-};
-
 export type Page = {
   index?: InputMaybe<Scalars['Int']>;
   size?: InputMaybe<Scalars['Int']>;
@@ -258,111 +90,39 @@ export type PageInfo = {
   total: Scalars['Int'];
 };
 
-export type PaginatedMembership = {
-  __typename?: 'PaginatedMembership';
-  nodes: Array<Membership>;
-  page: PageInfo;
-};
-
-export type PaginatedOrganization = {
-  __typename?: 'PaginatedOrganization';
-  nodes: Array<Organization>;
-  page: PageInfo;
-};
-
-export type PaginatedRelationship = {
-  __typename?: 'PaginatedRelationship';
-  nodes: Array<Relationship>;
-  page: PageInfo;
-};
-
 export type PaginatedUser = {
   __typename?: 'PaginatedUser';
   nodes: Array<User>;
   page: PageInfo;
 };
 
-export type ProfileUpdate = {
-  email?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  password?: InputMaybe<Scalars['String']>;
+export type ParentRole = UserRole & {
+  __typename?: 'ParentRole';
+  childUser: User;
+  relation?: Maybe<Scalars['String']>;
+  role: Role;
 };
 
 export type Query = {
   __typename?: 'Query';
-  children: PaginatedRelationship;
-  members: PaginatedMembership;
-  organization: Organization;
-  organizations: PaginatedOrganization;
   profile: User;
-  user: User;
   users: PaginatedUser;
 };
 
 
-export type QueryChildrenArgs = {
-  filter?: InputMaybe<RelationshipFilter>;
-  order?: InputMaybe<RelationshipOrder>;
-  page?: InputMaybe<Page>;
-};
-
-
-export type QueryMembersArgs = {
-  filter?: InputMaybe<MembershipFilter>;
-  order?: InputMaybe<MembershipOrder>;
-  page?: InputMaybe<Page>;
-};
-
-
-export type QueryOrganizationsArgs = {
-  filter?: InputMaybe<OrganizationFilter>;
-  order?: InputMaybe<OrganizationOrder>;
-  page?: InputMaybe<Page>;
-};
-
-
-export type QueryUserArgs = {
-  id?: InputMaybe<Scalars['ID']>;
-};
-
-
 export type QueryUsersArgs = {
-  filter?: InputMaybe<UserFilter>;
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
 };
 
-export type RegisterInput = {
-  name: Scalars['String'];
-  organization: OrganizationCreate;
-};
+export const Role = {
+  Athlete: 'ATHLETE',
+  Coach: 'COACH',
+  Parent: 'PARENT',
+  Staff: 'STAFF'
+} as const;
 
-export type Relationship = {
-  __typename?: 'Relationship';
-  childUser: User;
-  createdAt: Scalars['DateTime'];
-  parentUser: User;
-  relation: Scalars['String'];
-};
-
-export type RelationshipFilter = {
-  childUser?: InputMaybe<UserFilter>;
-  createdAt?: InputMaybe<DateTimeFilter>;
-  parentUser?: InputMaybe<UserFilter>;
-  relation?: InputMaybe<StringFilter>;
-};
-
-export type RelationshipOrder = {
-  childUser?: InputMaybe<UserOrder>;
-  createdAt?: InputMaybe<OrderDirection>;
-  parentUser?: InputMaybe<UserOrder>;
-  relation?: InputMaybe<OrderDirection>;
-};
-
-export type RelationshipUpdate = {
-  relation?: InputMaybe<Scalars['String']>;
-};
-
+export type Role = typeof Role[keyof typeof Role];
 export type StringFilter = {
   contains?: InputMaybe<Scalars['String']>;
   equals?: InputMaybe<Scalars['String']>;
@@ -376,66 +136,51 @@ export const StringFilterMode = {
 } as const;
 
 export type StringFilterMode = typeof StringFilterMode[keyof typeof StringFilterMode];
-export type User = {
-  __typename?: 'User';
-  children: Array<Relationship>;
+export type Team = {
+  __typename?: 'Team';
   createdAt: Scalars['DateTime'];
-  email: Scalars['String'];
   id: Scalars['ID'];
-  isConfirmed: Scalars['Boolean'];
-  isStaff: Scalars['Boolean'];
-  memberships: Array<Membership>;
   name: Scalars['String'];
-  parents: Array<Relationship>;
 };
 
-export type UserFilter = {
-  createdAt?: InputMaybe<DateTimeFilter>;
-  email?: InputMaybe<StringFilter>;
-  isConfirmed?: InputMaybe<BooleanFilter>;
-  isStaff?: InputMaybe<BooleanFilter>;
-  name?: InputMaybe<StringFilter>;
+export type TeamRole = UserRole & {
+  __typename?: 'TeamRole';
+  role: Role;
+  team: Team;
+};
+
+export type User = {
+  __typename?: 'User';
+  createdAt: Scalars['DateTime'];
+  email: Scalars['String'];
+  emailConfirmed: Scalars['Boolean'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  roles: Array<UserRole>;
 };
 
 export type UserOrder = {
-  children?: InputMaybe<ArrayOrder>;
   createdAt?: InputMaybe<OrderDirection>;
   email?: InputMaybe<OrderDirection>;
-  isConfirmed?: InputMaybe<OrderDirection>;
-  isStaff?: InputMaybe<OrderDirection>;
-  memberships?: InputMaybe<ArrayOrder>;
   name?: InputMaybe<OrderDirection>;
 };
 
-export type UserUpdate = {
-  email?: InputMaybe<Scalars['String']>;
-  isConfirmed?: InputMaybe<Scalars['Boolean']>;
-  isStaff?: InputMaybe<Scalars['Boolean']>;
-  name?: InputMaybe<Scalars['String']>;
+export type UserRole = {
+  role: Role;
 };
 
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, name: string, isStaff: boolean, isConfirmed: boolean, memberships: Array<{ __typename?: 'Membership', isAdmin: boolean, organization: { __typename?: 'Organization', id: string, name: string } }>, children: Array<{ __typename?: 'Relationship', relation: string, childUser: { __typename?: 'User', id: string, email: string, name: string } }> } };
-
-export type OrganizationsQueryVariables = Exact<{
-  page?: InputMaybe<Page>;
-  filter?: InputMaybe<OrganizationFilter>;
-  order?: InputMaybe<OrganizationOrder>;
-}>;
-
-
-export type OrganizationsQuery = { __typename?: 'Query', organizations: { __typename?: 'PaginatedOrganization', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Organization', id: string, createdAt: Date, name: string, address: { __typename?: 'Address', street: string, city: string, state: string, zip: string } }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', relation?: string | null, role: Role, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', id: string, name: string } }> } };
 
 export type UsersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
-  filter?: InputMaybe<UserFilter>;
   order?: InputMaybe<UserOrder>;
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, isStaff: boolean, isConfirmed: boolean, memberships: Array<{ __typename?: 'Membership', organization: { __typename?: 'Organization', id: string, name: string } }>, children: Array<{ __typename?: 'Relationship', childUser: { __typename?: 'User', id: string, email: string, name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', relation?: string | null, role: Role, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', name: string } }> }> } };
 
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
@@ -443,7 +188,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'JWT', token: string, user: { __typename?: 'User', memberships: Array<{ __typename?: 'Membership', organization: { __typename?: 'Organization', id: string } }> } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'JWT', token: string } };
 
 
 export const ProfileDocument = gql`
@@ -451,22 +196,22 @@ export const ProfileDocument = gql`
   profile {
     id
     email
+    emailConfirmed
     name
-    isStaff
-    isConfirmed
-    memberships {
-      isAdmin
-      organization {
-        id
-        name
+    roles {
+      role
+      ... on TeamRole {
+        team {
+          id
+          name
+        }
       }
-    }
-    children {
-      relation
-      childUser {
-        id
-        email
-        name
+      ... on ParentRole {
+        relation
+        childUser {
+          id
+          name
+        }
       }
     }
   }
@@ -499,61 +244,9 @@ export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pr
 export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
-export const OrganizationsDocument = gql`
-    query organizations($page: Page, $filter: OrganizationFilter, $order: OrganizationOrder) {
-  organizations(page: $page, filter: $filter, order: $order) {
-    page {
-      index
-      count
-      total
-    }
-    nodes {
-      id
-      createdAt
-      name
-      address {
-        street
-        city
-        state
-        zip
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useOrganizationsQuery__
- *
- * To run a query within a React component, call `useOrganizationsQuery` and pass it any options that fit your needs.
- * When your component renders, `useOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useOrganizationsQuery({
- *   variables: {
- *      page: // value for 'page'
- *      filter: // value for 'filter'
- *      order: // value for 'order'
- *   },
- * });
- */
-export function useOrganizationsQuery(baseOptions?: Apollo.QueryHookOptions<OrganizationsQuery, OrganizationsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, options);
-      }
-export function useOrganizationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrganizationsQuery, OrganizationsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, options);
-        }
-export type OrganizationsQueryHookResult = ReturnType<typeof useOrganizationsQuery>;
-export type OrganizationsLazyQueryHookResult = ReturnType<typeof useOrganizationsLazyQuery>;
-export type OrganizationsQueryResult = Apollo.QueryResult<OrganizationsQuery, OrganizationsQueryVariables>;
 export const UsersDocument = gql`
-    query users($page: Page, $filter: UserFilter, $order: UserOrder) {
-  users(page: $page, filter: $filter, order: $order) {
+    query users($page: Page, $order: UserOrder) {
+  users(page: $page, order: $order) {
     page {
       index
       count
@@ -563,20 +256,20 @@ export const UsersDocument = gql`
       id
       createdAt
       email
+      emailConfirmed
       name
-      isStaff
-      isConfirmed
-      memberships {
-        organization {
-          id
-          name
+      roles {
+        role
+        ... on TeamRole {
+          team {
+            name
+          }
         }
-      }
-      children {
-        childUser {
-          id
-          email
-          name
+        ... on ParentRole {
+          relation
+          childUser {
+            name
+          }
         }
       }
     }
@@ -597,7 +290,6 @@ export const UsersDocument = gql`
  * const { data, loading, error } = useUsersQuery({
  *   variables: {
  *      page: // value for 'page'
- *      filter: // value for 'filter'
  *      order: // value for 'order'
  *   },
  * });
@@ -617,13 +309,6 @@ export const LoginDocument = gql`
     mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
     token
-    user {
-      memberships {
-        organization {
-          id
-        }
-      }
-    }
   }
 }
     `;
@@ -657,7 +342,6 @@ export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, Log
 export const namedOperations = {
   Query: {
     profile: 'profile',
-    organizations: 'organizations',
     users: 'users'
   },
   Mutation: {

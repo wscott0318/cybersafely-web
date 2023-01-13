@@ -1,0 +1,24 @@
+query profile {
+  profile {
+    id
+    email
+    emailConfirmed
+    name
+    roles {
+      role
+      ... on TeamRole {
+        team {
+          id
+          name
+        }
+      }
+      ... on ParentRole {
+        relation
+        childUser {
+          id
+          name
+        }
+      }
+    }
+  }
+}

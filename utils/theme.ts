@@ -72,11 +72,6 @@ export const theme = createTheme({
         color: 'primary',
         variant: 'outlined',
       },
-      styleOverrides: {
-        root: {
-          textTransform: 'uppercase',
-        },
-      },
     },
     MuiCheckbox: {
       defaultProps: {

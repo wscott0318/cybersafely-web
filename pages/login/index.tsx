@@ -13,11 +13,8 @@ export default function Login() {
   const [login, { loading, error }] = useLoginMutation({
     variables: { email, password },
     onCompleted(data) {
-      const { token, user } = data.login
+      const { token } = data.login
       localStorage.setItem('token', token)
-
-      const [membership] = user.memberships
-      if (membership) localStorage.setItem('orgId', membership.organization.id)
 
       router.push('/dashboard')
     },

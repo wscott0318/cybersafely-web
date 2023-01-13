@@ -109,7 +109,7 @@ type DashboardLayoutProps = {
 }
 
 export function DashboardLayout(props: DashboardLayoutProps) {
-  const { data, error, refetch } = useProfileQuery()
+  const { data, error } = useProfileQuery()
 
   if (error) {
     return <Alert severity="error">{error.message}</Alert>
@@ -120,7 +120,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.profile} refetch={refetch}>
+    <AuthContextProvider user={data.profile}>
       <Head>{!!props.title && <title>{props.title}</title>}</Head>
       <Box minHeight="100vh" display="flex" flexDirection="column">
         <AppBar>
@@ -170,7 +170,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               </List>
             </Stack>
           </Stack>
-          <Box width={280} />
+          <Box width={280} flexShrink={0} />
           <Container maxWidth="xl" sx={{ py: 2 }}>
             {props.children}
           </Container>

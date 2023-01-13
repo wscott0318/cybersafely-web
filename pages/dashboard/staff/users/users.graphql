@@ -1,5 +1,5 @@
-query users($page: Page, $filter: UserFilter, $order: UserOrder) {
-  users(page: $page, filter: $filter, order: $order) {
+query users($page: Page, $order: UserOrder) {
+  users(page: $page, order: $order) {
     page {
       index
       count
@@ -9,20 +9,20 @@ query users($page: Page, $filter: UserFilter, $order: UserOrder) {
       id
       createdAt
       email
+      emailConfirmed
       name
-      isStaff
-      isConfirmed
-      memberships {
-        organization {
-          id
-          name
+      roles {
+        role
+        ... on TeamRole {
+          team {
+            name
+          }
         }
-      }
-      children {
-        childUser {
-          id
-          email
-          name
+        ... on ParentRole {
+          relation
+          childUser {
+            name
+          }
         }
       }
     }
