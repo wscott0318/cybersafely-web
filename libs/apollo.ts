@@ -36,9 +36,11 @@ export const Client = new ApolloClient({
       fetchPolicy: 'network-only',
       nextFetchPolicy: 'network-only',
       initialFetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
     },
     query: {
       fetchPolicy: 'network-only',
+      notifyOnNetworkStatusChange: true,
     },
     mutate: {
       fetchPolicy: 'network-only',

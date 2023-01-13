@@ -58,6 +58,10 @@ export type AddressUpdate = {
   zip?: InputMaybe<Scalars['String']>;
 };
 
+export type ArrayOrder = {
+  _count?: InputMaybe<OrderDirection>;
+};
+
 export type BooleanFilter = {
   equals?: InputMaybe<Scalars['Boolean']>;
   not?: InputMaybe<Scalars['Boolean']>;
@@ -394,10 +398,12 @@ export type UserFilter = {
 };
 
 export type UserOrder = {
+  children?: InputMaybe<ArrayOrder>;
   createdAt?: InputMaybe<OrderDirection>;
   email?: InputMaybe<OrderDirection>;
   isConfirmed?: InputMaybe<OrderDirection>;
   isStaff?: InputMaybe<OrderDirection>;
+  memberships?: InputMaybe<ArrayOrder>;
   name?: InputMaybe<OrderDirection>;
 };
 
@@ -412,6 +418,15 @@ export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, name: string, isStaff: boolean, isConfirmed: boolean, memberships: Array<{ __typename?: 'Membership', isAdmin: boolean, organization: { __typename?: 'Organization', id: string, name: string } }>, children: Array<{ __typename?: 'Relationship', relation: string, childUser: { __typename?: 'User', id: string, email: string, name: string } }> } };
+
+export type OrganizationsQueryVariables = Exact<{
+  page?: InputMaybe<Page>;
+  filter?: InputMaybe<OrganizationFilter>;
+  order?: InputMaybe<OrganizationOrder>;
+}>;
+
+
+export type OrganizationsQuery = { __typename?: 'Query', organizations: { __typename?: 'PaginatedOrganization', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Organization', id: string, createdAt: Date, name: string, address: { __typename?: 'Address', street: string, city: string, state: string, zip: string } }> } };
 
 export type UsersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -484,6 +499,58 @@ export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pr
 export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
+export const OrganizationsDocument = gql`
+    query organizations($page: Page, $filter: OrganizationFilter, $order: OrganizationOrder) {
+  organizations(page: $page, filter: $filter, order: $order) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      name
+      address {
+        street
+        city
+        state
+        zip
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useOrganizationsQuery__
+ *
+ * To run a query within a React component, call `useOrganizationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useOrganizationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useOrganizationsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      filter: // value for 'filter'
+ *      order: // value for 'order'
+ *   },
+ * });
+ */
+export function useOrganizationsQuery(baseOptions?: Apollo.QueryHookOptions<OrganizationsQuery, OrganizationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, options);
+      }
+export function useOrganizationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<OrganizationsQuery, OrganizationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<OrganizationsQuery, OrganizationsQueryVariables>(OrganizationsDocument, options);
+        }
+export type OrganizationsQueryHookResult = ReturnType<typeof useOrganizationsQuery>;
+export type OrganizationsLazyQueryHookResult = ReturnType<typeof useOrganizationsLazyQuery>;
+export type OrganizationsQueryResult = Apollo.QueryResult<OrganizationsQuery, OrganizationsQueryVariables>;
 export const UsersDocument = gql`
     query users($page: Page, $filter: UserFilter, $order: UserOrder) {
   users(page: $page, filter: $filter, order: $order) {
@@ -590,6 +657,7 @@ export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, Log
 export const namedOperations = {
   Query: {
     profile: 'profile',
+    organizations: 'organizations',
     users: 'users'
   },
   Mutation: {

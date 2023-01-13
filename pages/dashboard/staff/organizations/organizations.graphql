@@ -1,0 +1,20 @@
+query organizations($page: Page, $filter: OrganizationFilter, $order: OrganizationOrder) {
+  organizations(page: $page, filter: $filter, order: $order) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      name
+      address {
+        street
+        city
+        state
+        zip
+      }
+    }
+  }
+}

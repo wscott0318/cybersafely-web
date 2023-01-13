@@ -1,84 +1,84 @@
-import { Checkbox, LinearProgress } from '@mui/material'
-import { DataGrid, GridSortModel } from '@mui/x-data-grid'
-import { useMemo, useState } from 'react'
+import PlusIcon from '@mui/icons-material/AddOutlined'
+import { Button, Checkbox } from '@mui/material'
+import { GridColumns } from '@mui/x-data-grid'
+import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { withDashboardLayout } from '../../../../components/dashboard/layout'
-import { UsersQueryVariables, useUsersQuery } from '../../../../types/graphql'
+import { UsersQuery, useUsersQuery } from '../../../../types/graphql'
 
-function sortModelToOrder([model]: GridSortModel) {
-  if (model && model.sort) {
-    return { [model.field]: model.sort.toUpperCase() }
-  }
-}
+const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+  {
+    width: 200,
+    field: 'createdAt',
+    headerName: 'Joined',
+    valueFormatter(params) {
+      return new Date(params.value).toLocaleString()
+    },
+  },
+  {
+    width: 250,
+    field: 'email',
+    headerName: 'E-mail',
+  },
+  {
+    width: 250,
+    field: 'name',
+    headerName: 'Name',
+  },
+  {
+    width: 150,
+    field: 'isConfirmed',
+    headerName: 'Confirmed',
+    renderCell(params) {
+      return <Checkbox checked={params.value} readOnly />
+    },
+  },
+  {
+    width: 150,
+    field: 'isStaff',
+    headerName: 'Staff',
+    renderCell(params) {
+      return <Checkbox checked={params.value} readOnly />
+    },
+  },
+  {
+    width: 150,
+    field: 'memberships._count',
+    headerName: 'Member',
+    valueGetter(params) {
+      return params.row.memberships.length
+    },
+    renderCell(params) {
+      return <Checkbox checked={params.value > 0} readOnly />
+    },
+  },
+  {
+    width: 150,
+    field: 'children._count',
+    headerName: 'Parent',
+    valueGetter(params) {
+      return params.row.children.length
+    },
+    renderCell(params) {
+      return <Checkbox checked={params.value > 0} readOnly />
+    },
+  },
+]
 
-function Home() {
-  const [sortModel, setSortModel] = useState<GridSortModel>()
-
-  const variables = useMemo(() => {
-    const variables: UsersQueryVariables = {}
-
-    if (sortModel) {
-      variables.order = sortModelToOrder(sortModel)
-    }
-
-    return variables
-  }, [sortModel])
-
-  const { data, loading, error } = useUsersQuery({ variables })
+function Users() {
+  const query = useUsersQuery()
 
   return (
-    <DataGrid
-      autoHeight
-      hideFooter
-      error={error}
-      loading={loading}
-      filterMode="server"
-      sortingMode="server"
-      rows={data?.users.nodes ?? []}
-      sortModel={sortModel}
-      onSortModelChange={setSortModel}
-      components={{
-        LoadingOverlay: LinearProgress,
-      }}
-      columns={[
-        {
-          width: 200,
-          field: 'createdAt',
-          headerName: 'Joined',
-          valueFormatter(params) {
-            return new Date(params.value).toLocaleString()
-          },
-        },
-        {
-          width: 250,
-          field: 'email',
-          headerName: 'E-mail',
-        },
-        {
-          width: 250,
-          field: 'name',
-          headerName: 'Name',
-        },
-        {
-          width: 150,
-          field: 'isConfirmed',
-          headerName: 'Confirmed',
-          renderCell(params) {
-            return <Checkbox checked={params.value} readOnly />
-          },
-        },
-        {
-          width: 150,
-          field: 'isStaff',
-          headerName: 'Staff',
-          renderCell(params) {
-            return <Checkbox checked={params.value} readOnly />
-          },
-        },
-      ]}
+    <DataGridViewer
+      title="Users"
+      query={query}
+      columns={columns}
+      data={query.data?.users}
+      href={(e) => '/dashboard/staff/users/' + e.id}
+      actions={<Button startIcon={<PlusIcon />}>Invite Staff</Button>}
     />
   )
 }
 
-export default withDashboardLayout(Home, {
+export default withDashboardLayout(Users, {
   title: 'Staff Dashboard',
 })

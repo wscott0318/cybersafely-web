@@ -29,7 +29,7 @@ export const theme = createTheme({
     fontFamily: roboto.style.fontFamily,
   },
   shape: {
-    borderRadius: 8,
+    borderRadius: 6,
   },
   components: {
     MuiAppBar: {
