@@ -1,12 +1,13 @@
 import VerifiedIcon from '@mui/icons-material/Verified'
 import { Chip, Tooltip } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
-import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
-import { withStaffDashboardLayout } from '../../../../components/dashboard/StaffLayout'
-import { roleDisplayTitle } from '../../../../helpers/formatters'
-import { Role, UsersQuery, useUsersQuery } from '../../../../types/graphql'
+import { GetServerSideProps } from 'next'
+import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { withStaffDashboardLayout } from '../../../../../components/dashboard/StaffLayout'
+import { roleDisplayTitle } from '../../../../../helpers/formatters'
+import { MembersQuery, Role, useMembersQuery } from '../../../../../types/graphql'
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
     width: 250,
     field: 'name',
@@ -38,7 +39,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     sortable: false,
     headerName: 'Roles',
     valueGetter(params) {
-      return params.row.roles.map((e) => e.role)
+      return params.row.teamRoles.map((e) => e.role)
     },
     renderCell(params) {
       return params.value.map((role: Role) => <Chip key={role} label={roleDisplayTitle(role)} sx={{ mr: 0.5 }} />)
@@ -54,20 +55,32 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
 ]
 
-function Users() {
-  const query = useUsersQuery()
+type Props = {
+  id: string
+}
+
+function Members({ id }: Props) {
+  const query = useMembersQuery({
+    variables: { id },
+    context: { teamId: id },
+  })
 
   return (
     <DataGridViewer
-      title="Users"
       query={query}
       columns={columns}
-      data={query.data?.users}
-      href={(e) => '/dashboard/staff/users/' + e.id}
+      data={query.data?.members}
+      back="/dashboard/staff/teams"
+      title={({ team }) => `Members of "${team.name}"`}
     />
   )
 }
 
-export default withStaffDashboardLayout(Users, {
-  title: 'Users',
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+  const id = ctx.params!.id as string
+  return { props: { id } }
+}
+
+export default withStaffDashboardLayout(Members, {
+  title: 'Members',
 })

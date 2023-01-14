@@ -1,0 +1,15 @@
+query teams($page: Page, $order: TeamOrder) {
+  teams(page: $page, order: $order) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      name
+      memberCount
+    }
+  }
+}

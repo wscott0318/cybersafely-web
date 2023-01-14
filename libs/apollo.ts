@@ -11,11 +11,11 @@ const authLink = new ApolloLink((operation, forward) => {
   const headers = {
     ...context.headers,
     'x-token': localStorage.getItem('token'),
-    'x-org-id': localStorage.getItem('orgId'),
+    'x-team-id': localStorage.getItem('teamId'),
   }
 
-  if (typeof context.orgId === 'string') {
-    headers['x-org-id'] = context.orgId
+  if (typeof context.teamId === 'string') {
+    headers['x-team-id'] = context.teamId
   }
   if (typeof context.behalfId === 'string') {
     headers['x-behalf-id'] = context.behalfId

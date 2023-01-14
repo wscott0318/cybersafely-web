@@ -1,4 +1,5 @@
-import { createContext, useContext } from 'react'
+import { useRouter } from 'next/router'
+import { createContext, useCallback, useContext } from 'react'
 import { ProfileQuery } from '../../types/graphql'
 
 type AuthContext = {
@@ -18,11 +19,17 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 }
 
 export function useUser() {
+  const router = useRouter()
   const { user } = useContext(AuthContext)
 
   if (!user) {
     throw new Error('User was not found')
   }
 
-  return { user }
+  const logout = useCallback(() => {
+    localStorage.clear()
+    router.push('/auth/login')
+  }, [])
+
+  return { user, logout }
 }

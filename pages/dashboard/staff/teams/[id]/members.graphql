@@ -1,0 +1,23 @@
+query members($id: ID!, $page: Page, $order: UserOrder) {
+  team(id: $id) {
+    id
+    name
+  }
+  members(page: $page, order: $order) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      email
+      emailConfirmed
+      name
+      teamRoles {
+        role
+      }
+    }
+  }
+}

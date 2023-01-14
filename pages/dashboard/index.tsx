@@ -1,13 +1,16 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { withDashboardLayout } from '../../components/dashboard/layout'
-import { useUser } from '../../utils/context/auth'
+import { useProfileQuery } from '../../types/graphql'
 
-function Dashboard() {
+export default function Dashboard() {
   const router = useRouter()
-  const { user } = useUser()
+  const { data } = useProfileQuery()
 
   useEffect(() => {
+    if (!data) return
+
+    const user = data.profile
+
     const staff = user.roles.find((e) => e.role === 'STAFF')
     const coach = user.roles.find((e) => e.role === 'COACH')
     const athlete = user.roles.find((e) => e.role === 'ATHLETE')
@@ -16,21 +19,17 @@ function Dashboard() {
     if (staff) {
       router.replace('/dashboard/staff/home')
     } else if (coach && coach.__typename === 'TeamRole') {
-      localStorage.setItem('orgId', coach.team.id)
+      localStorage.setItem('teamId', coach.team.id)
       router.replace('/dashboard/coach/home')
     } else if (athlete && athlete.__typename === 'TeamRole') {
-      localStorage.setItem('orgId', athlete.team.id)
+      localStorage.setItem('teamId', athlete.team.id)
       router.replace('/dashboard/athlete/home')
     } else if (parent) {
       router.replace('/dashboard/parent/home')
     } else {
       throw new Error('Cannot redirect user')
     }
-  }, [])
+  }, [data])
 
   return null
 }
-
-export default withDashboardLayout(Dashboard, {
-  title: 'Dashboard',
-})

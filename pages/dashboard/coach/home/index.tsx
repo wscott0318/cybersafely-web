@@ -1,4 +1,4 @@
-import { withDashboardLayout } from '../../../../components/dashboard/layout'
+import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 
 function Home() {
   return null

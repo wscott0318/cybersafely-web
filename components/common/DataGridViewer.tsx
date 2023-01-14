@@ -1,5 +1,6 @@
 import { QueryResult } from '@apollo/client'
-import { Alert, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
+import BackIcon from '@mui/icons-material/ArrowBackOutlined'
+import { Alert, Box, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColumns, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
@@ -42,18 +43,20 @@ function DataGridErrorOverlay(props: DataGridErrorOverlayProps) {
 
 export type InferNodeType<TData> = TData extends { nodes: Array<infer TNode> } ? TNode : unknown
 
-type DataGridViewerProps<TData, TNode extends GridValidRowModel> = {
-  query: QueryResult
+type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
+  query: QueryResult<TQuery, any>
   data: TData | undefined
   columns: GridColumns<TNode>
   href?: (node: TNode) => string
-  title: string
+  title: string | ((query: TQuery) => string)
   actions?: React.ReactNode
+  back?: string
 }
 
 export function DataGridViewer<
+  TQuery,
   TData extends { page: { index: number; count: number; total: number }; nodes: Array<GridValidRowModel> }
->(props: DataGridViewerProps<TData, InferNodeType<TData>>) {
+>(props: DataGridViewerProps<TQuery, TData, InferNodeType<TData>>) {
   const router = useRouter()
 
   const [data, setData] = useState<TData>()
@@ -78,17 +81,34 @@ export function DataGridViewer<
     props.query.refetch(variables)
   }, [index, sortModel])
 
+  const title = useMemo(() => {
+    if (typeof props.title === 'string') {
+      return props.title
+    } else if (typeof props.title === 'function' && props.query.data) {
+      return props.title(props.query.data)
+    }
+  }, [props.title, props.query.data])
+
   return (
     <Stack>
       <Stack direction="row" alignItems="center">
-        <Typography variant="h5" flexGrow={1}>
-          {props.title}{' '}
-          {data && (
-            <Typography display="inline" color="text.disabled">
-              ({data.page.total ?? 0} in total)
+        {!!props.back && (
+          <IconButton edge="start" sx={{ mr: -1 }} onClick={() => router.push(props.back!)}>
+            <BackIcon />
+          </IconButton>
+        )}
+        <Box flexGrow={1}>
+          {!!title && (
+            <Typography variant="h5">
+              {title}{' '}
+              {data && (
+                <Typography display="inline" color="text.disabled">
+                  ({data.page.total ?? 0} in total)
+                </Typography>
+              )}
             </Typography>
           )}
-        </Typography>
+        </Box>
         {props.actions}
       </Stack>
       <DataGrid

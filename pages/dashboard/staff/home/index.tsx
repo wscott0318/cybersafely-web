@@ -1,9 +1,9 @@
-import { withDashboardLayout } from '../../../../components/dashboard/layout'
+import { withStaffDashboardLayout } from '../../../../components/dashboard/StaffLayout'
 
 function Home() {
   return null
 }
 
-export default withDashboardLayout(Home, {
-  title: 'Staff Dashboard',
+export default withStaffDashboardLayout(Home, {
+  title: 'Home',
 })

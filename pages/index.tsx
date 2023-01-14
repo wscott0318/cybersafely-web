@@ -5,7 +5,7 @@ export default function Landing() {
   const router = useRouter()
 
   useEffect(() => {
-    router.push('/login')
+    router.push('/auth/login')
   }, [])
 
   return null
