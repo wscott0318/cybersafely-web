@@ -1,14 +1,22 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import VerifiedIcon from '@mui/icons-material/Verified'
-import { Button, Chip, Tooltip } from '@mui/material'
+import { Chip, MenuItem, Tooltip } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { roleDisplayTitle } from '../../../../helpers/formatters'
-import { namedOperations, Role, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
+import {
+  MembersQuery,
+  namedOperations,
+  Role,
+  useInviteAthleteMutation,
+  useInviteCoachMutation,
+  useMembersQuery,
+} from '../../../../types/graphql'
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
     width: 250,
     field: 'name',
@@ -40,7 +48,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     sortable: false,
     headerName: 'Roles',
     valueGetter(params) {
-      return params.row.roles.map((e) => e.role)
+      return params.row.teamRoles.map((e) => e.role)
     },
     renderCell(params) {
       return params.value.map((role: Role) => <Chip key={role} label={roleDisplayTitle(role)} sx={{ mr: 0.5 }} />)
@@ -56,33 +64,48 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
 ]
 
-function Users() {
-  const query = useUsersQuery()
+function Members() {
+  const query = useMembersQuery()
 
-  const [inviteStaff] = useInviteStaffMutation({
-    refetchQueries: [namedOperations.Query.users],
+  const [inviteCoach] = useInviteCoachMutation({
+    refetchQueries: [namedOperations.Query.members],
+  })
+  const [inviteAthlete] = useInviteAthleteMutation({
+    refetchQueries: [namedOperations.Query.members],
   })
 
   return (
     <DataGridViewer
-      title="Users"
       query={query}
+      title="Members"
       columns={columns}
-      data={query.data?.users}
+      data={query.data?.members}
       actions={
         <>
-          <Button
-            startIcon={<AddIcon />}
-            onClick={async () => {
-              const email = prompt('E-mail')
+          <DropDownButton startIcon={<AddIcon />} title="Invite">
+            <MenuItem
+              onClick={async () => {
+                const email = prompt('E-mail')
 
-              if (email) {
-                await inviteStaff({ variables: { email } })
-              }
-            }}
-          >
-            Invite Staff
-          </Button>
+                if (email) {
+                  await inviteCoach({ variables: { email } })
+                }
+              }}
+            >
+              Invite Coach
+            </MenuItem>
+            <MenuItem
+              onClick={async () => {
+                const email = prompt('E-mail')
+
+                if (email) {
+                  await inviteAthlete({ variables: { email } })
+                }
+              }}
+            >
+              Invite Athlete
+            </MenuItem>
+          </DropDownButton>
           <SearchBar onSearch={(search) => query.refetch({ search })} />
         </>
       }
@@ -90,6 +113,6 @@ function Users() {
   )
 }
 
-export default withDashboardLayout(Users, {
-  title: 'Users',
+export default withDashboardLayout(Members, {
+  title: 'Members',
 })

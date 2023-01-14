@@ -1,16 +1,20 @@
-import { red } from '@mui/material/colors'
+import { inputBaseClasses, PaletteMode } from '@mui/material'
+import { common, grey, red } from '@mui/material/colors'
 import { createTheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
 
 export const roboto = Roboto({
-  weight: ['300', '400', '500', '700'],
-  subsets: ['latin'],
   display: 'swap',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
   fallback: ['Helvetica', 'Arial', 'sans-serif'],
 })
 
+const mode: PaletteMode = 'dark'
+
 export const theme = createTheme({
   palette: {
+    mode,
     primary: {
       main: '#556cd6',
     },
@@ -21,8 +25,8 @@ export const theme = createTheme({
       main: red.A400,
     },
     background: {
-      default: 'rgb(250,250,250)',
-      paper: 'white',
+      default: mode === 'dark' ? common.black : grey[100],
+      paper: mode === 'dark' ? grey[900] : common.white,
     },
   },
   typography: {
@@ -36,6 +40,13 @@ export const theme = createTheme({
       defaultProps: {
         elevation: 0,
         variant: 'outlined',
+      },
+      styleOverrides: {
+        root: {
+          borderTop: 'none',
+          borderLeft: 'none',
+          borderRight: 'none',
+        },
       },
     },
     MuiPaper: {
@@ -61,7 +72,9 @@ export const theme = createTheme({
       },
       styleOverrides: {
         root: ({ theme }) => ({
-          background: theme.palette.background.paper,
+          ['.' + inputBaseClasses.root]: {
+            background: theme.palette.background.paper,
+          },
         }),
       },
     },

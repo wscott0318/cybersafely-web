@@ -1,5 +1,8 @@
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
+import GroupsIcon from '@mui/icons-material/GroupsOutlined'
+import HomeIcon from '@mui/icons-material/HomeOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
+import PeopleIcon from '@mui/icons-material/PeopleOutlined'
 import {
   Alert,
   AppBar,
@@ -8,6 +11,7 @@ import {
   Container,
   Divider,
   List,
+  ListSubheader,
   Stack,
   Toolbar,
   Typography,
@@ -15,8 +19,8 @@ import {
 import Head from 'next/head'
 import React from 'react'
 import { Config } from '../../helpers/config'
-import { useProfileQuery } from '../../types/graphql'
-import { AuthContextProvider } from '../../utils/context/auth'
+import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
+import { AuthContextProvider, useUser } from '../../utils/context/auth'
 import { SidebarLink } from './SidebarLink'
 
 export type DashboardLayoutProps = {
@@ -27,7 +31,11 @@ export type DashboardLayoutProps = {
 }
 
 export function DashboardLayout(props: DashboardLayoutProps) {
-  const { data, error } = useProfileQuery()
+  const { data, error } = useProfileQuery({
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-first',
+    initialFetchPolicy: 'network-only',
+  })
 
   if (error) {
     return <Alert severity="error">{error.message}</Alert>
@@ -86,4 +94,63 @@ export function DashboardLayout(props: DashboardLayoutProps) {
       </Box>
     </AuthContextProvider>
   )
+}
+
+function Sidebar() {
+  const { user } = useUser()
+
+  const staff = user.roles.find((e) => e.role === 'STAFF') as AnyUserRole | undefined
+  const coach = user.roles.find((e) => e.role === 'COACH') as TeamRole | undefined
+  const athlete = user.roles.find((e) => e.role === 'ATHLETE') as TeamRole | undefined
+  const parent = user.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
+
+  if (staff) {
+    return (
+      <>
+        <List>
+          <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
+        </List>
+        <List subheader={<ListSubheader>Management</ListSubheader>}>
+          <SidebarLink href="/dashboard/staff/users" icon={<PeopleIcon />} title="Users" />
+          <SidebarLink href="/dashboard/staff/teams" icon={<GroupsIcon />} title="Teams" />
+        </List>
+      </>
+    )
+  } else if (coach) {
+    return (
+      <>
+        <List>
+          <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
+        </List>
+        <List subheader={<ListSubheader>Management</ListSubheader>}>
+          <SidebarLink href="/dashboard/coach/members" icon={<PeopleIcon />} title="Members" />
+        </List>
+      </>
+    )
+  } else if (athlete) {
+    return (
+      <>
+        <List>
+          <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
+        </List>
+      </>
+    )
+  } else if (parent) {
+    // TODO:
+  }
+
+  return null
+}
+
+export function withDashboardLayout(
+  Component: React.ComponentType<any>,
+  layoutProps: Omit<DashboardLayoutProps, 'children' | 'sidebar'>
+) {
+  return function Wrapper(props: any) {
+    return (
+      <DashboardLayout {...layoutProps} sidebar={<Sidebar />} title={[layoutProps.title, 'Dashboard'].join(' | ')}>
+        <Component {...props} />
+      </DashboardLayout>
+    )
+  }
 }

@@ -8,10 +8,16 @@ type SearchBarProps = {
 }
 
 export function SearchBar(props: SearchBarProps) {
+  const [initial, setInitial] = useState(true)
   const [search, setSearch] = useState('')
   const [searching, setSearching] = useState(false)
 
   useEffect(() => {
+    if (initial) {
+      setInitial(false)
+      return
+    }
+
     setSearching(true)
 
     const timer = setTimeout(() => {
@@ -27,12 +33,9 @@ export function SearchBar(props: SearchBarProps) {
   return (
     <TextField
       value={search}
+      sx={{ width: 250 }}
       placeholder="Quick search..."
       onChange={(e) => setSearch(e.target.value)}
-      sx={{
-        width: '100%',
-        maxWidth: 300,
-      }}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">

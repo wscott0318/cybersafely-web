@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
-import { createContext, useCallback, useContext } from 'react'
-import { ProfileQuery } from '../../types/graphql'
+import { createContext, useCallback, useContext, useMemo } from 'react'
+import { ProfileQuery, TeamRole } from '../../types/graphql'
 
 type AuthContext = {
   user: ProfileQuery['profile']
@@ -22,14 +22,44 @@ export function useUser() {
   const router = useRouter()
   const { user } = useContext(AuthContext)
 
-  if (!user) {
-    throw new Error('User was not found')
-  }
-
   const logout = useCallback(() => {
     localStorage.clear()
     router.push('/auth/login')
   }, [])
 
+  if (!user) {
+    throw new Error('User was not found')
+  }
+
   return { user, logout }
+}
+
+export function useTeam() {
+  const { user } = useContext(AuthContext)
+
+  const team = useMemo(() => {
+    if (user && localStorage) {
+      const teamId = localStorage.getItem('teamId')
+
+      if (teamId) {
+        const role = user.roles.find(
+          (e) =>
+            (e.role === 'COACH' || e.role === 'ATHLETE') &&
+            e.__typename === 'TeamRole' &&
+            e.team &&
+            e.team.id === teamId
+        ) as TeamRole | undefined
+
+        if (role) {
+          return role.team
+        }
+      }
+    }
+  }, [user])
+
+  if (!team) {
+    throw new Error('Team was not found')
+  }
+
+  return { team }
 }

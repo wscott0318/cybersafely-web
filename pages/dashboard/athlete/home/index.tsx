@@ -5,5 +5,5 @@ function Home() {
 }
 
 export default withDashboardLayout(Home, {
-  title: 'User Dashboard',
+  title: 'Home',
 })

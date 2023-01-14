@@ -294,6 +294,20 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register?: string | null };
 
+export type InviteCoachMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type InviteCoachMutation = { __typename?: 'Mutation', inviteCoach?: string | null };
+
+export type InviteAthleteMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type InviteAthleteMutation = { __typename?: 'Mutation', inviteAthlete?: string | null };
+
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
   order?: InputMaybe<UserOrder>;
@@ -490,6 +504,68 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const InviteCoachDocument = gql`
+    mutation inviteCoach($email: String!) {
+  inviteCoach(email: $email)
+}
+    `;
+export type InviteCoachMutationFn = Apollo.MutationFunction<InviteCoachMutation, InviteCoachMutationVariables>;
+
+/**
+ * __useInviteCoachMutation__
+ *
+ * To run a mutation, you first call `useInviteCoachMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteCoachMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteCoachMutation, { data, loading, error }] = useInviteCoachMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useInviteCoachMutation(baseOptions?: Apollo.MutationHookOptions<InviteCoachMutation, InviteCoachMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InviteCoachMutation, InviteCoachMutationVariables>(InviteCoachDocument, options);
+      }
+export type InviteCoachMutationHookResult = ReturnType<typeof useInviteCoachMutation>;
+export type InviteCoachMutationResult = Apollo.MutationResult<InviteCoachMutation>;
+export type InviteCoachMutationOptions = Apollo.BaseMutationOptions<InviteCoachMutation, InviteCoachMutationVariables>;
+export const InviteAthleteDocument = gql`
+    mutation inviteAthlete($email: String!) {
+  inviteAthlete(email: $email)
+}
+    `;
+export type InviteAthleteMutationFn = Apollo.MutationFunction<InviteAthleteMutation, InviteAthleteMutationVariables>;
+
+/**
+ * __useInviteAthleteMutation__
+ *
+ * To run a mutation, you first call `useInviteAthleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteAthleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteAthleteMutation, { data, loading, error }] = useInviteAthleteMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useInviteAthleteMutation(baseOptions?: Apollo.MutationHookOptions<InviteAthleteMutation, InviteAthleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InviteAthleteMutation, InviteAthleteMutationVariables>(InviteAthleteDocument, options);
+      }
+export type InviteAthleteMutationHookResult = ReturnType<typeof useInviteAthleteMutation>;
+export type InviteAthleteMutationResult = Apollo.MutationResult<InviteAthleteMutation>;
+export type InviteAthleteMutationOptions = Apollo.BaseMutationOptions<InviteAthleteMutation, InviteAthleteMutationVariables>;
 export const MembersDocument = gql`
     query members($page: Page, $order: UserOrder, $search: String) {
   members(page: $page, order: $order, search: $search) {
@@ -729,6 +805,8 @@ export const namedOperations = {
     activate: 'activate',
     login: 'login',
     register: 'register',
+    inviteCoach: 'inviteCoach',
+    inviteAthlete: 'inviteAthlete',
     inviteStaff: 'inviteStaff'
   }
 }

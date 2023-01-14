@@ -1,7 +1,7 @@
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
-import { withStaffDashboardLayout } from '../../../../components/dashboard/StaffLayout'
+import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { TeamsQuery, useTeamsQuery } from '../../../../types/graphql'
 
 const columns: GridColumns<InferNodeType<TeamsQuery['teams']>> = [
@@ -40,6 +40,6 @@ function Teams() {
   )
 }
 
-export default withStaffDashboardLayout(Teams, {
+export default withDashboardLayout(Teams, {
   title: 'Teams',
 })

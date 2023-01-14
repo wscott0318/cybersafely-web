@@ -89,7 +89,7 @@ export function DataGridViewer<
             <BackIcon />
           </IconButton>
         )}
-        <Typography variant="h5" flexGrow={1}>
+        <Typography variant="h5" flexGrow={1} flexShrink={1} noWrap>
           {props.title}{' '}
           {data && (
             <Typography display="inline" color="text.disabled">
@@ -97,7 +97,18 @@ export function DataGridViewer<
             </Typography>
           )}
         </Typography>
-        {props.actions}
+        <Stack
+          spacing={1}
+          flexShrink={0}
+          direction="row"
+          sx={{
+            '& > *': {
+              flexShrink: 0,
+            },
+          }}
+        >
+          {props.actions}
+        </Stack>
       </Stack>
       <DataGrid
         autoHeight
@@ -137,7 +148,10 @@ export function DataGridViewer<
         sx={{ alignSelf: 'center' }}
         count={data?.page.count ?? 0}
         page={(data?.page.index ?? 0) + 1}
-        onChange={(_, page) => setIndex(page - 1)}
+        onChange={(_, page) => {
+          setIndex(page - 1)
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }}
       />
     </Stack>
   )

@@ -1,0 +1,7 @@
+mutation inviteCoach($email: String!) {
+  inviteCoach(email: $email)
+}
+
+mutation inviteAthlete($email: String!) {
+  inviteAthlete(email: $email)
+}

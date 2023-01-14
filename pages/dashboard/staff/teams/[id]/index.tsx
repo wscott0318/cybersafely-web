@@ -1,12 +1,22 @@
+import AddIcon from '@mui/icons-material/AddOutlined'
 import VerifiedIcon from '@mui/icons-material/Verified'
-import { Chip, Tooltip } from '@mui/material'
+import { Chip, MenuItem, Tooltip } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../../components/common/SearchBar'
-import { withStaffDashboardLayout } from '../../../../../components/dashboard/StaffLayout'
+import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { roleDisplayTitle } from '../../../../../helpers/formatters'
-import { MembersQuery, Role, useMembersQuery, useTeamQuery } from '../../../../../types/graphql'
+import {
+  MembersQuery,
+  namedOperations,
+  Role,
+  useInviteAthleteMutation,
+  useInviteCoachMutation,
+  useMembersQuery,
+  useTeamQuery,
+} from '../../../../../types/graphql'
 
 const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
@@ -68,6 +78,15 @@ function Members({ id }: Props) {
     context: { teamId: id },
   })
 
+  const [inviteCoach] = useInviteCoachMutation({
+    context: { teamId: id },
+    refetchQueries: [namedOperations.Query.members],
+  })
+  const [inviteAthlete] = useInviteAthleteMutation({
+    context: { teamId: id },
+    refetchQueries: [namedOperations.Query.members],
+  })
+
   return (
     <DataGridViewer
       query={query}
@@ -75,7 +94,35 @@ function Members({ id }: Props) {
       data={query.data?.members}
       back="/dashboard/staff/teams"
       title={data ? `Members of "${data.team.name}"` : 'Members'}
-      actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
+      actions={
+        <>
+          <DropDownButton startIcon={<AddIcon />} title="Invite">
+            <MenuItem
+              onClick={async () => {
+                const email = prompt('E-mail')
+
+                if (email) {
+                  await inviteCoach({ variables: { email } })
+                }
+              }}
+            >
+              Invite Coach
+            </MenuItem>
+            <MenuItem
+              onClick={async () => {
+                const email = prompt('E-mail')
+
+                if (email) {
+                  await inviteAthlete({ variables: { email } })
+                }
+              }}
+            >
+              Invite Athlete
+            </MenuItem>
+          </DropDownButton>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </>
+      }
     />
   )
 }
@@ -85,6 +132,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   return { props: { id } }
 }
 
-export default withStaffDashboardLayout(Members, {
+export default withDashboardLayout(Members, {
   title: 'Members',
 })

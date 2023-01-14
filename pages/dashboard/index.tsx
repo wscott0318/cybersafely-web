@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
-import { useProfileQuery } from '../../types/graphql'
+import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -11,17 +11,17 @@ export default function Dashboard() {
 
     const user = data.profile
 
-    const staff = user.roles.find((e) => e.role === 'STAFF')
-    const coach = user.roles.find((e) => e.role === 'COACH')
-    const athlete = user.roles.find((e) => e.role === 'ATHLETE')
-    const parent = user.roles.find((e) => e.role === 'PARENT')
+    const staff = user.roles.find((e) => e.role === 'STAFF') as AnyUserRole | undefined
+    const coach = user.roles.find((e) => e.role === 'COACH') as TeamRole | undefined
+    const athlete = user.roles.find((e) => e.role === 'ATHLETE') as TeamRole | undefined
+    const parent = user.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
 
     if (staff) {
       router.replace('/dashboard/staff/home')
-    } else if (coach && coach.__typename === 'TeamRole') {
+    } else if (coach) {
       localStorage.setItem('teamId', coach.team.id)
       router.replace('/dashboard/coach/home')
-    } else if (athlete && athlete.__typename === 'TeamRole') {
+    } else if (athlete) {
       localStorage.setItem('teamId', athlete.team.id)
       router.replace('/dashboard/athlete/home')
     } else if (parent) {
