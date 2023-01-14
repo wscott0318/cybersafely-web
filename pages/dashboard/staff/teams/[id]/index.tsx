@@ -3,9 +3,10 @@ import { Chip, Tooltip } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { SearchBar } from '../../../../../components/common/SearchBar'
 import { withStaffDashboardLayout } from '../../../../../components/dashboard/StaffLayout'
 import { roleDisplayTitle } from '../../../../../helpers/formatters'
-import { MembersQuery, Role, useMembersQuery } from '../../../../../types/graphql'
+import { MembersQuery, Role, useMembersQuery, useTeamQuery } from '../../../../../types/graphql'
 
 const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
@@ -60,8 +61,10 @@ type Props = {
 }
 
 function Members({ id }: Props) {
-  const query = useMembersQuery({
+  const { data } = useTeamQuery({
     variables: { id },
+  })
+  const query = useMembersQuery({
     context: { teamId: id },
   })
 
@@ -71,7 +74,8 @@ function Members({ id }: Props) {
       columns={columns}
       data={query.data?.members}
       back="/dashboard/staff/teams"
-      title={({ team }) => `Members of "${team.name}"`}
+      title={data ? `Members of "${data.team.name}"` : 'Members'}
+      actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
     />
   )
 }

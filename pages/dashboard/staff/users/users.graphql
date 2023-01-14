@@ -1,5 +1,5 @@
-query users($page: Page, $order: UserOrder) {
-  users(page: $page, order: $order) {
+query users($page: Page, $order: UserOrder, $search: String) {
+  users(page: $page, order: $order, search: $search) {
     page {
       index
       count

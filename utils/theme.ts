@@ -59,6 +59,11 @@ export const theme = createTheme({
       defaultProps: {
         size: 'small',
       },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          background: theme.palette.background.paper,
+        }),
+      },
     },
     MuiButton: {
       defaultProps: {

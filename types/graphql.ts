@@ -71,9 +71,9 @@ export type Mutation = {
 
 
 export type MutationActivateArgs = {
-  email: Scalars['String'];
   password: Scalars['String'];
   passwordToken: Scalars['String'];
+  user: UserCreate;
 };
 
 
@@ -108,6 +108,7 @@ export type MutationRegisterArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
   team: TeamCreate;
+  user: UserCreate;
 };
 
 export const OrderDirection = {
@@ -164,6 +165,7 @@ export type Query = {
 export type QueryMembersArgs = {
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
+  search?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -175,6 +177,7 @@ export type QueryTeamArgs = {
 export type QueryTeamsArgs = {
   order?: InputMaybe<TeamOrder>;
   page?: InputMaybe<Page>;
+  search?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -186,6 +189,7 @@ export type QueryUserArgs = {
 export type QueryUsersArgs = {
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
+  search?: InputMaybe<Scalars['String']>;
 };
 
 export const Role = {
@@ -244,6 +248,10 @@ export type User = {
   teamRoles: Array<UserRole>;
 };
 
+export type UserCreate = {
+  name: Scalars['String'];
+};
+
 export type UserOrder = {
   createdAt?: InputMaybe<OrderDirection>;
   email?: InputMaybe<OrderDirection>;
@@ -259,6 +267,15 @@ export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', relation?: string | null, role: Role, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', id: string, name: string } }> } };
 
+export type ActivateMutationVariables = Exact<{
+  password: Scalars['String'];
+  passwordToken: Scalars['String'];
+  user: UserCreate;
+}>;
+
+
+export type ActivateMutation = { __typename?: 'Mutation', activate?: string | null };
+
 export type LoginMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
@@ -267,33 +284,52 @@ export type LoginMutationVariables = Exact<{
 
 export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'JWT', token: string } };
 
-export type MembersQueryVariables = Exact<{
-  id: Scalars['ID'];
-  page?: InputMaybe<Page>;
-  order?: InputMaybe<UserOrder>;
+export type RegisterMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+  user: UserCreate;
+  team: TeamCreate;
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', team: { __typename?: 'Team', id: string, name: string }, members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, teamRoles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', role: Role } | { __typename?: 'TeamRole', role: Role }> }> } };
+export type RegisterMutation = { __typename?: 'Mutation', register?: string | null };
+
+export type MembersQueryVariables = Exact<{
+  page?: InputMaybe<Page>;
+  order?: InputMaybe<UserOrder>;
+  search?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, teamRoles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', role: Role } | { __typename?: 'TeamRole', role: Role }> }> } };
+
+export type TeamQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type TeamQuery = { __typename?: 'Query', team: { __typename?: 'Team', id: string, name: string } };
 
 export type TeamsQueryVariables = Exact<{
   page?: InputMaybe<Page>;
   order?: InputMaybe<TeamOrder>;
+  search?: InputMaybe<Scalars['String']>;
 }>;
 
 
 export type TeamsQuery = { __typename?: 'Query', teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Team', id: string, createdAt: Date, name: string, memberCount: number }> } };
 
-export type UserQueryVariables = Exact<{
-  id: Scalars['ID'];
+export type InviteStaffMutationVariables = Exact<{
+  email: Scalars['String'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', relation?: string | null, role: Role, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', name: string } }> } };
+export type InviteStaffMutation = { __typename?: 'Mutation', inviteStaff?: string | null };
 
 export type UsersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
   order?: InputMaybe<UserOrder>;
+  search?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -353,6 +389,39 @@ export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pr
 export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
+export const ActivateDocument = gql`
+    mutation activate($password: String!, $passwordToken: String!, $user: UserCreate!) {
+  activate(password: $password, passwordToken: $passwordToken, user: $user)
+}
+    `;
+export type ActivateMutationFn = Apollo.MutationFunction<ActivateMutation, ActivateMutationVariables>;
+
+/**
+ * __useActivateMutation__
+ *
+ * To run a mutation, you first call `useActivateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useActivateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [activateMutation, { data, loading, error }] = useActivateMutation({
+ *   variables: {
+ *      password: // value for 'password'
+ *      passwordToken: // value for 'passwordToken'
+ *      user: // value for 'user'
+ *   },
+ * });
+ */
+export function useActivateMutation(baseOptions?: Apollo.MutationHookOptions<ActivateMutation, ActivateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ActivateMutation, ActivateMutationVariables>(ActivateDocument, options);
+      }
+export type ActivateMutationHookResult = ReturnType<typeof useActivateMutation>;
+export type ActivateMutationResult = Apollo.MutationResult<ActivateMutation>;
+export type ActivateMutationOptions = Apollo.BaseMutationOptions<ActivateMutation, ActivateMutationVariables>;
 export const LoginDocument = gql`
     mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -387,13 +456,43 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const RegisterDocument = gql`
+    mutation register($email: String!, $password: String!, $user: UserCreate!, $team: TeamCreate!) {
+  register(email: $email, password: $password, user: $user, team: $team)
+}
+    `;
+export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
+
+/**
+ * __useRegisterMutation__
+ *
+ * To run a mutation, you first call `useRegisterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRegisterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [registerMutation, { data, loading, error }] = useRegisterMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *      password: // value for 'password'
+ *      user: // value for 'user'
+ *      team: // value for 'team'
+ *   },
+ * });
+ */
+export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<RegisterMutation, RegisterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument, options);
+      }
+export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
+export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
+export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const MembersDocument = gql`
-    query members($id: ID!, $page: Page, $order: UserOrder) {
-  team(id: $id) {
-    id
-    name
-  }
-  members(page: $page, order: $order) {
+    query members($page: Page, $order: UserOrder, $search: String) {
+  members(page: $page, order: $order, search: $search) {
     page {
       index
       count
@@ -425,13 +524,13 @@ export const MembersDocument = gql`
  * @example
  * const { data, loading, error } = useMembersQuery({
  *   variables: {
- *      id: // value for 'id'
  *      page: // value for 'page'
  *      order: // value for 'order'
+ *      search: // value for 'search'
  *   },
  * });
  */
-export function useMembersQuery(baseOptions: Apollo.QueryHookOptions<MembersQuery, MembersQueryVariables>) {
+export function useMembersQuery(baseOptions?: Apollo.QueryHookOptions<MembersQuery, MembersQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<MembersQuery, MembersQueryVariables>(MembersDocument, options);
       }
@@ -442,9 +541,45 @@ export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
 export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
 export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
+export const TeamDocument = gql`
+    query team($id: ID!) {
+  team(id: $id) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useTeamQuery__
+ *
+ * To run a query within a React component, call `useTeamQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTeamQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTeamQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useTeamQuery(baseOptions: Apollo.QueryHookOptions<TeamQuery, TeamQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TeamQuery, TeamQueryVariables>(TeamDocument, options);
+      }
+export function useTeamLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamQuery, TeamQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TeamQuery, TeamQueryVariables>(TeamDocument, options);
+        }
+export type TeamQueryHookResult = ReturnType<typeof useTeamQuery>;
+export type TeamLazyQueryHookResult = ReturnType<typeof useTeamLazyQuery>;
+export type TeamQueryResult = Apollo.QueryResult<TeamQuery, TeamQueryVariables>;
 export const TeamsDocument = gql`
-    query teams($page: Page, $order: TeamOrder) {
-  teams(page: $page, order: $order) {
+    query teams($page: Page, $order: TeamOrder, $search: String) {
+  teams(page: $page, order: $order, search: $search) {
     page {
       index
       count
@@ -474,6 +609,7 @@ export const TeamsDocument = gql`
  *   variables: {
  *      page: // value for 'page'
  *      order: // value for 'order'
+ *      search: // value for 'search'
  *   },
  * });
  */
@@ -488,62 +624,40 @@ export function useTeamsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Team
 export type TeamsQueryHookResult = ReturnType<typeof useTeamsQuery>;
 export type TeamsLazyQueryHookResult = ReturnType<typeof useTeamsLazyQuery>;
 export type TeamsQueryResult = Apollo.QueryResult<TeamsQuery, TeamsQueryVariables>;
-export const UserDocument = gql`
-    query user($id: ID!) {
-  user(id: $id) {
-    id
-    createdAt
-    email
-    emailConfirmed
-    name
-    roles {
-      role
-      ... on TeamRole {
-        team {
-          name
-        }
-      }
-      ... on ParentRole {
-        relation
-        childUser {
-          name
-        }
-      }
-    }
-  }
+export const InviteStaffDocument = gql`
+    mutation inviteStaff($email: String!) {
+  inviteStaff(email: $email)
 }
     `;
+export type InviteStaffMutationFn = Apollo.MutationFunction<InviteStaffMutation, InviteStaffMutationVariables>;
 
 /**
- * __useUserQuery__
+ * __useInviteStaffMutation__
  *
- * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useInviteStaffMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteStaffMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useUserQuery({
+ * const [inviteStaffMutation, { data, loading, error }] = useInviteStaffMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      email: // value for 'email'
  *   },
  * });
  */
-export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+export function useInviteStaffMutation(baseOptions?: Apollo.MutationHookOptions<InviteStaffMutation, InviteStaffMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        return Apollo.useMutation<InviteStaffMutation, InviteStaffMutationVariables>(InviteStaffDocument, options);
       }
-export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
-        }
-export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
-export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
-export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
+export type InviteStaffMutationHookResult = ReturnType<typeof useInviteStaffMutation>;
+export type InviteStaffMutationResult = Apollo.MutationResult<InviteStaffMutation>;
+export type InviteStaffMutationOptions = Apollo.BaseMutationOptions<InviteStaffMutation, InviteStaffMutationVariables>;
 export const UsersDocument = gql`
-    query users($page: Page, $order: UserOrder) {
-  users(page: $page, order: $order) {
+    query users($page: Page, $order: UserOrder, $search: String) {
+  users(page: $page, order: $order, search: $search) {
     page {
       index
       count
@@ -588,6 +702,7 @@ export const UsersDocument = gql`
  *   variables: {
  *      page: // value for 'page'
  *      order: // value for 'order'
+ *      search: // value for 'search'
  *   },
  * });
  */
@@ -606,11 +721,14 @@ export const namedOperations = {
   Query: {
     profile: 'profile',
     members: 'members',
+    team: 'team',
     teams: 'teams',
-    user: 'user',
     users: 'users'
   },
   Mutation: {
-    login: 'login'
+    activate: 'activate',
+    login: 'login',
+    register: 'register',
+    inviteStaff: 'inviteStaff'
   }
 }

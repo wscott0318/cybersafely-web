@@ -1,5 +1,5 @@
-query teams($page: Page, $order: TeamOrder) {
-  teams(page: $page, order: $order) {
+query teams($page: Page, $order: TeamOrder, $search: String) {
+  teams(page: $page, order: $order, search: $search) {
     page {
       index
       count

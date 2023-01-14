@@ -23,6 +23,7 @@ export type DashboardLayoutProps = {
   children: JSX.Element | JSX.Element[]
   title: string
   sidebar: React.ReactNode
+  search?: React.ReactNode
 }
 
 export function DashboardLayout(props: DashboardLayoutProps) {
@@ -43,7 +44,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
       </Head>
       <Box minHeight="100vh" display="flex" flexDirection="column">
         <AppBar>
-          <Toolbar>
+          <Toolbar disableGutters sx={{ px: 2 }}>
             <Typography variant="h6" noWrap flexGrow={1}>
               {Config.appName}
             </Typography>
@@ -67,7 +68,12 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               <Box flexGrow={1} />
               <Divider />
               <List>
-                <SidebarLink href="/dashboard/profile" icon={<AccountIcon />} title={data.profile.name} />
+                <SidebarLink
+                  icon={<AccountIcon />}
+                  href="/dashboard/profile"
+                  title={data.profile.name}
+                  subtitle={data.profile.email}
+                />
                 <SidebarLink href="/auth/login" icon={<LogoutIcon />} title="Logout" color="error.main" />
               </List>
             </Stack>

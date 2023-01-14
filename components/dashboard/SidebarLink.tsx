@@ -6,6 +6,7 @@ type SidebarLinkProps = {
   href: string
   icon: React.ReactNode
   title: string
+  subtitle?: string
   color?: string
 }
 
@@ -17,7 +18,7 @@ export function SidebarLink(props: SidebarLinkProps) {
     <NextLink href={props.href}>
       <ListItemButton component="a" selected={isSelected} sx={{ color: props.color }}>
         <ListItemIcon sx={{ color: 'inherit' }}>{props.icon}</ListItemIcon>
-        <ListItemText primary={props.title} />
+        <ListItemText primary={props.title} secondary={props.subtitle} />
       </ListItemButton>
     </NextLink>
   )

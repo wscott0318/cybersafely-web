@@ -1,0 +1,3 @@
+mutation activate($password: String!, $passwordToken: String!, $user: UserCreate!) {
+  activate(password: $password, passwordToken: $passwordToken, user: $user)
+}

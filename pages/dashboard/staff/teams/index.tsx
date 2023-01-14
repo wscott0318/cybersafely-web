@@ -1,5 +1,6 @@
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { SearchBar } from '../../../../components/common/SearchBar'
 import { withStaffDashboardLayout } from '../../../../components/dashboard/StaffLayout'
 import { TeamsQuery, useTeamsQuery } from '../../../../types/graphql'
 
@@ -34,6 +35,7 @@ function Teams() {
       columns={columns}
       data={query.data?.teams}
       href={(e) => '/dashboard/staff/teams/' + e.id}
+      actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
     />
   )
 }

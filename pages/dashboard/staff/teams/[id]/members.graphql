@@ -1,9 +1,5 @@
-query members($id: ID!, $page: Page, $order: UserOrder) {
-  team(id: $id) {
-    id
-    name
-  }
-  members(page: $page, order: $order) {
+query members($page: Page, $order: UserOrder, $search: String) {
+  members(page: $page, order: $order, search: $search) {
     page {
       index
       count

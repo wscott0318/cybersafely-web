@@ -1,6 +1,6 @@
 import { QueryResult } from '@apollo/client'
 import BackIcon from '@mui/icons-material/ArrowBackOutlined'
-import { Alert, Box, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
+import { Alert, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColumns, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
@@ -48,7 +48,7 @@ type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
   data: TData | undefined
   columns: GridColumns<TNode>
   href?: (node: TNode) => string
-  title: string | ((query: TQuery) => string)
+  title: string
   actions?: React.ReactNode
   back?: string
 }
@@ -81,14 +81,6 @@ export function DataGridViewer<
     props.query.refetch(variables)
   }, [index, sortModel])
 
-  const title = useMemo(() => {
-    if (typeof props.title === 'string') {
-      return props.title
-    } else if (typeof props.title === 'function' && props.query.data) {
-      return props.title(props.query.data)
-    }
-  }, [props.title, props.query.data])
-
   return (
     <Stack>
       <Stack direction="row" alignItems="center">
@@ -97,18 +89,14 @@ export function DataGridViewer<
             <BackIcon />
           </IconButton>
         )}
-        <Box flexGrow={1}>
-          {!!title && (
-            <Typography variant="h5">
-              {title}{' '}
-              {data && (
-                <Typography display="inline" color="text.disabled">
-                  ({data.page.total ?? 0} in total)
-                </Typography>
-              )}
+        <Typography variant="h5" flexGrow={1}>
+          {props.title}{' '}
+          {data && (
+            <Typography display="inline" color="text.disabled">
+              ({data.page.total ?? 0} in total)
             </Typography>
           )}
-        </Box>
+        </Typography>
         {props.actions}
       </Stack>
       <DataGrid

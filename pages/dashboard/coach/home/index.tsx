@@ -1,9 +1,9 @@
-import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { withCoachDashboardLayout } from '../../../../components/dashboard/CoachLayout'
 
 function Home() {
   return null
 }
 
-export default withDashboardLayout(Home, {
-  title: 'Admin Dashboard',
+export default withCoachDashboardLayout(Home, {
+  title: 'Home',
 })

@@ -1,6 +1,6 @@
 import GroupsIcon from '@mui/icons-material/GroupsOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
-import PersonIcon from '@mui/icons-material/PersonOutlined'
+import PeopleIcon from '@mui/icons-material/PeopleOutlined'
 import { List, ListSubheader } from '@mui/material'
 import { DashboardLayout, DashboardLayoutProps } from './Layout'
 import { SidebarLink } from './SidebarLink'
@@ -12,7 +12,7 @@ function StaffSidebar() {
         <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
       </List>
       <List subheader={<ListSubheader>Management</ListSubheader>}>
-        <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
+        <SidebarLink href="/dashboard/staff/users" icon={<PeopleIcon />} title="Users" />
         <SidebarLink href="/dashboard/staff/teams" icon={<GroupsIcon />} title="Teams" />
       </List>
     </>

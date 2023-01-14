@@ -1,23 +1,26 @@
 import { LoadingButton } from '@mui/lab'
-import { Alert, Button, Container, Paper, Stack, TextField } from '@mui/material'
+import { Alert, Container, Paper, Stack, TextField } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { NextLink } from '../../../components/common/NextLink'
-import { useLoginMutation } from '../../../types/graphql'
+import { useRegisterMutation } from '../../../types/graphql'
 
-export default function Login() {
+export default function Register() {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('password')
+  const [password, setPassword] = useState('')
+  const [userName, setUserName] = useState('')
+  const [teamName, setTeamName] = useState('')
 
   const router = useRouter()
 
-  const [login, { loading, error }] = useLoginMutation({
-    variables: { email, password },
-    onCompleted(data) {
-      const { token } = data.login
-      localStorage.setItem('token', token)
-
-      router.push('/dashboard')
+  const [register, { loading, error }] = useRegisterMutation({
+    variables: {
+      email,
+      password,
+      user: { name: userName },
+      team: { name: teamName },
+    },
+    onCompleted() {
+      router.push('/auth/login')
     },
   })
 
@@ -27,10 +30,11 @@ export default function Login() {
         <form
           onSubmit={(e) => {
             e.preventDefault()
-            login().catch(() => {})
+            register().catch(() => {})
           }}
         >
           <Stack>
+            <TextField required value={userName} label="Name" onChange={(e) => setUserName(e.target.value)} />
             <TextField required type="email" value={email} label="E-mail" onChange={(e) => setEmail(e.target.value)} />
             <TextField
               required
@@ -39,13 +43,11 @@ export default function Login() {
               label="Password"
               onChange={(e) => setPassword(e.target.value)}
             />
+            <TextField required value={teamName} label="Team Name" onChange={(e) => setTeamName(e.target.value)} />
             {error && <Alert severity="error">{error.message}</Alert>}
             <LoadingButton type="submit" loading={loading}>
-              Login
+              Register
             </LoadingButton>
-            <NextLink href="/auth/register">
-              <Button variant="text">Register</Button>
-            </NextLink>
           </Stack>
         </form>
       </Paper>

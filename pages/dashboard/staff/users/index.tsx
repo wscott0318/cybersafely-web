@@ -1,10 +1,12 @@
+import AddIcon from '@mui/icons-material/AddOutlined'
 import VerifiedIcon from '@mui/icons-material/Verified'
-import { Chip, Tooltip } from '@mui/material'
+import { Button, Chip, Tooltip } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { SearchBar } from '../../../../components/common/SearchBar'
 import { withStaffDashboardLayout } from '../../../../components/dashboard/StaffLayout'
 import { roleDisplayTitle } from '../../../../helpers/formatters'
-import { Role, UsersQuery, useUsersQuery } from '../../../../types/graphql'
+import { namedOperations, Role, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
@@ -57,13 +59,33 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
 function Users() {
   const query = useUsersQuery()
 
+  const [inviteStaff] = useInviteStaffMutation({
+    refetchQueries: [namedOperations.Query.users],
+  })
+
   return (
     <DataGridViewer
       title="Users"
       query={query}
       columns={columns}
       data={query.data?.users}
-      href={(e) => '/dashboard/staff/users/' + e.id}
+      actions={
+        <>
+          <Button
+            startIcon={<AddIcon />}
+            onClick={async () => {
+              const email = prompt('E-mail')
+
+              if (email) {
+                await inviteStaff({ variables: { email } })
+              }
+            }}
+          >
+            Invite Staff
+          </Button>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </>
+      }
     />
   )
 }
