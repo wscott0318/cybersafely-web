@@ -1,4 +1,4 @@
-import { inputBaseClasses, PaletteMode } from '@mui/material'
+import { inputBaseClasses } from '@mui/material'
 import { common, grey, red } from '@mui/material/colors'
 import { createTheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
@@ -10,11 +10,8 @@ export const roboto = Roboto({
   fallback: ['Helvetica', 'Arial', 'sans-serif'],
 })
 
-const mode: PaletteMode = 'dark'
-
 export const theme = createTheme({
   palette: {
-    mode,
     primary: {
       main: '#556cd6',
     },
@@ -25,8 +22,8 @@ export const theme = createTheme({
       main: red.A400,
     },
     background: {
-      default: mode === 'dark' ? common.black : grey[100],
-      paper: mode === 'dark' ? grey[900] : common.white,
+      default: grey[100],
+      paper: common.white,
     },
   },
   typography: {

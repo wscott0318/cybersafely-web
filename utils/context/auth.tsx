@@ -37,29 +37,21 @@ export function useUser() {
 export function useTeam() {
   const { user } = useContext(AuthContext)
 
-  const team = useMemo(() => {
+  const role = useMemo(() => {
     if (user && localStorage) {
       const teamId = localStorage.getItem('teamId')
 
       if (teamId) {
-        const role = user.roles.find(
+        return user.roles.find(
           (e) =>
             (e.role === 'COACH' || e.role === 'ATHLETE') &&
             e.__typename === 'TeamRole' &&
             e.team &&
             e.team.id === teamId
         ) as TeamRole | undefined
-
-        if (role) {
-          return role.team
-        }
       }
     }
   }, [user])
 
-  if (!team) {
-    throw new Error('Team was not found')
-  }
-
-  return { team }
+  return role
 }

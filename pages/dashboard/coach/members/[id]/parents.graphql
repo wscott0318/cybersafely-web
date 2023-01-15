@@ -1,0 +1,19 @@
+query parents($childId: ID!, $page: Page, $order: UserOrder, $search: String) {
+  parents(childId: $childId, page: $page, order: $order, search: $search) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      email
+      emailConfirmed
+      name
+      parentRole {
+        relation
+      }
+    }
+  }
+}

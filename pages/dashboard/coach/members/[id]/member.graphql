@@ -1,0 +1,6 @@
+query member($id: ID!) {
+  member(id: $id) {
+    id
+    name
+  }
+}

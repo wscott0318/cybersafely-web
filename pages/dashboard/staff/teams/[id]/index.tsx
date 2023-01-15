@@ -11,7 +11,6 @@ import { roleDisplayTitle } from '../../../../../helpers/formatters'
 import {
   MembersQuery,
   namedOperations,
-  Role,
   useInviteAthleteMutation,
   useInviteCoachMutation,
   useMembersQuery,
@@ -46,15 +45,22 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   },
   {
     width: 200,
-    field: 'roles',
+    field: 'role',
     sortable: false,
-    headerName: 'Roles',
+    headerName: 'Role',
     valueGetter(params) {
-      return params.row.teamRoles.map((e) => e.role)
+      return params.row.teamRole?.role
     },
     renderCell(params) {
-      return params.value.map((role: Role) => <Chip key={role} label={roleDisplayTitle(role)} sx={{ mr: 0.5 }} />)
+      if (params.value) {
+        return <Chip label={roleDisplayTitle(params.value)} />
+      }
     },
+  },
+  {
+    width: 150,
+    field: 'parentCount',
+    headerName: 'Parents',
   },
   {
     width: 200,
@@ -94,6 +100,7 @@ function Members({ id }: Props) {
       data={query.data?.members}
       back="/dashboard/staff/teams"
       title={data ? `Members of "${data.team.name}"` : 'Members'}
+      href={(e) => '/dashboard/staff/teams/' + id + '/members/' + e.id}
       actions={
         <>
           <DropDownButton startIcon={<AddIcon />} title="Invite">

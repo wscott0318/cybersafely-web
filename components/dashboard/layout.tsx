@@ -11,17 +11,53 @@ import {
   Container,
   Divider,
   List,
+  ListItem,
   ListSubheader,
   Stack,
   Toolbar,
   Typography,
 } from '@mui/material'
 import Head from 'next/head'
-import React from 'react'
+import { useRouter } from 'next/router'
+import React, { useEffect } from 'react'
 import { Config } from '../../helpers/config'
+import { roleDisplayTitle } from '../../helpers/formatters'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
-import { AuthContextProvider, useUser } from '../../utils/context/auth'
+import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
 import { SidebarLink } from './SidebarLink'
+
+function SidebarTeam() {
+  const team = useTeam()
+
+  if (!team) {
+    return null
+  }
+
+  return (
+    <SidebarLink
+      icon={<GroupsIcon />}
+      href="/dashboard/team"
+      title={team.team.name}
+      subtitle={roleDisplayTitle(team.role)}
+    />
+  )
+}
+
+function SidebarUser() {
+  const { user } = useUser()
+
+  return (
+    <>
+      <SidebarLink icon={<AccountIcon />} href="/dashboard/profile" title={user.name} subtitle={user.email} />
+      <SidebarLink href="/auth/logout" icon={<LogoutIcon />} title="Logout" color="error.main" />
+      {!user.emailConfirmed && (
+        <ListItem>
+          <Alert severity="warning">Please confirm your e-mail address</Alert>
+        </ListItem>
+      )}
+    </>
+  )
+}
 
 export type DashboardLayoutProps = {
   children: JSX.Element | JSX.Element[]
@@ -31,15 +67,20 @@ export type DashboardLayoutProps = {
 }
 
 export function DashboardLayout(props: DashboardLayoutProps) {
+  const router = useRouter()
+
   const { data, error } = useProfileQuery({
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-first',
     initialFetchPolicy: 'network-only',
   })
 
-  if (error) {
-    return <Alert severity="error">{error.message}</Alert>
-  }
+  useEffect(() => {
+    if (error) {
+      alert(error.message)
+      router.push('/auth/login')
+    }
+  }, [error])
 
   if (!data) {
     return <CircularProgress />
@@ -76,13 +117,8 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               <Box flexGrow={1} />
               <Divider />
               <List>
-                <SidebarLink
-                  icon={<AccountIcon />}
-                  href="/dashboard/profile"
-                  title={data.profile.name}
-                  subtitle={data.profile.email}
-                />
-                <SidebarLink href="/auth/login" icon={<LogoutIcon />} title="Logout" color="error.main" />
+                <SidebarTeam />
+                <SidebarUser />
               </List>
             </Stack>
           </Stack>
@@ -136,7 +172,13 @@ function Sidebar() {
       </>
     )
   } else if (parent) {
-    // TODO:
+    return (
+      <>
+        <List>
+          <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
+        </List>
+      </>
+    )
   }
 
   return null

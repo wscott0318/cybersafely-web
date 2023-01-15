@@ -5,3 +5,7 @@ mutation inviteCoach($email: String!) {
 mutation inviteAthlete($email: String!) {
   inviteAthlete(email: $email)
 }
+
+mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
+  inviteParent(childId: $childId, email: $email, relation: $relation)
+}

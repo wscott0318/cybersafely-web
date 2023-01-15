@@ -90,6 +90,7 @@ export type MutationInviteCoachArgs = {
 export type MutationInviteParentArgs = {
   childId: Scalars['ID'];
   email: Scalars['String'];
+  relation?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -153,7 +154,10 @@ export type ParentRole = UserRole & {
 
 export type Query = {
   __typename?: 'Query';
+  children: PaginatedUser;
+  member: User;
   members: PaginatedUser;
+  parents: PaginatedUser;
   profile: User;
   team: Team;
   teams: PaginatedTeam;
@@ -162,7 +166,27 @@ export type Query = {
 };
 
 
+export type QueryChildrenArgs = {
+  order?: InputMaybe<UserOrder>;
+  page?: InputMaybe<Page>;
+  search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryMemberArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type QueryMembersArgs = {
+  order?: InputMaybe<UserOrder>;
+  page?: InputMaybe<Page>;
+  search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryParentsArgs = {
+  childId: Scalars['ID'];
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
   search?: InputMaybe<Scalars['String']>;
@@ -244,8 +268,10 @@ export type User = {
   emailConfirmed: Scalars['Boolean'];
   id: Scalars['ID'];
   name: Scalars['String'];
+  parentCount: Scalars['Int'];
+  parentRole?: Maybe<ParentRole>;
   roles: Array<UserRole>;
-  teamRoles: Array<UserRole>;
+  teamRole?: Maybe<TeamRole>;
 };
 
 export type UserCreate = {
@@ -256,6 +282,7 @@ export type UserOrder = {
   createdAt?: InputMaybe<OrderDirection>;
   email?: InputMaybe<OrderDirection>;
   name?: InputMaybe<OrderDirection>;
+  parentCount?: InputMaybe<OrderDirection>;
 };
 
 export type UserRole = {
@@ -294,6 +321,23 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register?: string | null };
 
+export type MemberQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type MemberQuery = { __typename?: 'Query', member: { __typename?: 'User', id: string, name: string } };
+
+export type ParentsQueryVariables = Exact<{
+  childId: Scalars['ID'];
+  page?: InputMaybe<Page>;
+  order?: InputMaybe<UserOrder>;
+  search?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
+
 export type InviteCoachMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -308,6 +352,24 @@ export type InviteAthleteMutationVariables = Exact<{
 
 export type InviteAthleteMutation = { __typename?: 'Mutation', inviteAthlete?: string | null };
 
+export type InviteParentMutationVariables = Exact<{
+  childId: Scalars['ID'];
+  email: Scalars['String'];
+  relation?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type InviteParentMutation = { __typename?: 'Mutation', inviteParent?: string | null };
+
+export type ChildrenQueryVariables = Exact<{
+  page?: InputMaybe<Page>;
+  order?: InputMaybe<UserOrder>;
+  search?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string }> } };
+
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
   order?: InputMaybe<UserOrder>;
@@ -315,7 +377,7 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, teamRoles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', role: Role } | { __typename?: 'TeamRole', role: Role }> }> } };
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, teamRole?: { __typename?: 'TeamRole', role: Role } | null }> } };
 
 export type TeamQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -504,6 +566,94 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const MemberDocument = gql`
+    query member($id: ID!) {
+  member(id: $id) {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useMemberQuery__
+ *
+ * To run a query within a React component, call `useMemberQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMemberQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMemberQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMemberQuery(baseOptions: Apollo.QueryHookOptions<MemberQuery, MemberQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
+      }
+export function useMemberLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MemberQuery, MemberQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MemberQuery, MemberQueryVariables>(MemberDocument, options);
+        }
+export type MemberQueryHookResult = ReturnType<typeof useMemberQuery>;
+export type MemberLazyQueryHookResult = ReturnType<typeof useMemberLazyQuery>;
+export type MemberQueryResult = Apollo.QueryResult<MemberQuery, MemberQueryVariables>;
+export const ParentsDocument = gql`
+    query parents($childId: ID!, $page: Page, $order: UserOrder, $search: String) {
+  parents(childId: $childId, page: $page, order: $order, search: $search) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      email
+      emailConfirmed
+      name
+      parentRole {
+        relation
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useParentsQuery__
+ *
+ * To run a query within a React component, call `useParentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useParentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useParentsQuery({
+ *   variables: {
+ *      childId: // value for 'childId'
+ *      page: // value for 'page'
+ *      order: // value for 'order'
+ *      search: // value for 'search'
+ *   },
+ * });
+ */
+export function useParentsQuery(baseOptions: Apollo.QueryHookOptions<ParentsQuery, ParentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ParentsQuery, ParentsQueryVariables>(ParentsDocument, options);
+      }
+export function useParentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ParentsQuery, ParentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ParentsQuery, ParentsQueryVariables>(ParentsDocument, options);
+        }
+export type ParentsQueryHookResult = ReturnType<typeof useParentsQuery>;
+export type ParentsLazyQueryHookResult = ReturnType<typeof useParentsLazyQuery>;
+export type ParentsQueryResult = Apollo.QueryResult<ParentsQuery, ParentsQueryVariables>;
 export const InviteCoachDocument = gql`
     mutation inviteCoach($email: String!) {
   inviteCoach(email: $email)
@@ -566,6 +716,85 @@ export function useInviteAthleteMutation(baseOptions?: Apollo.MutationHookOption
 export type InviteAthleteMutationHookResult = ReturnType<typeof useInviteAthleteMutation>;
 export type InviteAthleteMutationResult = Apollo.MutationResult<InviteAthleteMutation>;
 export type InviteAthleteMutationOptions = Apollo.BaseMutationOptions<InviteAthleteMutation, InviteAthleteMutationVariables>;
+export const InviteParentDocument = gql`
+    mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
+  inviteParent(childId: $childId, email: $email, relation: $relation)
+}
+    `;
+export type InviteParentMutationFn = Apollo.MutationFunction<InviteParentMutation, InviteParentMutationVariables>;
+
+/**
+ * __useInviteParentMutation__
+ *
+ * To run a mutation, you first call `useInviteParentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteParentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteParentMutation, { data, loading, error }] = useInviteParentMutation({
+ *   variables: {
+ *      childId: // value for 'childId'
+ *      email: // value for 'email'
+ *      relation: // value for 'relation'
+ *   },
+ * });
+ */
+export function useInviteParentMutation(baseOptions?: Apollo.MutationHookOptions<InviteParentMutation, InviteParentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InviteParentMutation, InviteParentMutationVariables>(InviteParentDocument, options);
+      }
+export type InviteParentMutationHookResult = ReturnType<typeof useInviteParentMutation>;
+export type InviteParentMutationResult = Apollo.MutationResult<InviteParentMutation>;
+export type InviteParentMutationOptions = Apollo.BaseMutationOptions<InviteParentMutation, InviteParentMutationVariables>;
+export const ChildrenDocument = gql`
+    query children($page: Page, $order: UserOrder, $search: String) {
+  children(page: $page, order: $order, search: $search) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      email
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useChildrenQuery__
+ *
+ * To run a query within a React component, call `useChildrenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChildrenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChildrenQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      order: // value for 'order'
+ *      search: // value for 'search'
+ *   },
+ * });
+ */
+export function useChildrenQuery(baseOptions?: Apollo.QueryHookOptions<ChildrenQuery, ChildrenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<ChildrenQuery, ChildrenQueryVariables>(ChildrenDocument, options);
+      }
+export function useChildrenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ChildrenQuery, ChildrenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<ChildrenQuery, ChildrenQueryVariables>(ChildrenDocument, options);
+        }
+export type ChildrenQueryHookResult = ReturnType<typeof useChildrenQuery>;
+export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery>;
+export type ChildrenQueryResult = Apollo.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
 export const MembersDocument = gql`
     query members($page: Page, $order: UserOrder, $search: String) {
   members(page: $page, order: $order, search: $search) {
@@ -580,9 +809,10 @@ export const MembersDocument = gql`
       email
       emailConfirmed
       name
-      teamRoles {
+      teamRole {
         role
       }
+      parentCount
     }
   }
 }
@@ -796,6 +1026,9 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const namedOperations = {
   Query: {
     profile: 'profile',
+    member: 'member',
+    parents: 'parents',
+    children: 'children',
     members: 'members',
     team: 'team',
     teams: 'teams',
@@ -807,6 +1040,7 @@ export const namedOperations = {
     register: 'register',
     inviteCoach: 'inviteCoach',
     inviteAthlete: 'inviteAthlete',
+    inviteParent: 'inviteParent',
     inviteStaff: 'inviteStaff'
   }
 }
