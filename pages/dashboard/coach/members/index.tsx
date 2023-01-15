@@ -88,7 +88,7 @@ function Members() {
               onClick={async () => {
                 pushAlert(
                   'Invite coach',
-                  'Enter the e-mail below:',
+                  'E-mail',
                   (email) => {
                     inviteCoach({ variables: { email } })
                   },
@@ -102,7 +102,7 @@ function Members() {
               onClick={async () => {
                 pushAlert(
                   'Invite athlete',
-                  'Enter the e-mail below:',
+                  'E-mail',
                   (email) => {
                     inviteAthlete({ variables: { email } })
                   },

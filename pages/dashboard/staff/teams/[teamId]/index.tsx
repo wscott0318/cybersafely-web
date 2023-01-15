@@ -102,7 +102,7 @@ function Team({ teamId }: Props) {
               onClick={async () => {
                 pushAlert(
                   'Invite coach',
-                  'Enter the e-mail below:',
+                  'E-mail',
                   (email) => {
                     inviteCoach({ variables: { email } })
                   },
@@ -116,7 +116,7 @@ function Team({ teamId }: Props) {
               onClick={async () => {
                 pushAlert(
                   'Invite athlete',
-                  'Enter the e-mail below:',
+                  'E-mail',
                   (email) => {
                     inviteAthlete({ variables: { email } })
                   },

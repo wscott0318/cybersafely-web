@@ -83,7 +83,7 @@ function Member({ memberId }: Props) {
             onClick={async () => {
               pushAlert(
                 'Invite parent',
-                'Enter the e-mail below:',
+                'E-mail',
                 (email) => {
                   inviteParent({ variables: { childId: memberId, email } })
                 },

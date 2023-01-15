@@ -1,4 +1,4 @@
-import { inputBaseClasses } from '@mui/material'
+import { dividerClasses, inputBaseClasses } from '@mui/material'
 import { common, grey, red } from '@mui/material/colors'
 import { createTheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
@@ -49,6 +49,18 @@ export const theme = createTheme({
     MuiStack: {
       defaultProps: {
         spacing: 2,
+      },
+    },
+    MuiList: {
+      defaultProps: {
+        disablePadding: true,
+      },
+      styleOverrides: {
+        root: {
+          ['.' + dividerClasses.root + ':last-child']: {
+            display: 'none',
+          },
+        },
       },
     },
     MuiListSubheader: {

@@ -24,6 +24,7 @@ export function useUser() {
 
   const logout = useCallback(() => {
     localStorage.clear()
+    sessionStorage.clear()
     router.push('/auth/login')
   }, [])
 

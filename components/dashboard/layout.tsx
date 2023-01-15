@@ -1,8 +1,8 @@
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
-import GroupsIcon from '@mui/icons-material/GroupsOutlined'
+import GroupIcon from '@mui/icons-material/GroupOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
-import PeopleIcon from '@mui/icons-material/PeopleOutlined'
+import PersonIcon from '@mui/icons-material/PersonOutlined'
 import {
   Alert,
   AppBar,
@@ -11,7 +11,6 @@ import {
   Container,
   Divider,
   List,
-  ListSubheader,
   Snackbar,
   Stack,
   Toolbar,
@@ -21,7 +20,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Config } from '../../helpers/config'
-import { roleDisplayTitle } from '../../helpers/formatters'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
 import { AlertContextProvider, useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
@@ -35,14 +33,7 @@ function SidebarTeam() {
     return null
   }
 
-  return (
-    <SidebarLink
-      icon={<GroupsIcon />}
-      href="/dashboard/team"
-      title={team.team.name}
-      subtitle={roleDisplayTitle(team.role)}
-    />
-  )
+  return <SidebarLink icon={<GroupIcon />} href="/dashboard/team" title={team.team.name} />
 }
 
 function useSessionStorage(key: string) {
@@ -87,7 +78,7 @@ function SidebarUser() {
           Please confirm your e-mail address at <b>{user.email}</b>.
         </Alert>
       </Snackbar>
-      <SidebarLink icon={<AccountIcon />} href="/dashboard/profile" title={user.name} subtitle={user.email} />
+      <SidebarLink icon={<AccountIcon />} href="/dashboard/profile" title={user.name} />
       <SidebarLink
         title="Logout"
         color="error.main"
@@ -188,42 +179,31 @@ function Sidebar() {
 
   if (staff) {
     return (
-      <>
-        <List>
-          <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
-        </List>
-        <List subheader={<ListSubheader>Management</ListSubheader>}>
-          <SidebarLink href="/dashboard/staff/users" icon={<PeopleIcon />} title="Users" />
-          <SidebarLink href="/dashboard/staff/teams" icon={<GroupsIcon />} title="Teams" />
-        </List>
-      </>
+      <List>
+        <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
+        <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
+        <SidebarLink href="/dashboard/staff/teams" icon={<GroupIcon />} title="Teams" />
+      </List>
     )
   } else if (coach) {
     return (
-      <>
-        <List>
-          <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
-        </List>
-        <List subheader={<ListSubheader>Management</ListSubheader>}>
-          <SidebarLink href="/dashboard/coach/members" icon={<PeopleIcon />} title="Members" />
-        </List>
-      </>
+      <List>
+        <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
+        <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
+      </List>
     )
   } else if (athlete) {
     return (
-      <>
-        <List>
-          <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
-        </List>
-      </>
+      <List>
+        <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
+      </List>
     )
   } else if (parent) {
     return (
-      <>
-        <List>
-          <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
-        </List>
-      </>
+      <List>
+        <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
+        <SidebarLink href="/dashboard/parent/children" icon={<GroupIcon />} title="Children" />
+      </List>
     )
   }
 

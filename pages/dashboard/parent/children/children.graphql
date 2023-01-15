@@ -9,6 +9,9 @@ query children($page: Page, $order: UserOrder, $search: String) {
       id
       email
       name
+      childRole {
+        relation
+      }
     }
   }
 }

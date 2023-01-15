@@ -70,7 +70,7 @@ function Users() {
             onClick={async () => {
               pushAlert(
                 'Invite staff',
-                'Enter the e-mail below:',
+                'E-mail',
                 (email) => {
                   inviteStaff({ variables: { email } })
                 },

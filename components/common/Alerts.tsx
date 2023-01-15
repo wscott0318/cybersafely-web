@@ -22,16 +22,18 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
       >
         <DialogTitle>{alert.title}</DialogTitle>
         <DialogContent>
-          <DialogContentText>{alert.message}</DialogContentText>
-          {alert.useInput && (
+          {alert.useInput ? (
             <TextField
               required
               autoFocus
               fullWidth
               value={input}
               margin="dense"
+              label={alert.message}
               onChange={(e) => setInput(e.target.value)}
             />
+          ) : (
+            <DialogContentText>{alert.message}</DialogContentText>
           )}
         </DialogContent>
         <DialogActions>

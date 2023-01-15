@@ -263,6 +263,7 @@ export type TeamRole = UserRole & {
 
 export type User = {
   __typename?: 'User';
+  childRole?: Maybe<ParentRole>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   emailConfirmed: Scalars['Boolean'];
@@ -368,7 +369,7 @@ export type ChildrenQueryVariables = Exact<{
 }>;
 
 
-export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string }> } };
+export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string, childRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -761,6 +762,9 @@ export const ChildrenDocument = gql`
       id
       email
       name
+      childRole {
+        relation
+      }
     }
   }
 }
