@@ -43,7 +43,7 @@ export function DropDownButton(props: DropDownButtonProps) {
       <Button startIcon={props.startIcon} endIcon={open ? <ArrowUpIcon /> : <ArrowDownIcon />} onClick={handleClick}>
         {props.title}
       </Button>
-      <Menu anchorEl={anchorEl} open={open} onClose={handleClose} PaperProps={{ sx: { mt: 1 } }}>
+      <Menu open={open} anchorEl={anchorEl} onClose={handleClose} PaperProps={{ sx: { mt: 1, mb: 1 } }}>
         {children}
       </Menu>
     </>

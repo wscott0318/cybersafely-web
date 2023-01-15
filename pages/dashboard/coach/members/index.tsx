@@ -14,6 +14,7 @@ import {
   useInviteCoachMutation,
   useMembersQuery,
 } from '../../../../types/graphql'
+import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
@@ -62,6 +63,8 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
 ]
 
 function Members() {
+  const { pushAlert } = useAlert()
+
   const query = useMembersQuery()
 
   const [inviteCoach] = useInviteCoachMutation({
@@ -83,22 +86,28 @@ function Members() {
           <DropDownButton startIcon={<AddIcon />} title="Invite">
             <MenuItem
               onClick={async () => {
-                const email = prompt('E-mail')
-
-                if (email) {
-                  await inviteCoach({ variables: { email } })
-                }
+                pushAlert(
+                  'Invite coach',
+                  'Enter the e-mail below:',
+                  (email) => {
+                    inviteCoach({ variables: { email } })
+                  },
+                  true
+                )
               }}
             >
               Invite Coach
             </MenuItem>
             <MenuItem
               onClick={async () => {
-                const email = prompt('E-mail')
-
-                if (email) {
-                  await inviteAthlete({ variables: { email } })
-                }
+                pushAlert(
+                  'Invite athlete',
+                  'Enter the e-mail below:',
+                  (email) => {
+                    inviteAthlete({ variables: { email } })
+                  },
+                  true
+                )
               }}
             >
               Invite Athlete

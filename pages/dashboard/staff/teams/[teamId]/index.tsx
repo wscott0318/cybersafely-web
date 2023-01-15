@@ -16,6 +16,7 @@ import {
   useMembersQuery,
   useTeamQuery,
 } from '../../../../../types/graphql'
+import { useAlert } from '../../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
@@ -68,6 +69,8 @@ type Props = {
 }
 
 function Team({ teamId }: Props) {
+  const { pushAlert } = useAlert()
+
   const { data } = useTeamQuery({
     variables: { id: teamId },
   })
@@ -97,22 +100,28 @@ function Team({ teamId }: Props) {
           <DropDownButton startIcon={<AddIcon />} title="Invite">
             <MenuItem
               onClick={async () => {
-                const email = prompt('E-mail')
-
-                if (email) {
-                  await inviteCoach({ variables: { email } })
-                }
+                pushAlert(
+                  'Invite coach',
+                  'Enter the e-mail below:',
+                  (email) => {
+                    inviteCoach({ variables: { email } })
+                  },
+                  true
+                )
               }}
             >
               Invite Coach
             </MenuItem>
             <MenuItem
               onClick={async () => {
-                const email = prompt('E-mail')
-
-                if (email) {
-                  await inviteAthlete({ variables: { email } })
-                }
+                pushAlert(
+                  'Invite athlete',
+                  'Enter the e-mail below:',
+                  (email) => {
+                    inviteAthlete({ variables: { email } })
+                  },
+                  true
+                )
               }}
             >
               Invite Athlete

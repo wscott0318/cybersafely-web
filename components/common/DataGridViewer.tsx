@@ -144,15 +144,17 @@ export function DataGridViewer<
           }
         }
       />
-      <Pagination
-        sx={{ alignSelf: 'center' }}
-        count={data?.page.count ?? 0}
-        page={(data?.page.index ?? 0) + 1}
-        onChange={(_, page) => {
-          setIndex(page - 1)
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        }}
-      />
+      {data && data.page.count > 0 && (
+        <Pagination
+          count={data.page.count}
+          page={data.page.index + 1}
+          sx={{ alignSelf: 'center' }}
+          onChange={(_, page) => {
+            setIndex(page - 1)
+            window.scrollTo({ top: 0, behavior: 'smooth' })
+          }}
+        />
+      )}
     </Stack>
   )
 }

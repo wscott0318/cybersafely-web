@@ -13,6 +13,7 @@ import {
   useMemberQuery,
   useParentsQuery,
 } from '../../../../../types/graphql'
+import { useAlert } from '../../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<ParentsQuery['parents']>> = [
   {
@@ -55,6 +56,8 @@ type Props = {
 }
 
 function Member({ memberId }: Props) {
+  const { pushAlert } = useAlert()
+
   const { data } = useMemberQuery({
     variables: { id: memberId },
   })
@@ -78,11 +81,14 @@ function Member({ memberId }: Props) {
           <Button
             startIcon={<AddIcon />}
             onClick={async () => {
-              const email = prompt('E-mail')
-
-              if (email) {
-                await inviteParent({ variables: { childId: memberId, email } })
-              }
+              pushAlert(
+                'Invite parent',
+                'Enter the e-mail below:',
+                (email) => {
+                  inviteParent({ variables: { childId: memberId, email } })
+                },
+                true
+              )
             }}
           >
             Invite Parent

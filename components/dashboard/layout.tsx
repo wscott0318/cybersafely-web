@@ -23,7 +23,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { roleDisplayTitle } from '../../helpers/formatters'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
+import { AlertContextProvider, useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
+import { Alerts } from '../common/Alerts'
 import { SidebarLink } from './SidebarLink'
 
 function SidebarTeam() {
@@ -67,7 +69,10 @@ function useSessionStorage(key: string) {
 }
 
 function SidebarUser() {
+  const router = useRouter()
+
   const { user } = useUser()
+  const { pushAlert } = useAlert()
 
   const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
 
@@ -83,7 +88,16 @@ function SidebarUser() {
         </Alert>
       </Snackbar>
       <SidebarLink icon={<AccountIcon />} href="/dashboard/profile" title={user.name} subtitle={user.email} />
-      <SidebarLink href="/auth/logout" icon={<LogoutIcon />} title="Logout" color="error.main" />
+      <SidebarLink
+        title="Logout"
+        color="error.main"
+        icon={<LogoutIcon />}
+        onClick={() => {
+          pushAlert('Logout', 'Are you sure you want to logout?', () => {
+            router.push('/auth/logout')
+          })
+        }}
+      />
     </>
   )
 }
@@ -117,46 +131,49 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 
   return (
     <AuthContextProvider user={data.profile}>
-      <Head>
-        <title>{props.title}</title>
-      </Head>
-      <Box minHeight="100vh" display="flex" flexDirection="column">
-        <AppBar>
-          <Toolbar disableGutters sx={{ px: 2 }}>
-            <Typography variant="h6" noWrap flexGrow={1}>
-              {Config.appName}
-            </Typography>
-          </Toolbar>
-        </AppBar>
-        <Toolbar />
-        <Stack direction="row" spacing={0} flexGrow={1}>
-          <Stack spacing={0} top={0} left={0} bottom={0} position="fixed" zIndex={(e) => e.zIndex.drawer}>
-            <Toolbar />
-            <Stack
-              width={280}
-              spacing={0}
-              flexGrow={1}
-              overflow="auto"
-              borderRight={1}
-              borderColor="divider"
-              flexDirection="column"
-              bgcolor="background.paper"
-            >
-              {props.sidebar}
-              <Box flexGrow={1} />
-              <Divider />
-              <List>
-                <SidebarTeam />
-                <SidebarUser />
-              </List>
+      <AlertContextProvider>
+        <Head>
+          <title>{props.title}</title>
+        </Head>
+        <Box minHeight="100vh" display="flex" flexDirection="column">
+          <AppBar>
+            <Toolbar disableGutters sx={{ px: 2 }}>
+              <Typography variant="h6" noWrap flexGrow={1}>
+                {Config.appName}
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Toolbar />
+          <Stack direction="row" spacing={0} flexGrow={1}>
+            <Stack spacing={0} top={0} left={0} bottom={0} position="fixed" zIndex={(e) => e.zIndex.drawer}>
+              <Toolbar />
+              <Stack
+                width={280}
+                spacing={0}
+                flexGrow={1}
+                overflow="auto"
+                borderRight={1}
+                borderColor="divider"
+                flexDirection="column"
+                bgcolor="background.paper"
+              >
+                {props.sidebar}
+                <Box flexGrow={1} />
+                <Divider />
+                <List>
+                  <SidebarTeam />
+                  <SidebarUser />
+                </List>
+              </Stack>
             </Stack>
+            <Box width={280} flexShrink={0} />
+            <Container maxWidth="xl" sx={{ py: 2 }}>
+              {props.children}
+            </Container>
           </Stack>
-          <Box width={280} flexShrink={0} />
-          <Container maxWidth="xl" sx={{ py: 2 }}>
-            {props.children}
-          </Container>
-        </Stack>
-      </Box>
+        </Box>
+        <Alerts />
+      </AlertContextProvider>
     </AuthContextProvider>
   )
 }

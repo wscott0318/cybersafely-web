@@ -7,6 +7,7 @@ import { UserEmail } from '../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { roleDisplayTitle } from '../../../../helpers/formatters'
 import { namedOperations, Role, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
+import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
@@ -48,6 +49,8 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
 ]
 
 function Users() {
+  const { pushAlert } = useAlert()
+
   const query = useUsersQuery()
 
   const [inviteStaff] = useInviteStaffMutation({
@@ -65,11 +68,14 @@ function Users() {
           <Button
             startIcon={<AddIcon />}
             onClick={async () => {
-              const email = prompt('E-mail')
-
-              if (email) {
-                await inviteStaff({ variables: { email } })
-              }
+              pushAlert(
+                'Invite staff',
+                'Enter the e-mail below:',
+                (email) => {
+                  inviteStaff({ variables: { email } })
+                },
+                true
+              )
             }}
           >
             Invite Staff

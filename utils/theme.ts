@@ -15,9 +15,6 @@ export const theme = createTheme({
     primary: {
       main: '#556cd6',
     },
-    secondary: {
-      main: '#19857b',
-    },
     error: {
       main: red.A400,
     },
@@ -40,9 +37,7 @@ export const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          borderTop: 'none',
-          borderLeft: 'none',
-          borderRight: 'none',
+          border: 'none',
         },
       },
     },
