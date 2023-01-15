@@ -321,6 +321,15 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register?: string | null };
 
+export type InviteParentMutationVariables = Exact<{
+  childId: Scalars['ID'];
+  email: Scalars['String'];
+  relation?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type InviteParentMutation = { __typename?: 'Mutation', inviteParent?: string | null };
+
 export type MemberQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -351,15 +360,6 @@ export type InviteAthleteMutationVariables = Exact<{
 
 
 export type InviteAthleteMutation = { __typename?: 'Mutation', inviteAthlete?: string | null };
-
-export type InviteParentMutationVariables = Exact<{
-  childId: Scalars['ID'];
-  email: Scalars['String'];
-  relation?: InputMaybe<Scalars['String']>;
-}>;
-
-
-export type InviteParentMutation = { __typename?: 'Mutation', inviteParent?: string | null };
 
 export type ChildrenQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -566,6 +566,39 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const InviteParentDocument = gql`
+    mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
+  inviteParent(childId: $childId, email: $email, relation: $relation)
+}
+    `;
+export type InviteParentMutationFn = Apollo.MutationFunction<InviteParentMutation, InviteParentMutationVariables>;
+
+/**
+ * __useInviteParentMutation__
+ *
+ * To run a mutation, you first call `useInviteParentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useInviteParentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [inviteParentMutation, { data, loading, error }] = useInviteParentMutation({
+ *   variables: {
+ *      childId: // value for 'childId'
+ *      email: // value for 'email'
+ *      relation: // value for 'relation'
+ *   },
+ * });
+ */
+export function useInviteParentMutation(baseOptions?: Apollo.MutationHookOptions<InviteParentMutation, InviteParentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<InviteParentMutation, InviteParentMutationVariables>(InviteParentDocument, options);
+      }
+export type InviteParentMutationHookResult = ReturnType<typeof useInviteParentMutation>;
+export type InviteParentMutationResult = Apollo.MutationResult<InviteParentMutation>;
+export type InviteParentMutationOptions = Apollo.BaseMutationOptions<InviteParentMutation, InviteParentMutationVariables>;
 export const MemberDocument = gql`
     query member($id: ID!) {
   member(id: $id) {
@@ -716,39 +749,6 @@ export function useInviteAthleteMutation(baseOptions?: Apollo.MutationHookOption
 export type InviteAthleteMutationHookResult = ReturnType<typeof useInviteAthleteMutation>;
 export type InviteAthleteMutationResult = Apollo.MutationResult<InviteAthleteMutation>;
 export type InviteAthleteMutationOptions = Apollo.BaseMutationOptions<InviteAthleteMutation, InviteAthleteMutationVariables>;
-export const InviteParentDocument = gql`
-    mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
-  inviteParent(childId: $childId, email: $email, relation: $relation)
-}
-    `;
-export type InviteParentMutationFn = Apollo.MutationFunction<InviteParentMutation, InviteParentMutationVariables>;
-
-/**
- * __useInviteParentMutation__
- *
- * To run a mutation, you first call `useInviteParentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useInviteParentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [inviteParentMutation, { data, loading, error }] = useInviteParentMutation({
- *   variables: {
- *      childId: // value for 'childId'
- *      email: // value for 'email'
- *      relation: // value for 'relation'
- *   },
- * });
- */
-export function useInviteParentMutation(baseOptions?: Apollo.MutationHookOptions<InviteParentMutation, InviteParentMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<InviteParentMutation, InviteParentMutationVariables>(InviteParentDocument, options);
-      }
-export type InviteParentMutationHookResult = ReturnType<typeof useInviteParentMutation>;
-export type InviteParentMutationResult = Apollo.MutationResult<InviteParentMutation>;
-export type InviteParentMutationOptions = Apollo.BaseMutationOptions<InviteParentMutation, InviteParentMutationVariables>;
 export const ChildrenDocument = gql`
     query children($page: Page, $order: UserOrder, $search: String) {
   children(page: $page, order: $order, search: $search) {
@@ -1038,9 +1038,9 @@ export const namedOperations = {
     activate: 'activate',
     login: 'login',
     register: 'register',
+    inviteParent: 'inviteParent',
     inviteCoach: 'inviteCoach',
     inviteAthlete: 'inviteAthlete',
-    inviteParent: 'inviteParent',
     inviteStaff: 'inviteStaff'
   }
 }

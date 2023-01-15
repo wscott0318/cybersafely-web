@@ -11,15 +11,15 @@ import {
   Container,
   Divider,
   List,
-  ListItem,
   ListSubheader,
+  Snackbar,
   Stack,
   Toolbar,
   Typography,
 } from '@mui/material'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { roleDisplayTitle } from '../../helpers/formatters'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
@@ -43,18 +43,47 @@ function SidebarTeam() {
   )
 }
 
+function useSessionStorage(key: string) {
+  const [value, setValue] = useState<string | null>()
+
+  useEffect(() => {
+    setValue(sessionStorage.getItem(key))
+  }, [key])
+
+  const changeValue = useCallback(
+    (value: string | null) => {
+      setValue(value)
+
+      if (typeof value === 'string') {
+        sessionStorage.setItem(key, value)
+      } else {
+        sessionStorage.removeItem(key)
+      }
+    },
+    [key]
+  )
+
+  return [value, changeValue] as const
+}
+
 function SidebarUser() {
   const { user } = useUser()
 
+  const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
+
   return (
     <>
+      <Snackbar
+        sx={{ maxWidth: 350 }}
+        open={!user.emailConfirmed && hideConfirm !== 'true'}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert severity="warning" sx={{ width: '100%' }} onClose={() => setHideConfirm('true')}>
+          Please confirm your e-mail address at <b>{user.email}</b>.
+        </Alert>
+      </Snackbar>
       <SidebarLink icon={<AccountIcon />} href="/dashboard/profile" title={user.name} subtitle={user.email} />
       <SidebarLink href="/auth/logout" icon={<LogoutIcon />} title="Logout" color="error.main" />
-      {!user.emailConfirmed && (
-        <ListItem>
-          <Alert severity="warning">Please confirm your e-mail address</Alert>
-        </ListItem>
-      )}
     </>
   )
 }
@@ -101,7 +130,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         </AppBar>
         <Toolbar />
         <Stack direction="row" spacing={0} flexGrow={1}>
-          <Stack spacing={0} top={0} left={0} bottom={0} position="fixed">
+          <Stack spacing={0} top={0} left={0} bottom={0} position="fixed" zIndex={(e) => e.zIndex.drawer}>
             <Toolbar />
             <Stack
               width={280}

@@ -1,9 +1,9 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import VerifiedIcon from '@mui/icons-material/Verified'
-import { Button, Chip, Tooltip } from '@mui/material'
+import { Button, Chip } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
+import { UserEmail } from '../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { roleDisplayTitle } from '../../../../helpers/formatters'
 import { namedOperations, Role, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
@@ -22,16 +22,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
       return params.row
     },
     renderCell(params) {
-      const { email, emailConfirmed } = params.value
-
-      return (
-        <>
-          <Tooltip title={emailConfirmed ? 'E-mail is confirmed' : 'E-mail is not confirmed'}>
-            <VerifiedIcon color={emailConfirmed ? 'primary' : 'disabled'} sx={{ mr: 0.5 }} />
-          </Tooltip>
-          {email}
-        </>
-      )
+      return <UserEmail {...params.value} />
     },
   },
   {

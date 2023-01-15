@@ -1,18 +1,18 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import VerifiedIcon from '@mui/icons-material/Verified'
-import { Button, Tooltip } from '@mui/material'
+import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
-import { DataGridViewer, InferNodeType } from '../../../../../../../components/common/DataGridViewer'
-import { SearchBar } from '../../../../../../../components/common/SearchBar'
-import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
+import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { SearchBar } from '../../../../../components/common/SearchBar'
+import { UserEmail } from '../../../../../components/common/UserEmail'
+import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import {
   namedOperations,
   ParentsQuery,
   useInviteParentMutation,
   useMemberQuery,
   useParentsQuery,
-} from '../../../../../../../types/graphql'
+} from '../../../../../types/graphql'
 
 const columns: GridColumns<InferNodeType<ParentsQuery['parents']>> = [
   {
@@ -28,16 +28,7 @@ const columns: GridColumns<InferNodeType<ParentsQuery['parents']>> = [
       return params.row
     },
     renderCell(params) {
-      const { email, emailConfirmed } = params.value
-
-      return (
-        <>
-          <Tooltip title={emailConfirmed ? 'E-mail is confirmed' : 'E-mail is not confirmed'}>
-            <VerifiedIcon color={emailConfirmed ? 'primary' : 'disabled'} sx={{ mr: 0.5 }} />
-          </Tooltip>
-          {email}
-        </>
-      )
+      return <UserEmail {...params.value} />
     },
   },
   {
@@ -60,22 +51,18 @@ const columns: GridColumns<InferNodeType<ParentsQuery['parents']>> = [
 ]
 
 type Props = {
-  id: string
   memberId: string
 }
 
-function Member({ id, memberId }: Props) {
+function Member({ memberId }: Props) {
   const { data } = useMemberQuery({
-    context: { teamId: id },
     variables: { id: memberId },
   })
   const query = useParentsQuery({
-    context: { teamId: id },
     variables: { childId: memberId },
   })
 
   const [inviteParent] = useInviteParentMutation({
-    context: { teamId: id },
     refetchQueries: [namedOperations.Query.parents],
   })
 
@@ -108,11 +95,10 @@ function Member({ id, memberId }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const id = ctx.params!.id as string
   const memberId = ctx.params!.memberId as string
-  return { props: { id, memberId } }
+  return { props: { memberId } }
 }
 
 export default withDashboardLayout(Member, {
-  title: 'Members',
+  title: 'Member',
 })

@@ -1,10 +1,10 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import VerifiedIcon from '@mui/icons-material/Verified'
-import { Chip, MenuItem, Tooltip } from '@mui/material'
+import { Chip, MenuItem } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../components/common/SearchBar'
+import { UserEmail } from '../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { roleDisplayTitle } from '../../../../helpers/formatters'
 import {
@@ -29,16 +29,7 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
       return params.row
     },
     renderCell(params) {
-      const { email, emailConfirmed } = params.value
-
-      return (
-        <>
-          <Tooltip title={emailConfirmed ? 'E-mail is confirmed' : 'E-mail is not confirmed'}>
-            <VerifiedIcon color={emailConfirmed ? 'primary' : 'disabled'} sx={{ mr: 0.5 }} />
-          </Tooltip>
-          {email}
-        </>
-      )
+      return <UserEmail {...params.value} />
     },
   },
   {
@@ -86,7 +77,7 @@ function Members() {
       title="Members"
       columns={columns}
       data={query.data?.members}
-      href={(e) => '/dashboard/coach/members/' + e.id}
+      href={(e) => `/dashboard/coach/members/${e.id}`}
       actions={
         <>
           <DropDownButton startIcon={<AddIcon />} title="Invite">

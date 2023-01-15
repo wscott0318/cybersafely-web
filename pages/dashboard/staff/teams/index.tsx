@@ -34,7 +34,7 @@ function Teams() {
       query={query}
       columns={columns}
       data={query.data?.teams}
-      href={(e) => '/dashboard/staff/teams/' + e.id}
+      href={(e) => `/dashboard/staff/teams/${e.id}`}
       actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
     />
   )

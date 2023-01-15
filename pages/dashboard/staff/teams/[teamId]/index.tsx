@@ -1,11 +1,11 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import VerifiedIcon from '@mui/icons-material/Verified'
-import { Chip, MenuItem, Tooltip } from '@mui/material'
+import { Chip, MenuItem } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../../components/common/SearchBar'
+import { UserEmail } from '../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { roleDisplayTitle } from '../../../../../helpers/formatters'
 import {
@@ -31,16 +31,7 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
       return params.row
     },
     renderCell(params) {
-      const { email, emailConfirmed } = params.value
-
-      return (
-        <>
-          <Tooltip title={emailConfirmed ? 'E-mail is confirmed' : 'E-mail is not confirmed'}>
-            <VerifiedIcon color={emailConfirmed ? 'primary' : 'disabled'} sx={{ mr: 0.5 }} />
-          </Tooltip>
-          {email}
-        </>
-      )
+      return <UserEmail {...params.value} />
     },
   },
   {
@@ -73,23 +64,23 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
 ]
 
 type Props = {
-  id: string
+  teamId: string
 }
 
-function Members({ id }: Props) {
+function Team({ teamId }: Props) {
   const { data } = useTeamQuery({
-    variables: { id },
+    variables: { id: teamId },
   })
   const query = useMembersQuery({
-    context: { teamId: id },
+    context: { teamId },
   })
 
   const [inviteCoach] = useInviteCoachMutation({
-    context: { teamId: id },
+    context: { teamId },
     refetchQueries: [namedOperations.Query.members],
   })
   const [inviteAthlete] = useInviteAthleteMutation({
-    context: { teamId: id },
+    context: { teamId },
     refetchQueries: [namedOperations.Query.members],
   })
 
@@ -100,7 +91,7 @@ function Members({ id }: Props) {
       data={query.data?.members}
       back="/dashboard/staff/teams"
       title={data ? `Members of "${data.team.name}"` : 'Members'}
-      href={(e) => '/dashboard/staff/teams/' + id + '/members/' + e.id}
+      href={(e) => `/dashboard/staff/teams/${teamId}/members/${e.id}`}
       actions={
         <>
           <DropDownButton startIcon={<AddIcon />} title="Invite">
@@ -135,10 +126,10 @@ function Members({ id }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const id = ctx.params!.id as string
-  return { props: { id } }
+  const teamId = ctx.params!.teamId as string
+  return { props: { teamId } }
 }
 
-export default withDashboardLayout(Members, {
+export default withDashboardLayout(Team, {
   title: 'Members',
 })
