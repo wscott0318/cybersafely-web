@@ -1,0 +1,3 @@
+mutation removeParent($id: ID!, $childId: ID!) {
+  removeParent(id: $id, childId: $childId)
+}

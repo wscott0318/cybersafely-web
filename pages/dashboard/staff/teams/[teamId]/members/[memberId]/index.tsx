@@ -2,10 +2,12 @@ import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
+import { useMemo } from 'react'
 import { DataGridViewer, InferNodeType } from '../../../../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
+import { getParentActions } from '../../../../../../../components/data/ParentActions'
 import {
   namedOperations,
   ParentsQuery,
@@ -15,7 +17,10 @@ import {
 } from '../../../../../../../types/graphql'
 import { useAlert } from '../../../../../../../utils/context/alert'
 
-const columns: GridColumns<InferNodeType<ParentsQuery['parents']>> = [
+const getColumns: (childId: string, teamId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (
+  childId,
+  teamId
+) => [
   {
     width: 250,
     field: 'name',
@@ -49,6 +54,15 @@ const columns: GridColumns<InferNodeType<ParentsQuery['parents']>> = [
       return new Date(params.value).toLocaleString()
     },
   },
+  {
+    width: 100,
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    getActions(params) {
+      return getParentActions(params.row.id, childId, teamId)
+    },
+  },
 ]
 
 type Props = {
@@ -73,6 +87,8 @@ function Member({ teamId, memberId }: Props) {
     refetchQueries: [namedOperations.Query.parents],
   })
 
+  const columns = useMemo(() => getColumns(memberId, teamId), [])
+
   return (
     <DataGridViewer
       query={query}
@@ -86,7 +102,7 @@ function Member({ teamId, memberId }: Props) {
             startIcon={<AddIcon />}
             onClick={async () => {
               pushAlert(
-                'Invite parent',
+                'Invite Parent',
                 'E-mail',
                 (email) => {
                   inviteParent({ variables: { childId: memberId, email } })

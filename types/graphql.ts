@@ -67,6 +67,8 @@ export type Mutation = {
   inviteStaff?: Maybe<Scalars['ID']>;
   login: Jwt;
   register?: Maybe<Scalars['ID']>;
+  removeMember?: Maybe<Scalars['ID']>;
+  removeParent?: Maybe<Scalars['ID']>;
 };
 
 
@@ -110,6 +112,17 @@ export type MutationRegisterArgs = {
   password: Scalars['String'];
   team: TeamCreate;
   user: UserCreate;
+};
+
+
+export type MutationRemoveMemberArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationRemoveParentArgs = {
+  childId: Scalars['ID'];
+  id: Scalars['ID'];
 };
 
 export const OrderDirection = {
@@ -348,6 +361,14 @@ export type ParentsQueryVariables = Exact<{
 
 export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
+export type RemoveParentMutationVariables = Exact<{
+  id: Scalars['ID'];
+  childId: Scalars['ID'];
+}>;
+
+
+export type RemoveParentMutation = { __typename?: 'Mutation', removeParent?: string | null };
+
 export type InviteCoachMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -379,6 +400,13 @@ export type MembersQueryVariables = Exact<{
 
 
 export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, teamRole?: { __typename?: 'TeamRole', role: Role } | null }> } };
+
+export type RemoveMemberMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveMemberMutation = { __typename?: 'Mutation', removeMember?: string | null };
 
 export type TeamQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -688,6 +716,38 @@ export function useParentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pa
 export type ParentsQueryHookResult = ReturnType<typeof useParentsQuery>;
 export type ParentsLazyQueryHookResult = ReturnType<typeof useParentsLazyQuery>;
 export type ParentsQueryResult = Apollo.QueryResult<ParentsQuery, ParentsQueryVariables>;
+export const RemoveParentDocument = gql`
+    mutation removeParent($id: ID!, $childId: ID!) {
+  removeParent(id: $id, childId: $childId)
+}
+    `;
+export type RemoveParentMutationFn = Apollo.MutationFunction<RemoveParentMutation, RemoveParentMutationVariables>;
+
+/**
+ * __useRemoveParentMutation__
+ *
+ * To run a mutation, you first call `useRemoveParentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveParentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeParentMutation, { data, loading, error }] = useRemoveParentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      childId: // value for 'childId'
+ *   },
+ * });
+ */
+export function useRemoveParentMutation(baseOptions?: Apollo.MutationHookOptions<RemoveParentMutation, RemoveParentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveParentMutation, RemoveParentMutationVariables>(RemoveParentDocument, options);
+      }
+export type RemoveParentMutationHookResult = ReturnType<typeof useRemoveParentMutation>;
+export type RemoveParentMutationResult = Apollo.MutationResult<RemoveParentMutation>;
+export type RemoveParentMutationOptions = Apollo.BaseMutationOptions<RemoveParentMutation, RemoveParentMutationVariables>;
 export const InviteCoachDocument = gql`
     mutation inviteCoach($email: String!) {
   inviteCoach(email: $email)
@@ -851,6 +911,37 @@ export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
 export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
 export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
+export const RemoveMemberDocument = gql`
+    mutation removeMember($id: ID!) {
+  removeMember(id: $id)
+}
+    `;
+export type RemoveMemberMutationFn = Apollo.MutationFunction<RemoveMemberMutation, RemoveMemberMutationVariables>;
+
+/**
+ * __useRemoveMemberMutation__
+ *
+ * To run a mutation, you first call `useRemoveMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMemberMutation, { data, loading, error }] = useRemoveMemberMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveMemberMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMemberMutation, RemoveMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMemberMutation, RemoveMemberMutationVariables>(RemoveMemberDocument, options);
+      }
+export type RemoveMemberMutationHookResult = ReturnType<typeof useRemoveMemberMutation>;
+export type RemoveMemberMutationResult = Apollo.MutationResult<RemoveMemberMutation>;
+export type RemoveMemberMutationOptions = Apollo.BaseMutationOptions<RemoveMemberMutation, RemoveMemberMutationVariables>;
 export const TeamDocument = gql`
     query team($id: ID!) {
   team(id: $id) {
@@ -1043,8 +1134,10 @@ export const namedOperations = {
     login: 'login',
     register: 'register',
     inviteParent: 'inviteParent',
+    removeParent: 'removeParent',
     inviteCoach: 'inviteCoach',
     inviteAthlete: 'inviteAthlete',
+    removeMember: 'removeMember',
     inviteStaff: 'inviteStaff'
   }
 }

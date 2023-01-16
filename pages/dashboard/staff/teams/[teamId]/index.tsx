@@ -2,11 +2,13 @@ import AddIcon from '@mui/icons-material/AddOutlined'
 import { Chip, MenuItem } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
+import { useMemo } from 'react'
 import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
+import { getMemberActions } from '../../../../../components/data/MemberActions'
 import { roleDisplayTitle } from '../../../../../helpers/formatters'
 import {
   MembersQuery,
@@ -18,7 +20,7 @@ import {
 } from '../../../../../types/graphql'
 import { useAlert } from '../../../../../utils/context/alert'
 
-const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
+const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['members']>> = (teamId) => [
   {
     width: 250,
     field: 'name',
@@ -62,6 +64,15 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
       return new Date(params.value).toLocaleString()
     },
   },
+  {
+    width: 100,
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    getActions(params) {
+      return getMemberActions(params.row.id, teamId)
+    },
+  },
 ]
 
 type Props = {
@@ -87,6 +98,8 @@ function Team({ teamId }: Props) {
     refetchQueries: [namedOperations.Query.members],
   })
 
+  const columns = useMemo(() => getColumns(teamId), [])
+
   return (
     <DataGridViewer
       query={query}
@@ -101,7 +114,7 @@ function Team({ teamId }: Props) {
             <MenuItem
               onClick={async () => {
                 pushAlert(
-                  'Invite coach',
+                  'Invite Coach',
                   'E-mail',
                   (email) => {
                     inviteCoach({ variables: { email } })
@@ -115,7 +128,7 @@ function Team({ teamId }: Props) {
             <MenuItem
               onClick={async () => {
                 pushAlert(
-                  'Invite athlete',
+                  'Invite Athlete',
                   'E-mail',
                   (email) => {
                     inviteAthlete({ variables: { email } })

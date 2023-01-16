@@ -1,13 +1,12 @@
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
-import { Button, Menu } from '@mui/material'
+import { Button, ButtonProps, Menu } from '@mui/material'
 import React, { useCallback, useMemo } from 'react'
 
 type DropDownButtonProps = {
   title: string
-  startIcon?: React.ReactNode
   children: React.ReactNode
-}
+} & Pick<ButtonProps, 'startIcon' | 'variant' | 'size'>
 
 export function DropDownButton(props: DropDownButtonProps) {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
@@ -22,8 +21,10 @@ export function DropDownButton(props: DropDownButtonProps) {
     setAnchorEl(null)
   }, [])
 
-  const children = useMemo(() => {
-    return React.Children.map(props.children, (child) => {
+  const { children, title, ...buttonProps } = props
+
+  const items = useMemo(() => {
+    return React.Children.map(children, (child) => {
       if (React.isValidElement<any>(child)) {
         return React.cloneElement(child, {
           disableRipple: true,
@@ -36,15 +37,15 @@ export function DropDownButton(props: DropDownButtonProps) {
 
       return child
     })
-  }, [props.children])
+  }, [children])
 
   return (
     <>
-      <Button startIcon={props.startIcon} endIcon={open ? <ArrowUpIcon /> : <ArrowDownIcon />} onClick={handleClick}>
-        {props.title}
+      <Button {...buttonProps} endIcon={open ? <ArrowUpIcon /> : <ArrowDownIcon />} onClick={handleClick}>
+        {title}
       </Button>
       <Menu open={open} anchorEl={anchorEl} onClose={handleClose} PaperProps={{ sx: { mt: 1, mb: 1 } }}>
-        {children}
+        {items}
       </Menu>
     </>
   )

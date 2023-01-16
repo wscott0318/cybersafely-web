@@ -69,7 +69,7 @@ function Users() {
             startIcon={<AddIcon />}
             onClick={async () => {
               pushAlert(
-                'Invite staff',
+                'Invite Staff',
                 'E-mail',
                 (email) => {
                   inviteStaff({ variables: { email } })

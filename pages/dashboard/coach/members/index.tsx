@@ -6,6 +6,7 @@ import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { getMemberActions } from '../../../../components/data/MemberActions'
 import { roleDisplayTitle } from '../../../../helpers/formatters'
 import {
   MembersQuery,
@@ -60,6 +61,15 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
       return new Date(params.value).toLocaleString()
     },
   },
+  {
+    width: 100,
+    field: 'actions',
+    type: 'actions',
+    headerName: 'Actions',
+    getActions(params) {
+      return getMemberActions(params.row.id)
+    },
+  },
 ]
 
 function Members() {
@@ -87,7 +97,7 @@ function Members() {
             <MenuItem
               onClick={async () => {
                 pushAlert(
-                  'Invite coach',
+                  'Invite Coach',
                   'E-mail',
                   (email) => {
                     inviteCoach({ variables: { email } })
@@ -101,7 +111,7 @@ function Members() {
             <MenuItem
               onClick={async () => {
                 pushAlert(
-                  'Invite athlete',
+                  'Invite Athlete',
                   'E-mail',
                   (email) => {
                     inviteAthlete({ variables: { email } })
