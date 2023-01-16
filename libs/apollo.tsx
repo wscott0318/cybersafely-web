@@ -41,7 +41,11 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
       const error = graphQLErrors?.[0] ?? networkError
 
       if (error) {
-        pushAlert('Error', error.message)
+        pushAlert({
+          type: 'alert',
+          title: 'Error',
+          message: error.message,
+        })
       }
     })
 

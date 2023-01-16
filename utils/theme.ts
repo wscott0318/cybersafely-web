@@ -1,4 +1,4 @@
-import { dividerClasses, inputBaseClasses } from '@mui/material'
+import { dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, grey, red } from '@mui/material/colors'
 import { createTheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
@@ -76,7 +76,7 @@ export const theme = createTheme({
       },
       styleOverrides: {
         root: ({ theme }) => ({
-          ['.' + inputBaseClasses.root]: {
+          ['.' + outlinedInputClasses.root]: {
             background: theme.palette.background.paper,
           },
         }),

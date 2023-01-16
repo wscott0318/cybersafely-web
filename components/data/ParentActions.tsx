@@ -16,8 +16,13 @@ export function getParentActions(parentId: string, childId: string, teamId?: str
       showInMenu
       label="Remove Parent"
       onClick={() => {
-        pushAlert('Remove Parent', 'Are you sure you want to remove this parent?', () => {
-          removeParent()
+        pushAlert({
+          type: 'confirm',
+          title: 'Remove Parent',
+          message: 'Are you sure you want to remove this parent?',
+          confirm: () => {
+            removeParent()
+          },
         })
       }}
     />,

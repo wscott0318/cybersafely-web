@@ -83,8 +83,13 @@ function SidebarUser() {
         color="error.main"
         icon={<LogoutIcon />}
         onClick={() => {
-          pushAlert('Logout', 'Are you sure you want to logout?', () => {
-            router.push('/auth/logout')
+          pushAlert({
+            type: 'confirm',
+            title: 'Logout',
+            message: 'Are you sure you want to logout?',
+            confirm: () => {
+              router.push('/auth/logout')
+            },
           })
         }}
       />

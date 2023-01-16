@@ -101,14 +101,15 @@ function Member({ teamId, memberId }: Props) {
           <Button
             startIcon={<AddIcon />}
             onClick={async () => {
-              pushAlert(
-                'Invite Parent',
-                'E-mail',
-                (email) => {
+              pushAlert({
+                type: 'result',
+                title: 'Invite Parent',
+                message: 'Enter an e-mail below',
+                label: 'E-mail',
+                result: (email) => {
                   inviteParent({ variables: { childId: memberId, email } })
                 },
-                true
-              )
+              })
             }}
           >
             Invite Parent

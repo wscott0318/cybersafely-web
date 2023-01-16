@@ -7,14 +7,27 @@ type SimpleAlertProps = {
 }
 
 function SimpleAlert({ alert }: SimpleAlertProps) {
+  const [open, setOpen] = useState(true)
   const [input, setInput] = useState('')
 
   const onClose = useCallback(() => {
+    setOpen(false)
+  }, [])
+
+  const onRemove = useCallback(() => {
     alert.onClose()
   }, [alert])
 
   return (
-    <Dialog open fullWidth maxWidth="xs">
+    <Dialog
+      fullWidth
+      open={open}
+      maxWidth="xs"
+      onClose={onClose}
+      TransitionProps={{
+        onExited: onRemove,
+      }}
+    >
       <form
         onSubmit={(e) => {
           e.preventDefault()
@@ -22,22 +35,22 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
       >
         <DialogTitle>{alert.title}</DialogTitle>
         <DialogContent>
-          {alert.useInput ? (
+          <DialogContentText>{alert.message}</DialogContentText>
+          {alert.type === 'result' && (
             <TextField
               required
               autoFocus
               fullWidth
               value={input}
               margin="dense"
-              label={alert.message}
+              variant="standard"
+              label={alert.label}
               onChange={(e) => setInput(e.target.value)}
             />
-          ) : (
-            <DialogContentText>{alert.message}</DialogContentText>
           )}
         </DialogContent>
         <DialogActions>
-          {alert.confirm ? (
+          {alert.type === 'result' && (
             <>
               <Button variant="text" onClick={onClose}>
                 Cancel
@@ -47,14 +60,32 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
                 variant="text"
                 onClick={() => {
                   onClose()
-                  alert.confirm!(input)
+                  alert.result(input)
                 }}
               >
                 OK
               </Button>
             </>
-          ) : (
-            <Button variant="text" onClick={onClose}>
+          )}
+          {alert.type === 'confirm' && (
+            <>
+              <Button variant="text" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button
+                autoFocus
+                variant="text"
+                onClick={() => {
+                  onClose()
+                  alert.confirm!()
+                }}
+              >
+                OK
+              </Button>
+            </>
+          )}
+          {alert.type === 'alert' && (
+            <Button autoFocus variant="text" onClick={onClose}>
               OK
             </Button>
           )}

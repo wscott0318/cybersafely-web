@@ -6,7 +6,7 @@ type AuthContext = {
   user: ProfileQuery['profile']
 }
 
-const AuthContext = createContext<Partial<AuthContext>>({})
+const AuthContext = createContext<AuthContext | null>(null)
 
 type AuthContextProviderProps = {
   children: JSX.Element | JSX.Element[]
@@ -20,7 +20,7 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 
 export function useUser() {
   const router = useRouter()
-  const { user } = useContext(AuthContext)
+  const context = useContext(AuthContext)
 
   const logout = useCallback(() => {
     localStorage.clear()
@@ -28,29 +28,29 @@ export function useUser() {
     router.push('/auth/login')
   }, [])
 
-  if (!user) {
-    throw new Error('User was not found')
+  if (!context) {
+    throw new Error('Auth parent context not found')
   }
 
-  return { user, logout }
+  return { ...context, logout }
 }
 
 export function useTeam() {
-  const { user } = useContext(AuthContext)
+  const context = useContext(AuthContext)
 
   const role = useMemo(() => {
-    if (user && localStorage) {
+    if (context?.user && localStorage) {
       const teamId = localStorage.getItem('teamId')
 
       if (teamId) {
-        const role = user.roles.find((e) => e.role === 'COACH' || e.role === 'ATHLETE') as TeamRole | undefined
+        const role = context.user.roles.find((e) => e.role === 'COACH' || e.role === 'ATHLETE') as TeamRole | undefined
 
         if (role && role.team.id === teamId) {
           return role
         }
       }
     }
-  }, [user])
+  }, [context?.user])
 
   return role
 }

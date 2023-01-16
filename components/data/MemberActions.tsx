@@ -16,8 +16,13 @@ export function getMemberActions(memberId: string, teamId?: string) {
       showInMenu
       label="Remove Member"
       onClick={() => {
-        pushAlert('Remove Member', 'Are you sure you want to remove this member?', () => {
-          removeMember()
+        pushAlert({
+          type: 'confirm',
+          title: 'Remove Member',
+          message: 'Are you sure you want to remove this member?',
+          confirm: () => {
+            removeMember()
+          },
         })
       }}
     />,

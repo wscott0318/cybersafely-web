@@ -96,28 +96,30 @@ function Members() {
           <DropDownButton startIcon={<AddIcon />} title="Invite">
             <MenuItem
               onClick={async () => {
-                pushAlert(
-                  'Invite Coach',
-                  'E-mail',
-                  (email) => {
+                pushAlert({
+                  type: 'result',
+                  title: 'Invite Coach',
+                  message: 'Enter an e-mail below',
+                  label: 'E-mail',
+                  result: (email) => {
                     inviteCoach({ variables: { email } })
                   },
-                  true
-                )
+                })
               }}
             >
               Invite Coach
             </MenuItem>
             <MenuItem
               onClick={async () => {
-                pushAlert(
-                  'Invite Athlete',
-                  'E-mail',
-                  (email) => {
+                pushAlert({
+                  type: 'result',
+                  title: 'Invite Athlete',
+                  message: 'Enter an e-mail below',
+                  label: 'E-mail',
+                  result: (email) => {
                     inviteAthlete({ variables: { email } })
                   },
-                  true
-                )
+                })
               }}
             >
               Invite Athlete

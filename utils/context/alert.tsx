@@ -3,9 +3,20 @@ import React, { createContext, useCallback, useContext, useRef, useState } from 
 type Alert = {
   title: string
   message: string
-  confirm?: (input: string) => void
-  useInput?: boolean
-}
+} & (
+  | {
+      type: 'alert'
+    }
+  | {
+      type: 'confirm'
+      confirm: () => void
+    }
+  | {
+      type: 'result'
+      label: string
+      result: (value: string) => void
+    }
+)
 
 export type AlertInternal = Alert & {
   id: number
@@ -14,10 +25,10 @@ export type AlertInternal = Alert & {
 
 type AlertContext = {
   alerts: AlertInternal[]
-  pushAlert: (title: string, message: string, confirm?: (input: string) => void, useInput?: boolean) => () => void
+  pushAlert: (alert: Alert) => () => void
 }
 
-const AlertContext = createContext<Partial<AlertContext>>({})
+const AlertContext = createContext<AlertContext | null>(null)
 
 type AlertProviderProps = {
   children: React.ReactNode
@@ -28,29 +39,27 @@ export function AlertContextProvider(props: AlertProviderProps) {
 
   const [alerts, setAlerts] = useState<AlertInternal[]>([])
 
-  const pushAlert = useCallback(
-    (title: string, message: string, confirm?: (input: string) => void, useInput?: boolean) => {
-      const id = ++prevId
+  const pushAlert = useCallback((alert: Alert) => {
+    const id = ++prevId
 
-      const onClose = () => {
-        setAlerts((alerts) => alerts.filter((e) => e.id !== id))
-      }
+    const onClose = () => {
+      setAlerts((alerts) => alerts.filter((e) => e.id !== id))
+    }
 
-      setAlerts((alerts) => [...alerts, { id, onClose, title, message, confirm, useInput }])
+    setAlerts((alerts) => [...alerts, { id, onClose, ...alert }])
 
-      return onClose
-    },
-    []
-  )
+    return onClose
+  }, [])
 
   return <AlertContext.Provider value={{ alerts, pushAlert }}>{props.children}</AlertContext.Provider>
 }
 
 export function useAlert() {
-  const { alerts, pushAlert } = useContext(AlertContext)
+  const context = useContext(AlertContext)
 
-  return {
-    alerts: alerts!,
-    pushAlert: pushAlert!,
+  if (!context) {
+    throw new Error('Alert parent context not found')
   }
+
+  return context
 }
