@@ -1,8 +1,9 @@
 import { LoadingButton } from '@mui/lab'
-import { Alert, Container, Paper, Stack, TextField } from '@mui/material'
+import { Stack, TextField, Typography } from '@mui/material'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
+import { CenteredLayout } from '../../../../components/common/CenteredLayout'
 import { useActivateMutation } from '../../../../types/graphql'
 
 type Props = {
@@ -15,7 +16,7 @@ export default function Activate({ passwordToken }: Props) {
 
   const router = useRouter()
 
-  const [activate, { loading, error }] = useActivateMutation({
+  const [activate, { loading }] = useActivateMutation({
     variables: {
       password,
       passwordToken,
@@ -27,31 +28,29 @@ export default function Activate({ passwordToken }: Props) {
   })
 
   return (
-    <Container maxWidth="xs" sx={{ py: 2 }}>
-      <Paper sx={{ p: 2 }}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            activate().catch(() => {})
-          }}
-        >
-          <Stack>
-            <TextField required value={userName} label="Name" onChange={(e) => setUserName(e.target.value)} />
-            <TextField
-              required
-              type="password"
-              value={password}
-              label="Password"
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {error && <Alert severity="error">{error.message}</Alert>}
-            <LoadingButton type="submit" loading={loading}>
-              Activate
-            </LoadingButton>
-          </Stack>
-        </form>
-      </Paper>
-    </Container>
+    <CenteredLayout>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          activate()
+        }}
+      >
+        <Stack>
+          <Typography variant="h5">Activate</Typography>
+          <TextField required value={userName} label="Name" onChange={(e) => setUserName(e.target.value)} />
+          <TextField
+            required
+            type="password"
+            value={password}
+            label="Password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <LoadingButton type="submit" loading={loading}>
+            Activate
+          </LoadingButton>
+        </Stack>
+      </form>
+    </CenteredLayout>
   )
 }
 

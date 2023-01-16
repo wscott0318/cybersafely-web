@@ -12,6 +12,15 @@ query children($page: Page, $order: UserOrder, $search: String) {
       childRole {
         relation
       }
+      roles {
+        role
+        ... on TeamRole {
+          team {
+            id
+            name
+          }
+        }
+      }
     }
   }
 }

@@ -390,7 +390,7 @@ export type ChildrenQueryVariables = Exact<{
 }>;
 
 
-export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string, childRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
+export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string, childRole?: { __typename?: 'ParentRole', relation?: string | null } | null, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', role: Role } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', id: string, name: string } }> }> } };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -824,6 +824,15 @@ export const ChildrenDocument = gql`
       name
       childRole {
         relation
+      }
+      roles {
+        role
+        ... on TeamRole {
+          team {
+            id
+            name
+          }
+        }
       }
     }
   }

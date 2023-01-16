@@ -21,9 +21,8 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
-import { AlertContextProvider, useAlert } from '../../utils/context/alert'
+import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
-import { Alerts } from '../common/Alerts'
 import { SidebarLink } from './SidebarLink'
 
 function SidebarTeam() {
@@ -111,7 +110,6 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 
   useEffect(() => {
     if (error) {
-      alert(error.message)
       router.push('/auth/login')
     }
   }, [error])
@@ -122,49 +120,46 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 
   return (
     <AuthContextProvider user={data.profile}>
-      <AlertContextProvider>
-        <Head>
-          <title>{props.title}</title>
-        </Head>
-        <Box minHeight="100vh" display="flex" flexDirection="column">
-          <AppBar>
-            <Toolbar disableGutters sx={{ px: 2 }}>
-              <Typography variant="h6" noWrap flexGrow={1}>
-                {Config.appName}
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <Toolbar />
-          <Stack direction="row" spacing={0} flexGrow={1}>
-            <Stack spacing={0} top={0} left={0} bottom={0} position="fixed" zIndex={(e) => e.zIndex.drawer}>
-              <Toolbar />
-              <Stack
-                width={280}
-                spacing={0}
-                flexGrow={1}
-                overflow="auto"
-                borderRight={1}
-                borderColor="divider"
-                flexDirection="column"
-                bgcolor="background.paper"
-              >
-                {props.sidebar}
-                <Box flexGrow={1} />
-                <Divider />
-                <List>
-                  <SidebarTeam />
-                  <SidebarUser />
-                </List>
-              </Stack>
+      <Head>
+        <title>{props.title}</title>
+      </Head>
+      <Box minHeight="100vh" display="flex" flexDirection="column">
+        <AppBar>
+          <Toolbar disableGutters sx={{ px: 2 }}>
+            <Typography variant="h6" noWrap flexGrow={1}>
+              {Config.appName}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Toolbar />
+        <Stack direction="row" spacing={0} flexGrow={1}>
+          <Stack spacing={0} top={0} left={0} bottom={0} position="fixed" zIndex={(e) => e.zIndex.drawer}>
+            <Toolbar />
+            <Stack
+              width={280}
+              spacing={0}
+              flexGrow={1}
+              overflow="auto"
+              borderRight={1}
+              borderColor="divider"
+              flexDirection="column"
+              bgcolor="background.paper"
+            >
+              {props.sidebar}
+              <Box flexGrow={1} />
+              <Divider />
+              <List>
+                <SidebarTeam />
+                <SidebarUser />
+              </List>
             </Stack>
-            <Box width={280} flexShrink={0} />
-            <Container maxWidth="xl" sx={{ py: 2 }}>
-              {props.children}
-            </Container>
           </Stack>
-        </Box>
-        <Alerts />
-      </AlertContextProvider>
+          <Box width={280} flexShrink={0} />
+          <Container maxWidth="xl" sx={{ py: 2 }}>
+            {props.children}
+          </Container>
+        </Stack>
+      </Box>
     </AuthContextProvider>
   )
 }
@@ -196,6 +191,7 @@ function Sidebar() {
     return (
       <List>
         <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
+        <SidebarLink href="/dashboard/athlete/members" icon={<PersonIcon />} title="Members" />
       </List>
     )
   } else if (parent) {

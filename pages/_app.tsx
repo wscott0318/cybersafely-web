@@ -1,12 +1,13 @@
-import { ApolloProvider } from '@apollo/client'
 import { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { Alerts } from '../components/common/Alerts'
 import { Config } from '../helpers/config'
-import { Client } from '../libs/apollo'
+import { ApolloClientProvider } from '../libs/apollo'
 import createEmotionCache from '../utils/cache'
+import { AlertContextProvider } from '../utils/context/alert'
 import { theme } from '../utils/theme'
 
 const clientSideEmotionCache = createEmotionCache()
@@ -26,9 +27,12 @@ export default function MyApp(props: MyAppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ApolloProvider client={Client}>
-          <Component {...pageProps} />
-        </ApolloProvider>
+        <AlertContextProvider>
+          <Alerts />
+          <ApolloClientProvider>
+            <Component {...pageProps} />
+          </ApolloClientProvider>
+        </AlertContextProvider>
       </ThemeProvider>
     </CacheProvider>
   )

@@ -43,13 +43,11 @@ export function useTeam() {
       const teamId = localStorage.getItem('teamId')
 
       if (teamId) {
-        return user.roles.find(
-          (e) =>
-            (e.role === 'COACH' || e.role === 'ATHLETE') &&
-            e.__typename === 'TeamRole' &&
-            e.team &&
-            e.team.id === teamId
-        ) as TeamRole | undefined
+        const role = user.roles.find((e) => e.role === 'COACH' || e.role === 'ATHLETE') as TeamRole | undefined
+
+        if (role && role.team.id === teamId) {
+          return role
+        }
       }
     }
   }, [user])
