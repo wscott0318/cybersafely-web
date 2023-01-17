@@ -172,10 +172,10 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 function Sidebar() {
   const { user } = useUser()
 
-  const staff = user.roles.find((e) => e.role === 'STAFF') as AnyUserRole | undefined
-  const coach = user.roles.find((e) => e.role === 'COACH') as TeamRole | undefined
-  const athlete = user.roles.find((e) => e.role === 'ATHLETE') as TeamRole | undefined
-  const parent = user.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
+  const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyUserRole | undefined
+  const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as TeamRole | undefined
+  const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as TeamRole | undefined
+  const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
 
   if (staff) {
     return (
@@ -185,21 +185,27 @@ function Sidebar() {
         <SidebarLink href="/dashboard/staff/teams" icon={<GroupIcon />} title="Teams" />
       </List>
     )
-  } else if (coach) {
+  }
+
+  if (coach) {
     return (
       <List>
         <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
         <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
       </List>
     )
-  } else if (athlete) {
+  }
+
+  if (athlete) {
     return (
       <List>
         <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
         <SidebarLink href="/dashboard/athlete/members" icon={<PersonIcon />} title="Members" />
       </List>
     )
-  } else if (parent) {
+  }
+
+  if (parent) {
     return (
       <List>
         <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />

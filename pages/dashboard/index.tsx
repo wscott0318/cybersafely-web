@@ -11,10 +11,10 @@ export default function Dashboard() {
 
     const user = data.profile
 
-    const staff = user.roles.find((e) => e.role === 'STAFF') as AnyUserRole | undefined
-    const coach = user.roles.find((e) => e.role === 'COACH') as TeamRole | undefined
-    const athlete = user.roles.find((e) => e.role === 'ATHLETE') as TeamRole | undefined
-    const parent = user.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
+    const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyUserRole | undefined
+    const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as TeamRole | undefined
+    const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as TeamRole | undefined
+    const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
 
     if (staff) {
       router.replace('/dashboard/staff/home')
