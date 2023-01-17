@@ -140,7 +140,11 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }, [error])
 
   if (!data) {
-    return <CircularProgress />
+    return (
+      <Stack alignItems="center" justifyContent="center" minHeight="100vh">
+        <CircularProgress />
+      </Stack>
+    )
   }
 
   return (
