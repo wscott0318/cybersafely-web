@@ -1,6 +1,6 @@
 import { QueryResult } from '@apollo/client'
 import BackIcon from '@mui/icons-material/ArrowBackOutlined'
-import { Alert, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
+import { Alert, Box, Grid, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
@@ -86,33 +86,32 @@ export function DataGridViewer<
 
   return (
     <Stack>
-      <Stack direction="row" alignItems="center">
-        {!!props.back && (
-          <IconButton edge="start" sx={{ mr: -1 }} onClick={() => router.push(props.back!)}>
-            <BackIcon />
-          </IconButton>
-        )}
-        <Typography variant="h5" flexGrow={1} flexShrink={1} noWrap>
-          {props.title}{' '}
-          {data && (
-            <Typography display="inline" color="text.disabled">
-              ({data.page.total ?? 0} in total)
-            </Typography>
+      <Box>
+        <Grid container spacing={1} alignItems="center">
+          {!!props.back && (
+            <Grid item>
+              <IconButton edge="start" sx={{ mr: -0.5 }} onClick={() => router.push(props.back!)}>
+                <BackIcon />
+              </IconButton>
+            </Grid>
           )}
-        </Typography>
-        <Stack
-          spacing={1}
-          flexShrink={0}
-          direction="row"
-          sx={{
-            '& > *': {
-              flexShrink: 0,
-            },
-          }}
-        >
-          {props.actions}
-        </Stack>
-      </Stack>
+          <Grid item flexGrow={1}>
+            <Typography variant="h5" noWrap>
+              {props.title}{' '}
+              {data && (
+                <Typography display="inline" color="text.disabled">
+                  ({data.page.total ?? 0} in total)
+                </Typography>
+              )}
+            </Typography>
+          </Grid>
+          <Grid item flexShrink={0}>
+            <Stack spacing={1} direction="row">
+              {props.actions}
+            </Stack>
+          </Grid>
+        </Grid>
+      </Box>
       <DataGrid
         autoHeight
         hideFooter

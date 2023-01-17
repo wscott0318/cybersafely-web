@@ -2,6 +2,7 @@ import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
 import GroupIcon from '@mui/icons-material/GroupOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
+import MenuIcon from '@mui/icons-material/MenuOutlined'
 import PersonIcon from '@mui/icons-material/PersonOutlined'
 import {
   Alert,
@@ -10,15 +11,19 @@ import {
   CircularProgress,
   Container,
   Divider,
+  Drawer,
+  IconButton,
   List,
   Snackbar,
   Stack,
   Toolbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
@@ -106,6 +111,21 @@ export type DashboardLayoutProps = {
 
 export function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
+  const [open, setOpen] = useState(true)
+
+  useEffect(() => {
+    if (isMobile) {
+      setOpen(false)
+    }
+  }, [isMobile])
+
+  const type = useMemo(() => {
+    if (isMobile) return 'temporary'
+    return 'persistent'
+  }, [isMobile])
 
   const { data, error } = useProfileQuery({
     fetchPolicy: 'cache-first',
@@ -129,8 +149,11 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         <title>{props.title}</title>
       </Head>
       <Box minHeight="100vh" display="flex" flexDirection="column">
-        <AppBar>
+        <AppBar sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}>
           <Toolbar disableGutters sx={{ px: 2 }}>
+            <IconButton edge="start" color="inherit" sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
+              <MenuIcon />
+            </IconButton>
             <Typography variant="h6" noWrap flexGrow={1}>
               {Config.appName}
             </Typography>
@@ -138,7 +161,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         </AppBar>
         <Toolbar />
         <Stack direction="row" spacing={0} flexGrow={1}>
-          <Stack spacing={0} top={0} left={0} bottom={0} position="fixed" zIndex={(e) => e.zIndex.drawer}>
+          <Drawer open={open} onClose={() => setOpen(false)} variant={type} PaperProps={{ sx: { border: 'none' } }}>
             <Toolbar />
             <Stack
               width={280}
@@ -158,8 +181,8 @@ export function DashboardLayout(props: DashboardLayoutProps) {
                 <SidebarUser />
               </List>
             </Stack>
-          </Stack>
-          <Box width={280} flexShrink={0} />
+          </Drawer>
+          {open && !isMobile && <Box width={280} flexShrink={0} />}
           <Container maxWidth="xl" sx={{ py: 2 }}>
             {props.children}
           </Container>

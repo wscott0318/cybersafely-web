@@ -23,7 +23,7 @@ export function SidebarLink(props: SidebarLinkProps) {
     return (
       <>
         <ListItemButton sx={{ color: props.color }} onClick={props.onClick}>
-          <ListItemIcon sx={{ color: 'inherit' }}>{props.icon}</ListItemIcon>
+          <ListItemIcon sx={{ color: props.color }}>{props.icon}</ListItemIcon>
           <ListItemText primary={props.title} secondary={props.subtitle} />
         </ListItemButton>
         <Divider variant="inset" />
@@ -37,7 +37,7 @@ export function SidebarLink(props: SidebarLinkProps) {
     <>
       <NextLink href={props.href}>
         <ListItemButton component="a" selected={isSelected} sx={{ color: props.color }}>
-          <ListItemIcon sx={{ color: 'inherit' }}>{props.icon}</ListItemIcon>
+          <ListItemIcon sx={{ color: props.color }}>{props.icon}</ListItemIcon>
           <ListItemText primary={props.title} secondary={props.subtitle} />
         </ListItemButton>
       </NextLink>
