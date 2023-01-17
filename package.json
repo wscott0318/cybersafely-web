@@ -36,6 +36,8 @@
     "@graphql-codegen/typescript": "^2.8.7",
     "@graphql-codegen/typescript-operations": "^2.5.12",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+    "eslint": "^8.32.0",
+    "eslint-config-next": "^13.1.2",
     "ts-node": "^10.9.1"
   }
 }
