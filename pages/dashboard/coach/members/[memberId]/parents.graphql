@@ -12,6 +12,7 @@ query parents($childId: ID!, $page: Page, $order: UserOrder, $search: String) {
       emailConfirmed
       name
       parentRole {
+        status
         relation
       }
     }

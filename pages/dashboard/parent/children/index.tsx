@@ -47,6 +47,7 @@ function Children() {
       query={query}
       columns={columns}
       data={query.data?.children}
+      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
     />
   )

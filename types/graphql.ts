@@ -19,7 +19,9 @@ export type Scalars = {
 
 export type AnyUserRole = UserRole & {
   __typename?: 'AnyUserRole';
+  id: Scalars['ID'];
   role: Role;
+  status: RoleStatus;
 };
 
 export type ArrayOrder = {
@@ -61,6 +63,7 @@ export type Jwt = {
 export type Mutation = {
   __typename?: 'Mutation';
   activate?: Maybe<Scalars['ID']>;
+  createTeam?: Maybe<Scalars['ID']>;
   inviteAthlete?: Maybe<Scalars['ID']>;
   inviteCoach?: Maybe<Scalars['ID']>;
   inviteParent?: Maybe<Scalars['ID']>;
@@ -69,6 +72,7 @@ export type Mutation = {
   register?: Maybe<Scalars['ID']>;
   removeMember?: Maybe<Scalars['ID']>;
   removeParent?: Maybe<Scalars['ID']>;
+  removeRole?: Maybe<Scalars['ID']>;
 };
 
 
@@ -76,6 +80,11 @@ export type MutationActivateArgs = {
   password: Scalars['String'];
   passwordToken: Scalars['String'];
   user: UserCreate;
+};
+
+
+export type MutationCreateTeamArgs = {
+  input: TeamCreate;
 };
 
 
@@ -125,6 +134,11 @@ export type MutationRemoveParentArgs = {
   id: Scalars['ID'];
 };
 
+
+export type MutationRemoveRoleArgs = {
+  id: Scalars['ID'];
+};
+
 export const OrderDirection = {
   Asc: 'ASC',
   Desc: 'DESC'
@@ -161,8 +175,10 @@ export type PaginatedUser = {
 export type ParentRole = UserRole & {
   __typename?: 'ParentRole';
   childUser: User;
+  id: Scalars['ID'];
   relation?: Maybe<Scalars['String']>;
   role: Role;
+  status: RoleStatus;
 };
 
 export type Query = {
@@ -237,6 +253,13 @@ export const Role = {
 } as const;
 
 export type Role = typeof Role[keyof typeof Role];
+export const RoleStatus = {
+  Accepted: 'ACCEPTED',
+  Declined: 'DECLINED',
+  Pending: 'PENDING'
+} as const;
+
+export type RoleStatus = typeof RoleStatus[keyof typeof RoleStatus];
 export type StringFilter = {
   contains?: InputMaybe<Scalars['String']>;
   equals?: InputMaybe<Scalars['String']>;
@@ -270,7 +293,9 @@ export type TeamOrder = {
 
 export type TeamRole = UserRole & {
   __typename?: 'TeamRole';
+  id: Scalars['ID'];
   role: Role;
+  status: RoleStatus;
   team: Team;
 };
 
@@ -300,13 +325,15 @@ export type UserOrder = {
 };
 
 export type UserRole = {
+  id: Scalars['ID'];
   role: Role;
+  status: RoleStatus;
 };
 
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', relation?: string | null, role: Role, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', id: string, name: string } }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }> } };
 
 export type ActivateMutationVariables = Exact<{
   password: Scalars['String'];
@@ -359,7 +386,7 @@ export type ParentsQueryVariables = Exact<{
 }>;
 
 
-export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
+export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentRole?: { __typename?: 'ParentRole', status: RoleStatus, relation?: string | null } | null }> } };
 
 export type RemoveParentMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -390,7 +417,7 @@ export type ChildrenQueryVariables = Exact<{
 }>;
 
 
-export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string, childRole?: { __typename?: 'ParentRole', relation?: string | null } | null, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', role: Role } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', id: string, name: string } }> }> } };
+export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string, childRole?: { __typename?: 'ParentRole', relation?: string | null } | null, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }> }> } };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -399,7 +426,7 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, teamRole?: { __typename?: 'TeamRole', role: Role } | null }> } };
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, teamRole?: { __typename?: 'TeamRole', role: Role, status: RoleStatus } | null }> } };
 
 export type RemoveMemberMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -414,6 +441,13 @@ export type TeamQueryVariables = Exact<{
 
 
 export type TeamQuery = { __typename?: 'Query', team: { __typename?: 'Team', id: string, name: string } };
+
+export type CreateTeamMutationVariables = Exact<{
+  input: TeamCreate;
+}>;
+
+
+export type CreateTeamMutation = { __typename?: 'Mutation', createTeam?: string | null };
 
 export type TeamsQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -431,6 +465,13 @@ export type InviteStaffMutationVariables = Exact<{
 
 export type InviteStaffMutation = { __typename?: 'Mutation', inviteStaff?: string | null };
 
+export type RemoveRoleMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveRoleMutation = { __typename?: 'Mutation', removeRole?: string | null };
+
 export type UsersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
   order?: InputMaybe<UserOrder>;
@@ -438,7 +479,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role } | { __typename?: 'ParentRole', relation?: string | null, role: Role, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', role: Role, team: { __typename?: 'Team', name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', name: string } }> }> } };
 
 
 export const ProfileDocument = gql`
@@ -450,6 +491,7 @@ export const ProfileDocument = gql`
     name
     roles {
       role
+      status
       ... on TeamRole {
         team {
           id
@@ -679,6 +721,7 @@ export const ParentsDocument = gql`
       emailConfirmed
       name
       parentRole {
+        status
         relation
       }
     }
@@ -827,6 +870,7 @@ export const ChildrenDocument = gql`
       }
       roles {
         role
+        status
         ... on TeamRole {
           team {
             id
@@ -884,6 +928,7 @@ export const MembersDocument = gql`
       name
       teamRole {
         role
+        status
       }
       parentCount
     }
@@ -987,6 +1032,37 @@ export function useTeamLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamQ
 export type TeamQueryHookResult = ReturnType<typeof useTeamQuery>;
 export type TeamLazyQueryHookResult = ReturnType<typeof useTeamLazyQuery>;
 export type TeamQueryResult = Apollo.QueryResult<TeamQuery, TeamQueryVariables>;
+export const CreateTeamDocument = gql`
+    mutation createTeam($input: TeamCreate!) {
+  createTeam(input: $input)
+}
+    `;
+export type CreateTeamMutationFn = Apollo.MutationFunction<CreateTeamMutation, CreateTeamMutationVariables>;
+
+/**
+ * __useCreateTeamMutation__
+ *
+ * To run a mutation, you first call `useCreateTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createTeamMutation, { data, loading, error }] = useCreateTeamMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateTeamMutation(baseOptions?: Apollo.MutationHookOptions<CreateTeamMutation, CreateTeamMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateTeamMutation, CreateTeamMutationVariables>(CreateTeamDocument, options);
+      }
+export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
+export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
+export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
 export const TeamsDocument = gql`
     query teams($page: Page, $order: TeamOrder, $search: String) {
   teams(page: $page, order: $order, search: $search) {
@@ -1065,6 +1141,37 @@ export function useInviteStaffMutation(baseOptions?: Apollo.MutationHookOptions<
 export type InviteStaffMutationHookResult = ReturnType<typeof useInviteStaffMutation>;
 export type InviteStaffMutationResult = Apollo.MutationResult<InviteStaffMutation>;
 export type InviteStaffMutationOptions = Apollo.BaseMutationOptions<InviteStaffMutation, InviteStaffMutationVariables>;
+export const RemoveRoleDocument = gql`
+    mutation removeRole($id: ID!) {
+  removeRole(id: $id)
+}
+    `;
+export type RemoveRoleMutationFn = Apollo.MutationFunction<RemoveRoleMutation, RemoveRoleMutationVariables>;
+
+/**
+ * __useRemoveRoleMutation__
+ *
+ * To run a mutation, you first call `useRemoveRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeRoleMutation, { data, loading, error }] = useRemoveRoleMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveRoleMutation(baseOptions?: Apollo.MutationHookOptions<RemoveRoleMutation, RemoveRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveRoleMutation, RemoveRoleMutationVariables>(RemoveRoleDocument, options);
+      }
+export type RemoveRoleMutationHookResult = ReturnType<typeof useRemoveRoleMutation>;
+export type RemoveRoleMutationResult = Apollo.MutationResult<RemoveRoleMutation>;
+export type RemoveRoleMutationOptions = Apollo.BaseMutationOptions<RemoveRoleMutation, RemoveRoleMutationVariables>;
 export const UsersDocument = gql`
     query users($page: Page, $order: UserOrder, $search: String) {
   users(page: $page, order: $order, search: $search) {
@@ -1080,7 +1187,9 @@ export const UsersDocument = gql`
       emailConfirmed
       name
       roles {
+        id
         role
+        status
         ... on TeamRole {
           team {
             name
@@ -1147,6 +1256,8 @@ export const namedOperations = {
     inviteCoach: 'inviteCoach',
     inviteAthlete: 'inviteAthlete',
     removeMember: 'removeMember',
-    inviteStaff: 'inviteStaff'
+    createTeam: 'createTeam',
+    inviteStaff: 'inviteStaff',
+    removeRole: 'removeRole'
   }
 }

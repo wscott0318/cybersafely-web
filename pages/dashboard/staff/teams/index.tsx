@@ -1,8 +1,11 @@
+import AddIcon from '@mui/icons-material/AddOutlined'
+import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { TeamsQuery, useTeamsQuery } from '../../../../types/graphql'
+import { namedOperations, TeamsQuery, useCreateTeamMutation, useTeamsQuery } from '../../../../types/graphql'
+import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<TeamsQuery['teams']>> = [
   {
@@ -26,7 +29,13 @@ const columns: GridColumns<InferNodeType<TeamsQuery['teams']>> = [
 ]
 
 function Teams() {
+  const { pushAlert } = useAlert()
+
   const query = useTeamsQuery()
+
+  const [createTeam] = useCreateTeamMutation({
+    refetchQueries: [namedOperations.Query.teams],
+  })
 
   return (
     <DataGridViewer
@@ -35,7 +44,28 @@ function Teams() {
       columns={columns}
       data={query.data?.teams}
       href={(e) => `/dashboard/staff/teams/${e.id}`}
-      actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
+      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
+      actions={
+        <>
+          <Button
+            startIcon={<AddIcon />}
+            onClick={async () => {
+              pushAlert({
+                type: 'result',
+                title: 'Create Team',
+                message: 'Enter a name below',
+                label: 'Name',
+                result: (name) => {
+                  createTeam({ variables: { input: { name } } })
+                },
+              })
+            }}
+          >
+            Create Team
+          </Button>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </>
+      }
     />
   )
 }

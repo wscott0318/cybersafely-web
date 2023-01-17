@@ -12,7 +12,9 @@ query users($page: Page, $order: UserOrder, $search: String) {
       emailConfirmed
       name
       roles {
+        id
         role
+        status
         ... on TeamRole {
           team {
             name

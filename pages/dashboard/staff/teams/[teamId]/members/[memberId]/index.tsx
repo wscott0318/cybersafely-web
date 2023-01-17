@@ -95,6 +95,7 @@ function Member({ teamId, memberId }: Props) {
       columns={columns}
       data={query.data?.parents}
       back={`/dashboard/staff/teams/${teamId}`}
+      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       title={data ? `Parents of "${data.member.name}"` : 'Parents'}
       actions={
         <>

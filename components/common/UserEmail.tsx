@@ -6,13 +6,11 @@ type UserEmailProps = {
   emailConfirmed: boolean
 }
 
-export function UserEmail(props: UserEmailProps) {
-  const { email, emailConfirmed } = props
-
+export function UserEmail({ email, emailConfirmed }: UserEmailProps) {
   return (
     <>
       <Tooltip title={emailConfirmed ? 'E-mail is confirmed' : 'E-mail is not confirmed'}>
-        <VerifiedIcon color={emailConfirmed ? 'primary' : 'disabled'} sx={{ mr: 0.5 }} />
+        <VerifiedIcon color={emailConfirmed ? 'primary' : 'disabled'} sx={{ mr: 0.5 }} fontSize="small" />
       </Tooltip>
       {email}
     </>

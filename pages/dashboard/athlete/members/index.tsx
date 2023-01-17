@@ -1,10 +1,9 @@
-import { Chip } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { RoleChip } from '../../../../components/common/RoleChip'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { roleDisplayTitle } from '../../../../helpers/formatters'
 import { MembersQuery, useMembersQuery } from '../../../../types/graphql'
 
 const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
@@ -30,11 +29,12 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
     sortable: false,
     headerName: 'Role',
     valueGetter(params) {
-      return params.row.teamRole?.role
+      return params.row.teamRole
     },
     renderCell(params) {
       if (params.value) {
-        return <Chip label={roleDisplayTitle(params.value)} />
+        const { role, status } = params.value
+        return <RoleChip key={role} role={role} status={status} />
       }
     },
   },
@@ -57,6 +57,7 @@ function Members() {
       title="Members"
       columns={columns}
       data={query.data?.members}
+      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
     />
   )

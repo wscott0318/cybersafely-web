@@ -1,13 +1,51 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { Button, Chip } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { RoleChip } from '../../../../components/common/RoleChip'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { roleDisplayTitle } from '../../../../helpers/formatters'
-import { namedOperations, Role, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
+import {
+  namedOperations,
+  useInviteStaffMutation,
+  useRemoveRoleMutation,
+  UserRole,
+  UsersQuery,
+  useUsersQuery,
+} from '../../../../types/graphql'
 import { useAlert } from '../../../../utils/context/alert'
+
+function UserRolesColumn({ roles }: { roles: UserRole[] }) {
+  const { pushAlert } = useAlert()
+
+  const [removeRole] = useRemoveRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
+  })
+
+  return (
+    <>
+      {roles.map(({ id, role, status }: UserRole) => (
+        <Box key={role} mr={0.5}>
+          <RoleChip
+            role={role}
+            status={status}
+            onDelete={() => {
+              pushAlert({
+                type: 'confirm',
+                title: 'Remove Role',
+                message: `Are you sure you want to remove role "${role}"`,
+                confirm: () => {
+                  removeRole({ variables: { id } })
+                },
+              })
+            }}
+          />
+        </Box>
+      ))}
+    </>
+  )
+}
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
@@ -27,15 +65,15 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     },
   },
   {
-    width: 200,
+    width: 350,
     field: 'roles',
     sortable: false,
     headerName: 'Roles',
     valueGetter(params) {
-      return params.row.roles.map((e) => e.role)
+      return params.row.roles
     },
     renderCell(params) {
-      return params.value.map((role: Role) => <Chip key={role} label={roleDisplayTitle(role)} sx={{ mr: 0.5 }} />)
+      return <UserRolesColumn roles={params.value} />
     },
   },
   {
@@ -63,6 +101,7 @@ function Users() {
       query={query}
       columns={columns}
       data={query.data?.users}
+      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <>
           <Button

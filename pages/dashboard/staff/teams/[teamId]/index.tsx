@@ -1,15 +1,15 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { Chip, MenuItem } from '@mui/material'
+import { MenuItem } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo } from 'react'
 import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
+import { RoleChip } from '../../../../../components/common/RoleChip'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { getMemberActions } from '../../../../../components/data/MemberActions'
-import { roleDisplayTitle } from '../../../../../helpers/formatters'
 import {
   MembersQuery,
   namedOperations,
@@ -43,11 +43,12 @@ const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['me
     sortable: false,
     headerName: 'Role',
     valueGetter(params) {
-      return params.row.teamRole?.role
+      return params.row.teamRole
     },
     renderCell(params) {
       if (params.value) {
-        return <Chip label={roleDisplayTitle(params.value)} />
+        const { role, status } = params.value
+        return <RoleChip role={role} status={status} />
       }
     },
   },
@@ -106,6 +107,7 @@ function Team({ teamId }: Props) {
       columns={columns}
       data={query.data?.members}
       back="/dashboard/staff/teams"
+      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       title={data ? `Members of "${data.team.name}"` : 'Members'}
       href={(e) => `/dashboard/staff/teams/${teamId}/members/${e.id}`}
       actions={

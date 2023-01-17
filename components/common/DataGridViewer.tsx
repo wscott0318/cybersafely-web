@@ -1,7 +1,7 @@
 import { QueryResult } from '@apollo/client'
 import BackIcon from '@mui/icons-material/ArrowBackOutlined'
 import { Alert, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
-import { DataGrid, GridColumns, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
+import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -51,6 +51,7 @@ type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
   title: string
   actions?: React.ReactNode
   back?: string
+  initialSortModel?: GridSortItem
 }
 
 export function DataGridViewer<
@@ -61,7 +62,9 @@ export function DataGridViewer<
 
   const [data, setData] = useState<TData>()
   const [index, setIndex] = useState(0)
-  const [sortModel, setSortModel] = useState<GridSortModel>()
+  const [sortModel, setSortModel] = useState<GridSortModel | undefined>(
+    props.initialSortModel && [props.initialSortModel]
+  )
 
   useEffect(() => {
     if (props.data) {
