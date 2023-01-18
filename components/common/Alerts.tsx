@@ -1,12 +1,14 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
-import { useCallback, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { AlertInternal, useAlert } from '../../utils/context/alert'
 
 type SimpleAlertProps = {
-  alert: AlertInternal
+  alert: AlertInternal<any>
 }
 
 function SimpleAlert({ alert }: SimpleAlertProps) {
+  const ref = useRef<any>()
+
   const [open, setOpen] = useState(true)
   const [input, setInput] = useState('')
 
@@ -31,6 +33,23 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
       <form
         onSubmit={(e) => {
           e.preventDefault()
+
+          switch (alert.type) {
+            case 'result':
+              onClose()
+              alert.result(input)
+
+              break
+
+            case 'custom':
+              onClose()
+              alert.result(ref.current)
+
+              break
+
+            default:
+              break
+          }
         }}
       >
         <DialogTitle>{alert.title}</DialogTitle>
@@ -45,27 +64,17 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
               margin="dense"
               variant="standard"
               label={alert.label}
+              type={alert.resultType}
               onChange={(e) => setInput(e.target.value)}
             />
           )}
+          {alert.type === 'custom' && <alert.content ref={ref} />}
         </DialogContent>
         <DialogActions>
-          {alert.type === 'result' && (
-            <>
-              <Button variant="text" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                variant="text"
-                onClick={() => {
-                  onClose()
-                  alert.result(input)
-                }}
-              >
-                OK
-              </Button>
-            </>
+          {alert.type === 'alert' && (
+            <Button autoFocus variant="text" onClick={onClose}>
+              OK
+            </Button>
           )}
           {alert.type === 'confirm' && (
             <>
@@ -84,10 +93,25 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
               </Button>
             </>
           )}
-          {alert.type === 'alert' && (
-            <Button autoFocus variant="text" onClick={onClose}>
-              OK
-            </Button>
+          {alert.type === 'result' && (
+            <>
+              <Button variant="text" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="text">
+                OK
+              </Button>
+            </>
+          )}
+          {alert.type === 'custom' && (
+            <>
+              <Button variant="text" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" variant="text">
+                OK
+              </Button>
+            </>
           )}
         </DialogActions>
       </form>

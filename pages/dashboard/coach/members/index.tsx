@@ -103,6 +103,7 @@ function Members() {
                   title: 'Invite Coach',
                   message: 'Enter an e-mail below',
                   label: 'E-mail',
+                  resultType: 'email',
                   result: (email) => {
                     inviteCoach({ variables: { email } })
                   },
@@ -118,6 +119,7 @@ function Members() {
                   title: 'Invite Athlete',
                   message: 'Enter an e-mail below',
                   label: 'E-mail',
+                  resultType: 'email',
                   result: (email) => {
                     inviteAthlete({ variables: { email } })
                   },

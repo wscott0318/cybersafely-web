@@ -55,6 +55,7 @@ function Teams() {
                 title: 'Create Team',
                 message: 'Enter a name below',
                 label: 'Name',
+                resultType: 'email',
                 result: (name) => {
                   createTeam({ variables: { input: { name } } })
                 },

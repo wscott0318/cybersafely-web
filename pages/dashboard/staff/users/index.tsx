@@ -112,6 +112,7 @@ function Users() {
                 title: 'Invite Staff',
                 message: 'Enter an e-mail below',
                 label: 'E-mail',
+                resultType: 'email',
                 result: (email) => {
                   inviteStaff({ variables: { email } })
                 },

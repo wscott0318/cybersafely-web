@@ -33,6 +33,7 @@ export function SearchBar(props: SearchBarProps) {
   return (
     <TextField
       value={search}
+      autoComplete="off"
       sx={{ width: 250 }}
       placeholder="Quick search..."
       onChange={(e) => setSearch(e.target.value)}

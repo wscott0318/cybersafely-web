@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 
-type Alert = {
+type Alert<P> = {
   title: string
   message: string
 } & (
@@ -14,18 +14,24 @@ type Alert = {
   | {
       type: 'result'
       label: string
+      resultType?: string
       result: (value: string) => void
+    }
+  | {
+      type: 'custom'
+      content: React.ForwardRefExoticComponent<React.RefAttributes<P>>
+      result: (value: P) => void
     }
 )
 
-export type AlertInternal = Alert & {
+export type AlertInternal<P> = Alert<P> & {
   id: number
   onClose: () => void
 }
 
 type AlertContext = {
-  alerts: AlertInternal[]
-  pushAlert: (alert: Alert) => () => void
+  alerts: AlertInternal<any>[]
+  pushAlert: <P>(alert: Alert<P>) => () => void
 }
 
 const AlertContext = createContext<AlertContext | null>(null)
@@ -37,9 +43,9 @@ type AlertProviderProps = {
 export function AlertContextProvider(props: AlertProviderProps) {
   let prevId = useRef(0).current
 
-  const [alerts, setAlerts] = useState<AlertInternal[]>([])
+  const [alerts, setAlerts] = useState<AlertInternal<any>[]>([])
 
-  const pushAlert = useCallback((alert: Alert) => {
+  const pushAlert = useCallback(<P extends any>(alert: Alert<P>) => {
     const id = ++prevId
 
     const onClose = () => {

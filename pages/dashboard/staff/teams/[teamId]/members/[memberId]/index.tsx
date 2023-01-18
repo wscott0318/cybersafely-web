@@ -8,6 +8,7 @@ import { SearchBar } from '../../../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
 import { getParentActions } from '../../../../../../../components/data/ParentActions'
+import { InviteParentForm } from '../../../../../../../components/form/InviteParentForm'
 import {
   namedOperations,
   ParentsQuery,
@@ -103,12 +104,12 @@ function Member({ teamId, memberId }: Props) {
             startIcon={<AddIcon />}
             onClick={async () => {
               pushAlert({
-                type: 'result',
+                type: 'custom',
                 title: 'Invite Parent',
-                message: 'Enter an e-mail below',
-                label: 'E-mail',
-                result: (email) => {
-                  inviteParent({ variables: { childId: memberId, email } })
+                content: InviteParentForm,
+                message: 'Enter the information below',
+                result: ({ email, relation }) => {
+                  inviteParent({ variables: { childId: memberId, email, relation } })
                 },
               })
             }}
