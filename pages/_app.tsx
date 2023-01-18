@@ -1,16 +1,16 @@
 import { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
-import { Backdrop, CircularProgress, CssBaseline, ThemeProvider } from '@mui/material'
+import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import { Router } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { Alerts } from '../components/common/Alerts'
+import { NProgress } from '../components/common/NProgress'
 import { Config } from '../helpers/config'
 import { ApolloClientProvider } from '../libs/apollo'
 import createEmotionCache from '../utils/cache'
 import { AlertContextProvider } from '../utils/context/alert'
-import { theme } from '../utils/theme'
+import { createTheme } from '../utils/theme'
 
 const clientSideEmotionCache = createEmotionCache()
 
@@ -18,45 +18,11 @@ interface MyAppProps extends AppProps {
   emotionCache?: EmotionCache
 }
 
-function NProgress() {
-  const [open, setOpen] = useState(false)
-
-  useEffect(() => {
-    const handleRouteStart = () => {
-      setOpen(true)
-    }
-    const handleRouteDone = () => {
-      setOpen(false)
-    }
-
-    Router.events.on('routeChangeStart', handleRouteStart)
-    Router.events.on('routeChangeComplete', handleRouteDone)
-    Router.events.on('routeChangeError', handleRouteDone)
-
-    return () => {
-      Router.events.off('routeChangeStart', handleRouteStart)
-      Router.events.off('routeChangeComplete', handleRouteDone)
-      Router.events.off('routeChangeError', handleRouteDone)
-    }
-  }, [])
-
-  return (
-    <Backdrop
-      open={open}
-      mountOnEnter
-      unmountOnExit
-      sx={(theme) => ({
-        zIndex: theme.zIndex.drawer + 10,
-        color: theme.palette.background.paper,
-      })}
-    >
-      <CircularProgress color="inherit" />
-    </Backdrop>
-  )
-}
-
 export default function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
+
+  const isDark = useMediaQuery('(prefers-color-scheme: dark)')
+  const theme = useMemo(() => createTheme(isDark), [isDark])
 
   return (
     <CacheProvider value={emotionCache}>

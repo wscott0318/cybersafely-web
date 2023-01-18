@@ -143,6 +143,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     return (
       <Stack alignItems="center" justifyContent="center" minHeight="100vh">
         <CircularProgress />
+        <Typography variant="body2">Loading User</Typography>
       </Stack>
     )
   }
