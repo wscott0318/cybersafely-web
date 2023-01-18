@@ -4,6 +4,7 @@ import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
 
 export const roboto = Roboto({
+  preload: true,
   display: 'swap',
   subsets: ['latin'],
   weight: ['300', '400', '500', '700'],
