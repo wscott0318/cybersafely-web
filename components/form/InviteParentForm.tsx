@@ -1,16 +1,22 @@
 import { Stack, TextField } from '@mui/material'
-import { forwardRef, useImperativeHandle, useState } from 'react'
+import { forwardRef, useCallback, useImperativeHandle, useState } from 'react'
 
 type InviteParentFormRefProps = {
-  email: string
-  relation: string
+  onSubmit: () => {
+    email: string
+    relation: string
+  }
 }
 
 export const InviteParentForm = forwardRef<InviteParentFormRefProps>((props, ref) => {
   const [email, setEmail] = useState('')
   const [relation, setRelation] = useState('')
 
-  useImperativeHandle(ref, () => ({ email, relation }), [email, relation])
+  const onSubmit = useCallback(() => {
+    return { email, relation }
+  }, [email, relation])
+
+  useImperativeHandle(ref, () => ({ onSubmit }), [onSubmit])
 
   return (
     <Stack spacing={1}>

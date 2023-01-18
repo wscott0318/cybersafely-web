@@ -19,7 +19,7 @@ type Alert<P> = {
     }
   | {
       type: 'custom'
-      content: React.ForwardRefExoticComponent<React.RefAttributes<P>>
+      content: React.ForwardRefExoticComponent<React.RefAttributes<{ onSubmit: () => P }>>
       result: (value: P) => void
     }
 )
