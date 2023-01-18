@@ -57,17 +57,17 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
       cache,
       defaultOptions: {
         watchQuery: {
-          fetchPolicy: 'network-only',
-          nextFetchPolicy: 'network-only',
-          initialFetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
+          nextFetchPolicy: 'no-cache',
+          initialFetchPolicy: 'no-cache',
           notifyOnNetworkStatusChange: true,
         },
         query: {
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
           notifyOnNetworkStatusChange: true,
         },
         mutate: {
-          fetchPolicy: 'network-only',
+          fetchPolicy: 'no-cache',
         },
       },
     })
