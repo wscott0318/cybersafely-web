@@ -14,9 +14,11 @@ export default function Login() {
 
   const [login, { loading }] = useLoginMutation({
     variables: { email, password },
-    onCompleted(data) {
+    onCompleted: async (data, options) => {
       const { token } = data.login
       localStorage.setItem('token', token)
+
+      await options?.client?.resetStore()
 
       router.push('/dashboard')
     },

@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { createContext, useCallback, useContext, useMemo } from 'react'
 import { ProfileQuery, TeamRole } from '../../types/graphql'
@@ -20,11 +21,13 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 
 export function useUser() {
   const router = useRouter()
+  const client = useApolloClient()
   const context = useContext(AuthContext)
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
     localStorage.clear()
     sessionStorage.clear()
+    await client.resetStore()
     router.push('/auth/login')
   }, [])
 
