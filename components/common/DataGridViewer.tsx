@@ -1,9 +1,20 @@
 import { QueryResult } from '@apollo/client'
 import BackIcon from '@mui/icons-material/ArrowBackOutlined'
-import { Alert, Box, Grid, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
+import {
+  Alert,
+  Box,
+  Grid,
+  IconButton,
+  LinearProgress,
+  Pagination,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
 import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 function composeObjectFromKeyValue(key: string, value: any) {
   let obj = value
@@ -49,7 +60,7 @@ type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
   columns: GridColumns<TNode>
   href?: (node: TNode) => string
   title: string
-  actions?: React.ReactNode
+  actions?: React.ReactNode | React.ReactNode[]
   back?: string
   initialSortModel?: GridSortItem
 }
@@ -59,6 +70,9 @@ export function DataGridViewer<
   TData extends { page: { index: number; count: number; total: number }; nodes: Array<GridValidRowModel> }
 >(props: DataGridViewerProps<TQuery, TData, InferNodeType<TData>>) {
   const router = useRouter()
+
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
   const [data, setData] = useState<TData>()
   const [index, setIndex] = useState(0)
@@ -84,10 +98,22 @@ export function DataGridViewer<
     props.query.refetch(variables)
   }, [index, sortModel])
 
+  const actions = useMemo(() => {
+    if (props.actions) {
+      return React.Children.map(props.actions, (child) => {
+        return (
+          <Grid item xs={12} sm="auto">
+            {child}
+          </Grid>
+        )
+      })
+    }
+  }, [props.actions])
+
   return (
     <Stack>
       <Box>
-        <Grid container spacing={1} alignItems="center">
+        <Grid container spacing={1} alignItems="center" wrap={isMobile ? 'wrap' : 'nowrap'}>
           {!!props.back && (
             <Grid item>
               <IconButton edge="start" sx={{ mr: -0.5 }} onClick={() => router.push(props.back!)}>
@@ -95,7 +121,7 @@ export function DataGridViewer<
               </IconButton>
             </Grid>
           )}
-          <Grid item flexGrow={1}>
+          <Grid item flexGrow={1} overflow="hidden">
             <Typography variant="h5" noWrap>
               {props.title}{' '}
               {data && (
@@ -105,11 +131,7 @@ export function DataGridViewer<
               )}
             </Typography>
           </Grid>
-          <Grid item flexShrink={0}>
-            <Stack spacing={1} direction="row">
-              {props.actions}
-            </Stack>
-          </Grid>
+          {actions}
         </Grid>
       </Box>
       <DataGrid

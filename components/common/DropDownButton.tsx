@@ -1,24 +1,24 @@
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
 import { Button, ButtonProps, Menu } from '@mui/material'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 
 type DropDownButtonProps = {
   title: string
   children: React.ReactNode
-} & Pick<ButtonProps, 'startIcon' | 'variant' | 'size'>
+} & Pick<ButtonProps, 'startIcon' | 'variant' | 'size' | 'fullWidth'>
 
 export function DropDownButton(props: DropDownButtonProps) {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null)
+  const anchorEl = useRef<HTMLButtonElement>(null)
 
-  const open = useMemo(() => Boolean(anchorEl), [anchorEl])
+  const [open, setOpen] = useState(false)
 
-  const handleClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(e.currentTarget)
+  const handleClick = useCallback(() => {
+    setOpen((open) => !open)
   }, [])
 
   const handleClose = useCallback(() => {
-    setAnchorEl(null)
+    setOpen(false)
   }, [])
 
   const { children, title, ...buttonProps } = props
@@ -41,10 +41,21 @@ export function DropDownButton(props: DropDownButtonProps) {
 
   return (
     <>
-      <Button {...buttonProps} endIcon={open ? <ArrowUpIcon /> : <ArrowDownIcon />} onClick={handleClick}>
+      <Button
+        {...buttonProps}
+        ref={anchorEl}
+        onClick={handleClick}
+        endIcon={open ? <ArrowUpIcon /> : <ArrowDownIcon />}
+      >
         {title}
       </Button>
-      <Menu open={open} anchorEl={anchorEl} onClose={handleClose} PaperProps={{ sx: { mt: 1, mb: 1 } }}>
+      <Menu
+        open={open}
+        onClose={handleClose}
+        anchorEl={anchorEl.current}
+        PaperProps={{ sx: { mt: 1, mb: 1 } }}
+        MenuListProps={{ sx: { minWidth: anchorEl.current?.clientWidth } }}
+      >
         {items}
       </Menu>
     </>

@@ -110,45 +110,43 @@ function Team({ teamId }: Props) {
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       title={data ? `Members of "${data.team.name}"` : 'Members'}
       href={(e) => `/dashboard/staff/teams/${teamId}/members/${e.id}`}
-      actions={
-        <>
-          <DropDownButton startIcon={<AddIcon />} title="Invite">
-            <MenuItem
-              onClick={async () => {
-                pushAlert({
-                  type: 'result',
-                  title: 'Invite Coach',
-                  message: 'Enter an e-mail below',
-                  label: 'E-mail',
-                  resultType: 'email',
-                  result: (email) => {
-                    inviteCoach({ variables: { email } })
-                  },
-                })
-              }}
-            >
-              Invite Coach
-            </MenuItem>
-            <MenuItem
-              onClick={async () => {
-                pushAlert({
-                  type: 'result',
-                  title: 'Invite Athlete',
-                  message: 'Enter an e-mail below',
-                  label: 'E-mail',
-                  resultType: 'email',
-                  result: (email) => {
-                    inviteAthlete({ variables: { email } })
-                  },
-                })
-              }}
-            >
-              Invite Athlete
-            </MenuItem>
-          </DropDownButton>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
-        </>
-      }
+      actions={[
+        <DropDownButton startIcon={<AddIcon />} title="Invite" fullWidth>
+          <MenuItem
+            onClick={async () => {
+              pushAlert({
+                type: 'result',
+                title: 'Invite Coach',
+                message: 'Enter an e-mail below',
+                label: 'E-mail',
+                resultType: 'email',
+                result: (email) => {
+                  inviteCoach({ variables: { email } })
+                },
+              })
+            }}
+          >
+            Invite Coach
+          </MenuItem>
+          <MenuItem
+            onClick={async () => {
+              pushAlert({
+                type: 'result',
+                title: 'Invite Athlete',
+                message: 'Enter an e-mail below',
+                label: 'E-mail',
+                resultType: 'email',
+                result: (email) => {
+                  inviteAthlete({ variables: { email } })
+                },
+              })
+            }}
+          >
+            Invite Athlete
+          </MenuItem>
+        </DropDownButton>,
+        <SearchBar onSearch={(search) => query.refetch({ search })} />,
+      ]}
     />
   )
 }

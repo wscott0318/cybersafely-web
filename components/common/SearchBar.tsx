@@ -1,6 +1,6 @@
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import SearchIcon from '@mui/icons-material/SearchOutlined'
-import { CircularProgress, IconButton, InputAdornment, TextField } from '@mui/material'
+import { CircularProgress, IconButton, InputAdornment, outlinedInputClasses, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 
 type SearchBarProps = {
@@ -32,11 +32,16 @@ export function SearchBar(props: SearchBarProps) {
 
   return (
     <TextField
+      fullWidth
       value={search}
       autoComplete="off"
-      sx={{ width: 250 }}
       placeholder="Quick search..."
       onChange={(e) => setSearch(e.target.value)}
+      sx={(theme) => ({
+        ['.' + outlinedInputClasses.input]: {
+          padding: `${theme.spacing(0.9)} ${theme.spacing(1)}`,
+        },
+      })}
       InputProps={{
         startAdornment: (
           <InputAdornment position="start">

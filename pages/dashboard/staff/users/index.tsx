@@ -26,7 +26,7 @@ function UserRolesColumn({ roles }: { roles: UserRole[] }) {
   return (
     <>
       {roles.map(({ id, role, status }: UserRole) => (
-        <Box key={role} mr={0.5}>
+        <Box key={id} mr={0.5}>
           <RoleChip
             role={role}
             status={status}
@@ -102,28 +102,27 @@ function Users() {
       columns={columns}
       data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={
-        <>
-          <Button
-            startIcon={<AddIcon />}
-            onClick={async () => {
-              pushAlert({
-                type: 'result',
-                title: 'Invite Staff',
-                message: 'Enter an e-mail below',
-                label: 'E-mail',
-                resultType: 'email',
-                result: (email) => {
-                  inviteStaff({ variables: { email } })
-                },
-              })
-            }}
-          >
-            Invite Staff
-          </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
-        </>
-      }
+      actions={[
+        <Button
+          fullWidth
+          startIcon={<AddIcon />}
+          onClick={async () => {
+            pushAlert({
+              type: 'result',
+              title: 'Invite Staff',
+              message: 'Enter an e-mail below',
+              label: 'E-mail',
+              resultType: 'email',
+              result: (email) => {
+                inviteStaff({ variables: { email } })
+              },
+            })
+          }}
+        >
+          Invite Staff
+        </Button>,
+        <SearchBar onSearch={(search) => query.refetch({ search })} />,
+      ]}
     />
   )
 }

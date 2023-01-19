@@ -45,28 +45,27 @@ function Teams() {
       data={query.data?.teams}
       href={(e) => `/dashboard/staff/teams/${e.id}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={
-        <>
-          <Button
-            startIcon={<AddIcon />}
-            onClick={async () => {
-              pushAlert({
-                type: 'result',
-                title: 'Create Team',
-                message: 'Enter a name below',
-                label: 'Name',
-                resultType: 'email',
-                result: (name) => {
-                  createTeam({ variables: { input: { name } } })
-                },
-              })
-            }}
-          >
-            Create Team
-          </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
-        </>
-      }
+      actions={[
+        <Button
+          fullWidth
+          startIcon={<AddIcon />}
+          onClick={async () => {
+            pushAlert({
+              type: 'result',
+              title: 'Create Team',
+              message: 'Enter a name below',
+              label: 'Name',
+              resultType: 'email',
+              result: (name) => {
+                createTeam({ variables: { input: { name } } })
+              },
+            })
+          }}
+        >
+          Create Team
+        </Button>,
+        <SearchBar onSearch={(search) => query.refetch({ search })} />,
+      ]}
     />
   )
 }

@@ -91,27 +91,26 @@ function Member({ memberId }: Props) {
       back="/dashboard/coach/members"
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       title={data ? `Parents of "${data.member.name}"` : 'Parents'}
-      actions={
-        <>
-          <Button
-            startIcon={<AddIcon />}
-            onClick={async () => {
-              pushAlert({
-                type: 'custom',
-                title: 'Invite Parent',
-                content: InviteParentForm,
-                message: 'Enter the information below',
-                result: ({ email, relation }) => {
-                  inviteParent({ variables: { childId: memberId, email, relation } })
-                },
-              })
-            }}
-          >
-            Invite Parent
-          </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
-        </>
-      }
+      actions={[
+        <Button
+          fullWidth
+          startIcon={<AddIcon />}
+          onClick={async () => {
+            pushAlert({
+              type: 'custom',
+              title: 'Invite Parent',
+              content: InviteParentForm,
+              message: 'Enter the information below',
+              result: ({ email, relation }) => {
+                inviteParent({ variables: { childId: memberId, email, relation } })
+              },
+            })
+          }}
+        >
+          Invite Parent
+        </Button>,
+        <SearchBar onSearch={(search) => query.refetch({ search })} />,
+      ]}
     />
   )
 }
