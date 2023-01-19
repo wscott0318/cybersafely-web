@@ -66,7 +66,7 @@ function useSessionStorage(key: string) {
 function SidebarUser() {
   const router = useRouter()
 
-  const { user } = useUser()
+  const { user, logout } = useUser()
   const { pushAlert } = useAlert()
 
   const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
@@ -93,7 +93,7 @@ function SidebarUser() {
             title: 'Logout',
             message: 'Are you sure you want to logout?',
             confirm: () => {
-              router.push('/auth/logout')
+              logout()
             },
           })
         }}
