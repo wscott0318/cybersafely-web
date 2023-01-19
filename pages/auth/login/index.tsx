@@ -34,7 +34,14 @@ export default function Login() {
       >
         <Stack>
           <Typography variant="h5">Login</Typography>
-          <TextField required type="email" value={email} label="E-mail" onChange={(e) => setEmail(e.target.value)} />
+          <TextField
+            required
+            autoFocus
+            type="email"
+            value={email}
+            label="E-mail"
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <TextField
             required
             type="password"
