@@ -1,12 +1,11 @@
-import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { useUser } from '../../../utils/context/auth'
 
 export default function Logout() {
-  const router = useRouter()
+  const { logout } = useUser()
 
   useEffect(() => {
-    localStorage.clear()
-    router.replace('/auth/login')
+    logout()
   }, [])
 
   return null

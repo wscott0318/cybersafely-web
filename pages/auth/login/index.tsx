@@ -18,7 +18,7 @@ export default function Login() {
       const { token } = data.login
       localStorage.setItem('token', token)
 
-      await options?.client?.resetStore()
+      await options?.client?.clearStore()
 
       router.push('/dashboard')
     },
