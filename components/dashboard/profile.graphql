@@ -5,6 +5,7 @@ query profile {
     emailConfirmed
     name
     roles {
+      id
       role
       status
       ... on TeamRole {

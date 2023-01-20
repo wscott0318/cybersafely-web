@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { MenuItem } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
-import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
@@ -89,43 +89,45 @@ function Members() {
       data={query.data?.members}
       href={(e) => `/dashboard/coach/members/${e.id}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={[
-        <DropDownButton startIcon={<AddIcon />} title="Invite" fullWidth>
-          <MenuItem
-            onClick={async () => {
-              pushAlert({
-                type: 'result',
-                title: 'Invite Coach',
-                message: 'Enter an e-mail below',
-                label: 'E-mail',
-                resultType: 'email',
-                result: (email) => {
-                  inviteCoach({ variables: { email } })
-                },
-              })
-            }}
-          >
-            Invite Coach
-          </MenuItem>
-          <MenuItem
-            onClick={async () => {
-              pushAlert({
-                type: 'result',
-                title: 'Invite Athlete',
-                message: 'Enter an e-mail below',
-                label: 'E-mail',
-                resultType: 'email',
-                result: (email) => {
-                  inviteAthlete({ variables: { email } })
-                },
-              })
-            }}
-          >
-            Invite Athlete
-          </MenuItem>
-        </DropDownButton>,
-        <SearchBar onSearch={(search) => query.refetch({ search })} />,
-      ]}
+      actions={
+        <DataGridActions>
+          <DropDownButton startIcon={<AddIcon />} title="Invite" fullWidth>
+            <MenuItem
+              onClick={async () => {
+                pushAlert({
+                  type: 'result',
+                  title: 'Invite Coach',
+                  message: 'Enter an e-mail below',
+                  label: 'E-mail',
+                  resultType: 'email',
+                  result: (email) => {
+                    inviteCoach({ variables: { email } })
+                  },
+                })
+              }}
+            >
+              Invite Coach
+            </MenuItem>
+            <MenuItem
+              onClick={async () => {
+                pushAlert({
+                  type: 'result',
+                  title: 'Invite Athlete',
+                  message: 'Enter an e-mail below',
+                  label: 'E-mail',
+                  resultType: 'email',
+                  result: (email) => {
+                    inviteAthlete({ variables: { email } })
+                  },
+                })
+              }}
+            >
+              Invite Athlete
+            </MenuItem>
+          </DropDownButton>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </DataGridActions>
+      }
     />
   )
 }

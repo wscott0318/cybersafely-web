@@ -15,6 +15,7 @@ import {
 import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
+import { useCallbackRef } from '../../helpers/hooks'
 
 function composeObjectFromKeyValue(key: string, value: any) {
   let obj = value
@@ -54,13 +55,29 @@ function DataGridErrorOverlay(props: DataGridErrorOverlayProps) {
 
 export type InferNodeType<TData> = TData extends { nodes: Array<infer TNode> } ? TNode : unknown
 
+type DataGridActionsProps = {
+  children: React.ReactNode
+}
+
+export function DataGridActions(props: DataGridActionsProps) {
+  const children = useMemo(() => {
+    return React.Children.map(props.children, (child) => (
+      <Grid item xs={12} sm="auto">
+        {child}
+      </Grid>
+    ))
+  }, [props.children])
+
+  return <>{children}</>
+}
+
 type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
   query: QueryResult<TQuery, any>
   data: TData | undefined
   columns: GridColumns<TNode>
   href?: (node: TNode) => string
   title: string
-  actions?: React.ReactNode | React.ReactNode[]
+  actions?: React.ReactNode
   back?: string
   initialSortModel?: GridSortItem
 }
@@ -80,6 +97,8 @@ export function DataGridViewer<
     props.initialSortModel && [props.initialSortModel]
   )
 
+  const refetchRef = useCallbackRef(props.query.refetch)
+
   useEffect(() => {
     if (props.data) {
       setData(props.data)
@@ -95,20 +114,8 @@ export function DataGridViewer<
       variables.order = sortModelToOrder(sortModel)
     }
 
-    props.query.refetch(variables)
-  }, [index, sortModel])
-
-  const actions = useMemo(() => {
-    if (props.actions) {
-      return React.Children.map(props.actions, (child) => {
-        return (
-          <Grid item xs={12} sm="auto">
-            {child}
-          </Grid>
-        )
-      })
-    }
-  }, [props.actions])
+    refetchRef.current(variables)
+  }, [index, sortModel, refetchRef])
 
   return (
     <Stack>
@@ -131,7 +138,7 @@ export function DataGridViewer<
               )}
             </Typography>
           </Grid>
-          {actions}
+          {props.actions}
         </Grid>
       </Box>
       <DataGrid

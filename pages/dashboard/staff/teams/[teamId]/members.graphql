@@ -13,6 +13,7 @@ query members($page: Page, $order: UserOrder, $search: String) {
       name
       parentCount
       roles {
+        id
         role
         status
       }

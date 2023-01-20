@@ -331,7 +331,7 @@ export type UserRole = {
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }> } };
 
 export type ActivateMutationVariables = Exact<{
   password: Scalars['String'];
@@ -384,7 +384,7 @@ export type ParentsQueryVariables = Exact<{
 }>;
 
 
-export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus }> }> } };
+export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus }> }> } };
 
 export type RemoveParentMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -415,7 +415,7 @@ export type ChildrenQueryVariables = Exact<{
 }>;
 
 
-export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
+export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -424,7 +424,7 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus }> }> } };
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus }> }> } };
 
 export type RemoveMemberMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -488,6 +488,7 @@ export const ProfileDocument = gql`
     emailConfirmed
     name
     roles {
+      id
       role
       status
       ... on TeamRole {
@@ -719,6 +720,7 @@ export const ParentsDocument = gql`
       emailConfirmed
       name
       roles {
+        id
         role
         status
         ... on ParentRole {
@@ -868,6 +870,7 @@ export const ChildrenDocument = gql`
       email
       name
       roles {
+        id
         role
         status
         ... on TeamRole {
@@ -930,6 +933,7 @@ export const MembersDocument = gql`
       name
       parentCount
       roles {
+        id
         role
         status
       }

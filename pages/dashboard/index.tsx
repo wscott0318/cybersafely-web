@@ -4,6 +4,7 @@ import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/
 
 export default function Dashboard() {
   const router = useRouter()
+
   const { data } = useProfileQuery()
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function Dashboard() {
     } else {
       throw new Error('Cannot redirect user')
     }
-  }, [data])
+  }, [data, router])
 
   return null
 }

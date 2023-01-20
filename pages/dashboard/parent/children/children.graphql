@@ -11,6 +11,7 @@ query children($page: Page, $order: UserOrder, $search: String) {
       email
       name
       roles {
+        id
         role
         status
         ... on TeamRole {

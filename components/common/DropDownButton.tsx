@@ -37,7 +37,7 @@ export function DropDownButton(props: DropDownButtonProps) {
 
       return child
     })
-  }, [children])
+  }, [children, handleClose])
 
   return (
     <>

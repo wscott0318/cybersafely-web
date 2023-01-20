@@ -8,7 +8,7 @@ type InviteParentFormRefProps = {
   }
 }
 
-export const InviteParentForm = forwardRef<InviteParentFormRefProps>((props, ref) => {
+export const InviteParentForm = forwardRef<InviteParentFormRefProps>(function Wrapped(props, ref) {
   const [email, setEmail] = useState('')
   const [relation, setRelation] = useState('')
 

@@ -1,7 +1,7 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
-import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
@@ -64,27 +64,29 @@ function Users() {
       columns={columns}
       data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={[
-        <Button
-          fullWidth
-          startIcon={<AddIcon />}
-          onClick={async () => {
-            pushAlert({
-              type: 'result',
-              title: 'Invite Staff',
-              message: 'Enter an e-mail below',
-              label: 'E-mail',
-              resultType: 'email',
-              result: (email) => {
-                inviteStaff({ variables: { email } })
-              },
-            })
-          }}
-        >
-          Invite Staff
-        </Button>,
-        <SearchBar onSearch={(search) => query.refetch({ search })} />,
-      ]}
+      actions={
+        <DataGridActions>
+          <Button
+            fullWidth
+            startIcon={<AddIcon />}
+            onClick={async () => {
+              pushAlert({
+                type: 'result',
+                title: 'Invite Staff',
+                message: 'Enter an e-mail below',
+                label: 'E-mail',
+                resultType: 'email',
+                result: (email) => {
+                  inviteStaff({ variables: { email } })
+                },
+              })
+            }}
+          >
+            Invite Staff
+          </Button>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </DataGridActions>
+      }
     />
   )
 }

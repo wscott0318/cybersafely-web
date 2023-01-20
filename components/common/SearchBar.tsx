@@ -1,42 +1,55 @@
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import SearchIcon from '@mui/icons-material/SearchOutlined'
 import { CircularProgress, IconButton, InputAdornment, outlinedInputClasses, TextField } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useCallback, useRef, useState } from 'react'
+import { useCallbackRef } from '../../helpers/hooks'
 
 type SearchBarProps = {
   onSearch: (search: string | undefined) => void
 }
 
 export function SearchBar(props: SearchBarProps) {
-  const [initial, setInitial] = useState(true)
   const [search, setSearch] = useState('')
   const [searching, setSearching] = useState(false)
 
-  useEffect(() => {
-    if (initial) {
-      setInitial(false)
-      return
+  const timerRef = useRef<NodeJS.Timeout>()
+  const onSearchRef = useCallbackRef(props.onSearch)
+
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearch(e.target.value)
+      setSearching(true)
+
+      if (timerRef.current) {
+        clearTimeout(timerRef.current)
+      }
+
+      timerRef.current = setTimeout(() => {
+        onSearchRef.current(e.target.value || undefined)
+        setSearching(false)
+      }, 500)
+    },
+    [timerRef, onSearchRef]
+  )
+
+  const onClear = useCallback(() => {
+    setSearch('')
+    setSearching(false)
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
     }
 
-    setSearching(true)
-
-    const timer = setTimeout(() => {
-      props.onSearch(!!search ? search : undefined)
-      setSearching(false)
-    }, 500)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [search])
+    onSearchRef.current(undefined)
+  }, [timerRef, onSearchRef])
 
   return (
     <TextField
       fullWidth
       value={search}
       autoComplete="off"
+      onChange={onChange}
       placeholder="Quick search..."
-      onChange={(e) => setSearch(e.target.value)}
       sx={(theme) => ({
         ['.' + outlinedInputClasses.input]: {
           padding: `${theme.spacing(0.9)} ${theme.spacing(1)}`,
@@ -55,7 +68,7 @@ export function SearchBar(props: SearchBarProps) {
         ) : (
           !!search && (
             <InputAdornment position="end">
-              <IconButton edge="end" size="small" onClick={() => setSearch('')}>
+              <IconButton edge="end" size="small" onClick={onClear}>
                 <CloseIcon fontSize="small" />
               </IconButton>
             </InputAdornment>

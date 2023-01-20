@@ -12,6 +12,7 @@ query parents($childId: ID!, $page: Page, $order: UserOrder, $search: String) {
       emailConfirmed
       name
       roles {
+        id
         role
         status
         ... on ParentRole {

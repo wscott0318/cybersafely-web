@@ -137,7 +137,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     if (error) {
       router.push('/auth/login')
     }
-  }, [error])
+  }, [error, router])
 
   if (!data) {
     return (

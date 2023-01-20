@@ -3,7 +3,7 @@ import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo } from 'react'
-import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
@@ -82,7 +82,7 @@ function Member({ memberId }: Props) {
     refetchQueries: [namedOperations.Query.parents],
   })
 
-  const columns = useMemo(() => getColumns(memberId), [])
+  const columns = useMemo(() => getColumns(memberId), [memberId])
 
   return (
     <DataGridViewer
@@ -92,26 +92,28 @@ function Member({ memberId }: Props) {
       back="/dashboard/coach/members"
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       title={data ? `Parents of "${data.member.name}"` : 'Parents'}
-      actions={[
-        <Button
-          fullWidth
-          startIcon={<AddIcon />}
-          onClick={async () => {
-            pushAlert({
-              type: 'custom',
-              title: 'Invite Parent',
-              content: InviteParentForm,
-              message: 'Enter the information below',
-              result: ({ email, relation }) => {
-                inviteParent({ variables: { childId: memberId, email, relation } })
-              },
-            })
-          }}
-        >
-          Invite Parent
-        </Button>,
-        <SearchBar onSearch={(search) => query.refetch({ search })} />,
-      ]}
+      actions={
+        <DataGridActions>
+          <Button
+            fullWidth
+            startIcon={<AddIcon />}
+            onClick={async () => {
+              pushAlert({
+                type: 'custom',
+                title: 'Invite Parent',
+                content: InviteParentForm,
+                message: 'Enter the information below',
+                result: ({ email, relation }) => {
+                  inviteParent({ variables: { childId: memberId, email, relation } })
+                },
+              })
+            }}
+          >
+            Invite Parent
+          </Button>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </DataGridActions>
+      }
     />
   )
 }

@@ -4,7 +4,7 @@ import { useAlert } from '../../utils/context/alert'
 import { UserRole } from './UserRole'
 
 type UserRolesProps = {
-  roles: UserRoleType[]
+  roles: Pick<UserRoleType, 'id' | 'role' | 'status'>[]
   canRemove?: boolean
 }
 
