@@ -9,7 +9,7 @@ import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { getMemberActions } from '../../../../../components/data/MemberActions'
+import { MemberActions } from '../../../../../components/data/MemberActions'
 import {
   MembersQuery,
   namedOperations,
@@ -63,12 +63,11 @@ const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['me
     },
   },
   {
-    width: 100,
+    width: 200,
     field: 'actions',
     type: 'actions',
-    headerName: 'Actions',
-    getActions(params) {
-      return getMemberActions(params.row.id, teamId)
+    renderCell(params) {
+      return <MemberActions memberId={params.row.id} teamId={teamId} />
     },
   },
 ]

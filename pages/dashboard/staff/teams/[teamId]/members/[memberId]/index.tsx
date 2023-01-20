@@ -7,7 +7,7 @@ import { DataGridViewer, InferNodeType } from '../../../../../../../components/c
 import { SearchBar } from '../../../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
-import { getParentActions } from '../../../../../../../components/data/ParentActions'
+import { ParentActions } from '../../../../../../../components/data/ParentActions'
 import { InviteParentForm } from '../../../../../../../components/form/InviteParentForm'
 import {
   namedOperations,
@@ -58,12 +58,11 @@ const getColumns: (childId: string, teamId: string) => GridColumns<InferNodeType
     },
   },
   {
-    width: 100,
+    width: 200,
     field: 'actions',
     type: 'actions',
-    headerName: 'Actions',
-    getActions(params) {
-      return getParentActions(params.row.id, childId, teamId)
+    renderCell(params) {
+      return <ParentActions parentId={params.row.id} childId={childId} teamId={teamId} />
     },
   },
 ]
