@@ -1,6 +1,7 @@
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
+import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { ChildrenQuery, TeamRole, useChildrenQuery } from '../../../../types/graphql'
 
@@ -21,7 +22,7 @@ const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
     sortable: false,
     headerName: 'Relation',
     valueGetter(params) {
-      return params.row.childRole?.relation
+      return params.row.parentRole?.relation
     },
   },
   {
@@ -34,6 +35,26 @@ const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
     },
     valueFormatter(params) {
       return params.value.join(', ')
+    },
+  },
+  {
+    width: 200,
+    field: 'roles',
+    sortable: false,
+    headerName: 'Roles',
+    valueGetter(params) {
+      return params.row.roles
+    },
+    renderCell(params) {
+      return <UserRoles roles={params.value} />
+    },
+  },
+  {
+    width: 200,
+    field: 'createdAt',
+    headerName: 'Joined',
+    valueFormatter(params) {
+      return new Date(params.value).toLocaleString()
     },
   },
 ]

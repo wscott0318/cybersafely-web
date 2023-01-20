@@ -5,9 +5,9 @@ import { GetServerSideProps } from 'next'
 import { useMemo } from 'react'
 import { DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
-import { RoleChip } from '../../../../../components/common/RoleChip'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
+import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { getMemberActions } from '../../../../../components/data/MemberActions'
 import {
@@ -39,17 +39,14 @@ const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['me
   },
   {
     width: 200,
-    field: 'role',
+    field: 'roles',
     sortable: false,
-    headerName: 'Role',
+    headerName: 'Roles',
     valueGetter(params) {
-      return params.row.teamRole
+      return params.row.roles
     },
     renderCell(params) {
-      if (params.value) {
-        const { role, status } = params.value
-        return <RoleChip role={role} status={status} />
-      }
+      return <UserRoles roles={params.value} />
     },
   },
   {

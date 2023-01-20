@@ -11,6 +11,7 @@ import { getParentActions } from '../../../../../../../components/data/ParentAct
 import { InviteParentForm } from '../../../../../../../components/form/InviteParentForm'
 import {
   namedOperations,
+  ParentRole,
   ParentsQuery,
   useInviteParentMutation,
   useMemberQuery,
@@ -44,7 +45,8 @@ const getColumns: (childId: string, teamId: string) => GridColumns<InferNodeType
     sortable: false,
     headerName: 'Relation',
     valueGetter(params) {
-      return params.row.parentRole?.relation
+      const role = params.row.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
+      return role?.relation
     },
   },
   {

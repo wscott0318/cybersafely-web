@@ -7,11 +7,9 @@ query children($page: Page, $order: UserOrder, $search: String) {
     }
     nodes {
       id
+      createdAt
       email
       name
-      childRole {
-        relation
-      }
       roles {
         role
         status
@@ -21,6 +19,9 @@ query children($page: Page, $order: UserOrder, $search: String) {
             name
           }
         }
+      }
+      parentRole {
+        relation
       }
     }
   }

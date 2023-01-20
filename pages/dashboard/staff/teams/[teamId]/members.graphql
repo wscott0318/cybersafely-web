@@ -11,11 +11,11 @@ query members($page: Page, $order: UserOrder, $search: String) {
       email
       emailConfirmed
       name
-      teamRole {
+      parentCount
+      roles {
         role
         status
       }
-      parentCount
     }
   }
 }

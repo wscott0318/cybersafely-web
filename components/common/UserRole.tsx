@@ -5,13 +5,13 @@ import { Chip, Tooltip } from '@mui/material'
 import { useMemo } from 'react'
 import { Role, RoleStatus } from '../../types/graphql'
 
-type RoleChipProps = {
+type UserRoleProps = {
   role: Role
   status: RoleStatus
   onDelete?: () => void
 }
 
-export function RoleChip({ role, status, onDelete }: RoleChipProps) {
+export function UserRole({ role, status, onDelete }: UserRoleProps) {
   const label = useMemo(() => {
     switch (role) {
       case 'STAFF':

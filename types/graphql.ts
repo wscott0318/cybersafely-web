@@ -301,7 +301,6 @@ export type TeamRole = UserRole & {
 
 export type User = {
   __typename?: 'User';
-  childRole?: Maybe<ParentRole>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   emailConfirmed: Scalars['Boolean'];
@@ -310,7 +309,6 @@ export type User = {
   parentCount: Scalars['Int'];
   parentRole?: Maybe<ParentRole>;
   roles: Array<UserRole>;
-  teamRole?: Maybe<TeamRole>;
 };
 
 export type UserCreate = {
@@ -386,7 +384,7 @@ export type ParentsQueryVariables = Exact<{
 }>;
 
 
-export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentRole?: { __typename?: 'ParentRole', status: RoleStatus, relation?: string | null } | null }> } };
+export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus }> }> } };
 
 export type RemoveParentMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -417,7 +415,7 @@ export type ChildrenQueryVariables = Exact<{
 }>;
 
 
-export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, email: string, name: string, childRole?: { __typename?: 'ParentRole', relation?: string | null } | null, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }> }> } };
+export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -426,7 +424,7 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, teamRole?: { __typename?: 'TeamRole', role: Role, status: RoleStatus } | null }> } };
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, roles: Array<{ __typename?: 'AnyUserRole', role: Role, status: RoleStatus } | { __typename?: 'ParentRole', role: Role, status: RoleStatus } | { __typename?: 'TeamRole', role: Role, status: RoleStatus }> }> } };
 
 export type RemoveMemberMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -720,9 +718,12 @@ export const ParentsDocument = gql`
       email
       emailConfirmed
       name
-      parentRole {
+      roles {
+        role
         status
-        relation
+        ... on ParentRole {
+          relation
+        }
       }
     }
   }
@@ -863,11 +864,9 @@ export const ChildrenDocument = gql`
     }
     nodes {
       id
+      createdAt
       email
       name
-      childRole {
-        relation
-      }
       roles {
         role
         status
@@ -877,6 +876,9 @@ export const ChildrenDocument = gql`
             name
           }
         }
+      }
+      parentRole {
+        relation
       }
     }
   }
@@ -926,11 +928,11 @@ export const MembersDocument = gql`
       email
       emailConfirmed
       name
-      teamRole {
+      parentCount
+      roles {
         role
         status
       }
-      parentCount
     }
   }
 }

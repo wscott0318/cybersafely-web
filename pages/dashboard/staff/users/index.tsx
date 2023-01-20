@@ -1,51 +1,13 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { Box, Button } from '@mui/material'
+import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
-import { RoleChip } from '../../../../components/common/RoleChip'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
+import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import {
-  namedOperations,
-  useInviteStaffMutation,
-  useRemoveRoleMutation,
-  UserRole,
-  UsersQuery,
-  useUsersQuery,
-} from '../../../../types/graphql'
+import { namedOperations, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
 import { useAlert } from '../../../../utils/context/alert'
-
-function UserRolesColumn({ roles }: { roles: UserRole[] }) {
-  const { pushAlert } = useAlert()
-
-  const [removeRole] = useRemoveRoleMutation({
-    refetchQueries: [namedOperations.Query.users],
-  })
-
-  return (
-    <>
-      {roles.map(({ id, role, status }: UserRole) => (
-        <Box key={id} mr={0.5}>
-          <RoleChip
-            role={role}
-            status={status}
-            onDelete={() => {
-              pushAlert({
-                type: 'confirm',
-                title: 'Remove Role',
-                message: `Are you sure you want to remove role "${role}"`,
-                confirm: () => {
-                  removeRole({ variables: { id } })
-                },
-              })
-            }}
-          />
-        </Box>
-      ))}
-    </>
-  )
-}
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
@@ -73,7 +35,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
       return params.row.roles
     },
     renderCell(params) {
-      return <UserRolesColumn roles={params.value} />
+      return <UserRoles roles={params.value} canRemove />
     },
   },
   {
