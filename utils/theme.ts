@@ -33,6 +33,13 @@ export function createTheme(isDark: boolean) {
       borderRadius: 6,
     },
     components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          html: {
+            scrollBehavior: 'smooth',
+          },
+        },
+      },
       MuiAppBar: {
         defaultProps: {
           elevation: 0,
