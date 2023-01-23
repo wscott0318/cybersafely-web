@@ -47,10 +47,14 @@ export function SearchBar(props: SearchBarProps) {
     <TextField
       fullWidth
       value={search}
+      variant="outlined"
       autoComplete="off"
       onChange={onChange}
       placeholder="Quick search..."
       sx={(theme) => ({
+        ['.' + outlinedInputClasses.root]: {
+          background: theme.palette.background.paper,
+        },
         ['.' + outlinedInputClasses.input]: {
           padding: `${theme.spacing(0.9)} ${theme.spacing(1)}`,
         },

@@ -1,34 +1,8 @@
-import { AppBar, Box, Button, Container, Stack, Toolbar, Typography, useMediaQuery } from '@mui/material'
+import { AppBar, Box, Button, Container, Stack, Toolbar, Typography } from '@mui/material'
 import NextImage from 'next/image'
 import NextLink from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
 import { Config } from '../helpers/config'
-
-function useLogoUrl() {
-  const isDark = useMediaQuery('(prefers-color-scheme: dark)')
-
-  return useMemo(() => {
-    return isDark ? '/images/logo-white.png' : '/images/logo-black.png'
-  }, [isDark])
-}
-
-function useOnTop() {
-  const [onTop, setOnTop] = useState(true)
-
-  useEffect(() => {
-    function onScroll() {
-      setOnTop(window.scrollY === 0)
-    }
-
-    window.addEventListener('scroll', onScroll)
-
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-    }
-  }, [])
-
-  return { onTop }
-}
+import { useLogoUrl, useOnTop } from '../helpers/hooks'
 
 function Header() {
   const { onTop } = useOnTop()
@@ -56,6 +30,9 @@ function Header() {
             <Button color="inherit" variant="text" size="large" href="#mission">
               Mission
             </Button>
+            <NextLink href="/auth/login" passHref legacyBehavior>
+              <Button size="large">Login</Button>
+            </NextLink>
           </Stack>
         </Container>
       </Toolbar>
@@ -82,7 +59,11 @@ function Hero() {
         <Container disableGutters>
           <Stack alignItems="center" textAlign="center" spacing={8} mx={2} my={16}>
             <Typography variant="h3">Coming Soon!</Typography>
-            <NextImage alt="Logo" width={540} height={250} src={logoUrl} />
+            <Box width="100%" maxWidth={540}>
+              <Box position="relative" paddingTop="46%">
+                <NextImage fill alt="Logo" src={logoUrl} style={{ objectFit: 'contain' }} />
+              </Box>
+            </Box>
             <Typography variant="h5">
               A tool to help schools educate students on how to pivot negative behavior online
             </Typography>

@@ -1,5 +1,5 @@
-import { dividerClasses, outlinedInputClasses } from '@mui/material'
-import { common, grey, red } from '@mui/material/colors'
+import { dividerClasses } from '@mui/material'
+import { common, grey } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
 
@@ -16,10 +16,7 @@ export function createTheme(isDark: boolean) {
     palette: {
       mode: isDark ? 'dark' : 'light',
       primary: {
-        main: '#556cd6',
-      },
-      error: {
-        main: red.A400,
+        main: '#dd3333',
       },
       background: {
         default: isDark ? common.black : grey[100],
@@ -30,7 +27,7 @@ export function createTheme(isDark: boolean) {
       fontFamily: roboto.style.fontFamily,
     },
     shape: {
-      borderRadius: 6,
+      borderRadius: 4,
     },
     components: {
       MuiCssBaseline: {
@@ -84,13 +81,7 @@ export function createTheme(isDark: boolean) {
       MuiTextField: {
         defaultProps: {
           size: 'small',
-        },
-        styleOverrides: {
-          root: ({ theme }) => ({
-            ['.' + outlinedInputClasses.root]: {
-              background: theme.palette.background.paper,
-            },
-          }),
+          variant: 'standard',
         },
       },
       MuiButton: {
