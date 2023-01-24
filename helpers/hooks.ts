@@ -1,5 +1,5 @@
 import { useMediaQuery } from '@mui/material'
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 export function useCallbackRef<T>(callback: T) {
   const callbackRef = useRef(callback)
@@ -35,4 +35,27 @@ export function useOnTop() {
   }, [])
 
   return { onTop }
+}
+
+export function useSessionStorage(key: string) {
+  const [value, setValue] = useState<string | null>()
+
+  useEffect(() => {
+    setValue(sessionStorage.getItem(key))
+  }, [key])
+
+  const changeValue = useCallback(
+    (value: string | null) => {
+      setValue(value)
+
+      if (typeof value === 'string') {
+        sessionStorage.setItem(key, value)
+      } else {
+        sessionStorage.removeItem(key)
+      }
+    },
+    [key]
+  )
+
+  return [value, changeValue] as const
 }

@@ -24,8 +24,9 @@ import {
 import Head from 'next/head'
 import NextImage from 'next/image'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
+import { useSessionStorage } from '../../helpers/hooks'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
@@ -41,32 +42,7 @@ function SidebarTeam() {
   return <SidebarLink icon={<GroupIcon />} href="/dashboard/team" title={team.team.name} />
 }
 
-function useSessionStorage(key: string) {
-  const [value, setValue] = useState<string | null>()
-
-  useEffect(() => {
-    setValue(sessionStorage.getItem(key))
-  }, [key])
-
-  const changeValue = useCallback(
-    (value: string | null) => {
-      setValue(value)
-
-      if (typeof value === 'string') {
-        sessionStorage.setItem(key, value)
-      } else {
-        sessionStorage.removeItem(key)
-      }
-    },
-    [key]
-  )
-
-  return [value, changeValue] as const
-}
-
 function SidebarUser() {
-  const router = useRouter()
-
   const { user, logout } = useUser()
   const { pushAlert } = useAlert()
 
@@ -100,6 +76,17 @@ function SidebarUser() {
         }}
       />
     </>
+  )
+}
+
+function Footer() {
+  return (
+    <Box mt={8}>
+      <Divider />
+      <Typography variant="body2" my={2} color="text.disabled">
+        &copy; 2022 - {new Date().getFullYear()} {Config.appName}
+      </Typography>
+    </Box>
   )
 }
 
@@ -192,6 +179,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
           {open && !isMobile && <Box width={280} flexShrink={0} />}
           <Container maxWidth="xl" sx={{ py: 2 }}>
             {props.children}
+            <Footer />
           </Container>
         </Stack>
       </Box>
@@ -253,7 +241,7 @@ export function withDashboardLayout(
 ) {
   return function Wrapper(props: any) {
     return (
-      <DashboardLayout {...layoutProps} sidebar={<Sidebar />} title={[layoutProps.title, 'Dashboard'].join(' | ')}>
+      <DashboardLayout {...layoutProps} sidebar={<Sidebar />} title={[layoutProps.title, Config.appName].join(' | ')}>
         <Component {...props} />
       </DashboardLayout>
     )
