@@ -1,5 +1,5 @@
 import { dividerClasses } from '@mui/material'
-import { common, grey } from '@mui/material/colors'
+import { common, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
 
@@ -15,12 +15,15 @@ export function createTheme(isDark: boolean) {
   return createMUITheme({
     palette: {
       mode: isDark ? 'dark' : 'light',
-      primary: {
-        main: '#dd3333',
-      },
       background: {
         default: isDark ? common.black : grey[100],
         paper: isDark ? grey[900] : common.white,
+      },
+      primary: {
+        main: '#dd3333',
+      },
+      error: {
+        main: red.A400,
       },
     },
     typography: {

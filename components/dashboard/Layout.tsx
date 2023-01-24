@@ -22,6 +22,7 @@ import {
   useTheme,
 } from '@mui/material'
 import Head from 'next/head'
+import NextImage from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
@@ -162,6 +163,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
             <Typography variant="h6" noWrap flexGrow={1}>
               {Config.appName}
             </Typography>
+            <NextImage alt="Logo" width={108} height={50} src="/images/logo-white.png" />
           </Toolbar>
         </AppBar>
         <Toolbar />

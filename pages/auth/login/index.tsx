@@ -49,12 +49,15 @@ export default function Login() {
             label="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
+          <LoadingButton type="submit" loading={loading}>
+            Login
+          </LoadingButton>
           <Stack spacing={1}>
-            <LoadingButton type="submit" loading={loading}>
-              Login
-            </LoadingButton>
             <NextLink href="/auth/register">
               <Button variant="text">Do you need an account?</Button>
+            </NextLink>
+            <NextLink href="/auth/reset">
+              <Button variant="text">Forgot your password?</Button>
             </NextLink>
           </Stack>
         </Stack>

@@ -29,6 +29,11 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
       TransitionProps={{
         onExited: onRemove,
       }}
+      PaperProps={{
+        sx: {
+          border: 'none',
+        },
+      }}
     >
       <form
         onSubmit={(e) => {
