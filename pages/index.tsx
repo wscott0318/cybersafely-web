@@ -21,12 +21,15 @@ function Header() {
         <Container disableGutters>
           <Stack alignItems="center" direction="row" mx={2} my={2}>
             <NextLink href="/">
-              <NextImage alt="Logo" width={108} height={50} src={logoUrl} />
+              <NextImage
+                alt="Logo"
+                src={logoUrl}
+                height={onTop ? 50 : 75}
+                width={onTop ? 108 : 162}
+                style={{ transition: 'all 0.25s linear' }}
+              />
             </NextLink>
             <Box flexGrow={1} />
-            <Button color="inherit" variant="text" size="large" href="#">
-              Home
-            </Button>
             <Button color="inherit" variant="text" size="large" href="#mission">
               Mission
             </Button>
@@ -97,10 +100,10 @@ function Footer() {
   const logoUrl = useLogoUrl()
 
   return (
-    <Box textAlign="center" bgcolor="background.paper" py={4}>
+    <Box textAlign="center" bgcolor="background.paper" py={4} component="footer">
       <Container disableGutters>
         <Stack mx={2} alignItems="center" textAlign="center">
-          <NextImage alt="Logo" width={216} height={100} src={logoUrl} />
+          <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
           <Typography>
             &copy; 2022 - {new Date().getFullYear()} {Config.appName}
           </Typography>
@@ -114,8 +117,10 @@ export default function Landing() {
   return (
     <Box>
       <Header />
-      <Hero />
-      <Mission />
+      <Box component="main">
+        <Hero />
+        <Mission />
+      </Box>
       <Footer />
     </Box>
   )
