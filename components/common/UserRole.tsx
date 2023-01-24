@@ -5,6 +5,19 @@ import { Chip, Tooltip } from '@mui/material'
 import { useMemo } from 'react'
 import { Role, RoleStatus } from '../../types/graphql'
 
+export function userRoleDisplayText(role: Role) {
+  switch (role) {
+    case 'STAFF':
+      return 'Staff'
+    case 'COACH':
+      return 'Coach'
+    case 'ATHLETE':
+      return 'Athlete'
+    case 'PARENT':
+      return 'Parent'
+  }
+}
+
 type UserRoleProps = {
   role: Role
   status: RoleStatus
@@ -12,18 +25,7 @@ type UserRoleProps = {
 }
 
 export function UserRole({ role, status, onDelete }: UserRoleProps) {
-  const label = useMemo(() => {
-    switch (role) {
-      case 'STAFF':
-        return 'Staff'
-      case 'COACH':
-        return 'Coach'
-      case 'ATHLETE':
-        return 'Athlete'
-      case 'PARENT':
-        return 'Parent'
-    }
-  }, [role])
+  const label = useMemo(() => userRoleDisplayText(role), [role])
 
   const color = useMemo(() => {
     switch (status) {

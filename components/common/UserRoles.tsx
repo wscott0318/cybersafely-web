@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { namedOperations, useRemoveRoleMutation, UserRole as UserRoleType } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
-import { UserRole } from './UserRole'
+import { UserRole, userRoleDisplayText } from './UserRole'
 
 type UserRolesProps = {
   roles: Pick<UserRoleType, 'id' | 'role' | 'status'>[]
@@ -28,7 +28,7 @@ export function UserRoles({ roles, canRemove }: UserRolesProps) {
                     pushAlert({
                       type: 'confirm',
                       title: 'Remove Role',
-                      message: `Are you sure you want to remove role "${role}"`,
+                      message: `Are you sure you want to remove role: "${userRoleDisplayText(role)}"?`,
                       confirm: () => {
                         removeRole({ variables: { id } })
                       },

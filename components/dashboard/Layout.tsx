@@ -81,7 +81,7 @@ function SidebarUser() {
 
 function Footer() {
   return (
-    <Box mt={8}>
+    <Box mt={8} textAlign="center">
       <Divider />
       <Typography variant="body2" my={2} color="text.disabled">
         &copy; 2022 - {new Date().getFullYear()} {Config.appName}
@@ -144,7 +144,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
       <Box minHeight="100vh" display="flex" flexDirection="column">
         <AppBar sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}>
           <Toolbar disableGutters sx={{ px: 2 }}>
-            <IconButton edge="start" color="inherit" sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
+            <IconButton color="inherit" sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap flexGrow={1}>
