@@ -1,4 +1,5 @@
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
 import GroupIcon from '@mui/icons-material/GroupOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
@@ -7,6 +8,7 @@ import PersonIcon from '@mui/icons-material/PersonOutlined'
 import {
   Alert,
   AppBar,
+  Avatar,
   Box,
   CircularProgress,
   Container,
@@ -14,35 +16,30 @@ import {
   Drawer,
   IconButton,
   List,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
   Snackbar,
   Stack,
   Toolbar,
   Typography,
-  useMediaQuery,
-  useTheme,
 } from '@mui/material'
 import Head from 'next/head'
 import NextImage from 'next/image'
+import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
-import { useSessionStorage } from '../../helpers/hooks'
+import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
+import { DropDownButton } from '../common/DropDownButton'
+import { NextLink as NextLinkLegacy } from '../common/NextLink'
 import { SidebarLink } from './SidebarLink'
 
-function SidebarTeam() {
+function HeaderAccount() {
   const team = useTeam()
-
-  if (!team) {
-    return null
-  }
-
-  return <SidebarLink icon={<GroupIcon />} href="/dashboard/team" title={team.team.name} />
-}
-
-function SidebarUser() {
   const { user, logout } = useUser()
   const { pushAlert } = useAlert()
 
@@ -59,22 +56,54 @@ function SidebarUser() {
           Please confirm your e-mail address at <b>{user.email}</b>.
         </Alert>
       </Snackbar>
-      <SidebarLink icon={<AccountIcon />} href="/dashboard/profile" title={user.name} />
-      <SidebarLink
-        title="Logout"
-        color="error.main"
-        icon={<LogoutIcon />}
-        onClick={() => {
-          pushAlert({
-            type: 'confirm',
-            title: 'Logout',
-            message: 'Are you sure you want to logout?',
-            confirm: () => {
-              logout()
-            },
-          })
-        }}
-      />
+      <DropDownButton
+        size="large"
+        variant="text"
+        color="inherit"
+        title={user.name}
+        startIcon={<Avatar sx={{ width: 24, height: 24 }} />}
+      >
+        {team && <MenuItem disabled>Team</MenuItem>}
+        {team && (
+          <NextLinkLegacy href="/dashboard/team">
+            <MenuItem>
+              <ListItemIcon>
+                <GroupIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{team.team.name}</ListItemText>
+            </MenuItem>
+          </NextLinkLegacy>
+        )}
+        <MenuItem disabled>Profile</MenuItem>
+        <NextLinkLegacy href="/dashboard/profile">
+          <MenuItem>
+            <ListItemIcon>
+              <AccountIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{user.name}</ListItemText>
+          </MenuItem>
+        </NextLinkLegacy>
+        <MenuItem
+          sx={(theme) => ({
+            color: theme.palette.error.main,
+          })}
+          onClick={() => {
+            pushAlert({
+              type: 'confirm',
+              title: 'Logout',
+              message: 'Are you sure you want to logout?',
+              confirm: () => {
+                logout()
+              },
+            })
+          }}
+        >
+          <ListItemIcon>
+            <LogoutIcon fontSize="small" color="error" />
+          </ListItemIcon>
+          <ListItemText>Logout</ListItemText>
+        </MenuItem>
+      </DropDownButton>
     </>
   )
 }
@@ -99,8 +128,8 @@ export type DashboardLayoutProps = {
 
 export function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter()
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const logoUrl = useLogoUrl()
+  const { isMobile } = useMobile()
 
   const [open, setOpen] = useState(true)
 
@@ -142,38 +171,56 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         <title>{props.title}</title>
       </Head>
       <Box minHeight="100vh" display="flex" flexDirection="column">
-        <AppBar sx={(theme) => ({ zIndex: theme.zIndex.drawer + 1 })}>
+        <AppBar
+          color="transparent"
+          sx={(theme) => ({
+            width: 'unset',
+            zIndex: theme.zIndex.drawer - 1,
+            left: open && !isMobile ? 280 : 0,
+          })}
+        >
           <Toolbar disableGutters sx={{ px: 2 }}>
             <IconButton color="inherit" sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap flexGrow={1}>
-              {Config.appName}
+              {props.title}
             </Typography>
-            <NextImage alt="Logo" width={108} height={50} src="/images/logo-white.png" />
+            <HeaderAccount />
           </Toolbar>
         </AppBar>
         <Toolbar />
         <Stack direction="row" spacing={0} flexGrow={1}>
           <Drawer open={open} onClose={() => setOpen(false)} variant={type} PaperProps={{ sx: { border: 'none' } }}>
-            <Toolbar />
             <Stack
               width={280}
               spacing={0}
               flexGrow={1}
               overflow="auto"
               borderRight={1}
+              position="relative"
               borderColor="divider"
               flexDirection="column"
               bgcolor="background.paper"
             >
+              {isMobile && (
+                <IconButton
+                  onClick={() => setOpen(false)}
+                  sx={(theme) => ({
+                    position: 'absolute',
+                    top: theme.spacing(1),
+                    right: theme.spacing(1),
+                  })}
+                >
+                  <CloseIcon />
+                </IconButton>
+              )}
+              <Box p={2}>
+                <NextLink href="/">
+                  <NextImage alt="Logo" width={108} height={50} src={logoUrl} />
+                </NextLink>
+              </Box>
               {props.sidebar}
-              <Box flexGrow={1} />
-              <Divider />
-              <List>
-                <SidebarTeam />
-                <SidebarUser />
-              </List>
             </Stack>
           </Drawer>
           {open && !isMobile && <Box width={280} flexShrink={0} />}

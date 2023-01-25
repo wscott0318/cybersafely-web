@@ -1,61 +1,96 @@
 import { LoadingButton } from '@mui/lab'
-import { Button, Stack, TextField, Typography } from '@mui/material'
+import { Divider, Link, Stack, TextField, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { CenteredLayout } from '../../../components/common/CenteredLayout'
+import { z } from 'zod'
+import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
+import { useForm } from '../../../helpers/form'
 import { useRegisterMutation } from '../../../types/graphql'
 
-export default function Register() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [userName, setUserName] = useState('')
-  const [teamName, setTeamName] = useState('')
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(4),
+  user: z.object({
+    name: z.string().min(4),
+  }),
+  team: z.object({
+    name: z.string().min(4),
+  }),
+})
 
+export default function Register() {
   const router = useRouter()
+  const form = useForm(schema)
 
   const [register, { loading }] = useRegisterMutation({
-    variables: {
-      email,
-      password,
-      user: { name: userName },
-      team: { name: teamName },
-    },
     onCompleted() {
       router.push('/auth/login')
     },
   })
 
   return (
-    <CenteredLayout>
+    <CoverLayout>
       <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          register()
-        }}
+        onSubmit={form.onSubmit((variables) => {
+          register({ variables })
+        })}
       >
-        <Stack>
-          <Typography variant="h5">Register</Typography>
-          <TextField required value={userName} label="Name" onChange={(e) => setUserName(e.target.value)} />
-          <TextField required type="email" value={email} label="E-mail" onChange={(e) => setEmail(e.target.value)} />
+        <Stack spacing={4}>
+          <Typography variant="h4">Register</Typography>
           <TextField
             required
-            type="password"
-            value={password}
-            label="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            label="Name"
+            size="medium"
+            variant="outlined"
+            error={form.hasError('user.name')}
+            value={form.value.user?.name ?? ''}
+            helperText={form.getError('user.name')}
+            onChange={(e) => form.onChange({ user: { name: e.target.value } })}
           />
-          <TextField required value={teamName} label="Team Name" onChange={(e) => setTeamName(e.target.value)} />
-          <Stack spacing={1}>
-            <LoadingButton type="submit" loading={loading}>
-              Register
-            </LoadingButton>
+          <TextField
+            required
+            type="email"
+            size="medium"
+            label="E-mail"
+            variant="outlined"
+            error={form.hasError('email')}
+            value={form.value.email ?? ''}
+            helperText={form.getError('email')}
+            onChange={(e) => form.onChange({ email: e.target.value })}
+          />
+          <TextField
+            required
+            size="medium"
+            type="password"
+            label="Password"
+            variant="outlined"
+            error={form.hasError('password')}
+            value={form.value.password ?? ''}
+            helperText={form.getError('password')}
+            onChange={(e) => form.onChange({ password: e.target.value })}
+          />
+          <TextField
+            required
+            size="medium"
+            label="Team Name"
+            variant="outlined"
+            error={form.hasError('team.name')}
+            value={form.value.team?.name ?? ''}
+            helperText={form.getError('team.name')}
+            onChange={(e) => form.onChange({ team: { name: e.target.value } })}
+          />
+          <LoadingButton type="submit" loading={loading} size="large">
+            Register
+          </LoadingButton>
+          <Divider />
+          <Typography>
+            Already have an account?{' '}
             <NextLink href="/auth/login">
-              <Button variant="text">Already have an account?</Button>
+              <Link>Sign in</Link>
             </NextLink>
-          </Stack>
+          </Typography>
         </Stack>
       </form>
-    </CenteredLayout>
+    </CoverLayout>
   )
 }

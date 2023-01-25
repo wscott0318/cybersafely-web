@@ -1,17 +1,21 @@
 import { LoadingButton } from '@mui/lab'
 import { Stack, TextField, Typography } from '@mui/material'
-import { useState } from 'react'
-import { CenteredLayout } from '../../../components/common/CenteredLayout'
+import { z } from 'zod'
+import { CoverLayout } from '../../../components/common/CoverLayout'
+import { useForm } from '../../../helpers/form'
 import { useRequestResetPasswordMutation } from '../../../types/graphql'
 import { useAlert } from '../../../utils/context/alert'
 
+const schema = z.object({
+  email: z.string().email(),
+})
+
 export default function ResetPassword() {
+  const form = useForm(schema)
+
   const { pushAlert } = useAlert()
 
-  const [email, setEmail] = useState('')
-
   const [reset, { loading }] = useRequestResetPasswordMutation({
-    variables: { email },
     onCompleted: () => {
       pushAlert({
         type: 'alert',
@@ -22,28 +26,31 @@ export default function ResetPassword() {
   })
 
   return (
-    <CenteredLayout>
+    <CoverLayout>
       <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          reset()
-        }}
+        onSubmit={form.onSubmit((variables) => {
+          reset({ variables })
+        })}
       >
-        <Stack>
-          <Typography variant="h5">Reset</Typography>
+        <Stack spacing={4}>
+          <Typography variant="h4">Reset</Typography>
           <TextField
             required
             autoFocus
             type="email"
-            value={email}
+            size="medium"
             label="E-mail"
-            onChange={(e) => setEmail(e.target.value)}
+            variant="outlined"
+            error={form.hasError('email')}
+            value={form.value.email ?? ''}
+            helperText={form.getError('email')}
+            onChange={(e) => form.onChange({ email: e.target.value })}
           />
-          <LoadingButton type="submit" loading={loading}>
+          <LoadingButton type="submit" loading={loading} size="large">
             Reset
           </LoadingButton>
         </Stack>
       </form>
-    </CenteredLayout>
+    </CoverLayout>
   )
 }

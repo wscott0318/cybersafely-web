@@ -6,6 +6,7 @@ import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { InviteEmailForm } from '../../../../components/form/InviteEmailForm'
 import { namedOperations, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
 import { useAlert } from '../../../../utils/context/alert'
 
@@ -69,15 +70,14 @@ function Users() {
           <Button
             fullWidth
             startIcon={<AddIcon />}
-            onClick={async () => {
+            onClick={() => {
               pushAlert({
-                type: 'result',
+                type: 'custom',
                 title: 'Invite Staff',
                 message: 'Enter an e-mail below',
-                label: 'E-mail',
-                resultType: 'email',
-                result: (email) => {
-                  inviteStaff({ variables: { email } })
+                content: InviteEmailForm,
+                result: (variables) => {
+                  inviteStaff({ variables })
                 },
               })
             }}

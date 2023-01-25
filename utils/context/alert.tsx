@@ -19,7 +19,9 @@ type Alert<P> = {
     }
   | {
       type: 'custom'
-      content: React.ForwardRefExoticComponent<React.RefAttributes<{ onSubmit: () => P }>>
+      content: React.ForwardRefExoticComponent<
+        React.RefAttributes<{ onSubmit: (callback: (value: P) => void) => void }>
+      >
       result: (value: P) => void
     }
 )

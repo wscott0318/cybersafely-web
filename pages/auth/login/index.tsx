@@ -1,19 +1,22 @@
 import { LoadingButton } from '@mui/lab'
-import { Button, Stack, TextField, Typography } from '@mui/material'
+import { Divider, Link, Stack, TextField, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
-import { CenteredLayout } from '../../../components/common/CenteredLayout'
+import { z } from 'zod'
+import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
+import { useForm } from '../../../helpers/form'
 import { useLoginMutation } from '../../../types/graphql'
 
-export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+const schema = z.object({
+  email: z.string().email(),
+  password: z.string().min(4),
+})
 
+export default function Login() {
   const router = useRouter()
+  const form = useForm(schema)
 
   const [login, { loading }] = useLoginMutation({
-    variables: { email, password },
     onCompleted: async (data, options) => {
       const { token } = data.login
       localStorage.setItem('token', token)
@@ -25,43 +28,52 @@ export default function Login() {
   })
 
   return (
-    <CenteredLayout>
+    <CoverLayout>
       <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          login()
-        }}
+        onSubmit={form.onSubmit((variables) => {
+          login({ variables })
+        })}
       >
-        <Stack>
-          <Typography variant="h5">Login</Typography>
+        <Stack spacing={4}>
+          <Typography variant="h4">Login</Typography>
           <TextField
             required
             autoFocus
             type="email"
-            value={email}
+            size="medium"
             label="E-mail"
-            onChange={(e) => setEmail(e.target.value)}
+            variant="outlined"
+            error={form.hasError('email')}
+            value={form.value.email ?? ''}
+            helperText={form.getError('email')}
+            onChange={(e) => form.onChange({ email: e.target.value })}
           />
           <TextField
             required
+            size="medium"
             type="password"
-            value={password}
             label="Password"
-            onChange={(e) => setPassword(e.target.value)}
+            variant="outlined"
+            error={form.hasError('password')}
+            value={form.value.password ?? ''}
+            helperText={form.getError('password')}
+            onChange={(e) => form.onChange({ password: e.target.value })}
           />
-          <LoadingButton type="submit" loading={loading}>
+          <LoadingButton type="submit" loading={loading} size="large">
             Login
           </LoadingButton>
-          <Stack spacing={1}>
+          <NextLink href="/auth/reset">
+            <Link textAlign="right">Forgot password?</Link>
+          </NextLink>
+          <Divider />
+          <Typography>
+            Don’t have an account?{' '}
             <NextLink href="/auth/register">
-              <Button variant="text">Do you need an account?</Button>
+              <Link>Register</Link>
             </NextLink>
-            <NextLink href="/auth/reset">
-              <Button variant="text">Forgot your password?</Button>
-            </NextLink>
-          </Stack>
+          </Typography>
         </Stack>
       </form>
-    </CenteredLayout>
+    </CoverLayout>
   )
 }

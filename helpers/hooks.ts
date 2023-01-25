@@ -1,4 +1,4 @@
-import { useMediaQuery } from '@mui/material'
+import { useMediaQuery, useTheme } from '@mui/material'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 export function useCallbackRef<T>(callback: T) {
@@ -58,4 +58,12 @@ export function useSessionStorage(key: string) {
   )
 
   return [value, changeValue] as const
+}
+
+export function useMobile() {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'))
+
+  return { isMobile, isTablet }
 }

@@ -1,4 +1,4 @@
-import { dividerClasses } from '@mui/material'
+import { dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
@@ -46,9 +46,14 @@ export function createTheme(isDark: boolean) {
           variant: 'outlined',
         },
         styleOverrides: {
-          root: ({ theme }) => ({
+          colorPrimary: ({ theme }) => ({
             border: 'none',
             background: theme.palette.primary.main,
+          }),
+          colorTransparent: ({ theme }) => ({
+            border: 'none',
+            background: theme.palette.background.paper,
+            borderBottom: '1px solid ' + theme.palette.divider,
           }),
         },
       },
@@ -86,6 +91,13 @@ export function createTheme(isDark: boolean) {
           size: 'small',
           variant: 'standard',
         },
+        styleOverrides: {
+          root: ({ theme }) => ({
+            ['.' + outlinedInputClasses.root]: {
+              background: theme.palette.background.paper,
+            },
+          }),
+        },
       },
       MuiButton: {
         defaultProps: {
@@ -103,6 +115,11 @@ export function createTheme(isDark: boolean) {
       MuiCheckbox: {
         defaultProps: {
           size: 'small',
+        },
+      },
+      MuiLink: {
+        defaultProps: {
+          underline: 'hover',
         },
       },
       // @ts-ignore

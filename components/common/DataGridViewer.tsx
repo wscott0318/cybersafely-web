@@ -1,21 +1,10 @@
 import { QueryResult } from '@apollo/client'
 import BackIcon from '@mui/icons-material/ArrowBackOutlined'
-import {
-  Alert,
-  Box,
-  Grid,
-  IconButton,
-  LinearProgress,
-  Pagination,
-  Stack,
-  Typography,
-  useMediaQuery,
-  useTheme,
-} from '@mui/material'
+import { Alert, Box, Grid, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useCallbackRef } from '../../helpers/hooks'
+import { useCallbackRef, useMobile } from '../../helpers/hooks'
 
 function composeObjectFromKeyValue(key: string, value: any) {
   let obj = value
@@ -87,9 +76,7 @@ export function DataGridViewer<
   TData extends { page: { index: number; count: number; total: number }; nodes: Array<GridValidRowModel> }
 >(props: DataGridViewerProps<TQuery, TData, InferNodeType<TData>>) {
   const router = useRouter()
-
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const { isMobile } = useMobile()
 
   const [data, setData] = useState<TData>()
   const [index, setIndex] = useState(0)

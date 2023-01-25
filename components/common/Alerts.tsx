@@ -7,7 +7,7 @@ type SimpleAlertProps = {
 }
 
 function SimpleAlert({ alert }: SimpleAlertProps) {
-  const ref = useRef<{ onSubmit: () => any }>(null)
+  const ref = useRef<{ onSubmit: (callback: (value: any) => void) => void }>(null)
 
   const [open, setOpen] = useState(true)
   const [input, setInput] = useState('')
@@ -48,11 +48,11 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
 
             case 'custom':
               if (ref.current) {
-                const value = ref.current.onSubmit()
-                alert.result(value)
+                ref.current.onSubmit((value) => {
+                  alert.result(value)
+                  onClose()
+                })
               }
-
-              onClose()
 
               break
 

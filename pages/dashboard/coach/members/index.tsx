@@ -8,6 +8,7 @@ import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { MemberActions } from '../../../../components/data/MemberActions'
+import { InviteEmailForm } from '../../../../components/form/InviteEmailForm'
 import {
   MembersQuery,
   namedOperations,
@@ -93,15 +94,14 @@ function Members() {
         <DataGridActions>
           <DropDownButton startIcon={<AddIcon />} title="Invite" fullWidth>
             <MenuItem
-              onClick={async () => {
+              onClick={() => {
                 pushAlert({
-                  type: 'result',
+                  type: 'custom',
                   title: 'Invite Coach',
                   message: 'Enter an e-mail below',
-                  label: 'E-mail',
-                  resultType: 'email',
-                  result: (email) => {
-                    inviteCoach({ variables: { email } })
+                  content: InviteEmailForm,
+                  result: (variables) => {
+                    inviteCoach({ variables })
                   },
                 })
               }}
@@ -109,15 +109,14 @@ function Members() {
               Invite Coach
             </MenuItem>
             <MenuItem
-              onClick={async () => {
+              onClick={() => {
                 pushAlert({
-                  type: 'result',
+                  type: 'custom',
                   title: 'Invite Athlete',
                   message: 'Enter an e-mail below',
-                  label: 'E-mail',
-                  resultType: 'email',
-                  result: (email) => {
-                    inviteAthlete({ variables: { email } })
+                  content: InviteEmailForm,
+                  result: (variables) => {
+                    inviteAthlete({ variables })
                   },
                 })
               }}

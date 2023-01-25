@@ -6,7 +6,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react'
 type DropDownButtonProps = {
   title: string
   children: React.ReactNode
-} & Pick<ButtonProps, 'startIcon' | 'variant' | 'size' | 'fullWidth'>
+} & Pick<ButtonProps, 'startIcon' | 'variant' | 'size' | 'fullWidth' | 'color'>
 
 export function DropDownButton(props: DropDownButtonProps) {
   const anchorEl = useRef<HTMLButtonElement>(null)
@@ -45,6 +45,7 @@ export function DropDownButton(props: DropDownButtonProps) {
         {...buttonProps}
         ref={anchorEl}
         onClick={handleClick}
+        sx={{ flexShrink: 0 }}
         endIcon={open ? <ArrowUpIcon /> : <ArrowDownIcon />}
       >
         {title}
@@ -54,7 +55,10 @@ export function DropDownButton(props: DropDownButtonProps) {
         onClose={handleClose}
         anchorEl={anchorEl.current}
         PaperProps={{ sx: { mt: 1, mb: 1 } }}
-        MenuListProps={{ sx: { minWidth: anchorEl.current?.clientWidth } }}
+        MenuListProps={{
+          disablePadding: false,
+          sx: { minWidth: anchorEl.current?.clientWidth },
+        }}
       >
         {items}
       </Menu>

@@ -52,9 +52,6 @@ export function SearchBar(props: SearchBarProps) {
       onChange={onChange}
       placeholder="Quick search..."
       sx={(theme) => ({
-        ['.' + outlinedInputClasses.root]: {
-          background: theme.palette.background.paper,
-        },
         ['.' + outlinedInputClasses.input]: {
           padding: `${theme.spacing(0.9)} ${theme.spacing(1)}`,
         },
