@@ -63,7 +63,11 @@ function HeaderAccount() {
         title={user.name}
         startIcon={<Avatar sx={{ width: 24, height: 24 }} />}
       >
-        {team && <MenuItem disabled>Team</MenuItem>}
+        {team && (
+          <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
+            Team
+          </MenuItem>
+        )}
         {team && (
           <NextLinkLegacy href="/dashboard/team">
             <MenuItem>
@@ -74,7 +78,9 @@ function HeaderAccount() {
             </MenuItem>
           </NextLinkLegacy>
         )}
-        <MenuItem disabled>Profile</MenuItem>
+        <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
+          Profile
+        </MenuItem>
         <NextLinkLegacy href="/dashboard/profile">
           <MenuItem>
             <ListItemIcon>

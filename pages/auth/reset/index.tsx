@@ -33,7 +33,7 @@ export default function ResetPassword() {
         })}
       >
         <Stack spacing={4}>
-          <Typography variant="h4">Reset</Typography>
+          <Typography variant="h4">Forgot Password</Typography>
           <TextField
             required
             autoFocus
@@ -47,7 +47,7 @@ export default function ResetPassword() {
             onChange={(e) => form.onChange({ email: e.target.value })}
           />
           <LoadingButton type="submit" loading={loading} size="large">
-            Reset
+            Submit
           </LoadingButton>
         </Stack>
       </form>

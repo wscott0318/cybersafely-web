@@ -36,7 +36,7 @@ export default function Activate({ passwordToken }: Props) {
         })}
       >
         <Stack spacing={4}>
-          <Typography variant="h4">Activate</Typography>
+          <Typography variant="h4">Finish Registration</Typography>
           <TextField
             required
             label="Name"
@@ -59,7 +59,7 @@ export default function Activate({ passwordToken }: Props) {
             onChange={(e) => form.onChange({ password: e.target.value })}
           />
           <LoadingButton type="submit" loading={loading} size="large">
-            Activate
+            Submit
           </LoadingButton>
         </Stack>
       </form>

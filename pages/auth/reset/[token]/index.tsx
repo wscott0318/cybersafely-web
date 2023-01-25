@@ -33,20 +33,20 @@ export default function ResetPassword({ passwordToken }: Props) {
         })}
       >
         <Stack spacing={4}>
-          <Typography variant="h4">Reset Password</Typography>
+          <Typography variant="h4">Change Password</Typography>
           <TextField
             required
             size="medium"
             type="password"
-            label="Password"
             variant="outlined"
+            label="New Password"
             error={form.hasError('password')}
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
             onChange={(e) => form.onChange({ password: e.target.value })}
           />
           <LoadingButton type="submit" loading={loading} size="large">
-            Reset Password
+            Submit
           </LoadingButton>
         </Stack>
       </form>
