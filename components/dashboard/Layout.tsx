@@ -9,6 +9,7 @@ import MenuIcon from '@mui/icons-material/MenuOutlined'
 import PersonIcon from '@mui/icons-material/PersonOutlined'
 import {
   Alert,
+  alpha,
   AppBar,
   Avatar,
   Box,
@@ -88,14 +89,14 @@ function HeaderAccount() {
           </NextLinkLegacy>
         )}
         <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
-          Profile
+          Account
         </MenuItem>
         <NextLinkLegacy href="/dashboard/profile">
           <MenuItem>
             <ListItemIcon>
               <AccountIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText>{user.name}</ListItemText>
+            <ListItemText>Profile</ListItemText>
           </MenuItem>
         </NextLinkLegacy>
         <MenuItem
@@ -199,13 +200,14 @@ export function DashboardLayout(props: DashboardLayoutProps) {
           color="transparent"
           sx={(theme) => ({
             width: 'unset',
+            backdropFilter: 'blur(10px)',
             zIndex: theme.zIndex.drawer - 1,
             left: open && !isMobile ? width : 0,
-            background: theme.palette.background.paper,
+            background: alpha(theme.palette.background.paper, 0.95),
           })}
         >
           <Toolbar disableGutters sx={{ px: 2 }}>
-            <IconButton color="inherit" sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
+            <IconButton sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" noWrap flexGrow={1}>
@@ -216,7 +218,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         </AppBar>
         <Toolbar />
         <Stack direction="row" spacing={0} flexGrow={1}>
-          <Drawer open={open} onClose={() => setOpen(false)} variant={type} PaperProps={{ sx: { border: 'none' } }}>
+          <Drawer open={open} variant={type} onClose={() => setOpen(false)} PaperProps={{ sx: { border: 'none' } }}>
             <Stack
               spacing={0}
               flexGrow={1}

@@ -1,8 +1,10 @@
 import {
+  alpha,
   AppBar,
   Box,
   Button,
   Container,
+  Divider,
   FormControl,
   FormHelperText,
   InputLabel,
@@ -18,31 +20,34 @@ import NextLink from 'next/link'
 import { z } from 'zod'
 import { Config } from '../helpers/config'
 import { useForm } from '../helpers/form'
-import { useLogoUrl, useOnTop } from '../helpers/hooks'
+import { useLogoUrl, useMobile, useOnTop } from '../helpers/hooks'
 import { useAlert } from '../utils/context/alert'
 
 function Header() {
-  const { isOnTop } = useOnTop()
-
   const logoUrl = useLogoUrl()
+  const { isOnTop } = useOnTop(50)
+  const { isMobile } = useMobile()
 
   return (
     <AppBar
+      variant="elevation"
+      elevation={isOnTop ? 0 : 2}
       sx={(theme) => ({
         transition: 'all 0.25s linear',
         color: theme.palette.text.primary,
-        background: isOnTop ? 'transparent' : theme.palette.background.paper,
+        backdropFilter: isOnTop ? undefined : 'blur(10px)',
+        background: isOnTop ? 'transparent' : alpha(theme.palette.background.paper, 0.95),
       })}
     >
       <Toolbar disableGutters>
         <Container disableGutters>
-          <Stack alignItems="center" direction="row" mx={2} my={2}>
+          <Stack alignItems="center" direction="row" px={2} py={2}>
             <NextLink href="/">
               <NextImage
                 alt="Logo"
                 src={logoUrl}
-                height={isOnTop ? 50 : 75}
-                width={isOnTop ? 108 : 162}
+                height={isOnTop ? 75 : 50}
+                width={isOnTop ? 162 : 108}
                 style={{ transition: 'all 0.25s linear' }}
               />
             </NextLink>
@@ -81,7 +86,7 @@ function Hero() {
       />
       <Box minHeight="100vh" display="flex" alignItems="center">
         <Container disableGutters>
-          <Stack alignItems="center" textAlign="center" spacing={8} mx={2} my={16}>
+          <Stack alignItems="center" textAlign="center" spacing={8} px={2} py={16}>
             <Typography variant="h3">Coming Soon!</Typography>
             <Box width="100%" maxWidth={540}>
               <Box position="relative" paddingTop="46%">
@@ -104,7 +109,7 @@ function Hero() {
 function Mission() {
   return (
     <Container id="mission" disableGutters>
-      <Stack mx={2} my={16} alignItems="center" textAlign="center">
+      <Stack px={2} py={16} alignItems="center" textAlign="center">
         <Typography variant="h4">Our Mission</Typography>
         <Typography variant="h6">
           We are dedicated to support today’s youth by identifying and educating them on how their future can be
@@ -136,7 +141,7 @@ function Contact() {
 
   return (
     <Container id="contact" disableGutters>
-      <Stack mx={2} my={16} alignItems="center" textAlign="center">
+      <Stack px={2} py={16} alignItems="center" textAlign="center">
         <Typography variant="h4">Contact</Typography>
         <Typography variant="h6">Learn More About How Your School Can Help Students Pivot Damaging Behavior</Typography>
         <form
@@ -239,9 +244,6 @@ function Contact() {
             <FormControl required variant="outlined" size="medium" error={form.hasError('describe')}>
               <InputLabel>What best describes your school?</InputLabel>
               <Select
-                required
-                size="medium"
-                variant="outlined"
                 value={form.value.describe ?? ''}
                 label="What best describes your school?"
                 onChange={(e) => form.onChange({ describe: e.target.value })}
@@ -279,7 +281,7 @@ function Footer() {
   return (
     <Box textAlign="center" bgcolor="background.paper" py={4} component="footer">
       <Container disableGutters>
-        <Stack mx={2} alignItems="center" textAlign="center">
+        <Stack px={2} alignItems="center" textAlign="center">
           <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
           <Typography>
             &copy; 2022 - {new Date().getFullYear()} {Config.app.name}
@@ -297,6 +299,7 @@ export default function Landing() {
       <Box component="main">
         <Hero />
         <Mission />
+        <Divider />
         <Contact />
       </Box>
       <Footer />

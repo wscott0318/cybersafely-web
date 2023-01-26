@@ -19,12 +19,12 @@ export function useLogoUrl() {
   }, [isDark])
 }
 
-export function useOnTop() {
+export function useOnTop(offset: number = 0) {
   const [isOnTop, setIsOnTop] = useState(true)
 
   useEffect(() => {
     function onScroll() {
-      setIsOnTop(window.scrollY === 0)
+      setIsOnTop(window.scrollY <= offset)
     }
 
     window.addEventListener('scroll', onScroll)
@@ -32,7 +32,7 @@ export function useOnTop() {
     return () => {
       window.removeEventListener('scroll', onScroll)
     }
-  }, [])
+  }, [offset])
 
   return { isOnTop }
 }
