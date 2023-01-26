@@ -374,6 +374,48 @@ export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }> } };
 
+export type RemoveMemberMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveMemberMutation = { __typename?: 'Mutation', removeMember?: string | null };
+
+export type RemoveParentMutationVariables = Exact<{
+  id: Scalars['ID'];
+  childId: Scalars['ID'];
+}>;
+
+
+export type RemoveParentMutation = { __typename?: 'Mutation', removeParent?: string | null };
+
+export type LeaveTeamMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LeaveTeamMutation = { __typename?: 'Mutation', leaveTeam?: string | null };
+
+export type UpdatePasswordMutationVariables = Exact<{
+  oldPassword: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type UpdatePasswordMutation = { __typename?: 'Mutation', updatePassword?: string | null };
+
+export type UpdateProfileMutationVariables = Exact<{
+  input: UpdateProfileInput;
+}>;
+
+
+export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: string | null };
+
+export type UpdateTeamMutationVariables = Exact<{
+  input: UpdateTeamInput;
+}>;
+
+
+export type UpdateTeamMutation = { __typename?: 'Mutation', updateTeam?: string | null };
+
 export type ActivateMutationVariables = Exact<{
   password: Scalars['String'];
   passwordToken: Scalars['String'];
@@ -442,14 +484,6 @@ export type ParentsQueryVariables = Exact<{
 
 export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus }> }> } };
 
-export type RemoveParentMutationVariables = Exact<{
-  id: Scalars['ID'];
-  childId: Scalars['ID'];
-}>;
-
-
-export type RemoveParentMutation = { __typename?: 'Mutation', removeParent?: string | null };
-
 export type InviteCoachMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -473,21 +507,6 @@ export type ChildrenQueryVariables = Exact<{
 
 export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
-export type UpdatePasswordMutationVariables = Exact<{
-  oldPassword: Scalars['String'];
-  newPassword: Scalars['String'];
-}>;
-
-
-export type UpdatePasswordMutation = { __typename?: 'Mutation', updatePassword?: string | null };
-
-export type UpdateProfileMutationVariables = Exact<{
-  input: UpdateProfileInput;
-}>;
-
-
-export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: string | null };
-
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
   order?: InputMaybe<UserOrder>;
@@ -496,13 +515,6 @@ export type MembersQueryVariables = Exact<{
 
 
 export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus }> }> } };
-
-export type RemoveMemberMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-
-export type RemoveMemberMutation = { __typename?: 'Mutation', removeMember?: string | null };
 
 export type TeamQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -549,18 +561,6 @@ export type UsersQueryVariables = Exact<{
 
 
 export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', name: string } }> }> } };
-
-export type LeaveTeamMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LeaveTeamMutation = { __typename?: 'Mutation', leaveTeam?: string | null };
-
-export type UpdateTeamMutationVariables = Exact<{
-  input: UpdateTeamInput;
-}>;
-
-
-export type UpdateTeamMutation = { __typename?: 'Mutation', updateTeam?: string | null };
 
 
 export const ProfileDocument = gql`
@@ -618,6 +618,193 @@ export function useProfileLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pr
 export type ProfileQueryHookResult = ReturnType<typeof useProfileQuery>;
 export type ProfileLazyQueryHookResult = ReturnType<typeof useProfileLazyQuery>;
 export type ProfileQueryResult = Apollo.QueryResult<ProfileQuery, ProfileQueryVariables>;
+export const RemoveMemberDocument = gql`
+    mutation removeMember($id: ID!) {
+  removeMember(id: $id)
+}
+    `;
+export type RemoveMemberMutationFn = Apollo.MutationFunction<RemoveMemberMutation, RemoveMemberMutationVariables>;
+
+/**
+ * __useRemoveMemberMutation__
+ *
+ * To run a mutation, you first call `useRemoveMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeMemberMutation, { data, loading, error }] = useRemoveMemberMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveMemberMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMemberMutation, RemoveMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveMemberMutation, RemoveMemberMutationVariables>(RemoveMemberDocument, options);
+      }
+export type RemoveMemberMutationHookResult = ReturnType<typeof useRemoveMemberMutation>;
+export type RemoveMemberMutationResult = Apollo.MutationResult<RemoveMemberMutation>;
+export type RemoveMemberMutationOptions = Apollo.BaseMutationOptions<RemoveMemberMutation, RemoveMemberMutationVariables>;
+export const RemoveParentDocument = gql`
+    mutation removeParent($id: ID!, $childId: ID!) {
+  removeParent(id: $id, childId: $childId)
+}
+    `;
+export type RemoveParentMutationFn = Apollo.MutationFunction<RemoveParentMutation, RemoveParentMutationVariables>;
+
+/**
+ * __useRemoveParentMutation__
+ *
+ * To run a mutation, you first call `useRemoveParentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveParentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeParentMutation, { data, loading, error }] = useRemoveParentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      childId: // value for 'childId'
+ *   },
+ * });
+ */
+export function useRemoveParentMutation(baseOptions?: Apollo.MutationHookOptions<RemoveParentMutation, RemoveParentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveParentMutation, RemoveParentMutationVariables>(RemoveParentDocument, options);
+      }
+export type RemoveParentMutationHookResult = ReturnType<typeof useRemoveParentMutation>;
+export type RemoveParentMutationResult = Apollo.MutationResult<RemoveParentMutation>;
+export type RemoveParentMutationOptions = Apollo.BaseMutationOptions<RemoveParentMutation, RemoveParentMutationVariables>;
+export const LeaveTeamDocument = gql`
+    mutation leaveTeam {
+  leaveTeam
+}
+    `;
+export type LeaveTeamMutationFn = Apollo.MutationFunction<LeaveTeamMutation, LeaveTeamMutationVariables>;
+
+/**
+ * __useLeaveTeamMutation__
+ *
+ * To run a mutation, you first call `useLeaveTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLeaveTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [leaveTeamMutation, { data, loading, error }] = useLeaveTeamMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLeaveTeamMutation(baseOptions?: Apollo.MutationHookOptions<LeaveTeamMutation, LeaveTeamMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LeaveTeamMutation, LeaveTeamMutationVariables>(LeaveTeamDocument, options);
+      }
+export type LeaveTeamMutationHookResult = ReturnType<typeof useLeaveTeamMutation>;
+export type LeaveTeamMutationResult = Apollo.MutationResult<LeaveTeamMutation>;
+export type LeaveTeamMutationOptions = Apollo.BaseMutationOptions<LeaveTeamMutation, LeaveTeamMutationVariables>;
+export const UpdatePasswordDocument = gql`
+    mutation updatePassword($oldPassword: String!, $newPassword: String!) {
+  updatePassword(oldPassword: $oldPassword, newPassword: $newPassword)
+}
+    `;
+export type UpdatePasswordMutationFn = Apollo.MutationFunction<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+
+/**
+ * __useUpdatePasswordMutation__
+ *
+ * To run a mutation, you first call `useUpdatePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePasswordMutation, { data, loading, error }] = useUpdatePasswordMutation({
+ *   variables: {
+ *      oldPassword: // value for 'oldPassword'
+ *      newPassword: // value for 'newPassword'
+ *   },
+ * });
+ */
+export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePasswordMutation, UpdatePasswordMutationVariables>(UpdatePasswordDocument, options);
+      }
+export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
+export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
+export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
+export const UpdateProfileDocument = gql`
+    mutation updateProfile($input: UpdateProfileInput!) {
+  updateProfile(input: $input)
+}
+    `;
+export type UpdateProfileMutationFn = Apollo.MutationFunction<UpdateProfileMutation, UpdateProfileMutationVariables>;
+
+/**
+ * __useUpdateProfileMutation__
+ *
+ * To run a mutation, you first call `useUpdateProfileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProfileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProfileMutation, { data, loading, error }] = useUpdateProfileMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProfileMutation, UpdateProfileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateProfileMutation, UpdateProfileMutationVariables>(UpdateProfileDocument, options);
+      }
+export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
+export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
+export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
+export const UpdateTeamDocument = gql`
+    mutation updateTeam($input: UpdateTeamInput!) {
+  updateTeam(input: $input)
+}
+    `;
+export type UpdateTeamMutationFn = Apollo.MutationFunction<UpdateTeamMutation, UpdateTeamMutationVariables>;
+
+/**
+ * __useUpdateTeamMutation__
+ *
+ * To run a mutation, you first call `useUpdateTeamMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateTeamMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateTeamMutation, { data, loading, error }] = useUpdateTeamMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateTeamMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTeamMutation, UpdateTeamMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateTeamMutation, UpdateTeamMutationVariables>(UpdateTeamDocument, options);
+      }
+export type UpdateTeamMutationHookResult = ReturnType<typeof useUpdateTeamMutation>;
+export type UpdateTeamMutationResult = Apollo.MutationResult<UpdateTeamMutation>;
+export type UpdateTeamMutationOptions = Apollo.BaseMutationOptions<UpdateTeamMutation, UpdateTeamMutationVariables>;
 export const ActivateDocument = gql`
     mutation activate($password: String!, $passwordToken: String!, $user: UserCreate!) {
   activate(password: $password, passwordToken: $passwordToken, user: $user)
@@ -908,38 +1095,6 @@ export function useParentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pa
 export type ParentsQueryHookResult = ReturnType<typeof useParentsQuery>;
 export type ParentsLazyQueryHookResult = ReturnType<typeof useParentsLazyQuery>;
 export type ParentsQueryResult = Apollo.QueryResult<ParentsQuery, ParentsQueryVariables>;
-export const RemoveParentDocument = gql`
-    mutation removeParent($id: ID!, $childId: ID!) {
-  removeParent(id: $id, childId: $childId)
-}
-    `;
-export type RemoveParentMutationFn = Apollo.MutationFunction<RemoveParentMutation, RemoveParentMutationVariables>;
-
-/**
- * __useRemoveParentMutation__
- *
- * To run a mutation, you first call `useRemoveParentMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveParentMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeParentMutation, { data, loading, error }] = useRemoveParentMutation({
- *   variables: {
- *      id: // value for 'id'
- *      childId: // value for 'childId'
- *   },
- * });
- */
-export function useRemoveParentMutation(baseOptions?: Apollo.MutationHookOptions<RemoveParentMutation, RemoveParentMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RemoveParentMutation, RemoveParentMutationVariables>(RemoveParentDocument, options);
-      }
-export type RemoveParentMutationHookResult = ReturnType<typeof useRemoveParentMutation>;
-export type RemoveParentMutationResult = Apollo.MutationResult<RemoveParentMutation>;
-export type RemoveParentMutationOptions = Apollo.BaseMutationOptions<RemoveParentMutation, RemoveParentMutationVariables>;
 export const InviteCoachDocument = gql`
     mutation inviteCoach($email: String!) {
   inviteCoach(email: $email)
@@ -1063,69 +1218,6 @@ export function useChildrenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<C
 export type ChildrenQueryHookResult = ReturnType<typeof useChildrenQuery>;
 export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery>;
 export type ChildrenQueryResult = Apollo.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
-export const UpdatePasswordDocument = gql`
-    mutation updatePassword($oldPassword: String!, $newPassword: String!) {
-  updatePassword(oldPassword: $oldPassword, newPassword: $newPassword)
-}
-    `;
-export type UpdatePasswordMutationFn = Apollo.MutationFunction<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
-
-/**
- * __useUpdatePasswordMutation__
- *
- * To run a mutation, you first call `useUpdatePasswordMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePasswordMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updatePasswordMutation, { data, loading, error }] = useUpdatePasswordMutation({
- *   variables: {
- *      oldPassword: // value for 'oldPassword'
- *      newPassword: // value for 'newPassword'
- *   },
- * });
- */
-export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdatePasswordMutation, UpdatePasswordMutationVariables>(UpdatePasswordDocument, options);
-      }
-export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
-export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
-export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
-export const UpdateProfileDocument = gql`
-    mutation updateProfile($input: UpdateProfileInput!) {
-  updateProfile(input: $input)
-}
-    `;
-export type UpdateProfileMutationFn = Apollo.MutationFunction<UpdateProfileMutation, UpdateProfileMutationVariables>;
-
-/**
- * __useUpdateProfileMutation__
- *
- * To run a mutation, you first call `useUpdateProfileMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProfileMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProfileMutation, { data, loading, error }] = useUpdateProfileMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOptions<UpdateProfileMutation, UpdateProfileMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateProfileMutation, UpdateProfileMutationVariables>(UpdateProfileDocument, options);
-      }
-export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
-export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
-export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
 export const MembersDocument = gql`
     query members($page: Page, $order: UserOrder, $search: String) {
   members(page: $page, order: $order, search: $search) {
@@ -1180,37 +1272,6 @@ export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
 export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
 export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
-export const RemoveMemberDocument = gql`
-    mutation removeMember($id: ID!) {
-  removeMember(id: $id)
-}
-    `;
-export type RemoveMemberMutationFn = Apollo.MutationFunction<RemoveMemberMutation, RemoveMemberMutationVariables>;
-
-/**
- * __useRemoveMemberMutation__
- *
- * To run a mutation, you first call `useRemoveMemberMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveMemberMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeMemberMutation, { data, loading, error }] = useRemoveMemberMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useRemoveMemberMutation(baseOptions?: Apollo.MutationHookOptions<RemoveMemberMutation, RemoveMemberMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RemoveMemberMutation, RemoveMemberMutationVariables>(RemoveMemberDocument, options);
-      }
-export type RemoveMemberMutationHookResult = ReturnType<typeof useRemoveMemberMutation>;
-export type RemoveMemberMutationResult = Apollo.MutationResult<RemoveMemberMutation>;
-export type RemoveMemberMutationOptions = Apollo.BaseMutationOptions<RemoveMemberMutation, RemoveMemberMutationVariables>;
 export const TeamDocument = gql`
     query team($id: ID!) {
   team(id: $id) {
@@ -1451,67 +1512,6 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
-export const LeaveTeamDocument = gql`
-    mutation leaveTeam {
-  leaveTeam
-}
-    `;
-export type LeaveTeamMutationFn = Apollo.MutationFunction<LeaveTeamMutation, LeaveTeamMutationVariables>;
-
-/**
- * __useLeaveTeamMutation__
- *
- * To run a mutation, you first call `useLeaveTeamMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLeaveTeamMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [leaveTeamMutation, { data, loading, error }] = useLeaveTeamMutation({
- *   variables: {
- *   },
- * });
- */
-export function useLeaveTeamMutation(baseOptions?: Apollo.MutationHookOptions<LeaveTeamMutation, LeaveTeamMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LeaveTeamMutation, LeaveTeamMutationVariables>(LeaveTeamDocument, options);
-      }
-export type LeaveTeamMutationHookResult = ReturnType<typeof useLeaveTeamMutation>;
-export type LeaveTeamMutationResult = Apollo.MutationResult<LeaveTeamMutation>;
-export type LeaveTeamMutationOptions = Apollo.BaseMutationOptions<LeaveTeamMutation, LeaveTeamMutationVariables>;
-export const UpdateTeamDocument = gql`
-    mutation updateTeam($input: UpdateTeamInput!) {
-  updateTeam(input: $input)
-}
-    `;
-export type UpdateTeamMutationFn = Apollo.MutationFunction<UpdateTeamMutation, UpdateTeamMutationVariables>;
-
-/**
- * __useUpdateTeamMutation__
- *
- * To run a mutation, you first call `useUpdateTeamMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateTeamMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateTeamMutation, { data, loading, error }] = useUpdateTeamMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateTeamMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTeamMutation, UpdateTeamMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateTeamMutation, UpdateTeamMutationVariables>(UpdateTeamDocument, options);
-      }
-export type UpdateTeamMutationHookResult = ReturnType<typeof useUpdateTeamMutation>;
-export type UpdateTeamMutationResult = Apollo.MutationResult<UpdateTeamMutation>;
-export type UpdateTeamMutationOptions = Apollo.BaseMutationOptions<UpdateTeamMutation, UpdateTeamMutationVariables>;
 export const namedOperations = {
   Query: {
     profile: 'profile',
@@ -1524,22 +1524,22 @@ export const namedOperations = {
     users: 'users'
   },
   Mutation: {
+    removeMember: 'removeMember',
+    removeParent: 'removeParent',
+    leaveTeam: 'leaveTeam',
+    updatePassword: 'updatePassword',
+    updateProfile: 'updateProfile',
+    updateTeam: 'updateTeam',
     activate: 'activate',
     login: 'login',
     register: 'register',
     resetPassword: 'resetPassword',
     requestResetPassword: 'requestResetPassword',
     inviteParent: 'inviteParent',
-    removeParent: 'removeParent',
     inviteCoach: 'inviteCoach',
     inviteAthlete: 'inviteAthlete',
-    updatePassword: 'updatePassword',
-    updateProfile: 'updateProfile',
-    removeMember: 'removeMember',
     createTeam: 'createTeam',
     inviteStaff: 'inviteStaff',
-    removeRole: 'removeRole',
-    leaveTeam: 'leaveTeam',
-    updateTeam: 'updateTeam'
+    removeRole: 'removeRole'
   }
 }

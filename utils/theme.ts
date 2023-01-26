@@ -52,7 +52,6 @@ export function createTheme(isDark: boolean) {
           }),
           colorTransparent: ({ theme }) => ({
             border: 'none',
-            background: theme.palette.background.paper,
             borderBottom: '1px solid ' + theme.palette.divider,
           }),
         },
@@ -60,6 +59,11 @@ export function createTheme(isDark: boolean) {
       MuiPaper: {
         defaultProps: {
           variant: 'outlined',
+        },
+        styleOverrides: {
+          rounded: ({ theme }) => ({
+            borderRadius: theme.shape.borderRadius * 2 + 'px',
+          }),
         },
       },
       MuiStack: {
@@ -81,9 +85,11 @@ export function createTheme(isDark: boolean) {
       },
       MuiListSubheader: {
         styleOverrides: {
-          root: {
+          root: ({ theme }) => ({
             textTransform: 'uppercase',
-          },
+            paddingLeft: theme.spacing(3),
+            color: theme.palette.text.disabled,
+          }),
         },
       },
       MuiTextField: {
@@ -122,6 +128,11 @@ export function createTheme(isDark: boolean) {
           underline: 'hover',
         },
       },
+      MuiTabs: {
+        defaultProps: {
+          variant: 'fullWidth',
+        },
+      },
       // @ts-ignore
       MuiLoadingButton: {
         defaultProps: {
@@ -133,6 +144,7 @@ export function createTheme(isDark: boolean) {
         styleOverrides: {
           root: ({ theme }: { theme: Theme }) => ({
             background: theme.palette.background.paper,
+            borderRadius: theme.shape.borderRadius * 2 + 'px',
             '*': {
               outline: 'none !important',
             },

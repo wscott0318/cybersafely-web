@@ -5,7 +5,7 @@ import { Config } from '../helpers/config'
 import { useLogoUrl, useOnTop } from '../helpers/hooks'
 
 function Header() {
-  const { onTop } = useOnTop()
+  const { isOnTop } = useOnTop()
 
   const logoUrl = useLogoUrl()
 
@@ -14,7 +14,7 @@ function Header() {
       sx={(theme) => ({
         transition: 'all 0.25s linear',
         color: theme.palette.text.primary,
-        background: onTop ? 'transparent' : theme.palette.background.paper,
+        background: isOnTop ? 'transparent' : theme.palette.background.paper,
       })}
     >
       <Toolbar disableGutters>
@@ -24,8 +24,8 @@ function Header() {
               <NextImage
                 alt="Logo"
                 src={logoUrl}
-                height={onTop ? 50 : 75}
-                width={onTop ? 108 : 162}
+                height={isOnTop ? 50 : 75}
+                width={isOnTop ? 108 : 162}
                 style={{ transition: 'all 0.25s linear' }}
               />
             </NextLink>
@@ -51,6 +51,7 @@ function Hero() {
       <NextImage
         fill
         alt="Hero"
+        sizes="100vw"
         src="/images/landing/hero.jpg"
         style={{
           zIndex: -1,
@@ -64,7 +65,7 @@ function Hero() {
             <Typography variant="h3">Coming Soon!</Typography>
             <Box width="100%" maxWidth={540}>
               <Box position="relative" paddingTop="46%">
-                <NextImage fill alt="Logo" src={logoUrl} style={{ objectFit: 'contain' }} />
+                <NextImage fill sizes="540px" alt="Logo" src={logoUrl} style={{ objectFit: 'contain' }} />
               </Box>
             </Box>
             <Typography variant="h5">

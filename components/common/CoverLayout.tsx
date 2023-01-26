@@ -18,6 +18,7 @@ export function CoverLayout(props: CoverLayoutProps) {
           <NextImage
             fill
             alt="Hero"
+            sizes="75vw"
             src="/images/landing/hero.jpg"
             style={{
               zIndex: -1,

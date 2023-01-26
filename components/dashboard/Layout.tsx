@@ -2,6 +2,8 @@ import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import GroupIcon from '@mui/icons-material/GroupOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
+import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
+import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
 import PersonIcon from '@mui/icons-material/PersonOutlined'
@@ -12,6 +14,7 @@ import {
   Box,
   Breakpoint,
   CircularProgress,
+  Collapse,
   Container,
   Divider,
   Drawer,
@@ -19,6 +22,7 @@ import {
   List,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
   MenuItem,
   Snackbar,
   Stack,
@@ -169,7 +173,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 
   const refetchUser = useCallback(async () => {
     await refetch()
-  }, [])
+  }, [refetch])
 
   useEffect(() => {
     if (error) {
@@ -198,6 +202,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
             width: 'unset',
             zIndex: theme.zIndex.drawer - 1,
             left: open && !isMobile ? width : 0,
+            background: theme.palette.background.paper,
           })}
         >
           <Toolbar disableGutters sx={{ px: 2 }}>
@@ -236,7 +241,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
                   <CloseIcon />
                 </IconButton>
               )}
-              <Box p={2}>
+              <Box p={3}>
                 <NextLink href="/">
                   <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
                 </NextLink>
@@ -255,6 +260,35 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   )
 }
 
+function CollapsableList(props: { title?: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(true)
+
+  return (
+    <List
+      subheader={
+        !!props.title && (
+          <ListSubheader>
+            <Stack direction="row" alignItems="center">
+              <Typography variant="inherit" flexGrow={1}>
+                {props.title}
+              </Typography>
+              <IconButton size="small" onClick={() => setOpen((open) => !open)}>
+                {open ? (
+                  <ArrowUpIcon fontSize="small" color="disabled" />
+                ) : (
+                  <ArrowDownIcon fontSize="small" color="disabled" />
+                )}
+              </IconButton>
+            </Stack>
+          </ListSubheader>
+        )
+      }
+    >
+      <Collapse in={open}>{props.children}</Collapse>
+    </List>
+  )
+}
+
 function Sidebar() {
   const { user } = useUser()
 
@@ -265,38 +299,42 @@ function Sidebar() {
 
   if (staff) {
     return (
-      <List>
-        <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
-        <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
-        <SidebarLink href="/dashboard/staff/teams" icon={<GroupIcon />} title="Teams" />
-      </List>
+      <>
+        <CollapsableList title="Dashboard">
+          <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
+        </CollapsableList>
+        <CollapsableList title="Management">
+          <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
+          <SidebarLink href="/dashboard/staff/teams" icon={<GroupIcon />} title="Teams" />
+        </CollapsableList>
+      </>
     )
   }
 
   if (coach) {
     return (
-      <List>
+      <CollapsableList>
         <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
         <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
-      </List>
+      </CollapsableList>
     )
   }
 
   if (athlete) {
     return (
-      <List>
+      <CollapsableList>
         <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
         <SidebarLink href="/dashboard/athlete/members" icon={<PersonIcon />} title="Members" />
-      </List>
+      </CollapsableList>
     )
   }
 
   if (parent) {
     return (
-      <List>
+      <CollapsableList>
         <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
         <SidebarLink href="/dashboard/parent/children" icon={<GroupIcon />} title="Children" />
-      </List>
+      </CollapsableList>
     )
   }
 

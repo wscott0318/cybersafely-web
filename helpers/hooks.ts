@@ -20,11 +20,11 @@ export function useLogoUrl() {
 }
 
 export function useOnTop() {
-  const [onTop, setOnTop] = useState(true)
+  const [isOnTop, setIsOnTop] = useState(true)
 
   useEffect(() => {
     function onScroll() {
-      setOnTop(window.scrollY === 0)
+      setIsOnTop(window.scrollY === 0)
     }
 
     window.addEventListener('scroll', onScroll)
@@ -34,7 +34,7 @@ export function useOnTop() {
     }
   }, [])
 
-  return { onTop }
+  return { isOnTop }
 }
 
 export function useSessionStorage(key: string) {
