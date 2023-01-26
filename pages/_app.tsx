@@ -6,6 +6,7 @@ import Head from 'next/head'
 import { useMemo } from 'react'
 import { Alerts } from '../components/common/Alerts'
 import { NProgress } from '../components/common/NProgress'
+import { ScrollToTop } from '../components/common/ScrollToTop'
 import { Config } from '../helpers/config'
 import { ApolloClientProvider } from '../libs/apollo'
 import createEmotionCache from '../utils/cache'
@@ -39,6 +40,7 @@ export default function MyApp(props: MyAppProps) {
           <ApolloClientProvider>
             <Component {...pageProps} />
             <NProgress />
+            <ScrollToTop />
           </ApolloClientProvider>
         </AlertContextProvider>
       </ThemeProvider>

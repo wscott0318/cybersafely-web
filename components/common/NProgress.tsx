@@ -12,15 +12,28 @@ export function LoadingLogo() {
   )
 }
 
+const MIN_DISPLAY_DURATION = 500
+
 export function NProgress() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
+    let canClose = false
+    let timeout: NodeJS.Timeout | undefined
+
+    const handleRouteDone = () => {
+      if (canClose) {
+        setOpen(false)
+      } else {
+        canClose = true
+      }
+    }
+
     const handleRouteStart = () => {
       setOpen(true)
-    }
-    const handleRouteDone = () => {
-      setOpen(false)
+      canClose = false
+      if (timeout) clearTimeout(timeout)
+      timeout = setTimeout(handleRouteDone, MIN_DISPLAY_DURATION)
     }
 
     Router.events.on('routeChangeStart', handleRouteStart)
@@ -28,6 +41,7 @@ export function NProgress() {
     Router.events.on('routeChangeError', handleRouteDone)
 
     return () => {
+      if (timeout) clearTimeout(timeout)
       Router.events.off('routeChangeStart', handleRouteStart)
       Router.events.off('routeChangeComplete', handleRouteDone)
       Router.events.off('routeChangeError', handleRouteDone)

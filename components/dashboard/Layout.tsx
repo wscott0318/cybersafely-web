@@ -9,7 +9,6 @@ import MenuIcon from '@mui/icons-material/MenuOutlined'
 import PersonIcon from '@mui/icons-material/PersonOutlined'
 import {
   Alert,
-  alpha,
   AppBar,
   Avatar,
   Box,
@@ -146,20 +145,20 @@ export type DashboardLayoutProps = {
 export function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter()
   const logoUrl = useLogoUrl()
-  const { isMobile } = useMobile()
+  const { isMobile, isTablet } = useMobile()
 
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
-    if (isMobile) {
+    if (isTablet) {
       setOpen(false)
     }
-  }, [isMobile])
+  }, [isTablet])
 
   const type = useMemo(() => {
-    if (isMobile) return 'temporary'
+    if (isTablet) return 'temporary'
     return 'persistent'
-  }, [isMobile])
+  }, [isTablet])
 
   const width = useMemo(() => {
     if (isMobile) return '100vw'
@@ -200,10 +199,9 @@ export function DashboardLayout(props: DashboardLayoutProps) {
           color="transparent"
           sx={(theme) => ({
             width: 'unset',
-            backdropFilter: 'blur(10px)',
             zIndex: theme.zIndex.drawer - 1,
-            left: open && !isMobile ? width : 0,
-            background: alpha(theme.palette.background.paper, 0.95),
+            left: open && !isTablet ? width : 0,
+            background: theme.palette.background.paper,
           })}
         >
           <Toolbar disableGutters sx={{ px: 2 }}>
@@ -230,7 +228,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               flexDirection="column"
               bgcolor="background.paper"
             >
-              {isMobile && (
+              {isTablet && (
                 <IconButton
                   onClick={() => setOpen(false)}
                   sx={(theme) => ({
@@ -250,7 +248,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               {props.sidebar}
             </Stack>
           </Drawer>
-          {open && !isMobile && <Box width={width} flexShrink={0} />}
+          {open && !isTablet && <Box width={width} flexShrink={0} />}
           <Container maxWidth={props.maxWidth ?? 'xl'} sx={{ py: 2 }}>
             {props.children}
             <Footer />
