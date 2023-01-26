@@ -1,7 +1,5 @@
 import { alpha, Box, Grid, Paper, Typography, useTheme } from '@mui/material'
 import {
-  BarController,
-  BarElement,
   Chart as ChartJS,
   ChartData,
   ChartOptions,
@@ -19,7 +17,7 @@ import { Chart } from 'react-chartjs-2'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { StatsByDay, useStatsForStaffQuery } from '../../../../types/graphql'
 
-ChartJS.register(LineController, LineElement, PointElement, LinearScale, TimeScale, Filler, BarController, BarElement)
+ChartJS.register(LineController, LineElement, PointElement, LinearScale, TimeScale, Filler)
 
 function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
   const theme = useTheme()
@@ -34,15 +32,11 @@ function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
         },
         line: {
           fill: true,
-          borderWidth: 3,
+          borderWidth: 2.5,
           borderCapStyle: 'round',
           borderJoinStyle: 'round',
           borderColor: theme.palette.primary.main,
           backgroundColor: alpha(theme.palette.primary.main, 0.25),
-        },
-        bar: {
-          borderRadius: theme.shape.borderRadius,
-          backgroundColor: theme.palette.primary.main,
         },
       },
       scales: {
@@ -95,7 +89,7 @@ function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
       <Typography textAlign="center" mb={1}>
         {props.title}
       </Typography>
-      <Chart type="bar" options={options} data={data} />
+      <Chart type="line" options={options} data={data} />
     </Paper>
   )
 }
