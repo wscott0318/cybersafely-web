@@ -1,11 +1,18 @@
+import { Button, Divider, Link, Typography } from '@mui/material'
+import { Box, Stack } from '@mui/system'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { CoverLayout } from '../../components/common/CoverLayout'
+import { NextLink } from '../../components/common/NextLink'
+import { Config } from '../../helpers/config'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
 
 export default function Dashboard() {
   const router = useRouter()
 
   const { data } = useProfileQuery()
+
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     if (!data) return
@@ -28,9 +35,31 @@ export default function Dashboard() {
     } else if (parent) {
       router.replace('/dashboard/parent/home')
     } else {
-      throw new Error('Cannot redirect user')
+      setError(true)
     }
   }, [data, router])
 
-  return null
+  if (!error) {
+    return null
+  }
+
+  return (
+    <CoverLayout>
+      <Stack spacing={4}>
+        <Box>
+          <Typography variant="h4">No user role!</Typography>
+          <Typography>
+            The current logged in user, <b>{data?.profile.email}</b>, does not have any valid roles.
+          </Typography>
+        </Box>
+        <NextLink href="/auth/login">
+          <Button size="large">Login Again</Button>
+        </NextLink>
+        <Divider />
+        <Typography>
+          Something wrong? <Link href={'mailto:' + Config.email.support}>Report an issue</Link>
+        </Typography>
+      </Stack>
+    </CoverLayout>
+  )
 }

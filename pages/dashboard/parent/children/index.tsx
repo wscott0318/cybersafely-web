@@ -1,5 +1,5 @@
 import { GridColumns } from '@mui/x-data-grid'
-import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
@@ -69,7 +69,11 @@ function Children() {
       columns={columns}
       data={query.data?.children}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
+      actions={
+        <DataGridActions>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </DataGridActions>
+      }
     />
   )
 }

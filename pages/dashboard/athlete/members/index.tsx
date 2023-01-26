@@ -1,5 +1,5 @@
 import { GridColumns } from '@mui/x-data-grid'
-import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
@@ -55,7 +55,11 @@ function Members() {
       columns={columns}
       data={query.data?.members}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={<SearchBar onSearch={(search) => query.refetch({ search })} />}
+      actions={
+        <DataGridActions>
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
+        </DataGridActions>
+      }
     />
   )
 }

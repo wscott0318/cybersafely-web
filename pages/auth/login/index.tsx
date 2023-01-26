@@ -39,6 +39,7 @@ export default function Login() {
           <TextField
             required
             autoFocus
+            name="email"
             type="email"
             size="medium"
             label="E-mail"
@@ -51,6 +52,7 @@ export default function Login() {
           <TextField
             required
             size="medium"
+            name="password"
             type="password"
             label="Password"
             variant="outlined"

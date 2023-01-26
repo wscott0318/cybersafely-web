@@ -29,7 +29,7 @@ import Head from 'next/head'
 import NextImage from 'next/image'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
 import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
@@ -167,6 +167,10 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     initialFetchPolicy: 'network-only',
   })
 
+  const refetchUser = useCallback(async () => {
+    await refetch()
+  }, [])
+
   useEffect(() => {
     if (error) {
       router.push('/auth/login')
@@ -183,7 +187,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.profile} refetchUser={refetch}>
+    <AuthContextProvider user={data.profile} refetchUser={refetchUser}>
       <Head>
         <title>{props.title}</title>
       </Head>
