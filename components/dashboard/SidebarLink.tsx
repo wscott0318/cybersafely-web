@@ -1,5 +1,6 @@
 import { ListItemButton, ListItemIcon, ListItemText } from '@mui/material'
 import { useRouter } from 'next/router'
+import React from 'react'
 import { NextLink } from '../common/NextLink'
 
 type SidebarLinkProps = {
@@ -7,34 +8,11 @@ type SidebarLinkProps = {
   title: string
   subtitle?: string
   color?: string
-} & (
-  | {
-      href: string
-    }
-  | {
-      onClick: () => void
-    }
-)
+  href: string
+}
 
 export function SidebarLink(props: SidebarLinkProps) {
   const router = useRouter()
-
-  if ('onClick' in props) {
-    return (
-      <ListItemButton
-        onClick={props.onClick}
-        sx={(theme) => ({
-          m: 1,
-          color: props.color,
-          borderRadius: theme.shape.borderRadius + 'px',
-        })}
-      >
-        <ListItemIcon sx={{ color: props.color }}>{props.icon}</ListItemIcon>
-        <ListItemText primary={props.title} secondary={props.subtitle} />
-      </ListItemButton>
-    )
-  }
-
   const isSelected = router.pathname.startsWith(props.href)
 
   return (
@@ -43,7 +21,8 @@ export function SidebarLink(props: SidebarLinkProps) {
         component="a"
         selected={isSelected}
         sx={(theme) => ({
-          m: 1,
+          mx: 1,
+          my: 0.5,
           color: props.color,
           borderRadius: theme.shape.borderRadius + 'px',
         })}

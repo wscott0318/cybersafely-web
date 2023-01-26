@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { MenuItem } from '@mui/material'
+import PersonAddIcon from '@mui/icons-material/PersonAddOutlined'
+import { ListItemIcon, ListItemText, MenuItem } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo } from 'react'
@@ -123,7 +124,10 @@ function Team({ teamId }: Props) {
                 })
               }}
             >
-              Invite Coach
+              <ListItemIcon>
+                <PersonAddIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Invite Coach</ListItemText>
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -138,7 +142,10 @@ function Team({ teamId }: Props) {
                 })
               }}
             >
-              Invite Athlete
+              <ListItemIcon>
+                <PersonAddIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Invite Athlete</ListItemText>
             </MenuItem>
           </DropDownButton>
           <SearchBar onSearch={(search) => query.refetch({ search })} />

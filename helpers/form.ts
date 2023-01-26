@@ -1,8 +1,8 @@
 import { FormEvent, useCallback, useState } from 'react'
 import { z, ZodError } from 'zod'
 
-export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>) {
-  const [value, setValue] = useState<Partial<TSchema>>({})
+export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>, initialValue?: Partial<TSchema>) {
+  const [value, setValue] = useState<Partial<TSchema>>(initialValue ?? {})
   const [errors, setErrors] = useState<Record<string, string>>()
 
   const hasError = useCallback(
@@ -56,6 +56,10 @@ export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>) {
     [didSubmit]
   )
 
+  const clear = useCallback(() => {
+    setValue({})
+  }, [])
+
   return {
     value,
     hasError,
@@ -63,5 +67,6 @@ export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>) {
     onChange,
     onSubmit,
     didSubmit,
+    clear,
   }
 }

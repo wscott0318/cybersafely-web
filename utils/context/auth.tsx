@@ -5,6 +5,7 @@ import { ProfileQuery, TeamRole } from '../../types/graphql'
 
 type AuthContext = {
   user: ProfileQuery['profile']
+  refetchUser: () => void
 }
 
 const AuthContext = createContext<AuthContext | null>(null)
@@ -31,11 +32,15 @@ export function useUser() {
     router.push('/auth/login')
   }, [])
 
+  const refetchUser = useCallback(() => {
+    context?.refetchUser()
+  }, [])
+
   if (!context) {
     throw new Error('Auth parent context not found')
   }
 
-  return { ...context, logout }
+  return { ...context, logout, refetchUser }
 }
 
 export function useTeam() {

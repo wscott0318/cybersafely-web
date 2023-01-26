@@ -1,5 +1,6 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { MenuItem } from '@mui/material'
+import PersonAddIcon from '@mui/icons-material/PersonAddOutlined'
+import { ListItemIcon, ListItemText, MenuItem } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../components/common/DropDownButton'
@@ -106,7 +107,10 @@ function Members() {
                 })
               }}
             >
-              Invite Coach
+              <ListItemIcon>
+                <PersonAddIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Invite Coach</ListItemText>
             </MenuItem>
             <MenuItem
               onClick={() => {
@@ -121,7 +125,10 @@ function Members() {
                 })
               }}
             >
-              Invite Athlete
+              <ListItemIcon>
+                <PersonAddIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Invite Athlete</ListItemText>
             </MenuItem>
           </DropDownButton>
           <SearchBar onSearch={(search) => query.refetch({ search })} />

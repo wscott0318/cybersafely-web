@@ -10,6 +10,7 @@ import {
   AppBar,
   Avatar,
   Box,
+  Breakpoint,
   CircularProgress,
   Container,
   Divider,
@@ -51,6 +52,10 @@ function HeaderAccount() {
         sx={{ maxWidth: 350 }}
         open={!user.emailConfirmed && hideConfirm !== 'true'}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        TransitionProps={{
+          mountOnEnter: true,
+          unmountOnExit: true,
+        }}
       >
         <Alert severity="warning" sx={{ width: '100%' }} onClose={() => setHideConfirm('true')}>
           Please confirm your e-mail address at <b>{user.email}</b>.
@@ -119,7 +124,7 @@ function Footer() {
     <Box mt={8} textAlign="center">
       <Divider />
       <Typography variant="body2" my={2} color="text.disabled">
-        &copy; 2022 - {new Date().getFullYear()} {Config.appName}
+        &copy; 2022 - {new Date().getFullYear()} {Config.app.name}
       </Typography>
     </Box>
   )
@@ -130,6 +135,7 @@ export type DashboardLayoutProps = {
   title: string
   sidebar: React.ReactNode
   search?: React.ReactNode
+  maxWidth?: Breakpoint
 }
 
 export function DashboardLayout(props: DashboardLayoutProps) {
@@ -150,7 +156,12 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     return 'persistent'
   }, [isMobile])
 
-  const { data, error } = useProfileQuery({
+  const width = useMemo(() => {
+    if (isMobile) return '100vw'
+    return '300px'
+  }, [isMobile])
+
+  const { data, error, refetch } = useProfileQuery({
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-first',
     initialFetchPolicy: 'network-only',
@@ -172,7 +183,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.profile}>
+    <AuthContextProvider user={data.profile} refetchUser={refetch}>
       <Head>
         <title>{props.title}</title>
       </Head>
@@ -182,7 +193,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
           sx={(theme) => ({
             width: 'unset',
             zIndex: theme.zIndex.drawer - 1,
-            left: open && !isMobile ? 280 : 0,
+            left: open && !isMobile ? width : 0,
           })}
         >
           <Toolbar disableGutters sx={{ px: 2 }}>
@@ -199,9 +210,9 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         <Stack direction="row" spacing={0} flexGrow={1}>
           <Drawer open={open} onClose={() => setOpen(false)} variant={type} PaperProps={{ sx: { border: 'none' } }}>
             <Stack
-              width={280}
               spacing={0}
               flexGrow={1}
+              width={width}
               overflow="auto"
               borderRight={1}
               position="relative"
@@ -223,14 +234,14 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               )}
               <Box p={2}>
                 <NextLink href="/">
-                  <NextImage alt="Logo" width={108} height={50} src={logoUrl} />
+                  <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
                 </NextLink>
               </Box>
               {props.sidebar}
             </Stack>
           </Drawer>
-          {open && !isMobile && <Box width={280} flexShrink={0} />}
-          <Container maxWidth="xl" sx={{ py: 2 }}>
+          {open && !isMobile && <Box width={width} flexShrink={0} />}
+          <Container maxWidth={props.maxWidth ?? 'xl'} sx={{ py: 2 }}>
             {props.children}
             <Footer />
           </Container>
@@ -294,7 +305,11 @@ export function withDashboardLayout(
 ) {
   return function Wrapper(props: any) {
     return (
-      <DashboardLayout {...layoutProps} sidebar={<Sidebar />} title={[layoutProps.title, Config.appName].join(' | ')}>
+      <DashboardLayout
+        {...layoutProps}
+        sidebar={<Sidebar />}
+        title={[layoutProps.title, Config.app.shortName].join(' | ')}
+      >
         <Component {...props} />
       </DashboardLayout>
     )

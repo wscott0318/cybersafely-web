@@ -105,7 +105,7 @@ function Footer() {
         <Stack mx={2} alignItems="center" textAlign="center">
           <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
           <Typography>
-            &copy; 2022 - {new Date().getFullYear()} {Config.appName}
+            &copy; 2022 - {new Date().getFullYear()} {Config.app.name}
           </Typography>
         </Stack>
       </Container>

@@ -1,4 +1,5 @@
-import { MenuItem } from '@mui/material'
+import RemoveIcon from '@mui/icons-material/PersonRemoveOutlined'
+import { ListItemIcon, ListItemText, MenuItem } from '@mui/material'
 import { namedOperations, useRemoveMemberMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { DropDownButton } from '../common/DropDownButton'
@@ -20,6 +21,9 @@ export function MemberActions({ memberId, teamId }: MemberActionsProps) {
   return (
     <DropDownButton title="Actions" variant="text" size="small">
       <MenuItem
+        sx={(theme) => ({
+          color: theme.palette.error.main,
+        })}
         onClick={() => {
           pushAlert({
             type: 'confirm',
@@ -31,7 +35,10 @@ export function MemberActions({ memberId, teamId }: MemberActionsProps) {
           })
         }}
       >
-        Remove Member
+        <ListItemIcon>
+          <RemoveIcon fontSize="small" color="error" />
+        </ListItemIcon>
+        <ListItemText>Remove Member</ListItemText>
       </MenuItem>
     </DropDownButton>
   )

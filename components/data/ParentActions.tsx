@@ -1,4 +1,5 @@
-import { MenuItem } from '@mui/material'
+import RemoveIcon from '@mui/icons-material/PersonRemoveOutlined'
+import { ListItemIcon, ListItemText, MenuItem } from '@mui/material'
 import { namedOperations, useRemoveParentMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { DropDownButton } from '../common/DropDownButton'
@@ -21,6 +22,9 @@ export function ParentActions({ parentId, childId, teamId }: ParentActionsProps)
   return (
     <DropDownButton title="Actions" variant="text" size="small">
       <MenuItem
+        sx={(theme) => ({
+          color: theme.palette.error.main,
+        })}
         onClick={() => {
           pushAlert({
             type: 'confirm',
@@ -32,7 +36,10 @@ export function ParentActions({ parentId, childId, teamId }: ParentActionsProps)
           })
         }}
       >
-        Remove Parent
+        <ListItemIcon>
+          <RemoveIcon fontSize="small" color="error" />
+        </ListItemIcon>
+        <ListItemText>Remove Parent</ListItemText>
       </MenuItem>
     </DropDownButton>
   )
