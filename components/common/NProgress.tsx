@@ -1,6 +1,16 @@
-import { alpha, Backdrop, CircularProgress, Stack, Typography } from '@mui/material'
+import { alpha, Backdrop, Box, CircularProgress } from '@mui/material'
+import NextImage from 'next/image'
 import { Router } from 'next/router'
 import { useEffect, useState } from 'react'
+
+export function LoadingLogo() {
+  return (
+    <Box position="relative" display="flex" alignItems="center" justifyContent="center">
+      <CircularProgress size={128} thickness={1.5} sx={{ opacity: 0.5 }} />
+      <NextImage alt="Logo" src="/images/logo-loading.png" width={72} height={72} style={{ position: 'absolute' }} />
+    </Box>
+  )
+}
 
 export function NProgress() {
   const [open, setOpen] = useState(false)
@@ -35,10 +45,7 @@ export function NProgress() {
         background: alpha(theme.palette.background.paper, 0.5),
       })}
     >
-      <Stack alignItems="center">
-        <CircularProgress />
-        <Typography variant="body2">Loading Page</Typography>
-      </Stack>
+      <LoadingLogo />
     </Backdrop>
   )
 }

@@ -13,7 +13,6 @@ import {
   Avatar,
   Box,
   Breakpoint,
-  CircularProgress,
   Collapse,
   Container,
   Divider,
@@ -41,6 +40,7 @@ import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
+import { LoadingLogo } from '../common/NProgress'
 import { SidebarLink } from './SidebarLink'
 
 function HeaderAccount() {
@@ -184,8 +184,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   if (!data) {
     return (
       <Stack alignItems="center" justifyContent="center" minHeight="100vh">
-        <CircularProgress />
-        <Typography variant="body2">Loading User</Typography>
+        <LoadingLogo />
       </Stack>
     )
   }

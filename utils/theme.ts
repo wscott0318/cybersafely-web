@@ -105,6 +105,13 @@ export function createTheme(isDark: boolean) {
           }),
         },
       },
+      MuiSelect: {
+        styleOverrides: {
+          outlined: ({ theme }) => ({
+            background: theme.palette.background.paper,
+          }),
+        },
+      },
       MuiButton: {
         defaultProps: {
           variant: 'contained',
