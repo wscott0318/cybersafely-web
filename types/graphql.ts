@@ -221,6 +221,7 @@ export type Query = {
   members: PaginatedUser;
   parents: PaginatedUser;
   profile: User;
+  statsByCreatedUsers: Array<StatsByDay>;
   team: Team;
   teams: PaginatedTeam;
   user: User;
@@ -252,6 +253,11 @@ export type QueryParentsArgs = {
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
   search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryStatsByCreatedUsersArgs = {
+  days?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -293,6 +299,12 @@ export const RoleStatus = {
 } as const;
 
 export type RoleStatus = typeof RoleStatus[keyof typeof RoleStatus];
+export type StatsByDay = {
+  __typename?: 'StatsByDay';
+  day: Scalars['DateTime'];
+  value: Scalars['Int'];
+};
+
 export type StringFilter = {
   contains?: InputMaybe<Scalars['String']>;
   equals?: InputMaybe<Scalars['String']>;
@@ -506,6 +518,11 @@ export type ChildrenQueryVariables = Exact<{
 
 
 export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
+
+export type StatsForStaffQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StatsForStaffQuery = { __typename?: 'Query', statsByCreatedUsers: Array<{ __typename?: 'StatsByDay', day: Date, value: number }> };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -1218,6 +1235,41 @@ export function useChildrenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<C
 export type ChildrenQueryHookResult = ReturnType<typeof useChildrenQuery>;
 export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery>;
 export type ChildrenQueryResult = Apollo.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
+export const StatsForStaffDocument = gql`
+    query statsForStaff {
+  statsByCreatedUsers {
+    day
+    value
+  }
+}
+    `;
+
+/**
+ * __useStatsForStaffQuery__
+ *
+ * To run a query within a React component, call `useStatsForStaffQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStatsForStaffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStatsForStaffQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useStatsForStaffQuery(baseOptions?: Apollo.QueryHookOptions<StatsForStaffQuery, StatsForStaffQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StatsForStaffQuery, StatsForStaffQueryVariables>(StatsForStaffDocument, options);
+      }
+export function useStatsForStaffLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForStaffQuery, StatsForStaffQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StatsForStaffQuery, StatsForStaffQueryVariables>(StatsForStaffDocument, options);
+        }
+export type StatsForStaffQueryHookResult = ReturnType<typeof useStatsForStaffQuery>;
+export type StatsForStaffLazyQueryHookResult = ReturnType<typeof useStatsForStaffLazyQuery>;
+export type StatsForStaffQueryResult = Apollo.QueryResult<StatsForStaffQuery, StatsForStaffQueryVariables>;
 export const MembersDocument = gql`
     query members($page: Page, $order: UserOrder, $search: String) {
   members(page: $page, order: $order, search: $search) {
@@ -1518,6 +1570,7 @@ export const namedOperations = {
     member: 'member',
     parents: 'parents',
     children: 'children',
+    statsForStaff: 'statsForStaff',
     members: 'members',
     team: 'team',
     teams: 'teams',

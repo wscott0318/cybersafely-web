@@ -162,7 +162,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 
   const width = useMemo(() => {
     if (isMobile) return '100vw'
-    return '300px'
+    return '280px'
   }, [isMobile])
 
   const { data, error, refetch } = useProfileQuery({

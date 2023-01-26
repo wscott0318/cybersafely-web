@@ -1,0 +1,6 @@
+query statsForStaff {
+  statsByCreatedUsers {
+    day
+    value
+  }
+}
