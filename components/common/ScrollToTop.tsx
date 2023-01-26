@@ -3,7 +3,7 @@ import { Fab, Fade, Tooltip } from '@mui/material'
 import { useOnTop } from '../../helpers/hooks'
 
 export function ScrollToTop() {
-  const { isOnTop } = useOnTop(400)
+  const { isOnTop } = useOnTop(200)
 
   return (
     <Fade mountOnEnter unmountOnExit in={!isOnTop}>
