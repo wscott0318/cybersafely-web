@@ -70,6 +70,7 @@ function HeaderAccount() {
         variant="text"
         color="inherit"
         title={user.name}
+        uppercase={false}
         startIcon={<Avatar sx={{ width: 24, height: 24 }} />}
       >
         {team && (

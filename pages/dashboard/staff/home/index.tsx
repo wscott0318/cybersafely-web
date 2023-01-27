@@ -4,8 +4,12 @@ import { CumulativeChartCard } from '../../../../components/chart/CumulativeChar
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { useStatsForStaffQuery } from '../../../../types/graphql'
 
+const DAYS = 15
+
 function Home() {
-  const { data } = useStatsForStaffQuery()
+  const { data } = useStatsForStaffQuery({
+    variables: { days: DAYS },
+  })
 
   return (
     <Box>
@@ -23,14 +27,14 @@ function Home() {
           <CumulativeChartCard
             title="Added Members*"
             data={data?.statsOfCreatedMembers}
-            helper="*Calculated based on data from the last 15 days"
+            helper={`*from the last ${DAYS} days`}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
             title="Added Parents*"
             data={data?.statsOfCreatedParents}
-            helper="*Calculated based on data from the last 15 days"
+            helper={`*from the last ${DAYS} days`}
           />
         </Grid>
       </Grid>

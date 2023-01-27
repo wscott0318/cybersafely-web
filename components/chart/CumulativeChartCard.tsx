@@ -17,9 +17,11 @@ import { useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
 import { StatByDay } from '../../types/graphql'
 
+const HEIGHT = 140
+
 ChartJS.register(LineController, LineElement, PointElement, LinearScale, TimeScale, Filler, Tooltip)
 
-const NumberFormatter = Intl.NumberFormat('en-US', { notation: 'compact' })
+const CompactNumberFormatter = Intl.NumberFormat('en-US', { notation: 'compact' })
 
 type CumulativeChartCardProps = {
   title: string
@@ -33,14 +35,15 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
 
   const options = useMemo<ChartOptions>(
     () => ({
-      // animation: false,
       maintainAspectRatio: false,
       plugins: {
         tooltip: {
           borderWidth: 1,
+          caretPadding: 9.5,
           bodyAlign: 'center',
           titleAlign: 'center',
           displayColors: false,
+          padding: { x: 12, y: 8 },
           borderColor: theme.palette.divider,
           bodyColor: theme.palette.text.primary,
           titleColor: theme.palette.text.primary,
@@ -50,7 +53,7 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
               return tooltipItems.map((e) => format(e.parsed.x, 'MMMM d'))
             },
             label({ raw }) {
-              return NumberFormatter.format(raw as number)
+              return CompactNumberFormatter.format(raw as number)
             },
           },
         },
@@ -61,7 +64,10 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
       elements: {
         point: {
           radius: 0,
-          hoverRadius: 0,
+          hoverRadius: 3.5,
+          hoverBorderWidth: 2.5,
+          hoverBorderColor: theme.palette.primary.main,
+          hoverBackgroundColor: theme.palette.background.paper,
         },
         line: {
           fill: true,
@@ -93,6 +99,7 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
         },
         x: {
           type: 'time',
+          offset: true,
           grid: {
             display: false,
           },
@@ -136,13 +143,13 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
 
   return (
     <Paper sx={{ p: 2 }}>
-      <Stack direction="row">
+      <Stack direction="row" spacing={0}>
         <Stack spacing={0} justifyContent="flex-end">
           <Typography color="text.disabled" maxWidth={80}>
             {props.title}
           </Typography>
           {props.data ? (
-            <Typography variant="h4">{NumberFormatter.format(total)}</Typography>
+            <Typography variant="h4">{CompactNumberFormatter.format(total)}</Typography>
           ) : (
             <Skeleton>
               <Typography variant="h4">XX</Typography>
@@ -151,9 +158,9 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
         </Stack>
         <Box flex={1} position="relative" overflow="hidden">
           {props.data ? (
-            <Chart type="line" options={options} data={data} height={120} />
+            <Chart type="line" options={options} data={data} height={HEIGHT} />
           ) : (
-            <Skeleton variant="rounded" height={120} />
+            <Skeleton variant="rounded" height={HEIGHT} />
           )}
         </Box>
       </Stack>

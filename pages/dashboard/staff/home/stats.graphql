@@ -1,10 +1,10 @@
-query statsForStaff {
+query statsForStaff($days: Int!) {
   users {
     page {
       total
     }
   }
-  statsOfCreatedUsers {
+  statsOfCreatedUsers(days: $days) {
     day
     value
   }
@@ -13,15 +13,15 @@ query statsForStaff {
       total
     }
   }
-  statsOfCreatedTeams {
+  statsOfCreatedTeams(days: $days) {
     day
     value
   }
-  statsOfCreatedMembers {
+  statsOfCreatedMembers(days: $days) {
     day
     value
   }
-  statsOfCreatedParents {
+  statsOfCreatedParents(days: $days) {
     day
     value
   }

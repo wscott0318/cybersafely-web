@@ -563,7 +563,9 @@ export type ChildrenQueryVariables = Exact<{
 
 export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
-export type StatsForStaffQueryVariables = Exact<{ [key: string]: never; }>;
+export type StatsForStaffQueryVariables = Exact<{
+  days: Scalars['Int'];
+}>;
 
 
 export type StatsForStaffQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedUsers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedTeams: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, statsOfCreatedMembers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, statsOfCreatedParents: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
@@ -1311,13 +1313,13 @@ export type ChildrenQueryHookResult = ReturnType<typeof useChildrenQuery>;
 export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery>;
 export type ChildrenQueryResult = Apollo.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
 export const StatsForStaffDocument = gql`
-    query statsForStaff {
+    query statsForStaff($days: Int!) {
   users {
     page {
       total
     }
   }
-  statsOfCreatedUsers {
+  statsOfCreatedUsers(days: $days) {
     day
     value
   }
@@ -1326,15 +1328,15 @@ export const StatsForStaffDocument = gql`
       total
     }
   }
-  statsOfCreatedTeams {
+  statsOfCreatedTeams(days: $days) {
     day
     value
   }
-  statsOfCreatedMembers {
+  statsOfCreatedMembers(days: $days) {
     day
     value
   }
-  statsOfCreatedParents {
+  statsOfCreatedParents(days: $days) {
     day
     value
   }
@@ -1353,10 +1355,11 @@ export const StatsForStaffDocument = gql`
  * @example
  * const { data, loading, error } = useStatsForStaffQuery({
  *   variables: {
+ *      days: // value for 'days'
  *   },
  * });
  */
-export function useStatsForStaffQuery(baseOptions?: Apollo.QueryHookOptions<StatsForStaffQuery, StatsForStaffQueryVariables>) {
+export function useStatsForStaffQuery(baseOptions: Apollo.QueryHookOptions<StatsForStaffQuery, StatsForStaffQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<StatsForStaffQuery, StatsForStaffQueryVariables>(StatsForStaffDocument, options);
       }

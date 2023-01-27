@@ -6,6 +6,7 @@ import React, { useCallback, useMemo, useRef, useState } from 'react'
 type DropDownButtonProps = {
   title: string
   children: React.ReactNode
+  uppercase?: boolean
 } & Pick<ButtonProps, 'startIcon' | 'variant' | 'size' | 'fullWidth' | 'color'>
 
 export function DropDownButton(props: DropDownButtonProps) {
@@ -21,7 +22,7 @@ export function DropDownButton(props: DropDownButtonProps) {
     setOpen(false)
   }, [])
 
-  const { children, title, ...buttonProps } = props
+  const { children, title, uppercase, ...buttonProps } = props
 
   const items = useMemo(() => {
     return React.Children.map(children, (child) => {
@@ -45,8 +46,11 @@ export function DropDownButton(props: DropDownButtonProps) {
         {...buttonProps}
         ref={anchorEl}
         onClick={handleClick}
-        sx={{ flexShrink: 0 }}
         endIcon={open ? <ArrowUpIcon /> : <ArrowDownIcon />}
+        sx={{
+          flexShrink: 0,
+          textTransform: uppercase === false ? 'unset' : undefined,
+        }}
       >
         {title}
       </Button>
