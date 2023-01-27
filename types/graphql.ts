@@ -221,7 +221,8 @@ export type Query = {
   members: PaginatedUser;
   parents: PaginatedUser;
   profile: User;
-  statsByCreatedUsers: Array<StatsByDay>;
+  statsOfCreatedTeams: Array<StatByDay>;
+  statsOfCreatedUsers: Array<StatByDay>;
   team: Team;
   teams: PaginatedTeam;
   user: User;
@@ -256,7 +257,12 @@ export type QueryParentsArgs = {
 };
 
 
-export type QueryStatsByCreatedUsersArgs = {
+export type QueryStatsOfCreatedTeamsArgs = {
+  days?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryStatsOfCreatedUsersArgs = {
   days?: InputMaybe<Scalars['Int']>;
 };
 
@@ -299,8 +305,8 @@ export const RoleStatus = {
 } as const;
 
 export type RoleStatus = typeof RoleStatus[keyof typeof RoleStatus];
-export type StatsByDay = {
-  __typename?: 'StatsByDay';
+export type StatByDay = {
+  __typename?: 'StatByDay';
   day: Scalars['DateTime'];
   value: Scalars['Int'];
 };
@@ -522,7 +528,7 @@ export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'Pa
 export type StatsForStaffQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type StatsForStaffQuery = { __typename?: 'Query', statsByCreatedUsers: Array<{ __typename?: 'StatsByDay', day: Date, value: number }> };
+export type StatsForStaffQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedUsers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedTeams: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -1237,7 +1243,21 @@ export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery
 export type ChildrenQueryResult = Apollo.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
 export const StatsForStaffDocument = gql`
     query statsForStaff {
-  statsByCreatedUsers {
+  users {
+    page {
+      total
+    }
+  }
+  statsOfCreatedUsers {
+    day
+    value
+  }
+  teams {
+    page {
+      total
+    }
+  }
+  statsOfCreatedTeams {
     day
     value
   }

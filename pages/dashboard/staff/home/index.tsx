@@ -1,4 +1,4 @@
-import { alpha, Box, Grid, Paper, Typography, useTheme } from '@mui/material'
+import { alpha, Box, Grid, Paper, Skeleton, Stack, Typography, useTheme } from '@mui/material'
 import {
   Chart as ChartJS,
   ChartData,
@@ -9,22 +9,61 @@ import {
   LineElement,
   PointElement,
   TimeScale,
+  Tooltip,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
-import { enUS } from 'date-fns/locale'
+import { format } from 'date-fns'
 import { useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { StatsByDay, useStatsForStaffQuery } from '../../../../types/graphql'
+import { StatByDay, useStatsForStaffQuery } from '../../../../types/graphql'
 
-ChartJS.register(LineController, LineElement, PointElement, LinearScale, TimeScale, Filler)
+ChartJS.register(LineController, LineElement, PointElement, LinearScale, TimeScale, Filler, Tooltip)
 
-function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
+const NumberFormatter = Intl.NumberFormat('en-US', { notation: 'compact' })
+
+type CumulativeChartCardProps = {
+  title: string
+  data: StatByDay[] | undefined | null
+  total: number | undefined | null
+}
+
+function CumulativeChartCard(props: CumulativeChartCardProps) {
   const theme = useTheme()
 
   const options = useMemo<ChartOptions>(
     () => ({
       animation: false,
+      maintainAspectRatio: false,
+      layout: {
+        padding: {
+          top: 1.5,
+          bottom: 1.5,
+        },
+      },
+      plugins: {
+        tooltip: {
+          borderWidth: 1,
+          bodyAlign: 'center',
+          titleAlign: 'center',
+          displayColors: false,
+          borderColor: theme.palette.divider,
+          bodyColor: theme.palette.text.primary,
+          titleColor: theme.palette.text.primary,
+          backgroundColor: theme.palette.background.paper,
+          callbacks: {
+            title(tooltipItems) {
+              return tooltipItems.map((e) => format(e.parsed.x, 'MMMM d'))
+            },
+            label({ raw }) {
+              return NumberFormatter.format(raw as number)
+            },
+          },
+        },
+      },
+      interaction: {
+        intersect: false,
+      },
       elements: {
         point: {
           radius: 0,
@@ -36,19 +75,24 @@ function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
           borderCapStyle: 'round',
           borderJoinStyle: 'round',
           borderColor: theme.palette.primary.main,
-          backgroundColor: alpha(theme.palette.primary.main, 0.25),
+          backgroundColor({ chart }) {
+            const gradient = chart.ctx.createLinearGradient(0, chart.chartArea.top, 0, chart.chartArea.bottom)
+            gradient.addColorStop(0, alpha(theme.palette.primary.main, 0.25))
+            gradient.addColorStop(1, alpha(theme.palette.primary.main, 0))
+            return gradient
+          },
         },
       },
       scales: {
         y: {
           grid: {
-            color: theme.palette.divider,
+            display: false,
           },
           ticks: {
-            color: theme.palette.text.disabled,
+            display: false,
           },
           border: {
-            color: theme.palette.divider,
+            display: false,
           },
         },
         x: {
@@ -57,18 +101,13 @@ function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
             display: false,
           },
           ticks: {
-            color: theme.palette.text.disabled,
+            display: false,
           },
           border: {
-            color: theme.palette.divider,
+            display: false,
           },
           time: {
             unit: 'day',
-          },
-          adapters: {
-            date: {
-              locale: enUS,
-            },
           },
         },
       },
@@ -78,18 +117,45 @@ function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
 
   const data = useMemo<ChartData>(
     () => ({
-      labels: props.data.map((e) => e.day),
-      datasets: [{ data: props.data.map((e) => e.value) }],
+      labels: props.data?.map((e) => e.day),
+      datasets: [
+        {
+          data:
+            props.data
+              ?.map((e) => e.value)
+              .reduce<number[]>((prev, curr, index, array) => {
+                const value = index > 0 ? array[array.length - index] : 0
+                const cumulative = index > 0 ? prev[0] - value : props.total ?? 0
+                prev.splice(0, 0, cumulative)
+                return prev
+              }, []) ?? [],
+        },
+      ],
     }),
-    [props.data]
+    [props.data, props.total]
   )
 
   return (
     <Paper sx={{ p: 2 }}>
-      <Typography textAlign="center" mb={1}>
-        {props.title}
-      </Typography>
-      <Chart type="line" options={options} data={data} />
+      <Stack direction="row">
+        <Stack spacing={0} justifyContent="flex-end">
+          <Typography color="text.disabled">{props.title}</Typography>
+          {typeof props.total === 'number' ? (
+            <Typography variant="h4">{NumberFormatter.format(props.total)}</Typography>
+          ) : (
+            <Skeleton>
+              <Typography variant="h4">XX</Typography>
+            </Skeleton>
+          )}
+        </Stack>
+        <Box flex={1} position="relative" overflow="hidden">
+          {props.data ? (
+            <Chart type="line" options={options} data={data} height={120} />
+          ) : (
+            <Skeleton variant="rounded" height={120} />
+          )}
+        </Box>
+      </Stack>
     </Paper>
   )
 }
@@ -97,15 +163,17 @@ function ChartCardByDay(props: { title: string; data: StatsByDay[] }) {
 function Home() {
   const { data } = useStatsForStaffQuery()
 
-  if (!data) {
-    return null
-  }
-
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item xs={12} lg={6}>
-          <ChartCardByDay title="Created Users" data={data.statsByCreatedUsers} />
+        <Grid item xs={12}>
+          <Typography variant="h5">Stats</Typography>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <CumulativeChartCard title="Users" data={data?.statsOfCreatedUsers} total={data?.users.page.total} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <CumulativeChartCard title="Teams" data={data?.statsOfCreatedTeams} total={data?.teams.page.total} />
         </Grid>
       </Grid>
     </Box>

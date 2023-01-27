@@ -1,5 +1,19 @@
 query statsForStaff {
-  statsByCreatedUsers {
+  users {
+    page {
+      total
+    }
+  }
+  statsOfCreatedUsers {
+    day
+    value
+  }
+  teams {
+    page {
+      total
+    }
+  }
+  statsOfCreatedTeams {
     day
     value
   }
