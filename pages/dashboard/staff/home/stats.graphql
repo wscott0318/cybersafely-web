@@ -1,28 +1,22 @@
-query statsForStaff($days: Int!) {
-  users {
-    page {
-      total
-    }
-  }
-  statsOfCreatedUsers(days: $days) {
+fragment StatsByDayForStaff on StatsByDay {
+  stats {
     day
     value
   }
-  teams {
-    page {
-      total
-    }
+  total
+}
+
+query statsForStaff($days: Int!) {
+  statsOfCreatedUsers(days: $days) {
+    ...StatsByDayForStaff
   }
   statsOfCreatedTeams(days: $days) {
-    day
-    value
+    ...StatsByDayForStaff
   }
   statsOfCreatedMembers(days: $days) {
-    day
-    value
+    ...StatsByDayForStaff
   }
   statsOfCreatedParents(days: $days) {
-    day
-    value
+    ...StatsByDayForStaff
   }
 }

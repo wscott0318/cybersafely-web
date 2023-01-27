@@ -240,10 +240,10 @@ export type Query = {
   members: PaginatedUser;
   parents: PaginatedUser;
   profile: User;
-  statsOfCreatedMembers: Array<StatByDay>;
-  statsOfCreatedParents: Array<StatByDay>;
-  statsOfCreatedTeams: Array<StatByDay>;
-  statsOfCreatedUsers: Array<StatByDay>;
+  statsOfCreatedMembers: StatsByDay;
+  statsOfCreatedParents: StatsByDay;
+  statsOfCreatedTeams: StatsByDay;
+  statsOfCreatedUsers: StatsByDay;
   team: Team;
   teams: PaginatedTeam;
   user: User;
@@ -340,6 +340,12 @@ export type StatByDay = {
   __typename?: 'StatByDay';
   day: Scalars['DateTime'];
   value: Scalars['Int'];
+};
+
+export type StatsByDay = {
+  __typename?: 'StatsByDay';
+  stats: Array<StatByDay>;
+  total: Scalars['Int'];
 };
 
 export type StringFilter = {
@@ -563,12 +569,14 @@ export type ChildrenQueryVariables = Exact<{
 
 export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
+export type StatsByDayForStaffFragment = { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
+
 export type StatsForStaffQueryVariables = Exact<{
   days: Scalars['Int'];
 }>;
 
 
-export type StatsForStaffQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedUsers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedTeams: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, statsOfCreatedMembers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, statsOfCreatedParents: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
+export type StatsForStaffQuery = { __typename?: 'Query', statsOfCreatedUsers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedTeams: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedMembers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedParents: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> } };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -625,7 +633,15 @@ export type UsersQueryVariables = Exact<{
 
 export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyUserRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', name: string } }> }> } };
 
-
+export const StatsByDayForStaffFragmentDoc = gql`
+    fragment StatsByDayForStaff on StatsByDay {
+  stats {
+    day
+    value
+  }
+  total
+}
+    `;
 export const ProfileDocument = gql`
     query profile {
   profile {
@@ -1314,34 +1330,20 @@ export type ChildrenLazyQueryHookResult = ReturnType<typeof useChildrenLazyQuery
 export type ChildrenQueryResult = Apollo.QueryResult<ChildrenQuery, ChildrenQueryVariables>;
 export const StatsForStaffDocument = gql`
     query statsForStaff($days: Int!) {
-  users {
-    page {
-      total
-    }
-  }
   statsOfCreatedUsers(days: $days) {
-    day
-    value
-  }
-  teams {
-    page {
-      total
-    }
+    ...StatsByDayForStaff
   }
   statsOfCreatedTeams(days: $days) {
-    day
-    value
+    ...StatsByDayForStaff
   }
   statsOfCreatedMembers(days: $days) {
-    day
-    value
+    ...StatsByDayForStaff
   }
   statsOfCreatedParents(days: $days) {
-    day
-    value
+    ...StatsByDayForStaff
   }
 }
-    `;
+    ${StatsByDayForStaffFragmentDoc}`;
 
 /**
  * __useStatsForStaffQuery__
@@ -1695,5 +1697,8 @@ export const namedOperations = {
     createTeam: 'createTeam',
     inviteStaff: 'inviteStaff',
     removeRole: 'removeRole'
+  },
+  Fragment: {
+    StatsByDayForStaff: 'StatsByDayForStaff'
   }
 }
