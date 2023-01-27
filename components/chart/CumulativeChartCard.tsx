@@ -12,7 +12,6 @@ import {
   Tooltip,
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
-import { format } from 'date-fns'
 import { useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
 import { StatByDay } from '../../types/graphql'
@@ -50,7 +49,7 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
           backgroundColor: theme.palette.background.paper,
           callbacks: {
             title(tooltipItems) {
-              return tooltipItems.map((e) => format(e.parsed.x, 'MMMM d'))
+              return tooltipItems.map((e) => new Date(e.parsed.x).toLocaleDateString())
             },
             label({ raw }) {
               return CompactNumberFormatter.format(raw as number)
