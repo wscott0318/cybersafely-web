@@ -13,8 +13,8 @@ export function CoverLayout(props: CoverLayoutProps) {
 
   return (
     <Grid container>
-      <Grid item xs={12} md={6} lg={7}>
-        <Box position="relative" p={4} height="100%">
+      <Grid item xs={12} md={6} xl={7}>
+        <Box position="relative" px={4} py={2} height="100%">
           <NextImage
             fill
             alt="Hero"
@@ -31,7 +31,7 @@ export function CoverLayout(props: CoverLayoutProps) {
           </NextLink>
         </Box>
       </Grid>
-      <Grid item xs={12} md={6} lg={5}>
+      <Grid item xs={12} md={6} xl={5}>
         <Box
           flex={1}
           display="flex"
