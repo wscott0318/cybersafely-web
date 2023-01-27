@@ -7,7 +7,7 @@ import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { useStatsForStaffQuery } from '../../../../types/graphql'
 
 function Home() {
-  const [days, setDays] = useState(15)
+  const [days, setDays] = useState(14)
 
   const { data } = useStatsForStaffQuery({
     variables: { days },
@@ -22,18 +22,19 @@ function Home() {
               Stats
             </Typography>
             <Select
+              value={days}
+              variant="outlined"
+              onChange={(e) => setDays(e.target.value as number)}
               startAdornment={
                 <InputAdornment position="start">
                   <CalendarIcon />
                 </InputAdornment>
               }
-              variant="outlined"
-              value={days}
-              onChange={(e) => setDays(e.target.value as number)}
             >
-              <MenuItem value={15}>Show 15 days</MenuItem>
-              <MenuItem value={30}>Show 30 days</MenuItem>
-              <MenuItem value={60}>Show 60 days</MenuItem>
+              <MenuItem value={7}>Last week</MenuItem>
+              <MenuItem value={14}>Last 2 weeks</MenuItem>
+              <MenuItem value={30}>Last month</MenuItem>
+              <MenuItem value={60}>Last 2 months</MenuItem>
             </Select>
           </Stack>
         </Grid>
