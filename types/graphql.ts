@@ -221,6 +221,8 @@ export type Query = {
   members: PaginatedUser;
   parents: PaginatedUser;
   profile: User;
+  statsOfCreatedMembers: Array<StatByDay>;
+  statsOfCreatedParents: Array<StatByDay>;
   statsOfCreatedTeams: Array<StatByDay>;
   statsOfCreatedUsers: Array<StatByDay>;
   team: Team;
@@ -254,6 +256,16 @@ export type QueryParentsArgs = {
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
   search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryStatsOfCreatedMembersArgs = {
+  days?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryStatsOfCreatedParentsArgs = {
+  days?: InputMaybe<Scalars['Int']>;
 };
 
 
@@ -528,7 +540,7 @@ export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'Pa
 export type StatsForStaffQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type StatsForStaffQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedUsers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedTeams: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
+export type StatsForStaffQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedUsers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', total: number } }, statsOfCreatedTeams: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, statsOfCreatedMembers: Array<{ __typename?: 'StatByDay', day: Date, value: number }>, statsOfCreatedParents: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -1258,6 +1270,14 @@ export const StatsForStaffDocument = gql`
     }
   }
   statsOfCreatedTeams {
+    day
+    value
+  }
+  statsOfCreatedMembers {
+    day
+    value
+  }
+  statsOfCreatedParents {
     day
     value
   }

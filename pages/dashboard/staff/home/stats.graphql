@@ -17,4 +17,12 @@ query statsForStaff {
     day
     value
   }
+  statsOfCreatedMembers {
+    day
+    value
+  }
+  statsOfCreatedParents {
+    day
+    value
+  }
 }
