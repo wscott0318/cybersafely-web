@@ -1,3 +1,4 @@
+import { LoadingButton } from '@mui/lab'
 import {
   alpha,
   AppBar,
@@ -21,6 +22,7 @@ import { z } from 'zod'
 import { Config } from '../helpers/config'
 import { useForm } from '../helpers/form'
 import { useLogoUrl, useMobile, useOnTop } from '../helpers/hooks'
+import { useContactMutation } from '../types/graphql'
 import { useAlert } from '../utils/context/alert'
 
 function Header() {
@@ -139,6 +141,8 @@ function Contact() {
   const form = useForm(schema)
   const { pushAlert } = useAlert()
 
+  const [contact, { loading }] = useContactMutation()
+
   return (
     <Container id="contact" disableGutters>
       <Stack px={2} py={16} alignItems="center" textAlign="center">
@@ -146,10 +150,10 @@ function Contact() {
         <Typography variant="h6">Learn More About How Your School Can Help Students Pivot Damaging Behavior</Typography>
         <form
           style={{ width: '100%', maxWidth: 600 }}
-          onSubmit={form.onSubmit((value) => {
-            console.log(value)
-            form.clear()
+          onSubmit={form.onSubmit(async (input) => {
+            await contact({ variables: { input } })
 
+            form.clear()
             pushAlert({
               type: 'alert',
               title: 'Success',
@@ -265,9 +269,9 @@ function Contact() {
               helperText={form.getError('comments')}
               onChange={(e) => form.onChange({ comments: e.target.value })}
             />
-            <Button type="submit" size="large">
+            <LoadingButton type="submit" size="large" loading={loading}>
               Submit
-            </Button>
+            </LoadingButton>
           </Stack>
         </form>
       </Stack>

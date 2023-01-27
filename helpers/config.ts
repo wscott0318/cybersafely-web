@@ -5,6 +5,6 @@ export const Config = {
     shortName: process.env.NEXT_PUBLIC_APP_SHORT_NAME ?? 'CyberSafely.ai',
   },
   email: {
-    support: process.env.NEXT_PUBLIC_EMAIL_SUPPORT ?? 'contact@cybersafely.ai',
+    support: process.env.NEXT_PUBLIC_EMAIL_SUPPORT ?? 'annettef@cybersafely.ai',
   },
 }

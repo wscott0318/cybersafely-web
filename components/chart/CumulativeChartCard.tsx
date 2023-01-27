@@ -33,7 +33,7 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
 
   const options = useMemo<ChartOptions>(
     () => ({
-      animation: false,
+      // animation: false,
       maintainAspectRatio: false,
       plugins: {
         tooltip: {

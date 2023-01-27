@@ -33,6 +33,19 @@ export type BooleanFilter = {
   not?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type ContactInput = {
+  comments?: InputMaybe<Scalars['String']>;
+  describe: Scalars['String'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  jobTitle?: InputMaybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  phone?: InputMaybe<Scalars['String']>;
+  schoolName: Scalars['String'];
+  state: Scalars['String'];
+  students: Scalars['String'];
+};
+
 export type DateTimeFilter = {
   equals?: InputMaybe<Scalars['DateTime']>;
   gte?: InputMaybe<Scalars['DateTime']>;
@@ -63,6 +76,7 @@ export type Jwt = {
 export type Mutation = {
   __typename?: 'Mutation';
   activate?: Maybe<Scalars['ID']>;
+  contact?: Maybe<Scalars['ID']>;
   createTeam?: Maybe<Scalars['ID']>;
   inviteAthlete?: Maybe<Scalars['ID']>;
   inviteCoach?: Maybe<Scalars['ID']>;
@@ -86,6 +100,11 @@ export type MutationActivateArgs = {
   password: Scalars['String'];
   passwordToken: Scalars['String'];
   user: UserCreate;
+};
+
+
+export type MutationContactArgs = {
+  input: ContactInput;
 };
 
 
@@ -487,6 +506,13 @@ export type RequestResetPasswordMutationVariables = Exact<{
 
 
 export type RequestResetPasswordMutation = { __typename?: 'Mutation', requestResetPassword?: string | null };
+
+export type ContactMutationVariables = Exact<{
+  input: ContactInput;
+}>;
+
+
+export type ContactMutation = { __typename?: 'Mutation', contact?: string | null };
 
 export type InviteParentMutationVariables = Exact<{
   childId: Scalars['ID'];
@@ -1004,6 +1030,37 @@ export function useRequestResetPasswordMutation(baseOptions?: Apollo.MutationHoo
 export type RequestResetPasswordMutationHookResult = ReturnType<typeof useRequestResetPasswordMutation>;
 export type RequestResetPasswordMutationResult = Apollo.MutationResult<RequestResetPasswordMutation>;
 export type RequestResetPasswordMutationOptions = Apollo.BaseMutationOptions<RequestResetPasswordMutation, RequestResetPasswordMutationVariables>;
+export const ContactDocument = gql`
+    mutation contact($input: ContactInput!) {
+  contact(input: $input)
+}
+    `;
+export type ContactMutationFn = Apollo.MutationFunction<ContactMutation, ContactMutationVariables>;
+
+/**
+ * __useContactMutation__
+ *
+ * To run a mutation, you first call `useContactMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useContactMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [contactMutation, { data, loading, error }] = useContactMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useContactMutation(baseOptions?: Apollo.MutationHookOptions<ContactMutation, ContactMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ContactMutation, ContactMutationVariables>(ContactDocument, options);
+      }
+export type ContactMutationHookResult = ReturnType<typeof useContactMutation>;
+export type ContactMutationResult = Apollo.MutationResult<ContactMutation>;
+export type ContactMutationOptions = Apollo.BaseMutationOptions<ContactMutation, ContactMutationVariables>;
 export const InviteParentDocument = gql`
     mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
   inviteParent(childId: $childId, email: $email, relation: $relation)
@@ -1628,6 +1685,7 @@ export const namedOperations = {
     register: 'register',
     resetPassword: 'resetPassword',
     requestResetPassword: 'requestResetPassword',
+    contact: 'contact',
     inviteParent: 'inviteParent',
     inviteCoach: 'inviteCoach',
     inviteAthlete: 'inviteAthlete',
