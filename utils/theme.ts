@@ -106,11 +106,21 @@ export function createTheme(isDark: boolean) {
         },
       },
       MuiSelect: {
-        styleOverrides: {
-          outlined: ({ theme }) => ({
-            background: theme.palette.background.paper,
-          }),
+        defaultProps: {
+          size: 'small',
+          variant: 'standard',
+          MenuProps: {
+            PaperProps: { sx: { mt: 1, mb: 1 } },
+          },
         },
+        variants: [
+          {
+            props: { variant: 'outlined' },
+            style: ({ theme }) => ({
+              background: theme.palette.background.paper,
+            }),
+          },
+        ],
       },
       MuiButton: {
         defaultProps: {

@@ -258,6 +258,8 @@ function Contact() {
               <FormControl required variant="outlined" size="medium" error={form.hasError('describe')}>
                 <InputLabel>What best describes your school?</InputLabel>
                 <Select
+                  size="medium"
+                  variant="outlined"
                   value={form.value.describe ?? ''}
                   label="What best describes your school?"
                   onChange={(e) => form.onChange({ describe: e.target.value })}

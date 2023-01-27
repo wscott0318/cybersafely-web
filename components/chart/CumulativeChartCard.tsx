@@ -27,6 +27,7 @@ type CumulativeChartCardProps = {
   data?: StatByDay[] | null
   total?: number | null
   helper?: string
+  fillHeight?: boolean
 }
 
 export function CumulativeChartCard(props: CumulativeChartCardProps) {
@@ -141,7 +142,7 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
   }, [props.title, data])
 
   return (
-    <Paper sx={{ p: 2, height: '100%' }}>
+    <Paper sx={{ p: 2, height: props.fillHeight ? '100%' : undefined }}>
       <Stack direction="row" spacing={0}>
         <Stack spacing={0} justifyContent="flex-end">
           <Typography color="text.disabled" maxWidth={80}>

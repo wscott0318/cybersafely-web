@@ -1,29 +1,45 @@
-import { Box, Grid, Typography } from '@mui/material'
+import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
+import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import 'chartjs-adapter-date-fns'
+import { useState } from 'react'
 import { CumulativeChartCard } from '../../../../components/chart/CumulativeChartCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { useStatsForStaffQuery } from '../../../../types/graphql'
 
-const DAYS = 15
-
 function Home() {
+  const [days, setDays] = useState(15)
+
   const { data } = useStatsForStaffQuery({
-    variables: { days: DAYS },
+    variables: { days },
   })
 
   return (
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Typography variant="h5">
-            Stats{' '}
-            <Typography display="inline" color="text.disabled">
-              (in the last {DAYS} days)
+          <Stack direction="row" alignItems="center">
+            <Typography variant="h5" flexGrow={1}>
+              Stats
             </Typography>
-          </Typography>
+            <Select
+              startAdornment={
+                <InputAdornment position="start">
+                  <CalendarIcon />
+                </InputAdornment>
+              }
+              variant="outlined"
+              value={days}
+              onChange={(e) => setDays(e.target.value as number)}
+            >
+              <MenuItem value={15}>Show 15 days</MenuItem>
+              <MenuItem value={30}>Show 30 days</MenuItem>
+              <MenuItem value={60}>Show 60 days</MenuItem>
+            </Select>
+          </Stack>
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
+            fillHeight
             title="Total Users*"
             data={data?.statsOfCreatedUsers.stats}
             total={data?.statsOfCreatedUsers.total}
@@ -32,6 +48,7 @@ function Home() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
+            fillHeight
             title="Total Teams"
             data={data?.statsOfCreatedTeams.stats}
             total={data?.statsOfCreatedTeams.total}
@@ -39,6 +56,7 @@ function Home() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
+            fillHeight
             title="Total Members*"
             data={data?.statsOfCreatedMembers.stats}
             total={data?.statsOfCreatedMembers.total}
@@ -47,6 +65,7 @@ function Home() {
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
+            fillHeight
             title="Total Parents*"
             data={data?.statsOfCreatedParents.stats}
             total={data?.statsOfCreatedParents.total}
