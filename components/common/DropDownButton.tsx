@@ -58,7 +58,6 @@ export function DropDownButton(props: DropDownButtonProps) {
         open={open}
         onClose={handleClose}
         anchorEl={anchorEl.current}
-        PaperProps={{ sx: { mt: 1, mb: 1 } }}
         MenuListProps={{
           disablePadding: false,
           sx: { minWidth: anchorEl.current?.clientWidth },

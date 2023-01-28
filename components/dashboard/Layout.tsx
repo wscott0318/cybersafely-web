@@ -6,11 +6,14 @@ import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
+import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
 import PersonIcon from '@mui/icons-material/PersonOutlined'
+import { LoadingButton } from '@mui/lab'
 import {
   Alert,
   AppBar,
   Avatar,
+  Badge,
   Box,
   Breakpoint,
   Collapse,
@@ -18,11 +21,15 @@ import {
   Divider,
   Drawer,
   IconButton,
+  Link,
   List,
+  ListItem,
   ListItemIcon,
   ListItemText,
   ListSubheader,
   MenuItem,
+  Pagination,
+  Popover,
   Snackbar,
   Stack,
   Toolbar,
@@ -32,16 +39,148 @@ import Head from 'next/head'
 import NextImage from 'next/image'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
+import {
+  AnyUserRole,
+  namedOperations,
+  NotificationsQuery,
+  ParentRole,
+  TeamRole,
+  useNotificationsQuery,
+  useNumberOfNotificationsQuery,
+  useProfileQuery,
+  useReadAllNotificationsMutation,
+} from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
 import { LoadingLogo } from '../common/NProgress'
 import { SidebarLink } from './SidebarLink'
+
+function NotificationItem({ notification }: { notification: NotificationsQuery['notifications']['nodes'][0] }) {
+  return (
+    <ListItem divider>
+      <ListItemText
+        primary={notification.message}
+        secondaryTypographyProps={{
+          component: 'div',
+        }}
+        secondary={
+          <>
+            {notification.object && (
+              <NextLinkLegacy href="#">
+                <Link>{notification.object.name}</Link>
+              </NextLinkLegacy>
+            )}
+            <Typography variant="inherit">{new Date(notification.createdAt).toLocaleString()}</Typography>
+          </>
+        }
+      />
+    </ListItem>
+  )
+}
+
+function NotificationList() {
+  const { data: notifications, refetch } = useNotificationsQuery({
+    variables: { page: { index: 0 } },
+  })
+
+  const [readAllNotifications, { loading }] = useReadAllNotificationsMutation({
+    refetchQueries: [namedOperations.Query.numberOfNotifications, namedOperations.Query.notifications],
+  })
+
+  return (
+    <>
+      <List
+        subheader={
+          <ListSubheader sx={{ p: 0 }}>
+            <Box borderBottom={1} borderColor="divider" px={2}>
+              <Stack direction="row" alignItems="center">
+                <Typography flexGrow={1} variant="inherit">
+                  Notifications
+                </Typography>
+                {notifications && notifications.notifications.nodes.length > 0 && (
+                  <LoadingButton variant="text" onClick={() => readAllNotifications()} loading={loading}>
+                    Read All
+                  </LoadingButton>
+                )}
+              </Stack>
+            </Box>
+          </ListSubheader>
+        }
+      >
+        {(!notifications || notifications.notifications.nodes.length === 0) && (
+          <Typography variant="body2" color="text.disabled" textAlign="center" m={2}>
+            No notifications
+          </Typography>
+        )}
+        {notifications?.notifications.nodes.map((notification) => (
+          <NotificationItem key={notification.id} notification={notification} />
+        ))}
+      </List>
+      {notifications && notifications.notifications.page.count > 1 && (
+        <Box p={2} display="flex" flexDirection="row" justifyContent="center">
+          <Pagination
+            size="small"
+            page={notifications.notifications.page.index + 1}
+            count={notifications.notifications.page.count}
+            onChange={(_, page) => {
+              refetch({ page: { index: page - 1 } })
+            }}
+          />
+        </Box>
+      )}
+    </>
+  )
+}
+
+function HeaderNotifications() {
+  const anchorEl = useRef<HTMLButtonElement>(null)
+
+  const [open, setOpen] = useState(false)
+
+  const { data } = useNumberOfNotificationsQuery({
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-first',
+    initialFetchPolicy: 'network-only',
+  })
+
+  return (
+    <>
+      <IconButton ref={anchorEl} onClick={() => setOpen((open) => !open)} sx={{ mr: 2 }}>
+        <Badge color="primary" badgeContent={data?.notifications.page.total}>
+          <NotificationIcon />
+        </Badge>
+      </IconButton>
+      <Popover
+        open={open}
+        anchorEl={anchorEl.current}
+        onClose={() => setOpen(false)}
+        TransitionProps={{
+          mountOnEnter: true,
+          unmountOnExit: true,
+        }}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        PaperProps={{
+          sx: {
+            my: 1,
+            maxWidth: 400,
+            width: '100vw',
+            maxHeight: '75vh',
+          },
+        }}
+      >
+        <NotificationList />
+      </Popover>
+    </>
+  )
+}
 
 function HeaderAccount() {
   const team = useTeam()
@@ -65,6 +204,7 @@ function HeaderAccount() {
           Please confirm your e-mail address at <b>{user.email}</b>.
         </Alert>
       </Snackbar>
+      <HeaderNotifications />
       <DropDownButton
         size="large"
         variant="text"

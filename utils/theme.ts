@@ -122,6 +122,11 @@ export function createTheme(isDark: boolean) {
           },
         ],
       },
+      MuiMenu: {
+        defaultProps: {
+          PaperProps: { sx: { mt: 1, mb: 1 } },
+        },
+      },
       MuiButton: {
         defaultProps: {
           variant: 'contained',

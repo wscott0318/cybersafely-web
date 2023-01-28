@@ -1,0 +1,35 @@
+query numberOfNotifications {
+  notifications {
+    page {
+      total
+    }
+  }
+}
+
+query notifications($page: Page) {
+  notifications(page: $page) {
+    page {
+      index
+      count
+    }
+    nodes {
+      id
+      createdAt
+      message
+      objectType
+      object {
+        id
+        ... on User {
+          name
+        }
+        ... on Team {
+          name
+        }
+      }
+    }
+  }
+}
+
+mutation readAllNotifications {
+  readAllNotifications
+}
