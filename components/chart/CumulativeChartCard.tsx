@@ -139,7 +139,7 @@ export function CumulativeChartCard(props: CumulativeChartCardProps) {
   const total = useMemo(() => {
     if (typeof props.total === 'number') return props.total
     return data.datasets[0].data.reduce<number>((prev, curr) => prev + (curr as number), 0)
-  }, [props.title, data])
+  }, [props.total, data])
 
   return (
     <Paper sx={{ p: 2, height: props.fillHeight ? '100%' : undefined }}>
