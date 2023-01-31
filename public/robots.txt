@@ -1,0 +1,13 @@
+# TODO: This can be removed in the future
+
+# Block all crawlers for /dashboard/*
+User-agent: *
+Disallow: /dashboard/*
+
+# Block all crawlers for /auth/*
+User-agent: *
+Disallow: /auth/*
+
+# Allow all crawlers
+User-agent: *
+Allow: /

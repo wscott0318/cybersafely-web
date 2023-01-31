@@ -61,11 +61,14 @@ function Header() {
             <Button color="inherit" variant="text" size="large" href="#contact">
               Contact
             </Button>
-            <Box pl={1}>
-              <NextLink href="/auth/login" passHref legacyBehavior>
-                <Button size="large">Login</Button>
-              </NextLink>
-            </Box>
+            {/* TODO: This can be removed in the future */}
+            {Config.dev && (
+              <Box pl={1}>
+                <NextLink href="/auth/login" passHref legacyBehavior>
+                  <Button size="large">Login</Button>
+                </NextLink>
+              </Box>
+            )}
           </Stack>
         </Container>
       </Toolbar>
