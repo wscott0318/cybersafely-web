@@ -43,7 +43,7 @@ export function useUser() {
   return { ...context, logout, refetchUser }
 }
 
-export function useTeam() {
+export function useTeamRole() {
   const context = useContext(AuthContext)
 
   const role = useMemo(() => {

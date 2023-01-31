@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { useForm } from '../../helpers/form'
 import { useLeaveTeamMutation, useUpdateTeamMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
-import { useTeam, useUser } from '../../utils/context/auth'
+import { useTeamRole, useUser } from '../../utils/context/auth'
 
 function LeaveTeamButton() {
   const router = useRouter()
@@ -48,15 +48,15 @@ const schema = z.object({
 export function UpdateTeamForm() {
   const { pushAlert } = useAlert()
   const { refetchUser } = useUser()
-  const team = useTeam()
+  const teamRole = useTeamRole()
 
   const form = useForm(schema, {
-    name: team?.team.name,
+    name: teamRole?.team.name,
   })
 
   const disabled = useMemo(() => {
-    return team?.role !== 'ADMIN'
-  }, [team])
+    return teamRole?.role !== 'ADMIN'
+  }, [teamRole])
 
   const [updateTeam, { loading }] = useUpdateTeamMutation({
     onCompleted() {

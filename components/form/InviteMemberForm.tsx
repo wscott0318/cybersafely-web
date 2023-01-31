@@ -2,6 +2,7 @@ import { FormControl, FormHelperText, InputLabel, MenuItem, Select, Stack, TextF
 import { forwardRef, useImperativeHandle } from 'react'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
+import { useTeamRole } from '../../utils/context/auth'
 
 const schema = z.object({
   email: z.string().email(),
@@ -14,6 +15,7 @@ type InviteMemberFormRefProps = {
 
 export const InviteMemberForm = forwardRef<InviteMemberFormRefProps>(function Wrapped(props, ref) {
   const form = useForm(schema)
+  const teamRole = useTeamRole()
 
   useImperativeHandle(ref, () => ({ onSubmit: form.didSubmit }), [form.didSubmit])
 
@@ -43,7 +45,7 @@ export const InviteMemberForm = forwardRef<InviteMemberFormRefProps>(function Wr
           value={form.value.role ?? ''}
           onChange={(e) => form.onChange({ role: e.target.value as any })}
         >
-          <MenuItem value="ADMIN">Admin</MenuItem>
+          {teamRole?.role === 'ADMIN' && <MenuItem value="ADMIN">Admin</MenuItem>}
           <MenuItem value="COACH">Coach</MenuItem>
           <MenuItem value="ATHLETE">Athlete</MenuItem>
         </Select>

@@ -1,9 +1,12 @@
+import AddIcon from '@mui/icons-material/AddOutlined'
+import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { InviteMemberForm } from '../../../../components/form/InviteMemberForm'
 import { MembersQuery, namedOperations, useInviteMemberMutation, useMembersQuery } from '../../../../types/graphql'
 import { useAlert } from '../../../../utils/context/alert'
 
@@ -70,6 +73,23 @@ function Members() {
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
+          <Button
+            fullWidth
+            startIcon={<AddIcon />}
+            onClick={() => {
+              pushAlert({
+                type: 'custom',
+                title: 'Invite Member',
+                message: 'Enter the information below',
+                content: InviteMemberForm,
+                result: (variables) => {
+                  inviteMember({ variables })
+                },
+              })
+            }}
+          >
+            Invite Member
+          </Button>
           <SearchBar onSearch={(search) => query.refetch({ search })} />
         </DataGridActions>
       }

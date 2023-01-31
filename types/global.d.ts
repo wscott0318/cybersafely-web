@@ -1,7 +1,7 @@
 import '@apollo/client/core'
 
 declare module '@apollo/client/core' {
-  export declare type DefaultContext = {
+  export interface DefaultContext {
     teamId?: string
     behalfId?: string
   }

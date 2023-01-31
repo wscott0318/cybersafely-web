@@ -39,14 +39,14 @@ import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
 import { AnyRole, ParentRole, TeamRole, useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
-import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
+import { AuthContextProvider, useTeamRole, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
 import { LoadingLogo } from '../common/NProgress'
 import { SidebarLink } from './SidebarLink'
 
 function HeaderAccount() {
-  const team = useTeam()
+  const teamRole = useTeamRole()
   const { user, logout } = useUser()
   const { pushAlert } = useAlert()
 
@@ -88,18 +88,18 @@ function HeaderAccount() {
         uppercase={false}
         startIcon={<Avatar sx={{ width: 24, height: 24 }} />}
       >
-        {team && (
+        {teamRole && (
           <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
             Team
           </MenuItem>
         )}
-        {team && (
+        {teamRole && (
           <NextLinkLegacy href="/dashboard/team">
             <MenuItem>
               <ListItemIcon>
                 <GroupIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>{team.team.name}</ListItemText>
+              <ListItemText>{teamRole.team.name}</ListItemText>
             </MenuItem>
           </NextLinkLegacy>
         )}
