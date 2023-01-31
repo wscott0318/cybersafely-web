@@ -61,7 +61,7 @@ function Home() {
       query={query}
       columns={columns}
       data={query.data?.children}
-      // href={(e) => `/dashboard/parent/home/${e.id}`}
+      href={(e) => `/dashboard/parent/child/${e.id}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
