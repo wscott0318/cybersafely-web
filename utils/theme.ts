@@ -1,5 +1,5 @@
 import { dividerClasses, outlinedInputClasses } from '@mui/material'
-import { common, grey, red } from '@mui/material/colors'
+import { common, green, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
 
@@ -21,6 +21,9 @@ export function createTheme(isDark: boolean) {
       },
       primary: {
         main: '#dd3333',
+      },
+      success: {
+        main: green[700],
       },
       error: {
         main: red.A400,
