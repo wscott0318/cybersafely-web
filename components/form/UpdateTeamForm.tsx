@@ -72,7 +72,7 @@ export function UpdateTeamForm() {
 
   return (
     <form
-      onSubmit={form.onSubmit((input) => {
+      onSubmit={form.onSubmit((_, input) => {
         updateTeam({ variables: { input } })
       })}
     >

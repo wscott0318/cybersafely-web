@@ -26,6 +26,7 @@
     "@types/react-dom": "18.0.10",
     "chart.js": "^4.2.0",
     "chartjs-adapter-date-fns": "^3.0.0",
+    "check-password-strength": "^2.0.7",
     "date-fns": "^2.29.3",
     "graphql": "^16.6.0",
     "next": "13.1.3",

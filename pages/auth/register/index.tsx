@@ -4,19 +4,34 @@ import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
+import { checkPasswordStrength, PasswordStrength } from '../../../components/common/PasswordStrength'
 import { useForm } from '../../../helpers/form'
 import { useRegisterMutation } from '../../../types/graphql'
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(4),
-  user: z.object({
-    name: z.string().min(4),
-  }),
-  team: z.object({
-    name: z.string().min(4),
-  }),
-})
+const schema = z
+  .object({
+    email: z.string().email(),
+    password: z
+      .string()
+      .min(4)
+      .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
+    repeatPassword: z.string(),
+    user: z.object({
+      name: z.string().min(4),
+    }),
+    team: z.object({
+      name: z.string().min(4),
+    }),
+  })
+  .superRefine(({ password, repeatPassword }, ctx) => {
+    if (password !== repeatPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['repeatPassword'],
+        message: "The passwords don't match",
+      })
+    }
+  })
 
 export default function Register() {
   const router = useRouter()
@@ -68,6 +83,18 @@ export default function Register() {
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
             onChange={(e) => form.onChange({ password: e.target.value })}
+            InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
+          />
+          <TextField
+            required
+            size="medium"
+            type="password"
+            label="Repeat Password"
+            variant="outlined"
+            error={form.hasError('repeatPassword')}
+            value={form.value.repeatPassword ?? ''}
+            helperText={form.getError('repeatPassword')}
+            onChange={(e) => form.onChange({ repeatPassword: e.target.value })}
           />
           <TextField
             required

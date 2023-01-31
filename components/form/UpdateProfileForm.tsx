@@ -7,6 +7,7 @@ import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 
 const schema = z.object({
+  newEmail: z.string().email(),
   name: z.string().min(4),
 })
 
@@ -15,6 +16,7 @@ export function UpdateProfileForm() {
   const { user, refetchUser } = useUser()
 
   const form = useForm(schema, {
+    newEmail: user.email,
     name: user.name,
   })
 
@@ -32,11 +34,28 @@ export function UpdateProfileForm() {
 
   return (
     <form
-      onSubmit={form.onSubmit((input) => {
-        updateProfile({ variables: { input } })
+      onSubmit={form.onSubmit(async (_, input) => {
+        await updateProfile({ variables: { input } })
+
+        if (!!input.newEmail) {
+          pushAlert({
+            type: 'alert',
+            title: 'Verify E-mail',
+            message: 'Please check your inbox and follow the instructions',
+          })
+        }
       })}
     >
       <Stack>
+        <TextField
+          required
+          type="email"
+          label="E-mail"
+          error={form.hasError('newEmail')}
+          value={form.value.newEmail ?? ''}
+          helperText={form.getError('newEmail')}
+          onChange={(e) => form.onChange({ newEmail: e.target.value })}
+        />
         <TextField
           required
           label="Name"

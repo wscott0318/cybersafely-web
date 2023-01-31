@@ -25,12 +25,24 @@ export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>, initialVa
   }, [])
 
   const didSubmit = useCallback(
-    (callback: (value: TSchema) => void) => {
+    (callback: (value: TSchema, deltaValue: Partial<TSchema>) => void) => {
       setErrors(undefined)
 
       try {
         const newValue = schema.parse(value)
-        callback(newValue)
+
+        const deltaValue: Partial<TSchema> = {}
+
+        if (initialValue) {
+          Object.keys(newValue).forEach((_key) => {
+            const key = _key as keyof TSchema
+            if (initialValue[key] !== newValue[key]) {
+              deltaValue[key] = newValue[key]
+            }
+          })
+        }
+
+        callback(newValue, deltaValue)
       } catch (error) {
         if (error instanceof ZodError) {
           setErrors(
@@ -43,11 +55,11 @@ export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>, initialVa
         }
       }
     },
-    [schema, value]
+    [schema, value, initialValue]
   )
 
   const onSubmit = useCallback(
-    (callback: (value: TSchema) => void) => {
+    (callback: (value: TSchema, deltaValue: Partial<TSchema>) => void) => {
       return function onSubmitWrapper(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
         didSubmit(callback)

@@ -4,15 +4,30 @@ import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { CoverLayout } from '../../../../components/common/CoverLayout'
+import { checkPasswordStrength, PasswordStrength } from '../../../../components/common/PasswordStrength'
 import { useForm } from '../../../../helpers/form'
 import { useActivateMutation } from '../../../../types/graphql'
 
-const schema = z.object({
-  password: z.string().min(4),
-  user: z.object({
-    name: z.string().min(4),
-  }),
-})
+const schema = z
+  .object({
+    password: z
+      .string()
+      .min(4)
+      .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
+    repeatPassword: z.string(),
+    user: z.object({
+      name: z.string().min(4),
+    }),
+  })
+  .superRefine(({ password, repeatPassword }, ctx) => {
+    if (password !== repeatPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['repeatPassword'],
+        message: "The passwords don't match",
+      })
+    }
+  })
 
 type Props = {
   passwordToken: string
@@ -57,6 +72,18 @@ export default function Activate({ passwordToken }: Props) {
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
             onChange={(e) => form.onChange({ password: e.target.value })}
+            InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
+          />
+          <TextField
+            required
+            size="medium"
+            type="password"
+            label="Repeat Password"
+            variant="outlined"
+            error={form.hasError('repeatPassword')}
+            value={form.value.repeatPassword ?? ''}
+            helperText={form.getError('repeatPassword')}
+            onChange={(e) => form.onChange({ repeatPassword: e.target.value })}
           />
           <LoadingButton type="submit" loading={loading} size="large">
             Submit

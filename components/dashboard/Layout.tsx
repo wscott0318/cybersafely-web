@@ -262,6 +262,10 @@ export function DashboardLayout(props: DashboardLayoutProps) {
                 </NextLink>
               </Box>
               {props.sidebar}
+              <Box flexGrow={1} />
+              <List>
+                <SidebarLink title="Profile" icon={<AccountIcon />} href="/dashboard/profile" />
+              </List>
             </Stack>
           </Drawer>
           {open && !isTablet && <Box width={width} flexShrink={0} />}
