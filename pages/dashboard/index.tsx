@@ -6,6 +6,7 @@ import { CoverLayout } from '../../components/common/CoverLayout'
 import { NextLink } from '../../components/common/NextLink'
 import { Config } from '../../helpers/config'
 import { AnyRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
+import { StorageManager } from '../../utils/storage'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -28,13 +29,13 @@ export default function Dashboard() {
     if (staff) {
       router.replace('/dashboard/staff/home')
     } else if (admin) {
-      localStorage.setItem('teamId', admin.team.id)
+      StorageManager.set('teamId', admin.team.id)
       router.replace('/dashboard/admin/home')
     } else if (coach) {
-      localStorage.setItem('teamId', coach.team.id)
+      StorageManager.set('teamId', coach.team.id)
       router.replace('/dashboard/coach/home')
     } else if (athlete) {
-      localStorage.setItem('teamId', athlete.team.id)
+      StorageManager.set('teamId', athlete.team.id)
       router.replace('/dashboard/athlete/home')
     } else if (parent) {
       router.replace('/dashboard/parent/home')

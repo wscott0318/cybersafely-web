@@ -3,6 +3,7 @@ import { onError } from '@apollo/client/link/error'
 import React, { useMemo } from 'react'
 import { Config } from '../helpers/config'
 import { useAlert } from '../utils/context/alert'
+import { StorageManager } from '../utils/storage'
 
 type ApolloClientProviderProps = {
   children: React.ReactNode
@@ -21,8 +22,8 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
 
       const headers = {
         ...context.headers,
-        'x-token': localStorage.getItem('token'),
-        'x-team-id': localStorage.getItem('teamId'),
+        'x-token': StorageManager.get('token'),
+        'x-team-id': StorageManager.get('teamId'),
       }
 
       if (typeof context.teamId === 'string') {

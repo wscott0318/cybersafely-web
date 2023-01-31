@@ -6,6 +6,7 @@ import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
 import { useForm } from '../../../helpers/form'
 import { useLoginMutation } from '../../../types/graphql'
+import { StorageManager } from '../../../utils/storage'
 
 const schema = z.object({
   email: z.string().email(),
@@ -19,7 +20,7 @@ export default function Login() {
   const [login, { loading }] = useLoginMutation({
     onCompleted: async (data, options) => {
       const { token } = data.login
-      localStorage.setItem('token', token)
+      StorageManager.set('token', token)
 
       await options?.client?.clearStore()
 

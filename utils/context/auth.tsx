@@ -2,6 +2,7 @@ import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { createContext, useCallback, useContext, useMemo } from 'react'
 import { ProfileQuery, TeamRole } from '../../types/graphql'
+import { StorageManager } from '../storage'
 
 type AuthContext = {
   user: ProfileQuery['profile']
@@ -26,7 +27,7 @@ export function useUser() {
   const context = useContext(AuthContext)
 
   const logout = useCallback(async () => {
-    localStorage.clear()
+    StorageManager.clear()
     sessionStorage.clear()
     await client.clearStore()
     router.push('/auth/login')
@@ -47,8 +48,8 @@ export function useTeamRole() {
   const context = useContext(AuthContext)
 
   const role = useMemo(() => {
-    if (context?.user && localStorage) {
-      const teamId = localStorage.getItem('teamId')
+    if (context?.user) {
+      const teamId = StorageManager.get('teamId')
 
       if (teamId) {
         const role = context.user.roles.find(

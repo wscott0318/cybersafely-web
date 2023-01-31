@@ -21,6 +21,7 @@ import {
   Drawer,
   IconButton,
   List,
+  listClasses,
   ListItemIcon,
   ListItemText,
   ListSubheader,
@@ -150,6 +151,18 @@ function Footer() {
   )
 }
 
+function SidebarAccount() {
+  const { user } = useUser()
+  const teamRole = useTeamRole()
+
+  return (
+    <List>
+      {teamRole && <SidebarLink icon={<GroupIcon />} title={teamRole.team.name} href="/dashboard/team" />}
+      <SidebarLink icon={<AccountIcon />} title={user.name} href="/dashboard/profile" />
+    </List>
+  )
+}
+
 export type DashboardLayoutProps = {
   children: JSX.Element | JSX.Element[]
   title: string
@@ -243,6 +256,11 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               borderColor="divider"
               flexDirection="column"
               bgcolor="background.paper"
+              sx={{
+                ['.' + listClasses.root]: {
+                  my: 0.5,
+                },
+              }}
             >
               {isTablet && (
                 <IconButton
@@ -263,9 +281,8 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               </Box>
               {props.sidebar}
               <Box flexGrow={1} />
-              <List>
-                <SidebarLink title="Profile" icon={<AccountIcon />} href="/dashboard/profile" />
-              </List>
+              <Divider sx={{ mx: 2 }} />
+              <SidebarAccount />
             </Stack>
           </Drawer>
           {open && !isTablet && <Box width={width} flexShrink={0} />}
