@@ -1,25 +1,17 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
-import { GetServerSideProps } from 'next'
-import { useMemo } from 'react'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
-import { SearchBar } from '../../../../../components/common/SearchBar'
-import { UserEmail } from '../../../../../components/common/UserEmail'
-import { UserRoles } from '../../../../../components/common/UserRoles'
-import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { MemberActions } from '../../../../../components/data/MemberActions'
-import { InviteMemberForm } from '../../../../../components/form/InviteMemberForm'
-import {
-  MembersQuery,
-  namedOperations,
-  useInviteMemberMutation,
-  useMembersQuery,
-  useTeamQuery,
-} from '../../../../../types/graphql'
-import { useAlert } from '../../../../../utils/context/alert'
+import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { SearchBar } from '../../../../components/common/SearchBar'
+import { UserEmail } from '../../../../components/common/UserEmail'
+import { UserRoles } from '../../../../components/common/UserRoles'
+import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { MemberActions } from '../../../../components/data/MemberActions'
+import { InviteMemberForm } from '../../../../components/form/InviteMemberForm'
+import { MembersQuery, namedOperations, useInviteMemberMutation, useMembersQuery } from '../../../../types/graphql'
+import { useAlert } from '../../../../utils/context/alert'
 
-const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['members']>> = (teamId) => [
+const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
     width: 250,
     field: 'name',
@@ -66,41 +58,28 @@ const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['me
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <MemberActions memberId={params.row.id} teamId={teamId} />
+      return <MemberActions memberId={params.row.id} />
     },
   },
 ]
 
-type Props = {
-  teamId: string
-}
-
-function Team({ teamId }: Props) {
+function Members() {
   const { pushAlert } = useAlert()
 
-  const { data } = useTeamQuery({
-    variables: { id: teamId },
-  })
-  const query = useMembersQuery({
-    context: { teamId },
-  })
+  const query = useMembersQuery()
 
   const [inviteMember] = useInviteMemberMutation({
-    context: { teamId },
     refetchQueries: [namedOperations.Query.members],
   })
-
-  const columns = useMemo(() => getColumns(teamId), [teamId])
 
   return (
     <DataGridViewer
       query={query}
+      title="Members"
       columns={columns}
       data={query.data?.members}
-      back="/dashboard/staff/teams"
+      href={(e) => `/dashboard/admin/members/${e.id}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      title={data ? `Members of "${data.team.name}"` : 'Members'}
-      href={(e) => `/dashboard/staff/teams/${teamId}/members/${e.id}`}
       actions={
         <DataGridActions>
           <Button
@@ -127,11 +106,6 @@ function Team({ teamId }: Props) {
   )
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const teamId = ctx.params!.teamId as string
-  return { props: { teamId } }
-}
-
-export default withDashboardLayout(Team, {
+export default withDashboardLayout(Members, {
   title: 'Members',
 })

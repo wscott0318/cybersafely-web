@@ -37,7 +37,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { AnyUserRole, ParentRole, TeamRole, useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
+import { AnyRole, ParentRole, TeamRole, useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
@@ -311,7 +311,8 @@ function CollapsableList(props: { title?: string; children: React.ReactNode }) {
 function Sidebar() {
   const { user } = useUser()
 
-  const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyUserRole | undefined
+  const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyRole | undefined
+  const admin = user.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED') as TeamRole | undefined
   const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as TeamRole | undefined
   const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as TeamRole | undefined
   const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
@@ -327,6 +328,15 @@ function Sidebar() {
           <SidebarLink href="/dashboard/staff/teams" icon={<GroupIcon />} title="Teams" />
         </CollapsableList>
       </>
+    )
+  }
+
+  if (admin) {
+    return (
+      <CollapsableList>
+        <SidebarLink href="/dashboard/admin/home" icon={<HomeIcon />} title="Home" />
+        <SidebarLink href="/dashboard/admin/members" icon={<PersonIcon />} title="Members" />
+      </CollapsableList>
     )
   }
 

@@ -6,20 +6,20 @@ import { useMemo } from 'react'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
-import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { MemberActions } from '../../../../../components/data/MemberActions'
-import { InviteMemberForm } from '../../../../../components/form/InviteMemberForm'
+import { ParentActions } from '../../../../../components/data/ParentActions'
+import { InviteParentForm } from '../../../../../components/form/InviteParentForm'
 import {
-  MembersQuery,
   namedOperations,
-  useInviteMemberMutation,
-  useMembersQuery,
-  useTeamQuery,
+  ParentRole,
+  ParentsQuery,
+  useInviteParentMutation,
+  useMemberQuery,
+  useParentsQuery,
 } from '../../../../../types/graphql'
 import { useAlert } from '../../../../../utils/context/alert'
 
-const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['members']>> = (teamId) => [
+const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (childId) => [
   {
     width: 250,
     field: 'name',
@@ -38,20 +38,13 @@ const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['me
   },
   {
     width: 200,
-    field: 'roles',
+    field: 'relation',
     sortable: false,
-    headerName: 'Roles',
+    headerName: 'Relation',
     valueGetter(params) {
-      return params.row.roles
+      const role = params.row.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
+      return role?.relation
     },
-    renderCell(params) {
-      return <UserRoles roles={params.value} />
-    },
-  },
-  {
-    width: 150,
-    field: 'parentCount',
-    headerName: 'Parents',
   },
   {
     width: 200,
@@ -66,41 +59,39 @@ const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['me
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <MemberActions memberId={params.row.id} teamId={teamId} />
+      return <ParentActions parentId={params.row.id} childId={childId} />
     },
   },
 ]
 
 type Props = {
-  teamId: string
+  memberId: string
 }
 
-function Team({ teamId }: Props) {
+function Member({ memberId }: Props) {
   const { pushAlert } = useAlert()
 
-  const { data } = useTeamQuery({
-    variables: { id: teamId },
+  const { data } = useMemberQuery({
+    variables: { id: memberId },
   })
-  const query = useMembersQuery({
-    context: { teamId },
-  })
-
-  const [inviteMember] = useInviteMemberMutation({
-    context: { teamId },
-    refetchQueries: [namedOperations.Query.members],
+  const query = useParentsQuery({
+    variables: { childId: memberId },
   })
 
-  const columns = useMemo(() => getColumns(teamId), [teamId])
+  const [inviteParent] = useInviteParentMutation({
+    refetchQueries: [namedOperations.Query.parents],
+  })
+
+  const columns = useMemo(() => getColumns(memberId), [memberId])
 
   return (
     <DataGridViewer
       query={query}
       columns={columns}
-      data={query.data?.members}
-      back="/dashboard/staff/teams"
+      data={query.data?.parents}
+      back="/dashboard/admin/members"
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      title={data ? `Members of "${data.team.name}"` : 'Members'}
-      href={(e) => `/dashboard/staff/teams/${teamId}/members/${e.id}`}
+      title={data ? `Parents of "${data.member.name}"` : 'Parents'}
       actions={
         <DataGridActions>
           <Button
@@ -109,16 +100,16 @@ function Team({ teamId }: Props) {
             onClick={() => {
               pushAlert({
                 type: 'custom',
-                title: 'Invite Member',
+                title: 'Invite Parent',
+                content: InviteParentForm,
                 message: 'Enter the information below',
-                content: InviteMemberForm,
                 result: (variables) => {
-                  inviteMember({ variables })
+                  inviteParent({ variables: { ...variables, childId: memberId } })
                 },
               })
             }}
           >
-            Invite Member
+            Invite Parent
           </Button>
           <SearchBar onSearch={(search) => query.refetch({ search })} />
         </DataGridActions>
@@ -128,10 +119,10 @@ function Team({ teamId }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const teamId = ctx.params!.teamId as string
-  return { props: { teamId } }
+  const memberId = ctx.params!.memberId as string
+  return { props: { memberId } }
 }
 
-export default withDashboardLayout(Team, {
-  title: 'Members',
+export default withDashboardLayout(Member, {
+  title: 'Member',
 })

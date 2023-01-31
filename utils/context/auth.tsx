@@ -51,7 +51,9 @@ export function useTeam() {
       const teamId = localStorage.getItem('teamId')
 
       if (teamId) {
-        const role = context.user.roles.find((e) => e.role === 'COACH' || e.role === 'ATHLETE') as TeamRole | undefined
+        const role = context.user.roles.find(
+          (e) => e.role === 'ADMIN' || e.role === 'COACH' || e.role === 'ATHLETE'
+        ) as TeamRole | undefined
 
         if (role && role.team.id === teamId) {
           return role

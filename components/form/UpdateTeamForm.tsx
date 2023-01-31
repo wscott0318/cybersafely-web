@@ -55,7 +55,7 @@ export function UpdateTeamForm() {
   })
 
   const disabled = useMemo(() => {
-    return team?.role !== 'COACH'
+    return team?.role !== 'ADMIN'
   }, [team])
 
   const [updateTeam, { loading }] = useUpdateTeamMutation({
