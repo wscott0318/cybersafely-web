@@ -1,7 +1,8 @@
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import SearchIcon from '@mui/icons-material/SearchOutlined'
 import { CircularProgress, IconButton, InputAdornment, outlinedInputClasses, TextField } from '@mui/material'
-import { ChangeEvent, useCallback, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useCallbackRef } from '../../helpers/hooks'
 
 type SearchBarProps = {
@@ -9,11 +10,22 @@ type SearchBarProps = {
 }
 
 export function SearchBar(props: SearchBarProps) {
+  const router = useRouter()
+
   const [search, setSearch] = useState('')
   const [searching, setSearching] = useState(false)
 
   const timerRef = useRef<NodeJS.Timeout>()
   const onSearchRef = useCallbackRef(props.onSearch)
+
+  useEffect(() => {
+    const search = router.query.search
+
+    if (typeof search === 'string' && !!search) {
+      setSearch(search)
+      onSearchRef.current(search)
+    }
+  }, [router.query.search, onSearchRef])
 
   const onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

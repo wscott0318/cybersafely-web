@@ -84,6 +84,7 @@ export type Mutation = {
   inviteStaff?: Maybe<Scalars['ID']>;
   leaveTeam?: Maybe<Scalars['ID']>;
   login: Jwt;
+  readAllNotifications?: Maybe<Scalars['ID']>;
   register?: Maybe<Scalars['ID']>;
   removeMember?: Maybe<Scalars['ID']>;
   removeParent?: Maybe<Scalars['ID']>;
@@ -191,6 +192,14 @@ export type MutationUpdateTeamArgs = {
   input: UpdateTeamInput;
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  message: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+};
+
 export const OrderDirection = {
   Asc: 'ASC',
   Desc: 'DESC'
@@ -210,6 +219,12 @@ export type PageInfo = {
   index: Scalars['Int'];
   size: Scalars['Int'];
   total: Scalars['Int'];
+};
+
+export type PaginatedNotification = {
+  __typename?: 'PaginatedNotification';
+  nodes: Array<Notification>;
+  page: PageInfo;
 };
 
 export type PaginatedTeam = {
@@ -238,6 +253,8 @@ export type Query = {
   children: PaginatedUser;
   member: User;
   members: PaginatedUser;
+  notifications: PaginatedNotification;
+  notificationsCount: Scalars['Int'];
   parents: PaginatedUser;
   profile: User;
   statsOfCreatedMembers: StatsByDay;
@@ -267,6 +284,11 @@ export type QueryMembersArgs = {
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
   search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryNotificationsArgs = {
+  page?: InputMaybe<Page>;
 };
 
 
@@ -559,6 +581,23 @@ export type InviteAthleteMutationVariables = Exact<{
 
 
 export type InviteAthleteMutation = { __typename?: 'Mutation', inviteAthlete?: string | null };
+
+export type NotificationsCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NotificationsCountQuery = { __typename?: 'Query', notificationsCount: number };
+
+export type NotificationsQueryVariables = Exact<{
+  page?: InputMaybe<Page>;
+}>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'PaginatedNotification', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Notification', id: string, createdAt: Date, message: string, url?: string | null }> } };
+
+export type ReadAllNotificationsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReadAllNotificationsMutation = { __typename?: 'Mutation', readAllNotifications?: string | null };
 
 export type ChildrenQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -1267,6 +1306,113 @@ export function useInviteAthleteMutation(baseOptions?: Apollo.MutationHookOption
 export type InviteAthleteMutationHookResult = ReturnType<typeof useInviteAthleteMutation>;
 export type InviteAthleteMutationResult = Apollo.MutationResult<InviteAthleteMutation>;
 export type InviteAthleteMutationOptions = Apollo.BaseMutationOptions<InviteAthleteMutation, InviteAthleteMutationVariables>;
+export const NotificationsCountDocument = gql`
+    query notificationsCount {
+  notificationsCount
+}
+    `;
+
+/**
+ * __useNotificationsCountQuery__
+ *
+ * To run a query within a React component, call `useNotificationsCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationsCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationsCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useNotificationsCountQuery(baseOptions?: Apollo.QueryHookOptions<NotificationsCountQuery, NotificationsCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NotificationsCountQuery, NotificationsCountQueryVariables>(NotificationsCountDocument, options);
+      }
+export function useNotificationsCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationsCountQuery, NotificationsCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NotificationsCountQuery, NotificationsCountQueryVariables>(NotificationsCountDocument, options);
+        }
+export type NotificationsCountQueryHookResult = ReturnType<typeof useNotificationsCountQuery>;
+export type NotificationsCountLazyQueryHookResult = ReturnType<typeof useNotificationsCountLazyQuery>;
+export type NotificationsCountQueryResult = Apollo.QueryResult<NotificationsCountQuery, NotificationsCountQueryVariables>;
+export const NotificationsDocument = gql`
+    query notifications($page: Page) {
+  notifications(page: $page) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      message
+      url
+    }
+  }
+}
+    `;
+
+/**
+ * __useNotificationsQuery__
+ *
+ * To run a query within a React component, call `useNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useNotificationsQuery(baseOptions?: Apollo.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+      }
+export function useNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+        }
+export type NotificationsQueryHookResult = ReturnType<typeof useNotificationsQuery>;
+export type NotificationsLazyQueryHookResult = ReturnType<typeof useNotificationsLazyQuery>;
+export type NotificationsQueryResult = Apollo.QueryResult<NotificationsQuery, NotificationsQueryVariables>;
+export const ReadAllNotificationsDocument = gql`
+    mutation readAllNotifications {
+  readAllNotifications
+}
+    `;
+export type ReadAllNotificationsMutationFn = Apollo.MutationFunction<ReadAllNotificationsMutation, ReadAllNotificationsMutationVariables>;
+
+/**
+ * __useReadAllNotificationsMutation__
+ *
+ * To run a mutation, you first call `useReadAllNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadAllNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readAllNotificationsMutation, { data, loading, error }] = useReadAllNotificationsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useReadAllNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<ReadAllNotificationsMutation, ReadAllNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReadAllNotificationsMutation, ReadAllNotificationsMutationVariables>(ReadAllNotificationsDocument, options);
+      }
+export type ReadAllNotificationsMutationHookResult = ReturnType<typeof useReadAllNotificationsMutation>;
+export type ReadAllNotificationsMutationResult = Apollo.MutationResult<ReadAllNotificationsMutation>;
+export type ReadAllNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadAllNotificationsMutation, ReadAllNotificationsMutationVariables>;
 export const ChildrenDocument = gql`
     query children($page: Page, $order: UserOrder, $search: String) {
   children(page: $page, order: $order, search: $search) {
@@ -1671,6 +1817,8 @@ export const namedOperations = {
     profile: 'profile',
     member: 'member',
     parents: 'parents',
+    notificationsCount: 'notificationsCount',
+    notifications: 'notifications',
     children: 'children',
     statsForStaff: 'statsForStaff',
     members: 'members',
@@ -1694,6 +1842,7 @@ export const namedOperations = {
     inviteParent: 'inviteParent',
     inviteCoach: 'inviteCoach',
     inviteAthlete: 'inviteAthlete',
+    readAllNotifications: 'readAllNotifications',
     createTeam: 'createTeam',
     inviteStaff: 'inviteStaff',
     removeRole: 'removeRole'

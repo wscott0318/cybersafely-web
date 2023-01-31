@@ -6,11 +6,13 @@ import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
+import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
 import PersonIcon from '@mui/icons-material/PersonOutlined'
 import {
   Alert,
   AppBar,
   Avatar,
+  Badge,
   Box,
   Breakpoint,
   Collapse,
@@ -35,7 +37,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
+import { AnyUserRole, ParentRole, TeamRole, useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeam, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
@@ -49,6 +51,12 @@ function HeaderAccount() {
   const { pushAlert } = useAlert()
 
   const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
+
+  const { data } = useNotificationsCountQuery({
+    fetchPolicy: 'cache-first',
+    nextFetchPolicy: 'cache-first',
+    initialFetchPolicy: 'network-only',
+  })
 
   return (
     <>
@@ -65,6 +73,13 @@ function HeaderAccount() {
           Please confirm your e-mail address at <b>{user.email}</b>.
         </Alert>
       </Snackbar>
+      <NextLink href="/dashboard/notifications">
+        <IconButton sx={{ mr: 1 }}>
+          <Badge color="primary" badgeContent={data?.notificationsCount}>
+            <NotificationIcon />
+          </Badge>
+        </IconButton>
+      </NextLink>
       <DropDownButton
         size="large"
         variant="text"
