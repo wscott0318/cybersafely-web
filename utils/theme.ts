@@ -153,12 +153,33 @@ export function createTheme(isDark: boolean) {
           underline: 'hover',
         },
       },
+      MuiTab: {
+        styleOverrides: {
+          fullWidth: ({ theme }) => ({
+            borderBottom: `1px solid ${theme.palette.divider}`,
+          }),
+        },
+      },
       MuiTabs: {
         defaultProps: {
           variant: 'fullWidth',
         },
       },
+      MuiAvatar: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            background: theme.palette.divider,
+          }),
+        },
+      },
       // @ts-ignore
+      MuiTabPanel: {
+        styleOverrides: {
+          root: {
+            padding: 0,
+          },
+        },
+      },
       MuiLoadingButton: {
         defaultProps: {
           variant: 'contained',

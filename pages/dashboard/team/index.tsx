@@ -11,14 +11,14 @@ function Team() {
   return (
     <Paper>
       <TabContext value={tab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={(_, tab) => setTab(tab)}>
-            <Tab label="Team" value="team" />
-          </TabList>
+        <TabList onChange={(_, tab) => setTab(tab)}>
+          <Tab label="Team" value="team" />
+        </TabList>
+        <Box p={3}>
+          <TabPanel value="team">
+            <UpdateTeamForm />
+          </TabPanel>
         </Box>
-        <TabPanel value="team">
-          <UpdateTeamForm />
-        </TabPanel>
       </TabContext>
     </Paper>
   )

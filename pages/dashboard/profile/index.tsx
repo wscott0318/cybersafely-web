@@ -12,18 +12,18 @@ function Profile() {
   return (
     <Paper>
       <TabContext value={tab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={(_, tab) => setTab(tab)}>
-            <Tab label="Profile" value="profile" />
-            <Tab label="Password" value="password" />
-          </TabList>
+        <TabList onChange={(_, tab) => setTab(tab)}>
+          <Tab label="Profile" value="profile" />
+          <Tab label="Password" value="password" />
+        </TabList>
+        <Box p={3}>
+          <TabPanel value="profile">
+            <UpdateProfileForm />
+          </TabPanel>
+          <TabPanel value="password">
+            <UpdatePasswordForm />
+          </TabPanel>
         </Box>
-        <TabPanel value="profile">
-          <UpdateProfileForm />
-        </TabPanel>
-        <TabPanel value="password">
-          <UpdatePasswordForm />
-        </TabPanel>
       </TabContext>
     </Paper>
   )

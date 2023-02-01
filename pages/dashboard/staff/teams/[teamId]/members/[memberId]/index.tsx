@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { TabContext, TabList, TabPanel, tabPanelClasses } from '@mui/lab'
-import { Box, Button, Tab } from '@mui/material'
+import { TabContext, TabList, TabPanel } from '@mui/lab'
+import { Button, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
@@ -137,20 +137,15 @@ function Member(props: Props) {
         back={`/dashboard/staff/teams/${props.teamId}`}
         actions={
           <NavigationActions>
-            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <TabList onChange={(_, tab) => setTab(tab)}>
-                <Tab label="Parents" value="parents" />
-                <Tab label="Details" value="details" />
-              </TabList>
-            </Box>
+            <TabList onChange={(_, tab) => setTab(tab)}>
+              <Tab label="Parents" value="parents" />
+            </TabList>
           </NavigationActions>
         }
       >
-        <Box sx={{ ['.' + tabPanelClasses.root]: { p: 0 } }}>
-          <TabPanel value="parents">
-            <MemberParents {...props} />
-          </TabPanel>
-        </Box>
+        <TabPanel value="parents">
+          <MemberParents {...props} />
+        </TabPanel>
       </NavigationView>
     </TabContext>
   )

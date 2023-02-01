@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { TabContext, TabList, TabPanel, tabPanelClasses } from '@mui/lab'
-import { Box, Button, CircularProgress, Paper, Stack, Tab } from '@mui/material'
+import { TabContext, TabList, TabPanel } from '@mui/lab'
+import { Button, CircularProgress, Container, Paper, Stack, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
@@ -159,27 +159,23 @@ function Team(props: Props) {
             back="/dashboard/staff/teams"
             actions={
               <NavigationActions>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <TabList onChange={(_, tab) => setTab(tab)}>
-                    <Tab label="Members" value="members" />
-                    <Tab label="Details" value="details" />
-                  </TabList>
-                </Box>
+                <TabList onChange={(_, tab) => setTab(tab)}>
+                  <Tab label="Members" value="members" />
+                  <Tab label="Details" value="details" />
+                </TabList>
               </NavigationActions>
             }
           >
-            <Box sx={{ ['.' + tabPanelClasses.root]: { p: 0 } }}>
-              <TabPanel value="members">
-                <TeamMembers {...props} />
-              </TabPanel>
-              <TabPanel value="details">
-                <Stack alignItems="center">
-                  <Paper sx={{ p: 3, width: '100%', maxWidth: 450 }}>
-                    <UpdateTeamForm team={team} />
-                  </Paper>
-                </Stack>
-              </TabPanel>
-            </Box>
+            <TabPanel value="members">
+              <TeamMembers {...props} />
+            </TabPanel>
+            <TabPanel value="details">
+              <Container disableGutters maxWidth="sm">
+                <Paper sx={{ p: 3 }}>
+                  <UpdateTeamForm team={team} />
+                </Paper>
+              </Container>
+            </TabPanel>
           </NavigationView>
         )}
       </Loader>
