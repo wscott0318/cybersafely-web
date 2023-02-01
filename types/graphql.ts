@@ -17,6 +17,22 @@ export type Scalars = {
   NullObject: null;
 };
 
+export type Address = {
+  __typename?: 'Address';
+  city: Scalars['String'];
+  formatted: Scalars['String'];
+  state: Scalars['String'];
+  street: Scalars['String'];
+  zip: Scalars['String'];
+};
+
+export type AddressUpdate = {
+  city: Scalars['String'];
+  state: Scalars['String'];
+  street: Scalars['String'];
+  zip: Scalars['String'];
+};
+
 export type AnyRole = UserRole & {
   __typename?: 'AnyRole';
   id: Scalars['ID'];
@@ -58,6 +74,11 @@ export type FloatFilter = {
   gte?: InputMaybe<Scalars['Float']>;
   lte?: InputMaybe<Scalars['Float']>;
   not?: InputMaybe<Scalars['Float']>;
+};
+
+export type Image = {
+  __typename?: 'Image';
+  url: Scalars['String'];
 };
 
 export type IntFilter = {
@@ -191,7 +212,7 @@ export type MutationUpdateProfileArgs = {
 
 
 export type MutationUpdateTeamArgs = {
-  input: UpdateTeamInput;
+  input: TeamUpdate;
 };
 
 export type Notification = {
@@ -388,8 +409,10 @@ export const StringFilterMode = {
 export type StringFilterMode = typeof StringFilterMode[keyof typeof StringFilterMode];
 export type Team = {
   __typename?: 'Team';
+  address?: Maybe<Address>;
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  logo?: Maybe<Image>;
   memberCount: Scalars['Int'];
   name: Scalars['String'];
 };
@@ -412,17 +435,19 @@ export type TeamRole = UserRole & {
   team: Team;
 };
 
+export type TeamUpdate = {
+  address?: InputMaybe<AddressUpdate>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateProfileInput = {
   name?: InputMaybe<Scalars['String']>;
   newEmail?: InputMaybe<Scalars['String']>;
 };
 
-export type UpdateTeamInput = {
-  name?: InputMaybe<Scalars['String']>;
-};
-
 export type User = {
   __typename?: 'User';
+  avatar?: Maybe<Image>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
   emailConfirmed: Scalars['Boolean'];
@@ -453,7 +478,7 @@ export type UserRole = {
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } }> } };
 
 export type RemoveMemberMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -499,7 +524,7 @@ export type UpdateProfileMutationVariables = Exact<{
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: string | null };
 
 export type UpdateTeamMutationVariables = Exact<{
-  input: UpdateTeamInput;
+  input: TeamUpdate;
 }>;
 
 
@@ -629,7 +654,7 @@ export type TeamQueryVariables = Exact<{
 }>;
 
 
-export type TeamQuery = { __typename?: 'Query', team: { __typename?: 'Team', id: string, name: string } };
+export type TeamQuery = { __typename?: 'Query', team: { __typename?: 'Team', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null } };
 
 export type CreateTeamMutationVariables = Exact<{
   input: TeamCreate;
@@ -645,7 +670,7 @@ export type TeamsQueryVariables = Exact<{
 }>;
 
 
-export type TeamsQuery = { __typename?: 'Query', teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Team', id: string, createdAt: Date, name: string, memberCount: number }> } };
+export type TeamsQuery = { __typename?: 'Query', teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Team', id: string, createdAt: Date, name: string, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null }> } };
 
 export type InviteStaffMutationVariables = Exact<{
   email: Scalars['String'];
@@ -686,6 +711,9 @@ export const ProfileDocument = gql`
     email
     emailConfirmed
     name
+    avatar {
+      url
+    }
     roles {
       id
       role
@@ -694,6 +722,15 @@ export const ProfileDocument = gql`
         team {
           id
           name
+          address {
+            street
+            city
+            state
+            zip
+          }
+          logo {
+            url
+          }
         }
       }
       ... on ParentRole {
@@ -923,7 +960,7 @@ export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfile
 export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
 export const UpdateTeamDocument = gql`
-    mutation updateTeam($input: UpdateTeamInput!) {
+    mutation updateTeam($input: TeamUpdate!) {
   updateTeam(input: $input)
 }
     `;
@@ -1545,6 +1582,12 @@ export const TeamDocument = gql`
   team(id: $id) {
     id
     name
+    address {
+      street
+      city
+      state
+      zip
+    }
   }
 }
     `;
@@ -1620,6 +1663,9 @@ export const TeamsDocument = gql`
       createdAt
       name
       memberCount
+      address {
+        formatted
+      }
     }
   }
 }

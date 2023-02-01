@@ -1,3 +1,3 @@
-mutation updateTeam($input: UpdateTeamInput!) {
+mutation updateTeam($input: TeamUpdate!) {
   updateTeam(input: $input)
 }

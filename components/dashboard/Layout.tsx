@@ -87,7 +87,7 @@ function HeaderAccount() {
         color="inherit"
         title={user.name}
         uppercase={false}
-        startIcon={<Avatar sx={{ width: 24, height: 24 }} />}
+        startIcon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
       >
         {teamRole && (
           <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -100,7 +100,7 @@ function HeaderAccount() {
               <ListItemIcon>
                 <GroupIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText>{teamRole.team.name}</ListItemText>
+              <ListItemText>Manage</ListItemText>
             </MenuItem>
           </NextLinkLegacy>
         )}
@@ -157,8 +157,18 @@ function SidebarAccount() {
 
   return (
     <List>
-      {teamRole && <SidebarLink icon={<GroupIcon />} title={teamRole.team.name} href="/dashboard/team" />}
-      <SidebarLink icon={<AccountIcon />} title={user.name} href="/dashboard/profile" />
+      {teamRole && (
+        <SidebarLink
+          href="/dashboard/team"
+          title={teamRole.team.name}
+          icon={<Avatar sx={{ width: 28, height: 28 }} src={teamRole.team.logo?.url} />}
+        />
+      )}
+      <SidebarLink
+        title={user.name}
+        href="/dashboard/profile"
+        icon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
+      />
     </List>
   )
 }

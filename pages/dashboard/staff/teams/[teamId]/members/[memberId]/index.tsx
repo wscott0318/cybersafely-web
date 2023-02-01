@@ -1,9 +1,11 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { Button } from '@mui/material'
+import { TabContext, TabList, TabPanel, tabPanelClasses } from '@mui/lab'
+import { Box, Button, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../../../components/common/DataGridViewer'
+import { NavigationActions, NavigationView } from '../../../../../../../components/common/NavigationView'
 import { SearchBar } from '../../../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
@@ -72,13 +74,9 @@ type Props = {
   memberId: string
 }
 
-function Member({ teamId, memberId }: Props) {
+function MemberParents({ teamId, memberId }: Props) {
   const { pushAlert } = useAlert()
 
-  const { data } = useMemberQuery({
-    context: { teamId },
-    variables: { id: memberId },
-  })
   const query = useParentsQuery({
     context: { teamId },
     variables: { childId: memberId },
@@ -94,11 +92,10 @@ function Member({ teamId, memberId }: Props) {
   return (
     <DataGridViewer
       query={query}
+      title="Parents"
       columns={columns}
       data={query.data?.parents}
-      back={`/dashboard/staff/teams/${teamId}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      title={data ? `Parents of "${data.member.name}"` : 'Parents'}
       actions={
         <DataGridActions>
           <Button
@@ -122,6 +119,40 @@ function Member({ teamId, memberId }: Props) {
         </DataGridActions>
       }
     />
+  )
+}
+
+function Member(props: Props) {
+  const [tab, setTab] = useState('parents')
+
+  const { data } = useMemberQuery({
+    context: { teamId: props.teamId },
+    variables: { id: props.memberId },
+  })
+
+  return (
+    <TabContext value={tab}>
+      <NavigationView
+        title={data?.member.name ?? 'Member'}
+        back={`/dashboard/staff/teams/${props.teamId}`}
+        actions={
+          <NavigationActions>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <TabList onChange={(_, tab) => setTab(tab)}>
+                <Tab label="Parents" value="parents" />
+                <Tab label="Details" value="details" />
+              </TabList>
+            </Box>
+          </NavigationActions>
+        }
+      >
+        <Box sx={{ ['.' + tabPanelClasses.root]: { p: 0 } }}>
+          <TabPanel value="parents">
+            <MemberParents {...props} />
+          </TabPanel>
+        </Box>
+      </NavigationView>
+    </TabContext>
   )
 }
 

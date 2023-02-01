@@ -14,6 +14,15 @@ const columns: GridColumns<InferNodeType<TeamsQuery['teams']>> = [
     headerName: 'Name',
   },
   {
+    width: 350,
+    sortable: false,
+    field: 'address.formatted',
+    headerName: 'Address',
+    valueGetter(params) {
+      return params.row.address?.formatted
+    },
+  },
+  {
     width: 150,
     field: 'memberCount',
     headerName: 'Members',

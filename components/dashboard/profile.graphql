@@ -4,6 +4,9 @@ query profile {
     email
     emailConfirmed
     name
+    avatar {
+      url
+    }
     roles {
       id
       role
@@ -12,6 +15,15 @@ query profile {
         team {
           id
           name
+          address {
+            street
+            city
+            state
+            zip
+          }
+          logo {
+            url
+          }
         }
       }
       ... on ParentRole {
