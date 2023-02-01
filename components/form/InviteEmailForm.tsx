@@ -29,7 +29,7 @@ export const InviteEmailForm = forwardRef<InviteEmailFormRefProps>(function Wrap
         error={form.hasError('email')}
         value={form.value.email ?? ''}
         helperText={form.getError('email')}
-        onChange={(e) => form.onChange({ email: e.target.value })}
+        onChange={(e) => form.onChange('email', e.target.value)}
       />
     </Stack>
   )

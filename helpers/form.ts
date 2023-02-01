@@ -3,25 +3,24 @@ import { z, ZodError } from 'zod'
 
 export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>, initialValue?: Partial<TSchema>) {
   const [value, setValue] = useState<Partial<TSchema>>(initialValue ?? {})
-  const [errors, setErrors] = useState<Record<string, string>>()
+  const [errors, setErrors] = useState<Record<keyof TSchema, string>>()
 
   const hasError = useCallback(
-    (key: string) => {
+    (key: keyof TSchema) => {
       return !!errors && key in errors
     },
     [errors]
   )
 
   const getError = useCallback(
-    (key: string) => {
+    (key: keyof TSchema) => {
       return errors && errors[key]
     },
     [errors]
   )
 
-  const onChange = useCallback((newValue: Partial<TSchema>) => {
-    // TODO: Deep merge
-    setValue((value) => ({ ...value, ...newValue }))
+  const onChange = useCallback(<K extends keyof TSchema>(key: K, newValue: TSchema[K]) => {
+    setValue((value) => ({ ...value, [key]: newValue }))
   }, [])
 
   const didSubmit = useCallback(
@@ -30,7 +29,6 @@ export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>, initialVa
 
       try {
         const newValue = schema.parse(value)
-
         const deltaValue: Partial<TSchema> = {}
 
         if (initialValue) {
@@ -47,7 +45,7 @@ export function useForm<TSchema extends {}>(schema: z.Schema<TSchema>, initialVa
         if (error instanceof ZodError) {
           setErrors(
             error.errors.reduce<any>((prev, curr) => {
-              const key = curr.path.map((e) => String(e)).join('.')
+              const key = curr.path[0]
               prev[key] = curr.message
               return prev
             }, {})

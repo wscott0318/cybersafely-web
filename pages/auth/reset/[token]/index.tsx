@@ -58,7 +58,7 @@ export default function ResetPassword({ passwordToken }: Props) {
             error={form.hasError('password')}
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
-            onChange={(e) => form.onChange({ password: e.target.value })}
+            onChange={(e) => form.onChange('password', e.target.value)}
             InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
           />
           <TextField
@@ -70,7 +70,7 @@ export default function ResetPassword({ passwordToken }: Props) {
             error={form.hasError('repeatPassword')}
             value={form.value.repeatPassword ?? ''}
             helperText={form.getError('repeatPassword')}
-            onChange={(e) => form.onChange({ repeatPassword: e.target.value })}
+            onChange={(e) => form.onChange('repeatPassword', e.target.value)}
           />
           <LoadingButton type="submit" loading={loading} size="large">
             Submit

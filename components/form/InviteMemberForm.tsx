@@ -32,7 +32,7 @@ export const InviteMemberForm = forwardRef<InviteMemberFormRefProps>(function Wr
         error={form.hasError('email')}
         value={form.value.email ?? ''}
         helperText={form.getError('email')}
-        onChange={(e) => form.onChange({ email: e.target.value })}
+        onChange={(e) => form.onChange('email', e.target.value)}
       />
       <FormControl fullWidth required variant="standard" margin="dense" error={form.hasError('role')}>
         <InputLabel>Role</InputLabel>
@@ -43,7 +43,7 @@ export const InviteMemberForm = forwardRef<InviteMemberFormRefProps>(function Wr
           margin="dense"
           variant="standard"
           value={form.value.role ?? ''}
-          onChange={(e) => form.onChange({ role: e.target.value as any })}
+          onChange={(e) => form.onChange('role', e.target.value as any)}
         >
           {teamRole?.role === 'ADMIN' && <MenuItem value="ADMIN">Admin</MenuItem>}
           <MenuItem value="COACH">Coach</MenuItem>

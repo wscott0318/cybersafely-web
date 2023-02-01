@@ -54,7 +54,7 @@ export function UpdateProfileForm() {
           error={form.hasError('newEmail')}
           value={form.value.newEmail ?? ''}
           helperText={form.getError('newEmail')}
-          onChange={(e) => form.onChange({ newEmail: e.target.value })}
+          onChange={(e) => form.onChange('newEmail', e.target.value)}
         />
         <TextField
           required
@@ -62,7 +62,7 @@ export function UpdateProfileForm() {
           error={form.hasError('name')}
           value={form.value.name ?? ''}
           helperText={form.getError('name')}
-          onChange={(e) => form.onChange({ name: e.target.value })}
+          onChange={(e) => form.onChange('name', e.target.value)}
         />
         <LoadingButton type="submit" loading={loading}>
           Update

@@ -84,7 +84,7 @@ export function UpdateTeamForm() {
           error={form.hasError('name')}
           value={form.value.name ?? ''}
           helperText={form.getError('name')}
-          onChange={(e) => form.onChange({ name: e.target.value })}
+          onChange={(e) => form.onChange('name', e.target.value)}
         />
         <Stack spacing={1}>
           {!disabled && (

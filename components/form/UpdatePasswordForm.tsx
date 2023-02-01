@@ -56,7 +56,7 @@ export function UpdatePasswordForm() {
           error={form.hasError('oldPassword')}
           value={form.value.oldPassword ?? ''}
           helperText={form.getError('oldPassword')}
-          onChange={(e) => form.onChange({ oldPassword: e.target.value })}
+          onChange={(e) => form.onChange('oldPassword', e.target.value)}
         />
         <TextField
           required
@@ -65,7 +65,7 @@ export function UpdatePasswordForm() {
           error={form.hasError('newPassword')}
           value={form.value.newPassword ?? ''}
           helperText={form.getError('newPassword')}
-          onChange={(e) => form.onChange({ newPassword: e.target.value })}
+          onChange={(e) => form.onChange('newPassword', e.target.value)}
           InputProps={{ endAdornment: <PasswordStrength password={form.value.newPassword} /> }}
         />
         <TextField
@@ -75,7 +75,7 @@ export function UpdatePasswordForm() {
           error={form.hasError('repeatNewPassword')}
           value={form.value.repeatNewPassword ?? ''}
           helperText={form.getError('repeatNewPassword')}
-          onChange={(e) => form.onChange({ repeatNewPassword: e.target.value })}
+          onChange={(e) => form.onChange('repeatNewPassword', e.target.value)}
         />
         <LoadingButton type="submit" loading={loading}>
           Update

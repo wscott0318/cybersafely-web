@@ -15,9 +15,7 @@ const schema = z
       .min(4)
       .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
     repeatPassword: z.string(),
-    user: z.object({
-      name: z.string().min(4),
-    }),
+    userName: z.string().min(4),
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
@@ -46,8 +44,14 @@ export default function Activate({ passwordToken }: Props) {
   return (
     <CoverLayout>
       <form
-        onSubmit={form.onSubmit((variables) => {
-          activate({ variables: { ...variables, passwordToken } })
+        onSubmit={form.onSubmit(({ password, userName }) => {
+          activate({
+            variables: {
+              password,
+              passwordToken,
+              user: { name: userName },
+            },
+          })
         })}
       >
         <Stack spacing={4}>
@@ -57,10 +61,10 @@ export default function Activate({ passwordToken }: Props) {
             label="Name"
             size="medium"
             variant="outlined"
-            error={form.hasError('user.name')}
-            value={form.value.user?.name ?? ''}
-            helperText={form.getError('user.name')}
-            onChange={(e) => form.onChange({ user: { name: e.target.value } })}
+            error={form.hasError('userName')}
+            value={form.value.userName ?? ''}
+            helperText={form.getError('userName')}
+            onChange={(e) => form.onChange('userName', e.target.value)}
           />
           <TextField
             required
@@ -71,7 +75,7 @@ export default function Activate({ passwordToken }: Props) {
             error={form.hasError('password')}
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
-            onChange={(e) => form.onChange({ password: e.target.value })}
+            onChange={(e) => form.onChange('password', e.target.value)}
             InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
           />
           <TextField
@@ -83,7 +87,7 @@ export default function Activate({ passwordToken }: Props) {
             error={form.hasError('repeatPassword')}
             value={form.value.repeatPassword ?? ''}
             helperText={form.getError('repeatPassword')}
-            onChange={(e) => form.onChange({ repeatPassword: e.target.value })}
+            onChange={(e) => form.onChange('repeatPassword', e.target.value)}
           />
           <LoadingButton type="submit" loading={loading} size="large">
             Submit

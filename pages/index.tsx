@@ -185,7 +185,7 @@ function Contact() {
                   value={form.value.firstName ?? ''}
                   error={form.hasError('firstName')}
                   helperText={form.getError('firstName')}
-                  onChange={(e) => form.onChange({ firstName: e.target.value })}
+                  onChange={(e) => form.onChange('firstName', e.target.value)}
                 />
                 <TextField
                   required
@@ -196,7 +196,7 @@ function Contact() {
                   value={form.value.lastName ?? ''}
                   error={form.hasError('lastName')}
                   helperText={form.getError('lastName')}
-                  onChange={(e) => form.onChange({ lastName: e.target.value })}
+                  onChange={(e) => form.onChange('lastName', e.target.value)}
                 />
               </Stack>
               <TextField
@@ -208,7 +208,7 @@ function Contact() {
                 value={form.value.email ?? ''}
                 error={form.hasError('email')}
                 helperText={form.getError('email')}
-                onChange={(e) => form.onChange({ email: e.target.value })}
+                onChange={(e) => form.onChange('email', e.target.value)}
               />
               <TextField
                 size="medium"
@@ -217,7 +217,7 @@ function Contact() {
                 value={form.value.phone ?? ''}
                 error={form.hasError('phone')}
                 helperText={form.getError('phone')}
-                onChange={(e) => form.onChange({ phone: e.target.value })}
+                onChange={(e) => form.onChange('phone', e.target.value)}
               />
               <TextField
                 size="medium"
@@ -226,7 +226,7 @@ function Contact() {
                 value={form.value.jobTitle ?? ''}
                 error={form.hasError('jobTitle')}
                 helperText={form.getError('jobTitle')}
-                onChange={(e) => form.onChange({ jobTitle: e.target.value })}
+                onChange={(e) => form.onChange('jobTitle', e.target.value)}
               />
               <TextField
                 required
@@ -236,7 +236,7 @@ function Contact() {
                 value={form.value.schoolName ?? ''}
                 error={form.hasError('schoolName')}
                 helperText={form.getError('schoolName')}
-                onChange={(e) => form.onChange({ schoolName: e.target.value })}
+                onChange={(e) => form.onChange('schoolName', e.target.value)}
               />
               <TextField
                 required
@@ -246,7 +246,7 @@ function Contact() {
                 value={form.value.state ?? ''}
                 error={form.hasError('state')}
                 helperText={form.getError('state')}
-                onChange={(e) => form.onChange({ state: e.target.value })}
+                onChange={(e) => form.onChange('state', e.target.value)}
               />
               <TextField
                 required
@@ -256,7 +256,7 @@ function Contact() {
                 value={form.value.students ?? ''}
                 error={form.hasError('students')}
                 helperText={form.getError('students')}
-                onChange={(e) => form.onChange({ students: e.target.value })}
+                onChange={(e) => form.onChange('students', e.target.value)}
               />
               <FormControl required variant="outlined" size="medium" error={form.hasError('describe')}>
                 <InputLabel>What best describes your school?</InputLabel>
@@ -265,7 +265,7 @@ function Contact() {
                   variant="outlined"
                   value={form.value.describe ?? ''}
                   label="What best describes your school?"
-                  onChange={(e) => form.onChange({ describe: e.target.value })}
+                  onChange={(e) => form.onChange('describe', e.target.value)}
                 >
                   <MenuItem value="Public District">Public District</MenuItem>
                   <MenuItem value="Private School">Private School</MenuItem>
@@ -282,7 +282,7 @@ function Contact() {
                 error={form.hasError('comments')}
                 label="Comments, questions, concerns?"
                 helperText={form.getError('comments')}
-                onChange={(e) => form.onChange({ comments: e.target.value })}
+                onChange={(e) => form.onChange('comments', e.target.value)}
               />
               <LoadingButton type="submit" size="large" loading={loading}>
                 Submit

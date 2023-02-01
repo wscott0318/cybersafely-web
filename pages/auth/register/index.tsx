@@ -16,12 +16,8 @@ const schema = z
       .min(4)
       .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
     repeatPassword: z.string(),
-    user: z.object({
-      name: z.string().min(4),
-    }),
-    team: z.object({
-      name: z.string().min(4),
-    }),
+    userName: z.string().min(4),
+    teamName: z.string().min(4),
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
@@ -46,8 +42,15 @@ export default function Register() {
   return (
     <CoverLayout>
       <form
-        onSubmit={form.onSubmit((variables) => {
-          register({ variables })
+        onSubmit={form.onSubmit(({ email, password, userName, teamName }) => {
+          register({
+            variables: {
+              email,
+              password,
+              user: { name: userName },
+              team: { name: teamName },
+            },
+          })
         })}
       >
         <Stack spacing={4}>
@@ -57,10 +60,10 @@ export default function Register() {
             label="Name"
             size="medium"
             variant="outlined"
-            error={form.hasError('user.name')}
-            value={form.value.user?.name ?? ''}
-            helperText={form.getError('user.name')}
-            onChange={(e) => form.onChange({ user: { name: e.target.value } })}
+            error={form.hasError('userName')}
+            value={form.value.userName ?? ''}
+            helperText={form.getError('userName')}
+            onChange={(e) => form.onChange('userName', e.target.value)}
           />
           <TextField
             required
@@ -71,7 +74,7 @@ export default function Register() {
             error={form.hasError('email')}
             value={form.value.email ?? ''}
             helperText={form.getError('email')}
-            onChange={(e) => form.onChange({ email: e.target.value })}
+            onChange={(e) => form.onChange('email', e.target.value)}
           />
           <TextField
             required
@@ -82,7 +85,7 @@ export default function Register() {
             error={form.hasError('password')}
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
-            onChange={(e) => form.onChange({ password: e.target.value })}
+            onChange={(e) => form.onChange('password', e.target.value)}
             InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
           />
           <TextField
@@ -94,17 +97,17 @@ export default function Register() {
             error={form.hasError('repeatPassword')}
             value={form.value.repeatPassword ?? ''}
             helperText={form.getError('repeatPassword')}
-            onChange={(e) => form.onChange({ repeatPassword: e.target.value })}
+            onChange={(e) => form.onChange('repeatPassword', e.target.value)}
           />
           <TextField
             required
             size="medium"
             label="Team Name"
             variant="outlined"
-            error={form.hasError('team.name')}
-            value={form.value.team?.name ?? ''}
-            helperText={form.getError('team.name')}
-            onChange={(e) => form.onChange({ team: { name: e.target.value } })}
+            error={form.hasError('teamName')}
+            value={form.value.teamName ?? ''}
+            helperText={form.getError('teamName')}
+            onChange={(e) => form.onChange('teamName', e.target.value)}
           />
           <LoadingButton type="submit" loading={loading} size="large">
             Register
