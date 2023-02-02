@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
-import { Button, CircularProgress, Container, Paper, Stack, Tab } from '@mui/material'
+import { Button, CircularProgress, Container, Stack, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
@@ -171,9 +171,7 @@ function Team(props: Props) {
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <Paper sx={{ p: 3 }}>
-                  <UpdateTeamForm team={team} />
-                </Paper>
+                <UpdateTeamForm team={team} />
               </Container>
             </TabPanel>
           </NavigationView>

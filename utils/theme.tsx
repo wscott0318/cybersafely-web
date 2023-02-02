@@ -1,4 +1,5 @@
-import { dividerClasses, outlinedInputClasses } from '@mui/material'
+import ExpandIcon from '@mui/icons-material/ExpandMoreOutlined'
+import { accordionClasses, dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, green, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
@@ -163,6 +164,37 @@ export function createTheme(isDark: boolean) {
       MuiTabs: {
         defaultProps: {
           variant: 'fullWidth',
+        },
+      },
+      MuiAccordion: {
+        defaultProps: {
+          disableGutters: true,
+        },
+        styleOverrides: {
+          root: {
+            ['& + .' + accordionClasses.root]: {
+              borderTop: 'none',
+            },
+          },
+        },
+      },
+      MuiAccordionSummary: {
+        defaultProps: {
+          expandIcon: <ExpandIcon color="disabled" fontSize="small" />,
+        },
+        styleOverrides: {
+          root: ({ theme }) => ({
+            paddingInline: theme.spacing(3),
+            paddingBlock: theme.spacing(0.5),
+          }),
+        },
+      },
+      MuiAccordionDetails: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            padding: theme.spacing(3),
+            paddingTop: 0,
+          }),
         },
       },
       // @ts-ignore

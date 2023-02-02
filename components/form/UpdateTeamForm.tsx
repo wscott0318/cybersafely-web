@@ -1,81 +1,26 @@
 import { LoadingButton } from '@mui/lab'
-import { Stack, TextField } from '@mui/material'
-import { useRouter } from 'next/router'
-import { useMemo } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
-import {
-  Address,
-  namedOperations,
-  Team,
-  TeamUpdate,
-  useLeaveTeamMutation,
-  useUpdateTeamMutation,
-} from '../../types/graphql'
+import { Address, namedOperations, Team, useUpdateTeamMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
-import { useTeamRole, useUser } from '../../utils/context/auth'
-
-function LeaveTeamButton() {
-  const router = useRouter()
-  const { pushAlert } = useAlert()
-  const { refetchUser } = useUser()
-
-  const [leaveTeam, { loading }] = useLeaveTeamMutation({
-    async onCompleted() {
-      await refetchUser()
-      router.push('/dashboard')
-    },
-  })
-
-  return (
-    <LoadingButton
-      color="error"
-      variant="text"
-      loading={loading}
-      onClick={() => {
-        pushAlert({
-          type: 'confirm',
-          title: 'Leave Team',
-          message: 'Are you sure you want to leave team?',
-          confirm: () => {
-            leaveTeam()
-          },
-        })
-      }}
-    >
-      Leave Team
-    </LoadingButton>
-  )
-}
-
-const schema = z.object({
-  name: z.string().min(4),
-  street: z.string().min(4),
-  city: z.string().min(4),
-  state: z.string().min(4),
-  zip: z.string().min(4),
-})
+import { useUser } from '../../utils/context/auth'
 
 type UpdateTeamFormProps = {
-  team?: Pick<Team, 'id' | 'name'> & { address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null }
+  team: Pick<Team, 'id' | 'name'> & { address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null }
 }
 
-export function UpdateTeamForm(props: UpdateTeamFormProps) {
+const schemaGeneral = z.object({
+  name: z.string().min(4),
+})
+
+function UpdateTeamGeneralForm({ team }: UpdateTeamFormProps) {
   const { pushAlert } = useAlert()
   const { refetchUser } = useUser()
 
-  const teamRole = useTeamRole()
-  const team = teamRole?.team ?? props.team
-
-  const form = useForm(schema, {
+  const form = useForm(schemaGeneral, {
     name: team?.name,
-    street: team?.address?.street,
-    city: team?.address?.city,
-    state: team?.address?.state,
-    zip: team?.address?.zip,
   })
-
-  const disabled = useMemo(() => teamRole?.role === 'ATHLETE', [teamRole])
 
   const [updateTeam, { loading }] = useUpdateTeamMutation({
     context: { teamId: team?.id },
@@ -93,20 +38,7 @@ export function UpdateTeamForm(props: UpdateTeamFormProps) {
 
   return (
     <form
-      onSubmit={form.onSubmit((data, value) => {
-        const input: TeamUpdate = {
-          name: value.name,
-        }
-
-        if (!!value.street || !!value.city || !!value.state || !!value.zip) {
-          input.address = {
-            street: data.street,
-            city: data.city,
-            state: data.state,
-            zip: data.zip,
-          }
-        }
-
+      onSubmit={form.onSubmit((_, input) => {
         updateTeam({ variables: { input } })
       })}
     >
@@ -114,12 +46,58 @@ export function UpdateTeamForm(props: UpdateTeamFormProps) {
         <TextField
           required
           label="Name"
-          disabled={disabled}
           error={form.hasError('name')}
           value={form.value.name ?? ''}
           helperText={form.getError('name')}
           onChange={(e) => form.onChange('name', e.target.value)}
         />
+        <LoadingButton type="submit" loading={loading}>
+          Update
+        </LoadingButton>
+      </Stack>
+    </form>
+  )
+}
+
+const schemaAddress = z.object({
+  street: z.string().min(4),
+  city: z.string().min(4),
+  state: z.string().min(4),
+  zip: z.string().min(4),
+})
+
+function UpdateTeamAddressForm({ team }: UpdateTeamFormProps) {
+  const { pushAlert } = useAlert()
+  const { refetchUser } = useUser()
+
+  const form = useForm(schemaAddress, {
+    street: team?.address?.street,
+    city: team?.address?.city,
+    state: team?.address?.state,
+    zip: team?.address?.zip,
+  })
+
+  const [updateTeam, { loading }] = useUpdateTeamMutation({
+    context: { teamId: team?.id },
+    refetchQueries: [namedOperations.Query.team],
+    onCompleted() {
+      refetchUser()
+
+      pushAlert({
+        type: 'alert',
+        title: 'Success',
+        message: 'The team address was updated successfully',
+      })
+    },
+  })
+
+  return (
+    <form
+      onSubmit={form.onSubmit((address) => {
+        updateTeam({ variables: { input: { address } } })
+      })}
+    >
+      <Stack>
         <TextField
           required
           label="Street"
@@ -152,15 +130,29 @@ export function UpdateTeamForm(props: UpdateTeamFormProps) {
           helperText={form.getError('zip')}
           onChange={(e) => form.onChange('zip', e.target.value)}
         />
-        <Stack spacing={1}>
-          {!disabled && (
-            <LoadingButton type="submit" loading={loading}>
-              Update
-            </LoadingButton>
-          )}
-          {teamRole && <LeaveTeamButton />}
-        </Stack>
+        <LoadingButton type="submit" loading={loading}>
+          Update
+        </LoadingButton>
       </Stack>
     </form>
+  )
+}
+
+export function UpdateTeamForm(props: UpdateTeamFormProps) {
+  return (
+    <Box>
+      <Accordion defaultExpanded>
+        <AccordionSummary>General</AccordionSummary>
+        <AccordionDetails>
+          <UpdateTeamGeneralForm {...props} />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary>Address</AccordionSummary>
+        <AccordionDetails>
+          <UpdateTeamAddressForm {...props} />
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   )
 }
