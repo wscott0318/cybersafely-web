@@ -14,8 +14,8 @@ query children($page: Page, $order: UserOrder, $search: String) {
         id
         role
         status
-        ... on TeamRole {
-          team {
+        ... on SchoolRole {
+          school {
             id
             name
           }

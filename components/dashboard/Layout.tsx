@@ -37,9 +37,9 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { AnyRole, ParentRole, TeamRole, useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
+import { AnyRole, ParentRole, SchoolRole, useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
-import { AuthContextProvider, useTeamRole, useUser } from '../../utils/context/auth'
+import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
 import { LetterAvatar } from '../common/LetterAvatar'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
@@ -47,7 +47,7 @@ import { LoadingLogo } from '../common/NProgress'
 import { SidebarLink } from './SidebarLink'
 
 function HeaderAccount() {
-  const teamRole = useTeamRole()
+  const schoolRole = useSchoolRole()
   const { user, logout } = useUser()
   const { pushAlert } = useAlert()
 
@@ -91,13 +91,13 @@ function HeaderAccount() {
           <LetterAvatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} name={user.name || user.email} />
         }
       >
-        {teamRole && (
+        {schoolRole && (
           <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
-            Team
+            School
           </MenuItem>
         )}
-        {teamRole && (
-          <NextLinkLegacy href="/dashboard/team">
+        {schoolRole && (
+          <NextLinkLegacy href="/dashboard/school">
             <MenuItem>
               <ListItemIcon>
                 <GroupIcon fontSize="small" />
@@ -155,15 +155,21 @@ function Footer() {
 
 function SidebarAccount() {
   const { user } = useUser()
-  const teamRole = useTeamRole()
+  const schoolRole = useSchoolRole()
 
   return (
     <List>
-      {teamRole && (
+      {schoolRole && (
         <SidebarLink
-          href="/dashboard/team"
-          title={teamRole.team.name}
-          icon={<LetterAvatar sx={{ width: 28, height: 28 }} src={teamRole.team.logo?.url} name={teamRole.team.name} />}
+          href="/dashboard/school"
+          title={schoolRole.school.name}
+          icon={
+            <LetterAvatar
+              sx={{ width: 28, height: 28 }}
+              src={schoolRole.school.logo?.url}
+              name={schoolRole.school.name}
+            />
+          }
         />
       )}
       <SidebarLink
@@ -341,9 +347,9 @@ function Sidebar() {
   const { user } = useUser()
 
   const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyRole | undefined
-  const admin = user.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED') as TeamRole | undefined
-  const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as TeamRole | undefined
-  const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as TeamRole | undefined
+  const admin = user.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED') as SchoolRole | undefined
+  const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as SchoolRole | undefined
+  const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as SchoolRole | undefined
   const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
 
   if (staff) {
@@ -354,7 +360,7 @@ function Sidebar() {
         </CollapsableList>
         <CollapsableList title="Management">
           <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
-          <SidebarLink href="/dashboard/staff/teams" icon={<GroupIcon />} title="Teams" />
+          <SidebarLink href="/dashboard/staff/schools" icon={<GroupIcon />} title="Schools" />
         </CollapsableList>
       </>
     )

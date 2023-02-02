@@ -1,7 +1,7 @@
 import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { createContext, useCallback, useContext, useMemo } from 'react'
-import { ProfileQuery, TeamRole } from '../../types/graphql'
+import { ProfileQuery, SchoolRole } from '../../types/graphql'
 import { StorageManager } from '../storage'
 
 type AuthContext = {
@@ -44,19 +44,19 @@ export function useUser() {
   return { ...context, logout, refetchUser }
 }
 
-export function useTeamRole() {
+export function useSchoolRole() {
   const context = useContext(AuthContext)
 
   const role = useMemo(() => {
     if (context?.user) {
-      const teamId = StorageManager.get('teamId')
+      const schoolId = StorageManager.get('schoolId')
 
-      if (teamId) {
+      if (schoolId) {
         const role = context.user.roles.find(
           (e) => e.role === 'ADMIN' || e.role === 'COACH' || e.role === 'ATHLETE'
-        ) as TeamRole | undefined
+        ) as SchoolRole | undefined
 
-        if (role && role.team.id === teamId) {
+        if (role && role.school.id === schoolId) {
           return role
         }
       }

@@ -2,36 +2,36 @@ import { LoadingButton } from '@mui/lab'
 import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
-import { Address, namedOperations, Team, useUpdateTeamMutation } from '../../types/graphql'
+import { Address, namedOperations, School, useUpdateSchoolMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 
-type UpdateTeamFormProps = {
-  team: Pick<Team, 'id' | 'name'> & { address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null }
+type UpdateSchoolFormProps = {
+  school: Pick<School, 'id' | 'name'> & { address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null }
 }
 
 const schemaGeneral = z.object({
   name: z.string().min(4),
 })
 
-function UpdateTeamGeneralForm({ team }: UpdateTeamFormProps) {
+function UpdateSchoolGeneralForm({ school }: UpdateSchoolFormProps) {
   const { pushAlert } = useAlert()
   const { refetchUser } = useUser()
 
   const form = useForm(schemaGeneral, {
-    name: team?.name,
+    name: school?.name,
   })
 
-  const [updateTeam, { loading }] = useUpdateTeamMutation({
-    context: { teamId: team?.id },
-    refetchQueries: [namedOperations.Query.team],
+  const [updateSchool, { loading }] = useUpdateSchoolMutation({
+    context: { schoolId: school?.id },
+    refetchQueries: [namedOperations.Query.school],
     onCompleted() {
       refetchUser()
 
       pushAlert({
         type: 'alert',
         title: 'Success',
-        message: 'The team was updated successfully',
+        message: 'The school was updated successfully',
       })
     },
   })
@@ -39,7 +39,7 @@ function UpdateTeamGeneralForm({ team }: UpdateTeamFormProps) {
   return (
     <form
       onSubmit={form.onSubmit((_, input) => {
-        updateTeam({ variables: { input } })
+        updateSchool({ variables: { input } })
       })}
     >
       <Stack>
@@ -66,27 +66,27 @@ const schemaAddress = z.object({
   zip: z.string().min(4),
 })
 
-function UpdateTeamAddressForm({ team }: UpdateTeamFormProps) {
+function UpdateSchoolAddressForm({ school }: UpdateSchoolFormProps) {
   const { pushAlert } = useAlert()
   const { refetchUser } = useUser()
 
   const form = useForm(schemaAddress, {
-    street: team?.address?.street,
-    city: team?.address?.city,
-    state: team?.address?.state,
-    zip: team?.address?.zip,
+    street: school?.address?.street,
+    city: school?.address?.city,
+    state: school?.address?.state,
+    zip: school?.address?.zip,
   })
 
-  const [updateTeam, { loading }] = useUpdateTeamMutation({
-    context: { teamId: team?.id },
-    refetchQueries: [namedOperations.Query.team],
+  const [updateSchool, { loading }] = useUpdateSchoolMutation({
+    context: { schoolId: school?.id },
+    refetchQueries: [namedOperations.Query.school],
     onCompleted() {
       refetchUser()
 
       pushAlert({
         type: 'alert',
         title: 'Success',
-        message: 'The team address was updated successfully',
+        message: 'The school address was updated successfully',
       })
     },
   })
@@ -94,7 +94,7 @@ function UpdateTeamAddressForm({ team }: UpdateTeamFormProps) {
   return (
     <form
       onSubmit={form.onSubmit((address) => {
-        updateTeam({ variables: { input: { address } } })
+        updateSchool({ variables: { input: { address } } })
       })}
     >
       <Stack>
@@ -138,19 +138,19 @@ function UpdateTeamAddressForm({ team }: UpdateTeamFormProps) {
   )
 }
 
-export function UpdateTeamForm(props: UpdateTeamFormProps) {
+export function UpdateSchoolForm(props: UpdateSchoolFormProps) {
   return (
     <Box>
       <Accordion defaultExpanded>
         <AccordionSummary>General</AccordionSummary>
         <AccordionDetails>
-          <UpdateTeamGeneralForm {...props} />
+          <UpdateSchoolGeneralForm {...props} />
         </AccordionDetails>
       </Accordion>
       <Accordion>
         <AccordionSummary>Address</AccordionSummary>
         <AccordionDetails>
-          <UpdateTeamAddressForm {...props} />
+          <UpdateSchoolAddressForm {...props} />
         </AccordionDetails>
       </Accordion>
     </Box>

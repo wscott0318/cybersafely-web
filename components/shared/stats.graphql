@@ -7,13 +7,13 @@ fragment StatsByDayForCoach on StatsByDay {
 }
 
 query statsForCoach($days: Int!) {
-  statsOfCreatedMembersInTeam(days: $days) {
+  statsOfCreatedMembersInSchool(days: $days) {
     ...StatsByDayForCoach
   }
-  statsOfInvitedMembersInTeam(days: $days) {
+  statsOfInvitedMembersInSchool(days: $days) {
     ...StatsByDayForCoach
   }
-  statsOfAcceptedMembersInTeam(days: $days) {
+  statsOfAcceptedMembersInSchool(days: $days) {
     ...StatsByDayForCoach
   }
 }

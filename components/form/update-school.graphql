@@ -1,0 +1,3 @@
+mutation updateSchool($input: SchoolUpdate!) {
+  updateSchool(input: $input)
+}

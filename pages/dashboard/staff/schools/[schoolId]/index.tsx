@@ -12,21 +12,21 @@ import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { MemberActions } from '../../../../../components/data/MemberActions'
 import { InviteMemberForm } from '../../../../../components/form/InviteMemberForm'
-import { UpdateTeamForm } from '../../../../../components/form/UpdateTeamForm'
+import { UpdateSchoolForm } from '../../../../../components/form/UpdateSchoolForm'
 import {
   MembersQuery,
   namedOperations,
   useInviteMemberMutation,
   useMembersQuery,
-  useTeamQuery,
+  useSchoolQuery,
 } from '../../../../../types/graphql'
 import { useAlert } from '../../../../../utils/context/alert'
 
 type Props = {
-  teamId: string
+  schoolId: string
 }
 
-const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['members']>> = (teamId) => [
+const getColumns: (schoolId: string) => GridColumns<InferNodeType<MembersQuery['members']>> = (schoolId) => [
   {
     width: 250,
     field: 'name',
@@ -73,24 +73,24 @@ const getColumns: (teamId: string) => GridColumns<InferNodeType<MembersQuery['me
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <MemberActions memberId={params.row.id} teamId={teamId} />
+      return <MemberActions memberId={params.row.id} schoolId={schoolId} />
     },
   },
 ]
 
-function TeamMembers({ teamId }: Props) {
+function SchoolMembers({ schoolId }: Props) {
   const { pushAlert } = useAlert()
 
   const query = useMembersQuery({
-    context: { teamId },
+    context: { schoolId },
   })
 
   const [inviteMember] = useInviteMemberMutation({
-    context: { teamId },
+    context: { schoolId },
     refetchQueries: [namedOperations.Query.members],
   })
 
-  const columns = useMemo(() => getColumns(teamId), [teamId])
+  const columns = useMemo(() => getColumns(schoolId), [schoolId])
 
   return (
     <DataGridViewer
@@ -99,7 +99,7 @@ function TeamMembers({ teamId }: Props) {
       columns={columns}
       data={query.data?.members}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      href={(e) => `/dashboard/staff/teams/${teamId}/members/${e.id}`}
+      href={(e) => `/dashboard/staff/schools/${schoolId}/members/${e.id}`}
       actions={
         <DataGridActions>
           <Button
@@ -143,20 +143,20 @@ function Loader<T>({ data, children }: LoaderProps<T>) {
   return children(data)
 }
 
-function Team(props: Props) {
+function School(props: Props) {
   const [tab, setTab] = useState('members')
 
-  const { data } = useTeamQuery({
-    variables: { id: props.teamId },
+  const { data } = useSchoolQuery({
+    variables: { id: props.schoolId },
   })
 
   return (
     <TabContext value={tab}>
       <Loader data={data}>
-        {({ team }) => (
+        {({ school }) => (
           <NavigationView
-            title={team.name}
-            back="/dashboard/staff/teams"
+            title={school.name}
+            back="/dashboard/staff/schools"
             actions={
               <NavigationActions>
                 <TabList onChange={(_, tab) => setTab(tab)}>
@@ -167,11 +167,11 @@ function Team(props: Props) {
             }
           >
             <TabPanel value="members">
-              <TeamMembers {...props} />
+              <SchoolMembers {...props} />
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <UpdateTeamForm team={team} />
+                <UpdateSchoolForm school={school} />
               </Container>
             </TabPanel>
           </NavigationView>
@@ -182,10 +182,10 @@ function Team(props: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const teamId = ctx.params!.teamId as string
-  return { props: { teamId } }
+  const schoolId = ctx.params!.schoolId as string
+  return { props: { schoolId } }
 }
 
-export default withDashboardLayout(Team, {
-  title: 'Team',
+export default withDashboardLayout(School, {
+  title: 'School',
 })

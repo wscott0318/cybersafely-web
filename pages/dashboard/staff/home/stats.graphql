@@ -10,7 +10,7 @@ query statsForStaff($days: Int!) {
   statsOfCreatedUsers(days: $days) {
     ...StatsByDayForStaff
   }
-  statsOfCreatedTeams(days: $days) {
+  statsOfCreatedSchools(days: $days) {
     ...StatsByDayForStaff
   }
   statsOfCreatedMembers(days: $days) {

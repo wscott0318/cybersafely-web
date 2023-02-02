@@ -21,9 +21,9 @@ import {
 } from '../../../../../../../types/graphql'
 import { useAlert } from '../../../../../../../utils/context/alert'
 
-const getColumns: (childId: string, teamId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (
+const getColumns: (childId: string, schoolId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (
   childId,
-  teamId
+  schoolId
 ) => [
   {
     width: 250,
@@ -64,30 +64,30 @@ const getColumns: (childId: string, teamId: string) => GridColumns<InferNodeType
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <ParentActions parentId={params.row.id} childId={childId} teamId={teamId} />
+      return <ParentActions parentId={params.row.id} childId={childId} schoolId={schoolId} />
     },
   },
 ]
 
 type Props = {
-  teamId: string
+  schoolId: string
   memberId: string
 }
 
-function MemberParents({ teamId, memberId }: Props) {
+function MemberParents({ schoolId, memberId }: Props) {
   const { pushAlert } = useAlert()
 
   const query = useParentsQuery({
-    context: { teamId },
+    context: { schoolId },
     variables: { childId: memberId },
   })
 
   const [inviteParent] = useInviteParentMutation({
-    context: { teamId },
+    context: { schoolId },
     refetchQueries: [namedOperations.Query.parents],
   })
 
-  const columns = useMemo(() => getColumns(memberId, teamId), [memberId, teamId])
+  const columns = useMemo(() => getColumns(memberId, schoolId), [memberId, schoolId])
 
   return (
     <DataGridViewer
@@ -126,7 +126,7 @@ function Member(props: Props) {
   const [tab, setTab] = useState('parents')
 
   const { data } = useMemberQuery({
-    context: { teamId: props.teamId },
+    context: { schoolId: props.schoolId },
     variables: { id: props.memberId },
   })
 
@@ -134,7 +134,7 @@ function Member(props: Props) {
     <TabContext value={tab}>
       <NavigationView
         title={data?.member.name ?? 'Member'}
-        back={`/dashboard/staff/teams/${props.teamId}`}
+        back={`/dashboard/staff/schools/${props.schoolId}`}
         actions={
           <NavigationActions>
             <TabList onChange={(_, tab) => setTab(tab)}>
@@ -152,9 +152,9 @@ function Member(props: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const teamId = ctx.params!.teamId as string
+  const schoolId = ctx.params!.schoolId as string
   const memberId = ctx.params!.memberId as string
-  return { props: { teamId, memberId } }
+  return { props: { schoolId, memberId } }
 }
 
 export default withDashboardLayout(Member, {

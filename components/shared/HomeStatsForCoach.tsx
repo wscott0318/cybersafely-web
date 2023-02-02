@@ -40,24 +40,24 @@ export function HomeStatsForCoach() {
           <CumulativeChartCard
             fillHeight
             title="Created Members"
-            data={data?.statsOfCreatedMembersInTeam.stats}
-            total={data?.statsOfCreatedMembersInTeam.total}
+            data={data?.statsOfCreatedMembersInSchool.stats}
+            total={data?.statsOfCreatedMembersInSchool.total}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
             fillHeight
             title="Pending Members"
-            data={data?.statsOfInvitedMembersInTeam.stats}
-            total={data?.statsOfInvitedMembersInTeam.total}
+            data={data?.statsOfInvitedMembersInSchool.stats}
+            total={data?.statsOfInvitedMembersInSchool.total}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
             fillHeight
             title="Accepted Members"
-            data={data?.statsOfAcceptedMembersInTeam.stats}
-            total={data?.statsOfAcceptedMembersInTeam.total}
+            data={data?.statsOfAcceptedMembersInSchool.stats}
+            total={data?.statsOfAcceptedMembersInSchool.total}
           />
         </Grid>
       </Grid>

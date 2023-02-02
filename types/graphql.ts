@@ -105,11 +105,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   activate?: Maybe<Scalars['ID']>;
   contact?: Maybe<Scalars['ID']>;
-  createTeam?: Maybe<Scalars['ID']>;
+  createSchool?: Maybe<Scalars['ID']>;
   inviteMember?: Maybe<Scalars['ID']>;
   inviteParent?: Maybe<Scalars['ID']>;
   inviteStaff?: Maybe<Scalars['ID']>;
-  leaveTeam?: Maybe<Scalars['ID']>;
   login: Jwt;
   readAllNotifications?: Maybe<Scalars['ID']>;
   register?: Maybe<Scalars['ID']>;
@@ -120,7 +119,7 @@ export type Mutation = {
   resetPassword?: Maybe<Scalars['ID']>;
   updatePassword?: Maybe<Scalars['ID']>;
   updateProfile?: Maybe<Scalars['ID']>;
-  updateTeam?: Maybe<Scalars['ID']>;
+  updateSchool?: Maybe<Scalars['ID']>;
 };
 
 
@@ -136,8 +135,8 @@ export type MutationContactArgs = {
 };
 
 
-export type MutationCreateTeamArgs = {
-  input: TeamCreate;
+export type MutationCreateSchoolArgs = {
+  input: SchoolCreate;
 };
 
 
@@ -168,7 +167,7 @@ export type MutationLoginArgs = {
 export type MutationRegisterArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
-  team: TeamCreate;
+  school: SchoolCreate;
   user: UserCreate;
 };
 
@@ -211,8 +210,8 @@ export type MutationUpdateProfileArgs = {
 };
 
 
-export type MutationUpdateTeamArgs = {
-  input: TeamUpdate;
+export type MutationUpdateSchoolArgs = {
+  input: SchoolUpdate;
 };
 
 export type Notification = {
@@ -250,9 +249,9 @@ export type PaginatedNotification = {
   page: PageInfo;
 };
 
-export type PaginatedTeam = {
-  __typename?: 'PaginatedTeam';
-  nodes: Array<Team>;
+export type PaginatedSchool = {
+  __typename?: 'PaginatedSchool';
+  nodes: Array<School>;
   page: PageInfo;
 };
 
@@ -280,15 +279,15 @@ export type Query = {
   notificationsCount: Scalars['Int'];
   parents: PaginatedUser;
   profile: User;
-  statsOfAcceptedMembersInTeam: StatsByDay;
+  school: School;
+  schools: PaginatedSchool;
+  statsOfAcceptedMembersInSchool: StatsByDay;
   statsOfCreatedMembers: StatsByDay;
-  statsOfCreatedMembersInTeam: StatsByDay;
+  statsOfCreatedMembersInSchool: StatsByDay;
   statsOfCreatedParents: StatsByDay;
-  statsOfCreatedTeams: StatsByDay;
+  statsOfCreatedSchools: StatsByDay;
   statsOfCreatedUsers: StatsByDay;
-  statsOfInvitedMembersInTeam: StatsByDay;
-  team: Team;
-  teams: PaginatedTeam;
+  statsOfInvitedMembersInSchool: StatsByDay;
   user: User;
   users: PaginatedUser;
 };
@@ -326,7 +325,19 @@ export type QueryParentsArgs = {
 };
 
 
-export type QueryStatsOfAcceptedMembersInTeamArgs = {
+export type QuerySchoolArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QuerySchoolsArgs = {
+  order?: InputMaybe<SchoolOrder>;
+  page?: InputMaybe<Page>;
+  search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryStatsOfAcceptedMembersInSchoolArgs = {
   days?: InputMaybe<Scalars['Int']>;
 };
 
@@ -336,7 +347,7 @@ export type QueryStatsOfCreatedMembersArgs = {
 };
 
 
-export type QueryStatsOfCreatedMembersInTeamArgs = {
+export type QueryStatsOfCreatedMembersInSchoolArgs = {
   days?: InputMaybe<Scalars['Int']>;
 };
 
@@ -346,7 +357,7 @@ export type QueryStatsOfCreatedParentsArgs = {
 };
 
 
-export type QueryStatsOfCreatedTeamsArgs = {
+export type QueryStatsOfCreatedSchoolsArgs = {
   days?: InputMaybe<Scalars['Int']>;
 };
 
@@ -356,20 +367,8 @@ export type QueryStatsOfCreatedUsersArgs = {
 };
 
 
-export type QueryStatsOfInvitedMembersInTeamArgs = {
+export type QueryStatsOfInvitedMembersInSchoolArgs = {
   days?: InputMaybe<Scalars['Int']>;
-};
-
-
-export type QueryTeamArgs = {
-  id: Scalars['ID'];
-};
-
-
-export type QueryTeamsArgs = {
-  order?: InputMaybe<TeamOrder>;
-  page?: InputMaybe<Page>;
-  search?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -400,6 +399,39 @@ export const RoleStatus = {
 } as const;
 
 export type RoleStatus = typeof RoleStatus[keyof typeof RoleStatus];
+export type School = {
+  __typename?: 'School';
+  address?: Maybe<Address>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  logo?: Maybe<Image>;
+  memberCount: Scalars['Int'];
+  name: Scalars['String'];
+};
+
+export type SchoolCreate = {
+  name: Scalars['String'];
+};
+
+export type SchoolOrder = {
+  createdAt?: InputMaybe<OrderDirection>;
+  memberCount?: InputMaybe<OrderDirection>;
+  name?: InputMaybe<OrderDirection>;
+};
+
+export type SchoolRole = UserRole & {
+  __typename?: 'SchoolRole';
+  id: Scalars['ID'];
+  role: Role;
+  school: School;
+  status: RoleStatus;
+};
+
+export type SchoolUpdate = {
+  address?: InputMaybe<AddressUpdate>;
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type StatByDay = {
   __typename?: 'StatByDay';
   day: Scalars['DateTime'];
@@ -425,39 +457,6 @@ export const StringFilterMode = {
 } as const;
 
 export type StringFilterMode = typeof StringFilterMode[keyof typeof StringFilterMode];
-export type Team = {
-  __typename?: 'Team';
-  address?: Maybe<Address>;
-  createdAt: Scalars['DateTime'];
-  id: Scalars['ID'];
-  logo?: Maybe<Image>;
-  memberCount: Scalars['Int'];
-  name: Scalars['String'];
-};
-
-export type TeamCreate = {
-  name: Scalars['String'];
-};
-
-export type TeamOrder = {
-  createdAt?: InputMaybe<OrderDirection>;
-  memberCount?: InputMaybe<OrderDirection>;
-  name?: InputMaybe<OrderDirection>;
-};
-
-export type TeamRole = UserRole & {
-  __typename?: 'TeamRole';
-  id: Scalars['ID'];
-  role: Role;
-  status: RoleStatus;
-  team: Team;
-};
-
-export type TeamUpdate = {
-  address?: InputMaybe<AddressUpdate>;
-  name?: InputMaybe<Scalars['String']>;
-};
-
 export type UpdateProfileInput = {
   name?: InputMaybe<Scalars['String']>;
   newEmail?: InputMaybe<Scalars['String']>;
@@ -496,7 +495,7 @@ export type UserRole = {
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } }> } };
 
 export type RemoveMemberMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -521,11 +520,6 @@ export type InviteMemberMutationVariables = Exact<{
 
 export type InviteMemberMutation = { __typename?: 'Mutation', inviteMember?: string | null };
 
-export type LeaveTeamMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LeaveTeamMutation = { __typename?: 'Mutation', leaveTeam?: string | null };
-
 export type UpdatePasswordMutationVariables = Exact<{
   oldPassword: Scalars['String'];
   newPassword: Scalars['String'];
@@ -541,12 +535,21 @@ export type UpdateProfileMutationVariables = Exact<{
 
 export type UpdateProfileMutation = { __typename?: 'Mutation', updateProfile?: string | null };
 
-export type UpdateTeamMutationVariables = Exact<{
-  input: TeamUpdate;
+export type UpdateSchoolMutationVariables = Exact<{
+  input: SchoolUpdate;
 }>;
 
 
-export type UpdateTeamMutation = { __typename?: 'Mutation', updateTeam?: string | null };
+export type UpdateSchoolMutation = { __typename?: 'Mutation', updateSchool?: string | null };
+
+export type StatsByDayForCoachFragment = { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
+
+export type StatsForCoachQueryVariables = Exact<{
+  days: Scalars['Int'];
+}>;
+
+
+export type StatsForCoachQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> } };
 
 export type ActivateMutationVariables = Exact<{
   password: Scalars['String'];
@@ -569,7 +572,7 @@ export type RegisterMutationVariables = Exact<{
   email: Scalars['String'];
   password: Scalars['String'];
   user: UserCreate;
-  team: TeamCreate;
+  school: SchoolCreate;
 }>;
 
 
@@ -597,15 +600,6 @@ export type ContactMutationVariables = Exact<{
 
 export type ContactMutation = { __typename?: 'Mutation', contact?: string | null };
 
-export type StatsByDayForCoachFragment = { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
-
-export type StatsForCoachQueryVariables = Exact<{
-  days: Scalars['Int'];
-}>;
-
-
-export type StatsForCoachQuery = { __typename?: 'Query', statsOfCreatedMembersInTeam: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfInvitedMembersInTeam: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfAcceptedMembersInTeam: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> } };
-
 export type InviteParentMutationVariables = Exact<{
   childId: Scalars['ID'];
   email: Scalars['String'];
@@ -630,7 +624,7 @@ export type ParentsQueryVariables = Exact<{
 }>;
 
 
-export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus }> }> } };
+export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus }> }> } };
 
 export type NotificationsCountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -656,7 +650,7 @@ export type ChildrenQueryVariables = Exact<{
 }>;
 
 
-export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
+export type ChildrenQuery = { __typename?: 'Query', children: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', id: string, name: string } }>, parentRole?: { __typename?: 'ParentRole', relation?: string | null } | null }> } };
 
 export type StatsByDayForStaffFragment = { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
 
@@ -665,7 +659,7 @@ export type StatsForStaffQueryVariables = Exact<{
 }>;
 
 
-export type StatsForStaffQuery = { __typename?: 'Query', statsOfCreatedUsers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedTeams: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedMembers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedParents: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> } };
+export type StatsForStaffQuery = { __typename?: 'Query', statsOfCreatedUsers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedSchools: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedMembers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfCreatedParents: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> } };
 
 export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
@@ -674,30 +668,30 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus }> }> } };
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus }> }> } };
 
-export type TeamQueryVariables = Exact<{
+export type SchoolQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type TeamQuery = { __typename?: 'Query', team: { __typename?: 'Team', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null } };
+export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null } };
 
-export type CreateTeamMutationVariables = Exact<{
-  input: TeamCreate;
+export type CreateSchoolMutationVariables = Exact<{
+  input: SchoolCreate;
 }>;
 
 
-export type CreateTeamMutation = { __typename?: 'Mutation', createTeam?: string | null };
+export type CreateSchoolMutation = { __typename?: 'Mutation', createSchool?: string | null };
 
-export type TeamsQueryVariables = Exact<{
+export type SchoolsQueryVariables = Exact<{
   page?: InputMaybe<Page>;
-  order?: InputMaybe<TeamOrder>;
+  order?: InputMaybe<SchoolOrder>;
   search?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type TeamsQuery = { __typename?: 'Query', teams: { __typename?: 'PaginatedTeam', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Team', id: string, createdAt: Date, name: string, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null }> } };
+export type SchoolsQuery = { __typename?: 'Query', schools: { __typename?: 'PaginatedSchool', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'School', id: string, createdAt: Date, name: string, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null }> } };
 
 export type InviteStaffMutationVariables = Exact<{
   email: Scalars['String'];
@@ -720,7 +714,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', name: string } }> }> } };
 
 export const StatsByDayForCoachFragmentDoc = gql`
     fragment StatsByDayForCoach on StatsByDay {
@@ -754,8 +748,8 @@ export const ProfileDocument = gql`
       id
       role
       status
-      ... on TeamRole {
-        team {
+      ... on SchoolRole {
+        school {
           id
           name
           address {
@@ -902,36 +896,6 @@ export function useInviteMemberMutation(baseOptions?: Apollo.MutationHookOptions
 export type InviteMemberMutationHookResult = ReturnType<typeof useInviteMemberMutation>;
 export type InviteMemberMutationResult = Apollo.MutationResult<InviteMemberMutation>;
 export type InviteMemberMutationOptions = Apollo.BaseMutationOptions<InviteMemberMutation, InviteMemberMutationVariables>;
-export const LeaveTeamDocument = gql`
-    mutation leaveTeam {
-  leaveTeam
-}
-    `;
-export type LeaveTeamMutationFn = Apollo.MutationFunction<LeaveTeamMutation, LeaveTeamMutationVariables>;
-
-/**
- * __useLeaveTeamMutation__
- *
- * To run a mutation, you first call `useLeaveTeamMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useLeaveTeamMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [leaveTeamMutation, { data, loading, error }] = useLeaveTeamMutation({
- *   variables: {
- *   },
- * });
- */
-export function useLeaveTeamMutation(baseOptions?: Apollo.MutationHookOptions<LeaveTeamMutation, LeaveTeamMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<LeaveTeamMutation, LeaveTeamMutationVariables>(LeaveTeamDocument, options);
-      }
-export type LeaveTeamMutationHookResult = ReturnType<typeof useLeaveTeamMutation>;
-export type LeaveTeamMutationResult = Apollo.MutationResult<LeaveTeamMutation>;
-export type LeaveTeamMutationOptions = Apollo.BaseMutationOptions<LeaveTeamMutation, LeaveTeamMutationVariables>;
 export const UpdatePasswordDocument = gql`
     mutation updatePassword($oldPassword: String!, $newPassword: String!) {
   updatePassword(oldPassword: $oldPassword, newPassword: $newPassword)
@@ -995,37 +959,78 @@ export function useUpdateProfileMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProfileMutationHookResult = ReturnType<typeof useUpdateProfileMutation>;
 export type UpdateProfileMutationResult = Apollo.MutationResult<UpdateProfileMutation>;
 export type UpdateProfileMutationOptions = Apollo.BaseMutationOptions<UpdateProfileMutation, UpdateProfileMutationVariables>;
-export const UpdateTeamDocument = gql`
-    mutation updateTeam($input: TeamUpdate!) {
-  updateTeam(input: $input)
+export const UpdateSchoolDocument = gql`
+    mutation updateSchool($input: SchoolUpdate!) {
+  updateSchool(input: $input)
 }
     `;
-export type UpdateTeamMutationFn = Apollo.MutationFunction<UpdateTeamMutation, UpdateTeamMutationVariables>;
+export type UpdateSchoolMutationFn = Apollo.MutationFunction<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
 
 /**
- * __useUpdateTeamMutation__
+ * __useUpdateSchoolMutation__
  *
- * To run a mutation, you first call `useUpdateTeamMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateTeamMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateSchoolMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSchoolMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateTeamMutation, { data, loading, error }] = useUpdateTeamMutation({
+ * const [updateSchoolMutation, { data, loading, error }] = useUpdateSchoolMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateTeamMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTeamMutation, UpdateTeamMutationVariables>) {
+export function useUpdateSchoolMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateTeamMutation, UpdateTeamMutationVariables>(UpdateTeamDocument, options);
+        return Apollo.useMutation<UpdateSchoolMutation, UpdateSchoolMutationVariables>(UpdateSchoolDocument, options);
       }
-export type UpdateTeamMutationHookResult = ReturnType<typeof useUpdateTeamMutation>;
-export type UpdateTeamMutationResult = Apollo.MutationResult<UpdateTeamMutation>;
-export type UpdateTeamMutationOptions = Apollo.BaseMutationOptions<UpdateTeamMutation, UpdateTeamMutationVariables>;
+export type UpdateSchoolMutationHookResult = ReturnType<typeof useUpdateSchoolMutation>;
+export type UpdateSchoolMutationResult = Apollo.MutationResult<UpdateSchoolMutation>;
+export type UpdateSchoolMutationOptions = Apollo.BaseMutationOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
+export const StatsForCoachDocument = gql`
+    query statsForCoach($days: Int!) {
+  statsOfCreatedMembersInSchool(days: $days) {
+    ...StatsByDayForCoach
+  }
+  statsOfInvitedMembersInSchool(days: $days) {
+    ...StatsByDayForCoach
+  }
+  statsOfAcceptedMembersInSchool(days: $days) {
+    ...StatsByDayForCoach
+  }
+}
+    ${StatsByDayForCoachFragmentDoc}`;
+
+/**
+ * __useStatsForCoachQuery__
+ *
+ * To run a query within a React component, call `useStatsForCoachQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStatsForCoachQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStatsForCoachQuery({
+ *   variables: {
+ *      days: // value for 'days'
+ *   },
+ * });
+ */
+export function useStatsForCoachQuery(baseOptions: Apollo.QueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+      }
+export function useStatsForCoachLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+        }
+export type StatsForCoachQueryHookResult = ReturnType<typeof useStatsForCoachQuery>;
+export type StatsForCoachLazyQueryHookResult = ReturnType<typeof useStatsForCoachLazyQuery>;
+export type StatsForCoachQueryResult = Apollo.QueryResult<StatsForCoachQuery, StatsForCoachQueryVariables>;
 export const ActivateDocument = gql`
     mutation activate($password: String!, $passwordToken: String!, $user: UserCreate!) {
   activate(password: $password, passwordToken: $passwordToken, user: $user)
@@ -1094,8 +1099,8 @@ export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = gql`
-    mutation register($email: String!, $password: String!, $user: UserCreate!, $team: TeamCreate!) {
-  register(email: $email, password: $password, user: $user, team: $team)
+    mutation register($email: String!, $password: String!, $user: UserCreate!, $school: SchoolCreate!) {
+  register(email: $email, password: $password, user: $user, school: $school)
 }
     `;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;
@@ -1116,7 +1121,7 @@ export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, Regis
  *      email: // value for 'email'
  *      password: // value for 'password'
  *      user: // value for 'user'
- *      team: // value for 'team'
+ *      school: // value for 'school'
  *   },
  * });
  */
@@ -1221,47 +1226,6 @@ export function useContactMutation(baseOptions?: Apollo.MutationHookOptions<Cont
 export type ContactMutationHookResult = ReturnType<typeof useContactMutation>;
 export type ContactMutationResult = Apollo.MutationResult<ContactMutation>;
 export type ContactMutationOptions = Apollo.BaseMutationOptions<ContactMutation, ContactMutationVariables>;
-export const StatsForCoachDocument = gql`
-    query statsForCoach($days: Int!) {
-  statsOfCreatedMembersInTeam(days: $days) {
-    ...StatsByDayForCoach
-  }
-  statsOfInvitedMembersInTeam(days: $days) {
-    ...StatsByDayForCoach
-  }
-  statsOfAcceptedMembersInTeam(days: $days) {
-    ...StatsByDayForCoach
-  }
-}
-    ${StatsByDayForCoachFragmentDoc}`;
-
-/**
- * __useStatsForCoachQuery__
- *
- * To run a query within a React component, call `useStatsForCoachQuery` and pass it any options that fit your needs.
- * When your component renders, `useStatsForCoachQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useStatsForCoachQuery({
- *   variables: {
- *      days: // value for 'days'
- *   },
- * });
- */
-export function useStatsForCoachQuery(baseOptions: Apollo.QueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
-      }
-export function useStatsForCoachLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
-        }
-export type StatsForCoachQueryHookResult = ReturnType<typeof useStatsForCoachQuery>;
-export type StatsForCoachLazyQueryHookResult = ReturnType<typeof useStatsForCoachLazyQuery>;
-export type StatsForCoachQueryResult = Apollo.QueryResult<StatsForCoachQuery, StatsForCoachQueryVariables>;
 export const InviteParentDocument = gql`
     mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
   inviteParent(childId: $childId, email: $email, relation: $relation)
@@ -1512,8 +1476,8 @@ export const ChildrenDocument = gql`
         id
         role
         status
-        ... on TeamRole {
-          team {
+        ... on SchoolRole {
+          school {
             id
             name
           }
@@ -1561,7 +1525,7 @@ export const StatsForStaffDocument = gql`
   statsOfCreatedUsers(days: $days) {
     ...StatsByDayForStaff
   }
-  statsOfCreatedTeams(days: $days) {
+  statsOfCreatedSchools(days: $days) {
     ...StatsByDayForStaff
   }
   statsOfCreatedMembers(days: $days) {
@@ -1654,9 +1618,9 @@ export function useMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Me
 export type MembersQueryHookResult = ReturnType<typeof useMembersQuery>;
 export type MembersLazyQueryHookResult = ReturnType<typeof useMembersLazyQuery>;
 export type MembersQueryResult = Apollo.QueryResult<MembersQuery, MembersQueryVariables>;
-export const TeamDocument = gql`
-    query team($id: ID!) {
-  team(id: $id) {
+export const SchoolDocument = gql`
+    query school($id: ID!) {
+  school(id: $id) {
     id
     name
     address {
@@ -1670,66 +1634,66 @@ export const TeamDocument = gql`
     `;
 
 /**
- * __useTeamQuery__
+ * __useSchoolQuery__
  *
- * To run a query within a React component, call `useTeamQuery` and pass it any options that fit your needs.
- * When your component renders, `useTeamQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSchoolQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSchoolQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useTeamQuery({
+ * const { data, loading, error } = useSchoolQuery({
  *   variables: {
  *      id: // value for 'id'
  *   },
  * });
  */
-export function useTeamQuery(baseOptions: Apollo.QueryHookOptions<TeamQuery, TeamQueryVariables>) {
+export function useSchoolQuery(baseOptions: Apollo.QueryHookOptions<SchoolQuery, SchoolQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TeamQuery, TeamQueryVariables>(TeamDocument, options);
+        return Apollo.useQuery<SchoolQuery, SchoolQueryVariables>(SchoolDocument, options);
       }
-export function useTeamLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamQuery, TeamQueryVariables>) {
+export function useSchoolLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SchoolQuery, SchoolQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TeamQuery, TeamQueryVariables>(TeamDocument, options);
+          return Apollo.useLazyQuery<SchoolQuery, SchoolQueryVariables>(SchoolDocument, options);
         }
-export type TeamQueryHookResult = ReturnType<typeof useTeamQuery>;
-export type TeamLazyQueryHookResult = ReturnType<typeof useTeamLazyQuery>;
-export type TeamQueryResult = Apollo.QueryResult<TeamQuery, TeamQueryVariables>;
-export const CreateTeamDocument = gql`
-    mutation createTeam($input: TeamCreate!) {
-  createTeam(input: $input)
+export type SchoolQueryHookResult = ReturnType<typeof useSchoolQuery>;
+export type SchoolLazyQueryHookResult = ReturnType<typeof useSchoolLazyQuery>;
+export type SchoolQueryResult = Apollo.QueryResult<SchoolQuery, SchoolQueryVariables>;
+export const CreateSchoolDocument = gql`
+    mutation createSchool($input: SchoolCreate!) {
+  createSchool(input: $input)
 }
     `;
-export type CreateTeamMutationFn = Apollo.MutationFunction<CreateTeamMutation, CreateTeamMutationVariables>;
+export type CreateSchoolMutationFn = Apollo.MutationFunction<CreateSchoolMutation, CreateSchoolMutationVariables>;
 
 /**
- * __useCreateTeamMutation__
+ * __useCreateSchoolMutation__
  *
- * To run a mutation, you first call `useCreateTeamMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateTeamMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateSchoolMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSchoolMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createTeamMutation, { data, loading, error }] = useCreateTeamMutation({
+ * const [createSchoolMutation, { data, loading, error }] = useCreateSchoolMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useCreateTeamMutation(baseOptions?: Apollo.MutationHookOptions<CreateTeamMutation, CreateTeamMutationVariables>) {
+export function useCreateSchoolMutation(baseOptions?: Apollo.MutationHookOptions<CreateSchoolMutation, CreateSchoolMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateTeamMutation, CreateTeamMutationVariables>(CreateTeamDocument, options);
+        return Apollo.useMutation<CreateSchoolMutation, CreateSchoolMutationVariables>(CreateSchoolDocument, options);
       }
-export type CreateTeamMutationHookResult = ReturnType<typeof useCreateTeamMutation>;
-export type CreateTeamMutationResult = Apollo.MutationResult<CreateTeamMutation>;
-export type CreateTeamMutationOptions = Apollo.BaseMutationOptions<CreateTeamMutation, CreateTeamMutationVariables>;
-export const TeamsDocument = gql`
-    query teams($page: Page, $order: TeamOrder, $search: String) {
-  teams(page: $page, order: $order, search: $search) {
+export type CreateSchoolMutationHookResult = ReturnType<typeof useCreateSchoolMutation>;
+export type CreateSchoolMutationResult = Apollo.MutationResult<CreateSchoolMutation>;
+export type CreateSchoolMutationOptions = Apollo.BaseMutationOptions<CreateSchoolMutation, CreateSchoolMutationVariables>;
+export const SchoolsDocument = gql`
+    query schools($page: Page, $order: SchoolOrder, $search: String) {
+  schools(page: $page, order: $order, search: $search) {
     page {
       index
       count
@@ -1749,16 +1713,16 @@ export const TeamsDocument = gql`
     `;
 
 /**
- * __useTeamsQuery__
+ * __useSchoolsQuery__
  *
- * To run a query within a React component, call `useTeamsQuery` and pass it any options that fit your needs.
- * When your component renders, `useTeamsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSchoolsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSchoolsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useTeamsQuery({
+ * const { data, loading, error } = useSchoolsQuery({
  *   variables: {
  *      page: // value for 'page'
  *      order: // value for 'order'
@@ -1766,17 +1730,17 @@ export const TeamsDocument = gql`
  *   },
  * });
  */
-export function useTeamsQuery(baseOptions?: Apollo.QueryHookOptions<TeamsQuery, TeamsQueryVariables>) {
+export function useSchoolsQuery(baseOptions?: Apollo.QueryHookOptions<SchoolsQuery, SchoolsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TeamsQuery, TeamsQueryVariables>(TeamsDocument, options);
+        return Apollo.useQuery<SchoolsQuery, SchoolsQueryVariables>(SchoolsDocument, options);
       }
-export function useTeamsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TeamsQuery, TeamsQueryVariables>) {
+export function useSchoolsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SchoolsQuery, SchoolsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TeamsQuery, TeamsQueryVariables>(TeamsDocument, options);
+          return Apollo.useLazyQuery<SchoolsQuery, SchoolsQueryVariables>(SchoolsDocument, options);
         }
-export type TeamsQueryHookResult = ReturnType<typeof useTeamsQuery>;
-export type TeamsLazyQueryHookResult = ReturnType<typeof useTeamsLazyQuery>;
-export type TeamsQueryResult = Apollo.QueryResult<TeamsQuery, TeamsQueryVariables>;
+export type SchoolsQueryHookResult = ReturnType<typeof useSchoolsQuery>;
+export type SchoolsLazyQueryHookResult = ReturnType<typeof useSchoolsLazyQuery>;
+export type SchoolsQueryResult = Apollo.QueryResult<SchoolsQuery, SchoolsQueryVariables>;
 export const InviteStaffDocument = gql`
     mutation inviteStaff($email: String!) {
   inviteStaff(email: $email)
@@ -1857,8 +1821,8 @@ export const UsersDocument = gql`
         id
         role
         status
-        ... on TeamRole {
-          team {
+        ... on SchoolRole {
+          school {
             name
           }
         }
@@ -1914,18 +1878,17 @@ export const namedOperations = {
     children: 'children',
     statsForStaff: 'statsForStaff',
     members: 'members',
-    team: 'team',
-    teams: 'teams',
+    school: 'school',
+    schools: 'schools',
     users: 'users'
   },
   Mutation: {
     removeMember: 'removeMember',
     removeParent: 'removeParent',
     inviteMember: 'inviteMember',
-    leaveTeam: 'leaveTeam',
     updatePassword: 'updatePassword',
     updateProfile: 'updateProfile',
-    updateTeam: 'updateTeam',
+    updateSchool: 'updateSchool',
     activate: 'activate',
     login: 'login',
     register: 'register',
@@ -1934,7 +1897,7 @@ export const namedOperations = {
     contact: 'contact',
     inviteParent: 'inviteParent',
     readAllNotifications: 'readAllNotifications',
-    createTeam: 'createTeam',
+    createSchool: 'createSchool',
     inviteStaff: 'inviteStaff',
     removeRole: 'removeRole'
   },

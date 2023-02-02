@@ -11,8 +11,8 @@ query profile {
       id
       role
       status
-      ... on TeamRole {
-        team {
+      ... on SchoolRole {
+        school {
           id
           name
           address {

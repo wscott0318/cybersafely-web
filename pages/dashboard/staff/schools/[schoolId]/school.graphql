@@ -1,5 +1,5 @@
-query team($id: ID!) {
-  team(id: $id) {
+query school($id: ID!) {
+  school(id: $id) {
     id
     name
     address {

@@ -3,7 +3,7 @@ import { GridColumns } from '@mui/x-data-grid'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { ChildrenQuery, TeamRole, useChildrenQuery } from '../../../../types/graphql'
+import { ChildrenQuery, SchoolRole, useChildrenQuery } from '../../../../types/graphql'
 
 const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
   {
@@ -27,11 +27,11 @@ const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
   },
   {
     width: 250,
-    field: 'team',
-    headerName: 'Team',
+    field: 'school',
+    headerName: 'School',
     valueGetter(params) {
-      const roles = params.row.roles.filter((e) => e.role === 'ATHLETE') as TeamRole[]
-      return roles.map((e) => e.team.name)
+      const roles = params.row.roles.filter((e) => e.role === 'ATHLETE') as SchoolRole[]
+      return roles.map((e) => e.school.name)
     },
     valueFormatter(params) {
       return params.value.join(', ')

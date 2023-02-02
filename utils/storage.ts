@@ -1,6 +1,6 @@
 const Storage = {
   token: 'token',
-  teamId: 'teamId',
+  schoolId: 'schoolId',
 }
 
 export class StorageManager {

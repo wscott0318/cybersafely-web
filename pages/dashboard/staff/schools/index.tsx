@@ -4,10 +4,10 @@ import { GridColumns } from '@mui/x-data-grid'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { namedOperations, TeamsQuery, useCreateTeamMutation, useTeamsQuery } from '../../../../types/graphql'
+import { namedOperations, SchoolsQuery, useCreateSchoolMutation, useSchoolsQuery } from '../../../../types/graphql'
 import { useAlert } from '../../../../utils/context/alert'
 
-const columns: GridColumns<InferNodeType<TeamsQuery['teams']>> = [
+const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
   {
     width: 250,
     field: 'name',
@@ -37,22 +37,22 @@ const columns: GridColumns<InferNodeType<TeamsQuery['teams']>> = [
   },
 ]
 
-function Teams() {
+function Schools() {
   const { pushAlert } = useAlert()
 
-  const query = useTeamsQuery()
+  const query = useSchoolsQuery()
 
-  const [createTeam] = useCreateTeamMutation({
-    refetchQueries: [namedOperations.Query.teams],
+  const [createSchool] = useCreateSchoolMutation({
+    refetchQueries: [namedOperations.Query.schools],
   })
 
   return (
     <DataGridViewer
-      title="Teams"
+      title="Schools"
       query={query}
       columns={columns}
-      data={query.data?.teams}
-      href={(e) => `/dashboard/staff/teams/${e.id}`}
+      data={query.data?.schools}
+      href={(e) => `/dashboard/staff/schools/${e.id}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
@@ -62,16 +62,16 @@ function Teams() {
             onClick={() => {
               pushAlert({
                 type: 'result',
-                title: 'Create Team',
+                title: 'Create School',
                 message: 'Enter a name below',
                 label: 'Name',
                 result: (name) => {
-                  createTeam({ variables: { input: { name } } })
+                  createSchool({ variables: { input: { name } } })
                 },
               })
             }}
           >
-            Create Team
+            Create School
           </Button>
           <SearchBar onSearch={(search) => query.refetch({ search })} />
         </DataGridActions>
@@ -80,6 +80,6 @@ function Teams() {
   )
 }
 
-export default withDashboardLayout(Teams, {
-  title: 'Teams',
+export default withDashboardLayout(Schools, {
+  title: 'Schools',
 })

@@ -17,7 +17,7 @@ const schema = z
       .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
     repeatPassword: z.string(),
     userName: z.string().min(4),
-    teamName: z.string().min(4),
+    schoolName: z.string().min(4),
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
@@ -42,13 +42,13 @@ export default function Register() {
   return (
     <CoverLayout>
       <form
-        onSubmit={form.onSubmit(({ email, password, userName, teamName }) => {
+        onSubmit={form.onSubmit(({ email, password, userName, schoolName }) => {
           register({
             variables: {
               email,
               password,
               user: { name: userName },
-              team: { name: teamName },
+              school: { name: schoolName },
             },
           })
         })}
@@ -102,12 +102,12 @@ export default function Register() {
           <TextField
             required
             size="medium"
-            label="Team Name"
+            label="School Name"
             variant="outlined"
-            error={form.hasError('teamName')}
-            value={form.value.teamName ?? ''}
-            helperText={form.getError('teamName')}
-            onChange={(e) => form.onChange('teamName', e.target.value)}
+            error={form.hasError('schoolName')}
+            value={form.value.schoolName ?? ''}
+            helperText={form.getError('schoolName')}
+            onChange={(e) => form.onChange('schoolName', e.target.value)}
           />
           <LoadingButton type="submit" loading={loading} size="large">
             Register

@@ -23,11 +23,11 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
       const headers = {
         ...context.headers,
         'x-token': StorageManager.get('token'),
-        'x-team-id': StorageManager.get('teamId'),
+        'x-school-id': StorageManager.get('schoolId'),
       }
 
-      if (typeof context.teamId === 'string') {
-        headers['x-team-id'] = context.teamId
+      if (typeof context.schoolId === 'string') {
+        headers['x-school-id'] = context.schoolId
       }
 
       operation.setContext({ ...context, headers })

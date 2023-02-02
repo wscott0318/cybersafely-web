@@ -6,14 +6,14 @@ import { DropDownButton } from '../common/DropDownButton'
 
 type MemberActionsProps = {
   memberId: string
-  teamId?: string
+  schoolId?: string
 }
 
-export function MemberActions({ memberId, teamId }: MemberActionsProps) {
+export function MemberActions({ memberId, schoolId }: MemberActionsProps) {
   const { pushAlert } = useAlert()
 
   const [removeMember] = useRemoveMemberMutation({
-    context: { teamId },
+    context: { schoolId },
     variables: { id: memberId },
     refetchQueries: [namedOperations.Query.members],
   })
