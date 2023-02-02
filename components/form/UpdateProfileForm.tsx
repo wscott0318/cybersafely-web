@@ -5,6 +5,8 @@ import { useForm } from '../../helpers/form'
 import { useUpdateProfileMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
+import { useFilePicker, useUpload } from '../../utils/upload'
+import { LetterAvatar } from '../common/LetterAvatar'
 
 const schema = z.object({
   newEmail: z.string().email(),
@@ -14,6 +16,8 @@ const schema = z.object({
 export function UpdateProfileForm() {
   const { pushAlert } = useAlert()
   const { user, refetchUser } = useUser()
+  const { pick } = useFilePicker()
+  const { upload, loading: uploading } = useUpload()
 
   const form = useForm(schema, {
     newEmail: user.email,
@@ -47,6 +51,23 @@ export function UpdateProfileForm() {
       })}
     >
       <Stack>
+        <Stack alignItems="center">
+          <LetterAvatar sx={{ width: 128, height: 128 }} name={user.name || user.email} src={user.avatar?.url} />
+          <LoadingButton
+            variant="text"
+            loading={uploading}
+            onClick={async () => {
+              const file = await pick('image/*')
+
+              if (file) {
+                const avatar = await upload(file)
+                await updateProfile({ variables: { input: { avatar } } })
+              }
+            }}
+          >
+            Change Avatar
+          </LoadingButton>
+        </Stack>
         <TextField
           required
           type="email"

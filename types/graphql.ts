@@ -110,6 +110,7 @@ export type Mutation = {
   inviteParent?: Maybe<Scalars['ID']>;
   inviteStaff?: Maybe<Scalars['ID']>;
   login: Jwt;
+  prepareForUpload: Upload;
   readAllNotifications?: Maybe<Scalars['ID']>;
   register?: Maybe<Scalars['ID']>;
   removeMember?: Maybe<Scalars['ID']>;
@@ -458,8 +459,23 @@ export const StringFilterMode = {
 
 export type StringFilterMode = typeof StringFilterMode[keyof typeof StringFilterMode];
 export type UpdateProfileInput = {
+  avatar?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   newEmail?: InputMaybe<Scalars['String']>;
+};
+
+export type Upload = {
+  __typename?: 'Upload';
+  headers: Array<UploadHeader>;
+  id: Scalars['ID'];
+  method: Scalars['String'];
+  url: Scalars['String'];
+};
+
+export type UploadHeader = {
+  __typename?: 'UploadHeader';
+  key: Scalars['String'];
+  value: Scalars['String'];
 };
 
 export type User = {
@@ -715,6 +731,11 @@ export type UsersQueryVariables = Exact<{
 
 
 export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', name: string } }> }> } };
+
+export type PrepareForUploadMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PrepareForUploadMutation = { __typename?: 'Mutation', prepareForUpload: { __typename?: 'Upload', id: string, url: string, method: string, headers: Array<{ __typename?: 'UploadHeader', key: string, value: string }> } };
 
 export const StatsByDayForCoachFragmentDoc = gql`
     fragment StatsByDayForCoach on StatsByDay {
@@ -1867,6 +1888,44 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const PrepareForUploadDocument = gql`
+    mutation prepareForUpload {
+  prepareForUpload {
+    id
+    url
+    method
+    headers {
+      key
+      value
+    }
+  }
+}
+    `;
+export type PrepareForUploadMutationFn = Apollo.MutationFunction<PrepareForUploadMutation, PrepareForUploadMutationVariables>;
+
+/**
+ * __usePrepareForUploadMutation__
+ *
+ * To run a mutation, you first call `usePrepareForUploadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePrepareForUploadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [prepareForUploadMutation, { data, loading, error }] = usePrepareForUploadMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePrepareForUploadMutation(baseOptions?: Apollo.MutationHookOptions<PrepareForUploadMutation, PrepareForUploadMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PrepareForUploadMutation, PrepareForUploadMutationVariables>(PrepareForUploadDocument, options);
+      }
+export type PrepareForUploadMutationHookResult = ReturnType<typeof usePrepareForUploadMutation>;
+export type PrepareForUploadMutationResult = Apollo.MutationResult<PrepareForUploadMutation>;
+export type PrepareForUploadMutationOptions = Apollo.BaseMutationOptions<PrepareForUploadMutation, PrepareForUploadMutationVariables>;
 export const namedOperations = {
   Query: {
     profile: 'profile',
@@ -1899,7 +1958,8 @@ export const namedOperations = {
     readAllNotifications: 'readAllNotifications',
     createSchool: 'createSchool',
     inviteStaff: 'inviteStaff',
-    removeRole: 'removeRole'
+    removeRole: 'removeRole',
+    prepareForUpload: 'prepareForUpload'
   },
   Fragment: {
     StatsByDayForCoach: 'StatsByDayForCoach',

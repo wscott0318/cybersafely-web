@@ -1,0 +1,11 @@
+mutation prepareForUpload {
+  prepareForUpload {
+    id
+    url
+    method
+    headers {
+      key
+      value
+    }
+  }
+}
