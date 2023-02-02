@@ -1,15 +1,13 @@
 import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
-
 import { useState } from 'react'
-import { CumulativeChartCard } from '../../../../components/chart/CumulativeChartCard'
-import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { useStatsForStaffQuery } from '../../../../types/graphql'
+import { useStatsForCoachQuery } from '../../types/graphql'
+import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 
-function Home() {
+export function HomeStatsForCoach() {
   const [days, setDays] = useState(14)
 
-  const { data } = useStatsForStaffQuery({
+  const { data } = useStatsForCoachQuery({
     variables: { days },
   })
 
@@ -41,44 +39,28 @@ function Home() {
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
             fillHeight
-            title="Total Users*"
-            data={data?.statsOfCreatedUsers.stats}
-            total={data?.statsOfCreatedUsers.total}
-            helper="*Users that confirmed their e-mail address"
+            title="Created Members"
+            data={data?.statsOfCreatedMembersInTeam.stats}
+            total={data?.statsOfCreatedMembersInTeam.total}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
             fillHeight
-            title="Total Teams"
-            data={data?.statsOfCreatedTeams.stats}
-            total={data?.statsOfCreatedTeams.total}
+            title="Pending Members"
+            data={data?.statsOfInvitedMembersInTeam.stats}
+            total={data?.statsOfInvitedMembersInTeam.total}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <CumulativeChartCard
             fillHeight
-            title="Total Members*"
-            data={data?.statsOfCreatedMembers.stats}
-            total={data?.statsOfCreatedMembers.total}
-            helper="*Members with an active member role"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <CumulativeChartCard
-            fillHeight
-            title="Total Parents*"
-            data={data?.statsOfCreatedParents.stats}
-            total={data?.statsOfCreatedParents.total}
-            helper="*Parents with an active parent role"
+            title="Accepted Members"
+            data={data?.statsOfAcceptedMembersInTeam.stats}
+            total={data?.statsOfAcceptedMembersInTeam.total}
           />
         </Grid>
       </Grid>
     </Box>
   )
 }
-
-export default withDashboardLayout(Home, {
-  title: 'Home',
-  maxWidth: 'lg',
-})

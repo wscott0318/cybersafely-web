@@ -280,10 +280,13 @@ export type Query = {
   notificationsCount: Scalars['Int'];
   parents: PaginatedUser;
   profile: User;
+  statsOfAcceptedMembersInTeam: StatsByDay;
   statsOfCreatedMembers: StatsByDay;
+  statsOfCreatedMembersInTeam: StatsByDay;
   statsOfCreatedParents: StatsByDay;
   statsOfCreatedTeams: StatsByDay;
   statsOfCreatedUsers: StatsByDay;
+  statsOfInvitedMembersInTeam: StatsByDay;
   team: Team;
   teams: PaginatedTeam;
   user: User;
@@ -323,7 +326,17 @@ export type QueryParentsArgs = {
 };
 
 
+export type QueryStatsOfAcceptedMembersInTeamArgs = {
+  days?: InputMaybe<Scalars['Int']>;
+};
+
+
 export type QueryStatsOfCreatedMembersArgs = {
+  days?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryStatsOfCreatedMembersInTeamArgs = {
   days?: InputMaybe<Scalars['Int']>;
 };
 
@@ -339,6 +352,11 @@ export type QueryStatsOfCreatedTeamsArgs = {
 
 
 export type QueryStatsOfCreatedUsersArgs = {
+  days?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryStatsOfInvitedMembersInTeamArgs = {
   days?: InputMaybe<Scalars['Int']>;
 };
 
@@ -579,6 +597,15 @@ export type ContactMutationVariables = Exact<{
 
 export type ContactMutation = { __typename?: 'Mutation', contact?: string | null };
 
+export type StatsByDayForCoachFragment = { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> };
+
+export type StatsForCoachQueryVariables = Exact<{
+  days: Scalars['Int'];
+}>;
+
+
+export type StatsForCoachQuery = { __typename?: 'Query', statsOfCreatedMembersInTeam: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfInvitedMembersInTeam: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> }, statsOfAcceptedMembersInTeam: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: Date, value: number }> } };
+
 export type InviteParentMutationVariables = Exact<{
   childId: Scalars['ID'];
   email: Scalars['String'];
@@ -695,6 +722,15 @@ export type UsersQueryVariables = Exact<{
 
 export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'TeamRole', id: string, role: Role, status: RoleStatus, team: { __typename?: 'Team', name: string } }> }> } };
 
+export const StatsByDayForCoachFragmentDoc = gql`
+    fragment StatsByDayForCoach on StatsByDay {
+  stats {
+    day
+    value
+  }
+  total
+}
+    `;
 export const StatsByDayForStaffFragmentDoc = gql`
     fragment StatsByDayForStaff on StatsByDay {
   stats {
@@ -1185,6 +1221,47 @@ export function useContactMutation(baseOptions?: Apollo.MutationHookOptions<Cont
 export type ContactMutationHookResult = ReturnType<typeof useContactMutation>;
 export type ContactMutationResult = Apollo.MutationResult<ContactMutation>;
 export type ContactMutationOptions = Apollo.BaseMutationOptions<ContactMutation, ContactMutationVariables>;
+export const StatsForCoachDocument = gql`
+    query statsForCoach($days: Int!) {
+  statsOfCreatedMembersInTeam(days: $days) {
+    ...StatsByDayForCoach
+  }
+  statsOfInvitedMembersInTeam(days: $days) {
+    ...StatsByDayForCoach
+  }
+  statsOfAcceptedMembersInTeam(days: $days) {
+    ...StatsByDayForCoach
+  }
+}
+    ${StatsByDayForCoachFragmentDoc}`;
+
+/**
+ * __useStatsForCoachQuery__
+ *
+ * To run a query within a React component, call `useStatsForCoachQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStatsForCoachQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStatsForCoachQuery({
+ *   variables: {
+ *      days: // value for 'days'
+ *   },
+ * });
+ */
+export function useStatsForCoachQuery(baseOptions: Apollo.QueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+      }
+export function useStatsForCoachLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+        }
+export type StatsForCoachQueryHookResult = ReturnType<typeof useStatsForCoachQuery>;
+export type StatsForCoachLazyQueryHookResult = ReturnType<typeof useStatsForCoachLazyQuery>;
+export type StatsForCoachQueryResult = Apollo.QueryResult<StatsForCoachQuery, StatsForCoachQueryVariables>;
 export const InviteParentDocument = gql`
     mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
   inviteParent(childId: $childId, email: $email, relation: $relation)
@@ -1829,6 +1906,7 @@ export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariable
 export const namedOperations = {
   Query: {
     profile: 'profile',
+    statsForCoach: 'statsForCoach',
     member: 'member',
     parents: 'parents',
     notificationsCount: 'notificationsCount',
@@ -1861,6 +1939,7 @@ export const namedOperations = {
     removeRole: 'removeRole'
   },
   Fragment: {
+    StatsByDayForCoach: 'StatsByDayForCoach',
     StatsByDayForStaff: 'StatsByDayForStaff'
   }
 }
