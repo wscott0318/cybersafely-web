@@ -1,13 +1,13 @@
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
-import GroupIcon from '@mui/icons-material/GroupOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
 import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
-import PersonIcon from '@mui/icons-material/PersonOutlined'
+import PersonIcon from '@mui/icons-material/PeopleOutlined'
+import SchoolIcon from '@mui/icons-material/SchoolOutlined'
 import {
   Alert,
   AppBar,
@@ -100,7 +100,7 @@ function HeaderAccount() {
           <NextLinkLegacy href="/dashboard/school">
             <MenuItem>
               <ListItemIcon>
-                <GroupIcon fontSize="small" />
+                <SchoolIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText>Manage</ListItemText>
             </MenuItem>
@@ -360,7 +360,7 @@ function Sidebar() {
         </CollapsableList>
         <CollapsableList title="Management">
           <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
-          <SidebarLink href="/dashboard/staff/schools" icon={<GroupIcon />} title="Schools" />
+          <SidebarLink href="/dashboard/staff/schools" icon={<SchoolIcon />} title="Schools" />
         </CollapsableList>
       </>
     )
