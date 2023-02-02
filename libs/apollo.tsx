@@ -29,9 +29,6 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
       if (typeof context.teamId === 'string') {
         headers['x-team-id'] = context.teamId
       }
-      if (typeof context.behalfId === 'string') {
-        headers['x-behalf-id'] = context.behalfId
-      }
 
       operation.setContext({ ...context, headers })
 

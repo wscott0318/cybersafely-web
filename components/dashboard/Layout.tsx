@@ -11,7 +11,6 @@ import PersonIcon from '@mui/icons-material/PersonOutlined'
 import {
   Alert,
   AppBar,
-  Avatar,
   Badge,
   Box,
   Breakpoint,
@@ -42,6 +41,7 @@ import { AnyRole, ParentRole, TeamRole, useNotificationsCountQuery, useProfileQu
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useTeamRole, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
+import { LetterAvatar } from '../common/LetterAvatar'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
 import { LoadingLogo } from '../common/NProgress'
 import { SidebarLink } from './SidebarLink'
@@ -87,7 +87,9 @@ function HeaderAccount() {
         color="inherit"
         title={user.name}
         uppercase={false}
-        startIcon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
+        startIcon={
+          <LetterAvatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} name={user.name || user.email} />
+        }
       >
         {teamRole && (
           <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -161,13 +163,13 @@ function SidebarAccount() {
         <SidebarLink
           href="/dashboard/team"
           title={teamRole.team.name}
-          icon={<Avatar sx={{ width: 28, height: 28 }} src={teamRole.team.logo?.url} />}
+          icon={<LetterAvatar sx={{ width: 28, height: 28 }} src={teamRole.team.logo?.url} name={teamRole.team.name} />}
         />
       )}
       <SidebarLink
         title={user.name}
         href="/dashboard/profile"
-        icon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
+        icon={<LetterAvatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} name={user.name || user.email} />}
       />
     </List>
   )

@@ -165,13 +165,6 @@ export function createTheme(isDark: boolean) {
           variant: 'fullWidth',
         },
       },
-      MuiAvatar: {
-        styleOverrides: {
-          root: ({ theme }) => ({
-            background: theme.palette.divider,
-          }),
-        },
-      },
       // @ts-ignore
       MuiTabPanel: {
         styleOverrides: {
