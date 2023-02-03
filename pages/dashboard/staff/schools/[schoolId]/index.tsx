@@ -3,9 +3,10 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Button, CircularProgress, Container, Stack, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { EmptyFileAnimation } from '../../../../../components/common/EmptyFileAnimation'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
@@ -14,6 +15,7 @@ import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { MemberActions } from '../../../../../components/data/MemberActions'
 import { InviteMemberForm } from '../../../../../components/form/InviteMemberForm'
 import { UpdateSchoolForm } from '../../../../../components/form/UpdateSchoolForm'
+import { ApolloClientProvider } from '../../../../../libs/apollo'
 import {
   MembersQuery,
   namedOperations,
@@ -27,7 +29,7 @@ type Props = {
   schoolId: string
 }
 
-const getColumns: (schoolId: string) => GridColumns<InferNodeType<MembersQuery['members']>> = (schoolId) => [
+const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
     width: 250,
     field: 'name',
@@ -77,7 +79,7 @@ const getColumns: (schoolId: string) => GridColumns<InferNodeType<MembersQuery['
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <MemberActions memberId={params.row.id} schoolId={schoolId} />
+      return <MemberActions memberId={params.row.id} />
     },
   },
 ]
@@ -85,16 +87,11 @@ const getColumns: (schoolId: string) => GridColumns<InferNodeType<MembersQuery['
 function SchoolMembers({ schoolId }: Props) {
   const { pushAlert } = useAlert()
 
-  const query = useMembersQuery({
-    context: { schoolId },
-  })
+  const query = useMembersQuery()
 
   const [inviteMember] = useInviteMemberMutation({
-    context: { schoolId },
     refetchQueries: [namedOperations.Query.members],
   })
-
-  const columns = useMemo(() => getColumns(schoolId), [schoolId])
 
   return (
     <DataGridViewer
@@ -155,35 +152,39 @@ function School(props: Props) {
   })
 
   return (
-    <TabContext value={tab}>
-      <Loader data={data}>
-        {({ school }) => (
-          <NavigationView
-            title={school.name}
-            back="/dashboard/staff/schools"
-            actions={
-              <NavigationActions>
-                <TabList onChange={(_, tab) => setTab(tab)}>
-                  <Tab label="Members" value="members" />
-                  <Tab label="Details" value="details" />
-                  <Tab label="Posts" value="posts" />
-                </TabList>
-              </NavigationActions>
-            }
-          >
-            <TabPanel value="members">
-              <SchoolMembers {...props} />
-            </TabPanel>
-            <TabPanel value="details">
-              <Container disableGutters maxWidth="sm">
-                <UpdateSchoolForm school={school} />
-              </Container>
-            </TabPanel>
-            <TabPanel value="posts"></TabPanel>
-          </NavigationView>
-        )}
-      </Loader>
-    </TabContext>
+    <ApolloClientProvider schoolId={props.schoolId}>
+      <TabContext value={tab}>
+        <Loader data={data}>
+          {({ school }) => (
+            <NavigationView
+              title={school.name}
+              back="/dashboard/staff/schools"
+              actions={
+                <NavigationActions>
+                  <TabList onChange={(_, tab) => setTab(tab)}>
+                    <Tab label="Members" value="members" />
+                    <Tab label="Details" value="details" />
+                    <Tab label="Posts" value="posts" />
+                  </TabList>
+                </NavigationActions>
+              }
+            >
+              <TabPanel value="members">
+                <SchoolMembers {...props} />
+              </TabPanel>
+              <TabPanel value="details">
+                <Container disableGutters maxWidth="sm">
+                  <UpdateSchoolForm school={school} />
+                </Container>
+              </TabPanel>
+              <TabPanel value="posts">
+                <EmptyFileAnimation />
+              </TabPanel>
+            </NavigationView>
+          )}
+        </Loader>
+      </TabContext>
+    </ApolloClientProvider>
   )
 }
 

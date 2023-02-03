@@ -1,11 +1,12 @@
 import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { createContext, useCallback, useContext, useMemo } from 'react'
-import { ProfileQuery, SchoolRole } from '../../types/graphql'
+import { ProfileQuery, Role, SchoolRole } from '../../types/graphql'
 import { StorageManager } from '../storage'
 
 type AuthContext = {
   user: ProfileQuery['profile']
+  role: Role
   refetchUser: () => Promise<void>
 }
 

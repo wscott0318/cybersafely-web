@@ -14,25 +14,13 @@ export function useFilePicker() {
     }
 
     const promise = new Promise<File | undefined>((resolve) => {
-      let resolved = false
-
       input.addEventListener('change', () => {
-        const file = input.files?.[0]
-        resolved = true
-        resolve(file)
+        resolve(input.files?.[0])
       })
 
-      function didFocus() {
-        setTimeout(() => {
-          if (!resolved) {
-            resolved = true
-            resolve(undefined)
-          }
-        }, 500)
-      }
-
-      window.addEventListener('focus', didFocus, { once: true })
-      window.addEventListener('mousemove', didFocus, { once: true })
+      input.addEventListener('cancel', () => {
+        resolve(undefined)
+      })
     })
 
     input.click()
@@ -85,25 +73,33 @@ type UploadOptions = {
 
 export function useFileUpload() {
   const { pick } = useFilePicker()
-  const { upload: justUpload, loading } = useUpload()
+  const { upload: justUpload } = useUpload()
+
+  const [loading, setLoading] = useState(false)
 
   const upload = useCallback(async (options?: UploadOptions) => {
-    const file = await pick(options?.accept)
+    try {
+      setLoading(true)
 
-    if (file) {
-      if (typeof options?.resize === 'number') {
-        const { readAndCompressImage } = require('browser-image-resizer')
-        const blob = await readAndCompressImage(file, {
-          quality: 0.75,
-          mimeType: 'image/jpeg',
-          maxWidth: options.resize * window.devicePixelRatio,
-          maxHeight: options.resize * window.devicePixelRatio,
-        })
+      const file = await pick(options?.accept)
 
-        return await justUpload(blob)
+      if (file) {
+        if (typeof options?.resize === 'number') {
+          const { readAndCompressImage } = require('browser-image-resizer')
+          const blob = await readAndCompressImage(file, {
+            quality: 0.75,
+            mimeType: 'image/jpeg',
+            maxWidth: options.resize * window.devicePixelRatio,
+            maxHeight: options.resize * window.devicePixelRatio,
+          })
+
+          return await justUpload(blob)
+        }
+
+        return await justUpload(file)
       }
-
-      return await justUpload(file)
+    } finally {
+      setLoading(false)
     }
   }, [])
 

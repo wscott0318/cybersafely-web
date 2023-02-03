@@ -1,4 +1,5 @@
 import RemoveIcon from '@mui/icons-material/DeleteOutlined'
+import ImageIcon from '@mui/icons-material/ImageOutlined'
 import UploadIcon from '@mui/icons-material/UploadOutlined'
 import { Avatar, Box, Button, ButtonGroup, CircularProgress, Stack } from '@mui/material'
 import { useFileUpload } from '../../utils/upload'
@@ -15,9 +16,11 @@ export function UploadAvatar(props: UploadAvatarProps) {
     <Stack alignItems="center">
       <Box position="relative">
         {loading && <CircularProgress size={128 + 16} thickness={0.8} sx={{ position: 'absolute', top: 0, left: 0 }} />}
-        <Avatar sx={{ width: 128, height: 128, margin: '8px' }} src={props.src} />
+        <Avatar sx={{ width: 128, height: 128, margin: '8px', fontSize: '3rem' }} src={props.src}>
+          <ImageIcon fontSize="inherit" />
+        </Avatar>
       </Box>
-      <ButtonGroup fullWidth disabled={loading} size="small">
+      <ButtonGroup fullWidth disabled={loading}>
         <Button
           startIcon={<UploadIcon />}
           onClick={async () => {
@@ -25,10 +28,10 @@ export function UploadAvatar(props: UploadAvatarProps) {
             if (result) props.onUpload(result)
           }}
         >
-          Upload a new image
+          Upload new image
         </Button>
         <Button startIcon={<RemoveIcon />} onClick={() => props.onUpload(null)} disabled={!props.src}>
-          Remove the current one
+          Remove current
         </Button>
       </ButtonGroup>
     </Stack>

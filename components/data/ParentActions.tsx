@@ -7,14 +7,12 @@ import { DropDownButton } from '../common/DropDownButton'
 type ParentActionsProps = {
   parentId: string
   childId: string
-  schoolId?: string
 }
 
-export function ParentActions({ parentId, childId, schoolId }: ParentActionsProps) {
+export function ParentActions({ parentId, childId }: ParentActionsProps) {
   const { pushAlert } = useAlert()
 
   const [removeParent] = useRemoveParentMutation({
-    context: { schoolId },
     variables: { id: parentId, childId },
     refetchQueries: [namedOperations.Query.parents],
   })

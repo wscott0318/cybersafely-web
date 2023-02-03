@@ -7,6 +7,32 @@ import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 import { UploadAvatar } from '../common/UploadAvatar'
 
+export function UpdateAvatarForm() {
+  const { pushAlert } = useAlert()
+  const { user, refetchUser } = useUser()
+
+  const [updateProfile] = useUpdateProfileMutation({
+    onCompleted() {
+      refetchUser()
+
+      pushAlert({
+        type: 'alert',
+        title: 'Success',
+        message: 'Your profile was updated successfully',
+      })
+    },
+  })
+
+  return (
+    <UploadAvatar
+      src={user.avatar?.url}
+      onUpload={(avatar) => {
+        updateProfile({ variables: { input: { avatar } } })
+      }}
+    />
+  )
+}
+
 const schema = z.object({
   newEmail: z.string().email(),
   name: z.string().min(4),
@@ -48,12 +74,6 @@ export function UpdateProfileForm() {
       })}
     >
       <Stack>
-        <UploadAvatar
-          src={user.avatar?.url}
-          onUpload={(avatar) => {
-            updateProfile({ variables: { input: { avatar } } })
-          }}
-        />
         <TextField
           required
           type="email"

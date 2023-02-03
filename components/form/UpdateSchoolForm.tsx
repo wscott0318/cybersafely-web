@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, TextField } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
 import {
@@ -12,6 +12,7 @@ import {
 } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
+import { AccordionContext } from '../common/AccordionContext'
 import { UploadAvatar } from '../common/UploadAvatar'
 
 type UpdateSchoolFormProps = {
@@ -135,7 +136,6 @@ export function UpdateSchoolForm(props: UpdateSchoolFormProps) {
   const { refetchUser } = useUser()
 
   const [updateSchool, { loading }] = useUpdateSchoolMutation({
-    context: { schoolId: props.school?.id },
     refetchQueries: [namedOperations.Query.school],
     onCompleted() {
       refetchUser()
@@ -149,14 +149,14 @@ export function UpdateSchoolForm(props: UpdateSchoolFormProps) {
   })
 
   return (
-    <Box>
+    <AccordionContext initialSelected={1}>
       <Accordion>
         <AccordionSummary>Logo</AccordionSummary>
         <AccordionDetails>
           <UpdateSchoolLogoForm {...props} updateSchool={updateSchool} loading={loading} />
         </AccordionDetails>
       </Accordion>
-      <Accordion defaultExpanded>
+      <Accordion>
         <AccordionSummary>General</AccordionSummary>
         <AccordionDetails>
           <UpdateSchoolGeneralForm {...props} updateSchool={updateSchool} loading={loading} />
@@ -168,6 +168,6 @@ export function UpdateSchoolForm(props: UpdateSchoolFormProps) {
           <UpdateSchoolAddressForm {...props} updateSchool={updateSchool} loading={loading} />
         </AccordionDetails>
       </Accordion>
-    </Box>
+    </AccordionContext>
   )
 }

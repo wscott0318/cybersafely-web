@@ -12,6 +12,7 @@ import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
 import { ParentActions } from '../../../../../../../components/data/ParentActions'
 import { InviteParentForm } from '../../../../../../../components/form/InviteParentForm'
+import { ApolloClientProvider } from '../../../../../../../libs/apollo'
 import {
   namedOperations,
   ParentRole,
@@ -22,10 +23,7 @@ import {
 } from '../../../../../../../types/graphql'
 import { useAlert } from '../../../../../../../utils/context/alert'
 
-const getColumns: (childId: string, schoolId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (
-  childId,
-  schoolId
-) => [
+const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (childId) => [
   {
     width: 250,
     field: 'name',
@@ -68,7 +66,7 @@ const getColumns: (childId: string, schoolId: string) => GridColumns<InferNodeTy
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <ParentActions parentId={params.row.id} childId={childId} schoolId={schoolId} />
+      return <ParentActions parentId={params.row.id} childId={childId} />
     },
   },
 ]
@@ -78,20 +76,18 @@ type Props = {
   memberId: string
 }
 
-function MemberParents({ schoolId, memberId }: Props) {
+function MemberParents({ memberId }: Props) {
   const { pushAlert } = useAlert()
 
   const query = useParentsQuery({
-    context: { schoolId },
     variables: { childId: memberId },
   })
 
   const [inviteParent] = useInviteParentMutation({
-    context: { schoolId },
     refetchQueries: [namedOperations.Query.parents],
   })
 
-  const columns = useMemo(() => getColumns(memberId, schoolId), [memberId, schoolId])
+  const columns = useMemo(() => getColumns(memberId), [memberId])
 
   return (
     <DataGridViewer
@@ -126,11 +122,10 @@ function MemberParents({ schoolId, memberId }: Props) {
   )
 }
 
-function Member(props: Props) {
+function MemberWrapper(props: Props) {
   const [tab, setTab] = useState('parents')
 
   const { data } = useMemberQuery({
-    context: { schoolId: props.schoolId },
     variables: { id: props.memberId },
   })
 
@@ -152,6 +147,14 @@ function Member(props: Props) {
         </TabPanel>
       </NavigationView>
     </TabContext>
+  )
+}
+
+function Member(props: Props) {
+  return (
+    <ApolloClientProvider schoolId={props.schoolId}>
+      <MemberWrapper {...props} />
+    </ApolloClientProvider>
   )
 }
 

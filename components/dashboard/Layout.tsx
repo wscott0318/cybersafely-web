@@ -39,7 +39,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { AnyRole, ParentRole, SchoolRole, useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
+import { useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
@@ -164,7 +164,7 @@ function SidebarAccount() {
           title={schoolRole.school.name}
           icon={
             <Avatar sx={{ width: 28, height: 28 }} src={schoolRole.school.logo?.url}>
-              <SchoolIcon fontSize="small" />
+              <SchoolIcon fontSize="inherit" />
             </Avatar>
           }
         />
@@ -215,6 +215,18 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     initialFetchPolicy: 'network-only',
   })
 
+  const userRole = useMemo(() => {
+    if (!data) return
+
+    const staff = data.profile.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED')
+    const admin = data.profile.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED')
+    const coach = data.profile.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED')
+    const athlete = data.profile.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED')
+    const parent = data.profile.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED')
+
+    return staff ?? admin ?? coach ?? athlete ?? parent
+  }, [data])
+
   const refetchUser = useCallback(async () => {
     await refetch()
   }, [refetch])
@@ -234,7 +246,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.profile} refetchUser={refetchUser}>
+    <AuthContextProvider user={data.profile} role={userRole!.role} refetchUser={refetchUser}>
       <Head>
         <title>{props.title}</title>
       </Head>
@@ -341,66 +353,55 @@ function CollapsableList(props: { title?: string; children: React.ReactNode }) {
 }
 
 function Sidebar() {
-  const { user } = useUser()
+  const { role } = useUser()
 
-  const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyRole | undefined
-  const admin = user.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED') as SchoolRole | undefined
-  const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as SchoolRole | undefined
-  const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as SchoolRole | undefined
-  const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
+  switch (role) {
+    case 'STAFF':
+      return (
+        <>
+          <CollapsableList title="Dashboard">
+            <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
+          </CollapsableList>
+          <CollapsableList title="Management">
+            <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
+            <SidebarLink href="/dashboard/staff/schools" icon={<SchoolIcon />} title="Schools" />
+          </CollapsableList>
+        </>
+      )
 
-  if (staff) {
-    return (
-      <>
-        <CollapsableList title="Dashboard">
-          <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
+    case 'ADMIN':
+      return (
+        <CollapsableList>
+          <SidebarLink href="/dashboard/admin/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/admin/members" icon={<PersonIcon />} title="Members" />
+          <SidebarLink href="/dashboard/admin/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
-        <CollapsableList title="Management">
-          <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
-          <SidebarLink href="/dashboard/staff/schools" icon={<SchoolIcon />} title="Schools" />
+      )
+
+    case 'COACH':
+      return (
+        <CollapsableList>
+          <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
+          <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
-      </>
-    )
-  }
+      )
 
-  if (admin) {
-    return (
-      <CollapsableList>
-        <SidebarLink href="/dashboard/admin/home" icon={<HomeIcon />} title="Home" />
-        <SidebarLink href="/dashboard/admin/members" icon={<PersonIcon />} title="Members" />
-        <SidebarLink href="/dashboard/admin/posts" icon={<FeedIcon />} title="Posts" />
-      </CollapsableList>
-    )
-  }
+    case 'ATHLETE':
+      return (
+        <CollapsableList>
+          <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/athlete/members" icon={<PersonIcon />} title="Members" />
+        </CollapsableList>
+      )
 
-  if (coach) {
-    return (
-      <CollapsableList>
-        <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
-        <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
-        <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
-      </CollapsableList>
-    )
+    case 'PARENT':
+      return (
+        <CollapsableList>
+          <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
+        </CollapsableList>
+      )
   }
-
-  if (athlete) {
-    return (
-      <CollapsableList>
-        <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
-        <SidebarLink href="/dashboard/athlete/members" icon={<PersonIcon />} title="Members" />
-      </CollapsableList>
-    )
-  }
-
-  if (parent) {
-    return (
-      <CollapsableList>
-        <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
-      </CollapsableList>
-    )
-  }
-
-  return null
 }
 
 export function withDashboardLayout(

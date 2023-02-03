@@ -1,6 +1,6 @@
 import ExpandIcon from '@mui/icons-material/ExpandMoreOutlined'
 import UserIcon from '@mui/icons-material/Person'
-import { accordionClasses, dividerClasses, outlinedInputClasses } from '@mui/material'
+import { dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, green, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
@@ -172,11 +172,14 @@ export function createTheme(isDark: boolean) {
           disableGutters: true,
         },
         styleOverrides: {
-          root: {
-            ['& + .' + accordionClasses.root]: {
-              borderTop: 'none',
+          root: ({ theme }) => ({
+            ':before': {
+              display: 'none',
             },
-          },
+          }),
+          rounded: ({ theme }) => ({
+            borderRadius: theme.shape.borderRadius * 2 + 'px !important',
+          }),
         },
       },
       MuiAccordionSummary: {
@@ -200,7 +203,7 @@ export function createTheme(isDark: boolean) {
       },
       MuiAvatar: {
         defaultProps: {
-          children: <UserIcon fontSize="small" />,
+          children: <UserIcon fontSize="inherit" />,
         },
       },
       // @ts-ignore
