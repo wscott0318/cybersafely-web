@@ -1,6 +1,6 @@
 import ExpandIcon from '@mui/icons-material/ExpandMoreOutlined'
 import UserIcon from '@mui/icons-material/Person'
-import { dividerClasses, outlinedInputClasses } from '@mui/material'
+import { accordionClasses, dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, green, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
 import { Roboto } from '@next/font/google'
@@ -175,6 +175,9 @@ export function createTheme(isDark: boolean) {
           root: ({ theme }) => ({
             ':before': {
               display: 'none',
+            },
+            ['& + .' + accordionClasses.root]: {
+              marginTop: theme.spacing(1),
             },
           }),
           rounded: ({ theme }) => ({

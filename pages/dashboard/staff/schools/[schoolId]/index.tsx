@@ -144,7 +144,7 @@ function Loader<T>({ data, children }: LoaderProps<T>) {
   return children(data)
 }
 
-function School(props: Props) {
+function SchoolWrapper(props: Props) {
   const [tab, setTab] = useState('members')
 
   const { data } = useSchoolQuery({
@@ -152,38 +152,44 @@ function School(props: Props) {
   })
 
   return (
+    <TabContext value={tab}>
+      <Loader data={data}>
+        {({ school }) => (
+          <NavigationView
+            title={school.name}
+            back="/dashboard/staff/schools"
+            actions={
+              <NavigationActions>
+                <TabList onChange={(_, tab) => setTab(tab)}>
+                  <Tab label="Members" value="members" />
+                  <Tab label="Details" value="details" />
+                  <Tab label="Posts" value="posts" />
+                </TabList>
+              </NavigationActions>
+            }
+          >
+            <TabPanel value="members">
+              <SchoolMembers {...props} />
+            </TabPanel>
+            <TabPanel value="details">
+              <Container disableGutters maxWidth="sm">
+                <UpdateSchoolForm school={school} />
+              </Container>
+            </TabPanel>
+            <TabPanel value="posts">
+              <EmptyFileAnimation />
+            </TabPanel>
+          </NavigationView>
+        )}
+      </Loader>
+    </TabContext>
+  )
+}
+
+function School(props: Props) {
+  return (
     <ApolloClientProvider schoolId={props.schoolId}>
-      <TabContext value={tab}>
-        <Loader data={data}>
-          {({ school }) => (
-            <NavigationView
-              title={school.name}
-              back="/dashboard/staff/schools"
-              actions={
-                <NavigationActions>
-                  <TabList onChange={(_, tab) => setTab(tab)}>
-                    <Tab label="Members" value="members" />
-                    <Tab label="Details" value="details" />
-                    <Tab label="Posts" value="posts" />
-                  </TabList>
-                </NavigationActions>
-              }
-            >
-              <TabPanel value="members">
-                <SchoolMembers {...props} />
-              </TabPanel>
-              <TabPanel value="details">
-                <Container disableGutters maxWidth="sm">
-                  <UpdateSchoolForm school={school} />
-                </Container>
-              </TabPanel>
-              <TabPanel value="posts">
-                <EmptyFileAnimation />
-              </TabPanel>
-            </NavigationView>
-          )}
-        </Loader>
-      </TabContext>
+      <SchoolWrapper {...props} />
     </ApolloClientProvider>
   )
 }

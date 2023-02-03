@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import React, { useMemo, useState } from 'react'
 
 type AccordionContextProps = {
@@ -28,9 +28,9 @@ export function AccordionContext(props: AccordionContextProps) {
   }, [props.children, selected])
 
   return (
-    <Stack spacing={1}>
+    <Stack>
       {!!props.title && <Typography variant="h5">{props.title}</Typography>}
-      {children}
+      <Box>{children}</Box>
     </Stack>
   )
 }

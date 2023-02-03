@@ -5,7 +5,7 @@ import { useForm } from '../../helpers/form'
 import { useUpdateProfileMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
-import { UploadAvatar } from '../common/UploadAvatar'
+import { UploadImage } from '../common/UploadImage'
 
 export function UpdateAvatarForm() {
   const { pushAlert } = useAlert()
@@ -24,7 +24,7 @@ export function UpdateAvatarForm() {
   })
 
   return (
-    <UploadAvatar
+    <UploadImage
       src={user.avatar?.url}
       onUpload={(avatar) => {
         updateProfile({ variables: { input: { avatar } } })

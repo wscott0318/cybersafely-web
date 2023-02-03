@@ -13,7 +13,7 @@ import {
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 import { AccordionContext } from '../common/AccordionContext'
-import { UploadAvatar } from '../common/UploadAvatar'
+import { UploadImage } from '../common/UploadImage'
 
 type UpdateSchoolFormProps = {
   school: Pick<School, 'id' | 'name'> & { logo?: Pick<Image, 'url'> | null } & {
@@ -28,7 +28,7 @@ type UpdateSchoolSubFormProps = UpdateSchoolFormProps & {
 
 function UpdateSchoolLogoForm({ school, updateSchool }: UpdateSchoolSubFormProps) {
   return (
-    <UploadAvatar
+    <UploadImage
       src={school.logo?.url}
       onUpload={(logo) => {
         updateSchool({ variables: { input: { logo } } })
