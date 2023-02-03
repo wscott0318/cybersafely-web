@@ -4,6 +4,7 @@ import { Button, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
+import { AvatarWithName } from '../../../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../../../components/common/DataGridViewer'
 import { NavigationActions, NavigationView } from '../../../../../../../components/common/NavigationView'
 import { SearchBar } from '../../../../../../../components/common/SearchBar'
@@ -29,6 +30,9 @@ const getColumns: (childId: string, schoolId: string) => GridColumns<InferNodeTy
     width: 250,
     field: 'name',
     headerName: 'Name',
+    renderCell(params) {
+      return <AvatarWithName src={params.row.avatar?.url} name={params.row.name} />
+    },
   },
   {
     width: 300,

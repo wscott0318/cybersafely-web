@@ -11,6 +11,9 @@ query users($page: Page, $order: UserOrder, $search: String) {
       email
       emailConfirmed
       name
+      avatar {
+        url
+      }
       roles {
         id
         role

@@ -13,6 +13,9 @@ query schools($page: Page, $order: SchoolOrder, $search: String) {
       address {
         formatted
       }
+      logo {
+        url
+      }
     }
   }
 }

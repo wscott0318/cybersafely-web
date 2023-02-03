@@ -1,6 +1,7 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
+import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
@@ -12,6 +13,9 @@ const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
     width: 250,
     field: 'name',
     headerName: 'Name',
+    renderCell(params) {
+      return <AvatarWithName src={params.row.logo?.url} name={params.row.name} />
+    },
   },
   {
     width: 350,

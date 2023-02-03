@@ -11,6 +11,7 @@ import SchoolIcon from '@mui/icons-material/SchoolOutlined'
 import {
   Alert,
   AppBar,
+  Avatar,
   Badge,
   Box,
   Breakpoint,
@@ -41,7 +42,6 @@ import { AnyRole, ParentRole, SchoolRole, useNotificationsCountQuery, useProfile
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
 import { DropDownButton } from '../common/DropDownButton'
-import { LetterAvatar } from '../common/LetterAvatar'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
 import { LoadingLogo } from '../common/NProgress'
 import { SidebarLink } from './SidebarLink'
@@ -87,9 +87,7 @@ function HeaderAccount() {
         color="inherit"
         title={user.name}
         uppercase={false}
-        startIcon={
-          <LetterAvatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} name={user.name || user.email} />
-        }
+        startIcon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
       >
         {schoolRole && (
           <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -163,19 +161,13 @@ function SidebarAccount() {
         <SidebarLink
           href="/dashboard/school"
           title={schoolRole.school.name}
-          icon={
-            <LetterAvatar
-              sx={{ width: 28, height: 28 }}
-              src={schoolRole.school.logo?.url}
-              name={schoolRole.school.name}
-            />
-          }
+          icon={<Avatar sx={{ width: 28, height: 28 }} src={schoolRole.school.logo?.url} />}
         />
       )}
       <SidebarLink
         title={user.name}
         href="/dashboard/profile"
-        icon={<LetterAvatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} name={user.name || user.email} />}
+        icon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
       />
     </List>
   )

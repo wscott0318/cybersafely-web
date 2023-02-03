@@ -50,7 +50,7 @@ export function useUpload() {
 
   const [prepareForUpload] = usePrepareForUploadMutation()
 
-  const upload = useCallback(async (body: File) => {
+  const upload = useCallback(async (body: File | Blob | Buffer) => {
     try {
       setLoading(false)
 
@@ -72,6 +72,38 @@ export function useUpload() {
       }
     } finally {
       setLoading(false)
+    }
+  }, [])
+
+  return { upload, loading }
+}
+
+type UploadOptions = {
+  accept?: Accept
+  resize?: number
+}
+
+export function useFileUpload() {
+  const { pick } = useFilePicker()
+  const { upload: justUpload, loading } = useUpload()
+
+  const upload = useCallback(async (options?: UploadOptions) => {
+    const file = await pick(options?.accept)
+
+    if (file) {
+      if (typeof options?.resize === 'number') {
+        const { readAndCompressImage } = require('browser-image-resizer')
+        const blob = await readAndCompressImage(file, {
+          quality: 0.75,
+          mimeType: 'image/jpeg',
+          maxWidth: options.resize * window.devicePixelRatio,
+          maxHeight: options.resize * window.devicePixelRatio,
+        })
+
+        return await justUpload(blob)
+      }
+
+      return await justUpload(file)
     }
   }, [])
 

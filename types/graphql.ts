@@ -430,6 +430,7 @@ export type SchoolRole = UserRole & {
 
 export type SchoolUpdate = {
   address?: InputMaybe<AddressUpdate>;
+  logo?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -640,7 +641,7 @@ export type ParentsQueryVariables = Exact<{
 }>;
 
 
-export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus }> }> } };
+export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus }> }> } };
 
 export type NotificationsCountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -684,14 +685,14 @@ export type MembersQueryVariables = Exact<{
 }>;
 
 
-export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus }> }> } };
+export type MembersQuery = { __typename?: 'Query', members: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, parentCount: number, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus }> }> } };
 
 export type SchoolQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null } };
+export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } };
 
 export type CreateSchoolMutationVariables = Exact<{
   input: SchoolCreate;
@@ -707,7 +708,7 @@ export type SchoolsQueryVariables = Exact<{
 }>;
 
 
-export type SchoolsQuery = { __typename?: 'Query', schools: { __typename?: 'PaginatedSchool', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'School', id: string, createdAt: Date, name: string, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null }> } };
+export type SchoolsQuery = { __typename?: 'Query', schools: { __typename?: 'PaginatedSchool', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'School', id: string, createdAt: Date, name: string, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null, logo?: { __typename?: 'Image', url: string } | null }> } };
 
 export type InviteStaffMutationVariables = Exact<{
   email: Scalars['String'];
@@ -730,7 +731,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', name: string } }> }> } };
 
 export type PrepareForUploadMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1330,6 +1331,9 @@ export const ParentsDocument = gql`
       email
       emailConfirmed
       name
+      avatar {
+        url
+      }
       roles {
         id
         role
@@ -1600,6 +1604,9 @@ export const MembersDocument = gql`
       emailConfirmed
       name
       parentCount
+      avatar {
+        url
+      }
       roles {
         id
         role
@@ -1649,6 +1656,9 @@ export const SchoolDocument = gql`
       city
       state
       zip
+    }
+    logo {
+      url
     }
   }
 }
@@ -1727,6 +1737,9 @@ export const SchoolsDocument = gql`
       memberCount
       address {
         formatted
+      }
+      logo {
+        url
       }
     }
   }
@@ -1838,6 +1851,9 @@ export const UsersDocument = gql`
       email
       emailConfirmed
       name
+      avatar {
+        url
+      }
       roles {
         id
         role

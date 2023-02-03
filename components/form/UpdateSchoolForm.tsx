@@ -1,39 +1,57 @@
 import { LoadingButton } from '@mui/lab'
-import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, TextField } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
-import { Address, namedOperations, School, useUpdateSchoolMutation } from '../../types/graphql'
+import {
+  Address,
+  Image,
+  namedOperations,
+  School,
+  UpdateSchoolMutationFn,
+  useUpdateSchoolMutation,
+} from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
+import { useFileUpload } from '../../utils/upload'
 
 type UpdateSchoolFormProps = {
-  school: Pick<School, 'id' | 'name'> & { address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null }
+  school: Pick<School, 'id' | 'name'> & { logo?: Pick<Image, 'url'> | null } & {
+    address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null
+  }
+}
+
+type UpdateSchoolSubFormProps = UpdateSchoolFormProps & {
+  loading: boolean
+  updateSchool: UpdateSchoolMutationFn
+}
+
+function UpdateSchoolLogoForm({ school, updateSchool }: UpdateSchoolSubFormProps) {
+  const { upload, loading: uploading } = useFileUpload()
+
+  return (
+    <Stack alignItems="center">
+      <Avatar sx={{ width: 128, height: 128 }} src={school.logo?.url} />
+      <LoadingButton
+        variant="text"
+        loading={uploading}
+        onClick={async () => {
+          const logo = await upload({ accept: 'image/*', resize: 128 })
+          await updateSchool({ variables: { input: { logo } } })
+        }}
+      >
+        Change Logo
+      </LoadingButton>
+    </Stack>
+  )
 }
 
 const schemaGeneral = z.object({
   name: z.string().min(4),
 })
 
-function UpdateSchoolGeneralForm({ school }: UpdateSchoolFormProps) {
-  const { pushAlert } = useAlert()
-  const { refetchUser } = useUser()
-
+function UpdateSchoolGeneralForm({ school, updateSchool, loading }: UpdateSchoolSubFormProps) {
   const form = useForm(schemaGeneral, {
     name: school?.name,
-  })
-
-  const [updateSchool, { loading }] = useUpdateSchoolMutation({
-    context: { schoolId: school?.id },
-    refetchQueries: [namedOperations.Query.school],
-    onCompleted() {
-      refetchUser()
-
-      pushAlert({
-        type: 'alert',
-        title: 'Success',
-        message: 'The school was updated successfully',
-      })
-    },
   })
 
   return (
@@ -66,29 +84,12 @@ const schemaAddress = z.object({
   zip: z.string().min(4),
 })
 
-function UpdateSchoolAddressForm({ school }: UpdateSchoolFormProps) {
-  const { pushAlert } = useAlert()
-  const { refetchUser } = useUser()
-
+function UpdateSchoolAddressForm({ school, updateSchool, loading }: UpdateSchoolSubFormProps) {
   const form = useForm(schemaAddress, {
     street: school?.address?.street,
     city: school?.address?.city,
     state: school?.address?.state,
     zip: school?.address?.zip,
-  })
-
-  const [updateSchool, { loading }] = useUpdateSchoolMutation({
-    context: { schoolId: school?.id },
-    refetchQueries: [namedOperations.Query.school],
-    onCompleted() {
-      refetchUser()
-
-      pushAlert({
-        type: 'alert',
-        title: 'Success',
-        message: 'The school address was updated successfully',
-      })
-    },
   })
 
   return (
@@ -139,18 +140,41 @@ function UpdateSchoolAddressForm({ school }: UpdateSchoolFormProps) {
 }
 
 export function UpdateSchoolForm(props: UpdateSchoolFormProps) {
+  const { pushAlert } = useAlert()
+  const { refetchUser } = useUser()
+
+  const [updateSchool, { loading }] = useUpdateSchoolMutation({
+    context: { schoolId: props.school?.id },
+    refetchQueries: [namedOperations.Query.school],
+    onCompleted() {
+      refetchUser()
+
+      pushAlert({
+        type: 'alert',
+        title: 'Success',
+        message: 'The school was updated successfully',
+      })
+    },
+  })
+
   return (
     <Box>
+      <Accordion>
+        <AccordionSummary>Logo</AccordionSummary>
+        <AccordionDetails>
+          <UpdateSchoolLogoForm {...props} updateSchool={updateSchool} loading={loading} />
+        </AccordionDetails>
+      </Accordion>
       <Accordion defaultExpanded>
         <AccordionSummary>General</AccordionSummary>
         <AccordionDetails>
-          <UpdateSchoolGeneralForm {...props} />
+          <UpdateSchoolGeneralForm {...props} updateSchool={updateSchool} loading={loading} />
         </AccordionDetails>
       </Accordion>
       <Accordion>
         <AccordionSummary>Address</AccordionSummary>
         <AccordionDetails>
-          <UpdateSchoolAddressForm {...props} />
+          <UpdateSchoolAddressForm {...props} updateSchool={updateSchool} loading={loading} />
         </AccordionDetails>
       </Accordion>
     </Box>

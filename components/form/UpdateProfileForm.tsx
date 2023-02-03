@@ -1,12 +1,11 @@
 import { LoadingButton } from '@mui/lab'
-import { Stack, TextField } from '@mui/material'
+import { Avatar, Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
 import { useUpdateProfileMutation } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
-import { useFilePicker, useUpload } from '../../utils/upload'
-import { LetterAvatar } from '../common/LetterAvatar'
+import { useFileUpload } from '../../utils/upload'
 
 const schema = z.object({
   newEmail: z.string().email(),
@@ -16,8 +15,7 @@ const schema = z.object({
 export function UpdateProfileForm() {
   const { pushAlert } = useAlert()
   const { user, refetchUser } = useUser()
-  const { pick } = useFilePicker()
-  const { upload, loading: uploading } = useUpload()
+  const { upload, loading: uploading } = useFileUpload()
 
   const form = useForm(schema, {
     newEmail: user.email,
@@ -52,17 +50,13 @@ export function UpdateProfileForm() {
     >
       <Stack>
         <Stack alignItems="center">
-          <LetterAvatar sx={{ width: 128, height: 128 }} name={user.name || user.email} src={user.avatar?.url} />
+          <Avatar sx={{ width: 128, height: 128 }} src={user.avatar?.url} />
           <LoadingButton
             variant="text"
             loading={uploading}
             onClick={async () => {
-              const file = await pick('image/*')
-
-              if (file) {
-                const avatar = await upload(file)
-                await updateProfile({ variables: { input: { avatar } } })
-              }
+              const avatar = await upload({ accept: 'image/*', resize: 128 })
+              await updateProfile({ variables: { input: { avatar } } })
             }}
           >
             Change Avatar

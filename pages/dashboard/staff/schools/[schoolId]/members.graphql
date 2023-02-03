@@ -12,6 +12,9 @@ query members($page: Page, $order: UserOrder, $search: String) {
       emailConfirmed
       name
       parentCount
+      avatar {
+        url
+      }
       roles {
         id
         role
