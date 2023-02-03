@@ -161,7 +161,11 @@ function SidebarAccount() {
         <SidebarLink
           href="/dashboard/school"
           title={schoolRole.school.name}
-          icon={<Avatar sx={{ width: 28, height: 28 }} src={schoolRole.school.logo?.url} />}
+          icon={
+            <Avatar sx={{ width: 28, height: 28 }} src={schoolRole.school.logo?.url}>
+              <SchoolIcon fontSize="small" />
+            </Avatar>
+          }
         />
       )}
       <SidebarLink

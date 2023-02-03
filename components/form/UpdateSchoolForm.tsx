@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Accordion, AccordionDetails, AccordionSummary, Avatar, Box, Stack, TextField } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
 import {
@@ -12,7 +12,7 @@ import {
 } from '../../types/graphql'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
-import { useFileUpload } from '../../utils/upload'
+import { UploadAvatar } from '../common/UploadAvatar'
 
 type UpdateSchoolFormProps = {
   school: Pick<School, 'id' | 'name'> & { logo?: Pick<Image, 'url'> | null } & {
@@ -26,22 +26,13 @@ type UpdateSchoolSubFormProps = UpdateSchoolFormProps & {
 }
 
 function UpdateSchoolLogoForm({ school, updateSchool }: UpdateSchoolSubFormProps) {
-  const { upload, loading: uploading } = useFileUpload()
-
   return (
-    <Stack alignItems="center">
-      <Avatar sx={{ width: 128, height: 128 }} src={school.logo?.url} />
-      <LoadingButton
-        variant="text"
-        loading={uploading}
-        onClick={async () => {
-          const logo = await upload({ accept: 'image/*', resize: 128 })
-          await updateSchool({ variables: { input: { logo } } })
-        }}
-      >
-        Change Logo
-      </LoadingButton>
-    </Stack>
+    <UploadAvatar
+      src={school.logo?.url}
+      onUpload={(logo) => {
+        updateSchool({ variables: { input: { logo } } })
+      }}
+    />
   )
 }
 

@@ -1,4 +1,5 @@
 import ExpandIcon from '@mui/icons-material/ExpandMoreOutlined'
+import UserIcon from '@mui/icons-material/Person'
 import { accordionClasses, dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, green, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
@@ -195,6 +196,11 @@ export function createTheme(isDark: boolean) {
             padding: theme.spacing(3),
             paddingTop: 0,
           }),
+        },
+      },
+      MuiAvatar: {
+        defaultProps: {
+          children: <UserIcon fontSize="small" />,
         },
       },
       // @ts-ignore

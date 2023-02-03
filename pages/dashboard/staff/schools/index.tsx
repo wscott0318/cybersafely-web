@@ -14,7 +14,7 @@ const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
     field: 'name',
     headerName: 'Name',
     renderCell(params) {
-      return <AvatarWithName src={params.row.logo?.url} name={params.row.name} />
+      return <AvatarWithName type="school" src={params.row.logo?.url} name={params.row.name} />
     },
   },
   {
