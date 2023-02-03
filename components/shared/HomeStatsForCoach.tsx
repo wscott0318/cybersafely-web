@@ -60,6 +60,9 @@ export function HomeStatsForCoach() {
             total={data?.statsOfAcceptedMembersInSchool.total}
           />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <CumulativeChartCard fillHeight title="Created Posts" data={[]} total={0} />
+        </Grid>
       </Grid>
     </Box>
   )

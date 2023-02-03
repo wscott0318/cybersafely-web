@@ -1,5 +1,6 @@
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
+import FeedIcon from '@mui/icons-material/FeedOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
@@ -367,6 +368,7 @@ function Sidebar() {
       <CollapsableList>
         <SidebarLink href="/dashboard/admin/home" icon={<HomeIcon />} title="Home" />
         <SidebarLink href="/dashboard/admin/members" icon={<PersonIcon />} title="Members" />
+        <SidebarLink href="/dashboard/admin/posts" icon={<FeedIcon />} title="Posts" />
       </CollapsableList>
     )
   }
@@ -376,6 +378,7 @@ function Sidebar() {
       <CollapsableList>
         <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
         <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
+        <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
       </CollapsableList>
     )
   }

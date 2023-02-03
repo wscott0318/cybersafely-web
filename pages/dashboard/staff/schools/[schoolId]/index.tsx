@@ -166,6 +166,7 @@ function School(props: Props) {
                 <TabList onChange={(_, tab) => setTab(tab)}>
                   <Tab label="Members" value="members" />
                   <Tab label="Details" value="details" />
+                  <Tab label="Posts" value="posts" />
                 </TabList>
               </NavigationActions>
             }
@@ -178,6 +179,7 @@ function School(props: Props) {
                 <UpdateSchoolForm school={school} />
               </Container>
             </TabPanel>
+            <TabPanel value="posts"></TabPanel>
           </NavigationView>
         )}
       </Loader>
