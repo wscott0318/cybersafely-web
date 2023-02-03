@@ -8,7 +8,7 @@ import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
 import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
 import PersonIcon from '@mui/icons-material/PeopleOutlined'
-import SchoolIcon from '@mui/icons-material/SchoolOutlined'
+import SchoolIcon from '@mui/icons-material/School'
 import {
   Alert,
   AppBar,
