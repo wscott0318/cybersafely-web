@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 import { CoverLayout } from '../../components/common/CoverLayout'
 import { NextLink } from '../../components/common/NextLink'
 import { Config } from '../../helpers/config'
-import { AnyUserRole, ParentRole, TeamRole, useProfileQuery } from '../../types/graphql'
+import { AnyRole, ParentRole, SchoolRole, useProfileQuery } from '../../types/graphql'
+import { StorageManager } from '../../utils/storage'
 
 export default function Dashboard() {
   const router = useRouter()
@@ -19,18 +20,22 @@ export default function Dashboard() {
 
     const user = data.profile
 
-    const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyUserRole | undefined
-    const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as TeamRole | undefined
-    const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as TeamRole | undefined
+    const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyRole | undefined
+    const admin = user.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED') as SchoolRole | undefined
+    const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as SchoolRole | undefined
+    const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as SchoolRole | undefined
     const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
 
     if (staff) {
       router.replace('/dashboard/staff/home')
+    } else if (admin) {
+      StorageManager.set('schoolId', admin.school.id)
+      router.replace('/dashboard/admin/home')
     } else if (coach) {
-      localStorage.setItem('teamId', coach.team.id)
+      StorageManager.set('schoolId', coach.school.id)
       router.replace('/dashboard/coach/home')
     } else if (athlete) {
-      localStorage.setItem('teamId', athlete.team.id)
+      StorageManager.set('schoolId', athlete.school.id)
       router.replace('/dashboard/athlete/home')
     } else if (parent) {
       router.replace('/dashboard/parent/home')

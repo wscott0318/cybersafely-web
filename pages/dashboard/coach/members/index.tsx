@@ -1,22 +1,14 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import PersonAddIcon from '@mui/icons-material/PersonAddOutlined'
-import { ListItemIcon, ListItemText, MenuItem } from '@mui/material'
+import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
+import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
-import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { MemberActions } from '../../../../components/data/MemberActions'
-import { InviteEmailForm } from '../../../../components/form/InviteEmailForm'
-import {
-  MembersQuery,
-  namedOperations,
-  useInviteAthleteMutation,
-  useInviteCoachMutation,
-  useMembersQuery,
-} from '../../../../types/graphql'
+import { InviteMemberForm } from '../../../../components/form/InviteMemberForm'
+import { MembersQuery, namedOperations, useInviteMemberMutation, useMembersQuery } from '../../../../types/graphql'
 import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
@@ -24,6 +16,9 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
     width: 250,
     field: 'name',
     headerName: 'Name',
+    renderCell(params) {
+      return <AvatarWithName src={params.row.avatar?.url} name={params.row.name} />
+    },
   },
   {
     width: 300,
@@ -61,14 +56,6 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
       return new Date(params.value).toLocaleString()
     },
   },
-  {
-    width: 200,
-    field: 'actions',
-    type: 'actions',
-    renderCell(params) {
-      return <MemberActions memberId={params.row.id} />
-    },
-  },
 ]
 
 function Members() {
@@ -76,10 +63,7 @@ function Members() {
 
   const query = useMembersQuery()
 
-  const [inviteCoach] = useInviteCoachMutation({
-    refetchQueries: [namedOperations.Query.members],
-  })
-  const [inviteAthlete] = useInviteAthleteMutation({
+  const [inviteMember] = useInviteMemberMutation({
     refetchQueries: [namedOperations.Query.members],
   })
 
@@ -93,44 +77,23 @@ function Members() {
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
-          <DropDownButton startIcon={<AddIcon />} title="Invite" fullWidth>
-            <MenuItem
-              onClick={() => {
-                pushAlert({
-                  type: 'custom',
-                  title: 'Invite Coach',
-                  message: 'Enter an e-mail below',
-                  content: InviteEmailForm,
-                  result: (variables) => {
-                    inviteCoach({ variables })
-                  },
-                })
-              }}
-            >
-              <ListItemIcon>
-                <PersonAddIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Invite Coach</ListItemText>
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                pushAlert({
-                  type: 'custom',
-                  title: 'Invite Athlete',
-                  message: 'Enter an e-mail below',
-                  content: InviteEmailForm,
-                  result: (variables) => {
-                    inviteAthlete({ variables })
-                  },
-                })
-              }}
-            >
-              <ListItemIcon>
-                <PersonAddIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Invite Athlete</ListItemText>
-            </MenuItem>
-          </DropDownButton>
+          <Button
+            fullWidth
+            startIcon={<AddIcon />}
+            onClick={() => {
+              pushAlert({
+                type: 'custom',
+                title: 'Invite Member',
+                message: 'Enter the information below',
+                content: InviteMemberForm,
+                result: (variables) => {
+                  inviteMember({ variables })
+                },
+              })
+            }}
+          >
+            Invite Member
+          </Button>
           <SearchBar onSearch={(search) => query.refetch({ search })} />
         </DataGridActions>
       }

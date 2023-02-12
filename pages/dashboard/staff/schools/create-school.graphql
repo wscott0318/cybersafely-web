@@ -1,0 +1,3 @@
+mutation createSchool($input: SchoolCreate!) {
+  createSchool(input: $input)
+}

@@ -1,31 +1,31 @@
-import { TabContext, TabList, TabPanel } from '@mui/lab'
-import { Paper, Tab } from '@mui/material'
-import { Box } from '@mui/system'
-import { useState } from 'react'
+import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material'
+import { AccordionContext } from '../../../components/common/AccordionContext'
 import { withDashboardLayout } from '../../../components/dashboard/Layout'
 import { UpdatePasswordForm } from '../../../components/form/UpdatePasswordForm'
-import { UpdateProfileForm } from '../../../components/form/UpdateProfileForm'
+import { UpdateAvatarForm, UpdateProfileForm } from '../../../components/form/UpdateProfileForm'
 
 function Profile() {
-  const [tab, setTab] = useState('profile')
-
   return (
-    <Paper>
-      <TabContext value={tab}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <TabList onChange={(_, tab) => setTab(tab)}>
-            <Tab label="Profile" value="profile" />
-            <Tab label="Password" value="password" />
-          </TabList>
-        </Box>
-        <TabPanel value="profile">
+    <AccordionContext title="Profile" initialSelected={1}>
+      <Accordion>
+        <AccordionSummary>Avatar</AccordionSummary>
+        <AccordionDetails>
+          <UpdateAvatarForm />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary>Profile</AccordionSummary>
+        <AccordionDetails>
           <UpdateProfileForm />
-        </TabPanel>
-        <TabPanel value="password">
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary>Password</AccordionSummary>
+        <AccordionDetails>
           <UpdatePasswordForm />
-        </TabPanel>
-      </TabContext>
-    </Paper>
+        </AccordionDetails>
+      </Accordion>
+    </AccordionContext>
   )
 }
 

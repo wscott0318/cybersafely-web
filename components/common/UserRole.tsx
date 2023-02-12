@@ -9,6 +9,8 @@ export function userRoleDisplayText(role: Role) {
   switch (role) {
     case 'STAFF':
       return 'Staff'
+    case 'ADMIN':
+      return 'Admin'
     case 'COACH':
       return 'Coach'
     case 'ATHLETE':

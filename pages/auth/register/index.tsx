@@ -4,19 +4,30 @@ import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
+import { checkPasswordStrength, PasswordStrength } from '../../../components/common/PasswordStrength'
 import { useForm } from '../../../helpers/form'
 import { useRegisterMutation } from '../../../types/graphql'
 
-const schema = z.object({
-  email: z.string().email(),
-  password: z.string().min(4),
-  user: z.object({
-    name: z.string().min(4),
-  }),
-  team: z.object({
-    name: z.string().min(4),
-  }),
-})
+const schema = z
+  .object({
+    email: z.string().email(),
+    password: z
+      .string()
+      .min(4)
+      .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
+    repeatPassword: z.string(),
+    userName: z.string().min(4),
+    schoolName: z.string().min(4),
+  })
+  .superRefine(({ password, repeatPassword }, ctx) => {
+    if (password !== repeatPassword) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['repeatPassword'],
+        message: "The passwords don't match",
+      })
+    }
+  })
 
 export default function Register() {
   const router = useRouter()
@@ -31,8 +42,15 @@ export default function Register() {
   return (
     <CoverLayout>
       <form
-        onSubmit={form.onSubmit((variables) => {
-          register({ variables })
+        onSubmit={form.onSubmit(({ email, password, userName, schoolName }) => {
+          register({
+            variables: {
+              email,
+              password,
+              user: { name: userName },
+              school: { name: schoolName },
+            },
+          })
         })}
       >
         <Stack spacing={4}>
@@ -42,10 +60,10 @@ export default function Register() {
             label="Name"
             size="medium"
             variant="outlined"
-            error={form.hasError('user.name')}
-            value={form.value.user?.name ?? ''}
-            helperText={form.getError('user.name')}
-            onChange={(e) => form.onChange({ user: { name: e.target.value } })}
+            error={form.hasError('userName')}
+            value={form.value.userName ?? ''}
+            helperText={form.getError('userName')}
+            onChange={(e) => form.onChange('userName', e.target.value)}
           />
           <TextField
             required
@@ -56,7 +74,7 @@ export default function Register() {
             error={form.hasError('email')}
             value={form.value.email ?? ''}
             helperText={form.getError('email')}
-            onChange={(e) => form.onChange({ email: e.target.value })}
+            onChange={(e) => form.onChange('email', e.target.value)}
           />
           <TextField
             required
@@ -67,17 +85,29 @@ export default function Register() {
             error={form.hasError('password')}
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
-            onChange={(e) => form.onChange({ password: e.target.value })}
+            onChange={(e) => form.onChange('password', e.target.value)}
+            InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
           />
           <TextField
             required
             size="medium"
-            label="Team Name"
+            type="password"
+            label="Repeat Password"
             variant="outlined"
-            error={form.hasError('team.name')}
-            value={form.value.team?.name ?? ''}
-            helperText={form.getError('team.name')}
-            onChange={(e) => form.onChange({ team: { name: e.target.value } })}
+            error={form.hasError('repeatPassword')}
+            value={form.value.repeatPassword ?? ''}
+            helperText={form.getError('repeatPassword')}
+            onChange={(e) => form.onChange('repeatPassword', e.target.value)}
+          />
+          <TextField
+            required
+            size="medium"
+            label="School Name"
+            variant="outlined"
+            error={form.hasError('schoolName')}
+            value={form.value.schoolName ?? ''}
+            helperText={form.getError('schoolName')}
+            onChange={(e) => form.onChange('schoolName', e.target.value)}
           />
           <LoadingButton type="submit" loading={loading} size="large">
             Register

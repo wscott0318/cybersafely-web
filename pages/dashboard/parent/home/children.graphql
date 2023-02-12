@@ -1,0 +1,29 @@
+query children($page: Page, $order: UserOrder, $search: String) {
+  children(page: $page, order: $order, search: $search) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      email
+      name
+      roles {
+        id
+        role
+        status
+        ... on SchoolRole {
+          school {
+            id
+            name
+          }
+        }
+      }
+      parentRole {
+        relation
+      }
+    }
+  }
+}

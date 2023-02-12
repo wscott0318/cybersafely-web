@@ -3,9 +3,11 @@ import { onError } from '@apollo/client/link/error'
 import React, { useMemo } from 'react'
 import { Config } from '../helpers/config'
 import { useAlert } from '../utils/context/alert'
+import { StorageManager } from '../utils/storage'
 
 type ApolloClientProviderProps = {
   children: React.ReactNode
+  schoolId?: string
 }
 
 export function ApolloClientProvider(props: ApolloClientProviderProps) {
@@ -21,15 +23,12 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
 
       const headers = {
         ...context.headers,
-        'x-token': localStorage.getItem('token'),
-        'x-team-id': localStorage.getItem('teamId'),
+        'x-token': StorageManager.get('token'),
+        'x-school-id': props.schoolId ?? StorageManager.get('schoolId'),
       }
 
-      if (typeof context.teamId === 'string') {
-        headers['x-team-id'] = context.teamId
-      }
-      if (typeof context.behalfId === 'string') {
-        headers['x-behalf-id'] = context.behalfId
+      if (typeof context.schoolId === 'string') {
+        headers['x-school-id'] = context.schoolId
       }
 
       operation.setContext({ ...context, headers })
@@ -71,7 +70,7 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
         },
       },
     })
-  }, [])
+  }, [props.schoolId])
 
   return <ApolloProvider client={client}>{props.children}</ApolloProvider>
 }

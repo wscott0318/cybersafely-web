@@ -1,0 +1,25 @@
+query members($page: Page, $order: UserOrder, $search: String) {
+  members(page: $page, order: $order, search: $search) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+      createdAt
+      email
+      emailConfirmed
+      name
+      parentCount
+      avatar {
+        url
+      }
+      roles {
+        id
+        role
+        status
+      }
+    }
+  }
+}

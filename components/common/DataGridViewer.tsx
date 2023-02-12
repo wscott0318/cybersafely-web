@@ -1,10 +1,10 @@
 import { QueryResult } from '@apollo/client'
-import BackIcon from '@mui/icons-material/ArrowBackOutlined'
-import { Alert, Box, Grid, IconButton, LinearProgress, Pagination, Stack, Typography } from '@mui/material'
+import { Alert, LinearProgress, Pagination, Stack } from '@mui/material'
 import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
-import { useCallbackRef, useMobile } from '../../helpers/hooks'
+import { useCallbackRef } from '../../helpers/hooks'
+import { NavigationActions, NavigationView } from './NavigationView'
 
 function composeObjectFromKeyValue(key: string, value: any) {
   let obj = value
@@ -44,21 +44,7 @@ function DataGridErrorOverlay(props: DataGridErrorOverlayProps) {
 
 export type InferNodeType<TData> = TData extends { nodes: Array<infer TNode> } ? TNode : unknown
 
-type DataGridActionsProps = {
-  children: React.ReactNode
-}
-
-export function DataGridActions(props: DataGridActionsProps) {
-  const children = useMemo(() => {
-    return React.Children.map(props.children, (child) => (
-      <Grid item xs={12} sm="auto">
-        {child}
-      </Grid>
-    ))
-  }, [props.children])
-
-  return <>{children}</>
-}
+export const DataGridActions = NavigationActions
 
 type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
   query: QueryResult<TQuery, any>
@@ -76,7 +62,6 @@ export function DataGridViewer<
   TData extends { page: { index: number; count: number; total: number }; nodes: Array<GridValidRowModel> }
 >(props: DataGridViewerProps<TQuery, TData, InferNodeType<TData>>) {
   const router = useRouter()
-  const { isMobile } = useMobile()
 
   const [data, setData] = useState<TData>()
   const [index, setIndex] = useState(0)
@@ -105,74 +90,59 @@ export function DataGridViewer<
   }, [index, sortModel, refetchRef])
 
   return (
-    <Stack>
-      <Box>
-        <Grid container spacing={1} alignItems="center" wrap={isMobile ? 'wrap' : 'nowrap'}>
-          {!!props.back && (
-            <Grid item>
-              <IconButton edge="start" sx={{ mr: -0.5 }} onClick={() => router.push(props.back!)}>
-                <BackIcon />
-              </IconButton>
-            </Grid>
-          )}
-          <Grid item flexGrow={1} overflow="hidden">
-            <Typography variant="h5" noWrap>
-              {props.title}{' '}
-              {data && (
-                <Typography display="inline" color="text.disabled">
-                  ({data.page.total ?? 0} in total)
-                </Typography>
-              )}
-            </Typography>
-          </Grid>
-          {props.actions}
-        </Grid>
-      </Box>
-      <DataGrid
-        autoHeight
-        hideFooter
-        disableColumnMenu
-        filterMode="server"
-        sortingMode="server"
-        sortModel={sortModel}
-        getRowId={(e) => e.id}
-        rows={data?.nodes ?? []}
-        error={props.query.error}
-        loading={props.query.loading}
-        columns={props.columns as GridColumns}
-        onSortModelChange={(model) => {
-          setIndex(0)
-          setSortModel(model)
-        }}
-        onRowClick={
-          props.href &&
-          ((e) => {
-            router.push(props.href!(e.row))
-          })
-        }
-        components={{
-          LoadingOverlay: LinearProgress,
-          ErrorOverlay: DataGridErrorOverlay,
-        }}
-        sx={
-          props.href && {
-            '.MuiDataGrid-row': {
-              cursor: 'pointer',
-            },
-          }
-        }
-      />
-      {data && data.page.count > 0 && (
-        <Pagination
-          count={data.page.count}
-          page={data.page.index + 1}
-          sx={{ alignSelf: 'center' }}
-          onChange={(_, page) => {
-            setIndex(page - 1)
-            window.scrollTo({ top: 0, behavior: 'smooth' })
+    <NavigationView
+      back={props.back}
+      title={props.title}
+      actions={props.actions}
+      subtitle={data ? `${data.page.total} in total` : undefined}
+    >
+      <Stack>
+        <DataGrid
+          autoHeight
+          hideFooter
+          disableColumnMenu
+          filterMode="server"
+          sortingMode="server"
+          sortModel={sortModel}
+          getRowId={(e) => e.id}
+          rows={data?.nodes ?? []}
+          error={props.query.error}
+          loading={props.query.loading}
+          columns={props.columns as GridColumns}
+          onSortModelChange={(model) => {
+            setIndex(0)
+            setSortModel(model)
           }}
+          onRowClick={
+            props.href &&
+            ((e) => {
+              router.push(props.href!(e.row))
+            })
+          }
+          components={{
+            LoadingOverlay: LinearProgress,
+            ErrorOverlay: DataGridErrorOverlay,
+          }}
+          sx={
+            props.href && {
+              '.MuiDataGrid-row': {
+                cursor: 'pointer',
+              },
+            }
+          }
         />
-      )}
-    </Stack>
+        {data && data.page.count > 0 && (
+          <Pagination
+            count={data.page.count}
+            page={data.page.index + 1}
+            sx={{ alignSelf: 'center' }}
+            onChange={(_, page) => {
+              setIndex(page - 1)
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }}
+          />
+        )}
+      </Stack>
+    </NavigationView>
   )
 }

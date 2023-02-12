@@ -1,3 +1,3 @@
-mutation register($email: String!, $password: String!, $user: UserCreate!, $team: TeamCreate!) {
-  register(email: $email, password: $password, user: $user, team: $team)
+mutation register($email: String!, $password: String!, $user: UserCreate!, $school: SchoolCreate!) {
+  register(email: $email, password: $password, user: $user, school: $school)
 }

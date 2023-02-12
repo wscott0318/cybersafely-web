@@ -6,6 +6,7 @@ import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
 import { useForm } from '../../../helpers/form'
 import { useLoginMutation } from '../../../types/graphql'
+import { StorageManager } from '../../../utils/storage'
 
 const schema = z.object({
   email: z.string().email(),
@@ -19,7 +20,7 @@ export default function Login() {
   const [login, { loading }] = useLoginMutation({
     onCompleted: async (data, options) => {
       const { token } = data.login
-      localStorage.setItem('token', token)
+      StorageManager.set('token', token)
 
       await options?.client?.clearStore()
 
@@ -47,7 +48,7 @@ export default function Login() {
             error={form.hasError('email')}
             value={form.value.email ?? ''}
             helperText={form.getError('email')}
-            onChange={(e) => form.onChange({ email: e.target.value })}
+            onChange={(e) => form.onChange('email', e.target.value)}
           />
           <TextField
             required
@@ -59,7 +60,7 @@ export default function Login() {
             error={form.hasError('password')}
             value={form.value.password ?? ''}
             helperText={form.getError('password')}
-            onChange={(e) => form.onChange({ password: e.target.value })}
+            onChange={(e) => form.onChange('password', e.target.value)}
           />
           <LoadingButton type="submit" loading={loading} size="large">
             Login

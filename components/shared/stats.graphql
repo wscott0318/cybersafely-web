@@ -1,0 +1,19 @@
+fragment StatsByDayForCoach on StatsByDay {
+  stats {
+    day
+    value
+  }
+  total
+}
+
+query statsForCoach($days: Int!) {
+  statsOfCreatedMembersInSchool(days: $days) {
+    ...StatsByDayForCoach
+  }
+  statsOfInvitedMembersInSchool(days: $days) {
+    ...StatsByDayForCoach
+  }
+  statsOfAcceptedMembersInSchool(days: $days) {
+    ...StatsByDayForCoach
+  }
+}

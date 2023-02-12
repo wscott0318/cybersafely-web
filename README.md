@@ -33,6 +33,7 @@ NEXT_PUBLIC_EMAIL_SUPPORT=
 ## Seeded Logins
 
 - `staff@wonderkiln.com`
+- `admin@wonderkiln.com`
 - `coach@wonderkiln.com`
 - `athlete@wonderkiln.com`
 - `parent@wonderkiln.com`

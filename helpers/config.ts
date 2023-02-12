@@ -1,4 +1,5 @@
 export const Config = {
+  dev: process.env.NODE_ENV !== 'production',
   apiUrl: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/graphql',
   app: {
     name: process.env.NEXT_PUBLIC_APP_NAME ?? 'CyberSafely.ai – Social Media Pivot',

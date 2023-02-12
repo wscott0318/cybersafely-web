@@ -30,7 +30,7 @@ export const InviteParentForm = forwardRef<InviteParentFormRefProps>(function Wr
         error={form.hasError('email')}
         value={form.value.email ?? ''}
         helperText={form.getError('email')}
-        onChange={(e) => form.onChange({ email: e.target.value })}
+        onChange={(e) => form.onChange('email', e.target.value)}
       />
       <TextField
         fullWidth
@@ -40,7 +40,7 @@ export const InviteParentForm = forwardRef<InviteParentFormRefProps>(function Wr
         error={form.hasError('relation')}
         value={form.value.relation ?? ''}
         helperText={form.getError('relation')}
-        onChange={(e) => form.onChange({ relation: e.target.value })}
+        onChange={(e) => form.onChange('relation', e.target.value)}
       />
     </Stack>
   )
