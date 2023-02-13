@@ -737,7 +737,7 @@ export type SchoolsQueryVariables = Exact<{
 }>;
 
 
-export type SchoolsQuery = { __typename?: 'Query', schools: { __typename?: 'PaginatedSchool', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'School', id: string, createdAt: Date, name: string, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null, logo?: { __typename?: 'Image', url: string } | null }> } };
+export type SchoolsQuery = { __typename?: 'Query', schools: { __typename?: 'PaginatedSchool', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'School', id: string, createdAt: Date, name: string, phone?: string | null, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null, logo?: { __typename?: 'Image', url: string } | null }> } };
 
 export type GlobalSettingsCanSignUpQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1784,6 +1784,7 @@ export const SchoolsDocument = gql`
       id
       createdAt
       name
+      phone
       memberCount
       address {
         formatted

@@ -18,6 +18,11 @@ const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
     },
   },
   {
+    width: 200,
+    field: 'phone',
+    headerName: 'Phone',
+  },
+  {
     width: 350,
     sortable: false,
     field: 'address.formatted',

@@ -9,6 +9,7 @@ query schools($page: Page, $order: SchoolOrder, $search: String) {
       id
       createdAt
       name
+      phone
       memberCount
       address {
         formatted
