@@ -4,18 +4,21 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
+  Link,
   Stack,
   Step,
   StepButton,
   StepContent,
   Stepper,
   TextField,
+  Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NavigationView } from '../../../components/common/NavigationView'
+import { NextLink } from '../../../components/common/NextLink'
 import { checkPasswordStrength, PasswordStrength } from '../../../components/common/PasswordStrength'
 import { useForm } from '../../../helpers/form'
 import { RegisterMutationVariables, useRegisterMutation } from '../../../types/graphql'
@@ -221,8 +224,16 @@ function RegisterStep4(props: { data: RegisterMutationVariables }) {
     <Stack>
       <FormGroup>
         <FormControlLabel
-          label="I accept the terms and conditions"
           control={<Checkbox checked={accept} onChange={(_, accept) => setAccept(accept)} />}
+          label={
+            <Typography>
+              I accept the{' '}
+              <NextLink href="/">
+                <Link>Terms and Conditions</Link>
+              </NextLink>
+              .
+            </Typography>
+          }
         />
       </FormGroup>
       <LoadingButton
