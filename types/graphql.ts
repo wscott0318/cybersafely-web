@@ -26,6 +26,13 @@ export type Address = {
   zip: Scalars['String'];
 };
 
+export type AddressCreate = {
+  city: Scalars['String'];
+  state: Scalars['String'];
+  street: Scalars['String'];
+  zip: Scalars['String'];
+};
+
 export type AddressUpdate = {
   city: Scalars['String'];
   state: Scalars['String'];
@@ -78,7 +85,7 @@ export type FloatFilter = {
 
 export type GlobalSettings = {
   __typename?: 'GlobalSettings';
-  enableSignUps: Scalars['Boolean'];
+  enableSignUps?: Maybe<Scalars['Boolean']>;
 };
 
 export type GlobalSettingsUpdate = {
@@ -428,7 +435,9 @@ export type School = {
 };
 
 export type SchoolCreate = {
+  address?: InputMaybe<AddressCreate>;
   name: Scalars['String'];
+  phone?: InputMaybe<Scalars['String']>;
 };
 
 export type SchoolOrder = {
@@ -735,7 +744,7 @@ export type GlobalSettingsCanSignUpQuery = { __typename?: 'Query', globalSetting
 export type GlobalSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GlobalSettingsQuery = { __typename?: 'Query', globalSettings: { __typename?: 'GlobalSettings', enableSignUps: boolean } };
+export type GlobalSettingsQuery = { __typename?: 'Query', globalSettings: { __typename?: 'GlobalSettings', enableSignUps?: boolean | null } };
 
 export type UpdateGlobalSettingsMutationVariables = Exact<{
   input: GlobalSettingsUpdate;

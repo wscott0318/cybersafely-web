@@ -5,13 +5,33 @@ import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
 import { useForm } from '../../../helpers/form'
-import { useLoginMutation } from '../../../types/graphql'
+import { useGlobalSettingsCanSignUpQuery, useLoginMutation } from '../../../types/graphql'
 import { StorageManager } from '../../../utils/storage'
 
 const schema = z.object({
   email: z.string().email(),
   password: z.string().min(4),
 })
+
+function RegisterButton() {
+  const { data } = useGlobalSettingsCanSignUpQuery()
+
+  if (!data || !data.globalSettingsCanSignUp) {
+    return null
+  }
+
+  return (
+    <>
+      <Divider />
+      <Typography>
+        Don’t have an account?{' '}
+        <NextLink href="/auth/register">
+          <Link>Register</Link>
+        </NextLink>
+      </Typography>
+    </>
+  )
+}
 
 export default function Login() {
   const router = useRouter()
@@ -68,13 +88,7 @@ export default function Login() {
           <NextLink href="/auth/reset">
             <Link textAlign="right">Forgot password?</Link>
           </NextLink>
-          <Divider />
-          <Typography>
-            Don’t have an account?{' '}
-            <NextLink href="/auth/register">
-              <Link>Register</Link>
-            </NextLink>
-          </Typography>
+          <RegisterButton />
         </Stack>
       </form>
     </CoverLayout>
