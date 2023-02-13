@@ -128,7 +128,7 @@ export type Mutation = {
   login: Jwt;
   prepareForUpload: Upload;
   readAllNotifications?: Maybe<Scalars['ID']>;
-  register?: Maybe<Scalars['ID']>;
+  register: Jwt;
   removeMember?: Maybe<Scalars['ID']>;
   removeParent?: Maybe<Scalars['ID']>;
   removeRole?: Maybe<Scalars['ID']>;
@@ -432,6 +432,7 @@ export type School = {
   logo?: Maybe<Image>;
   memberCount: Scalars['Int'];
   name: Scalars['String'];
+  phone?: Maybe<Scalars['String']>;
 };
 
 export type SchoolCreate = {
@@ -444,6 +445,7 @@ export type SchoolOrder = {
   createdAt?: InputMaybe<OrderDirection>;
   memberCount?: InputMaybe<OrderDirection>;
   name?: InputMaybe<OrderDirection>;
+  phone?: InputMaybe<OrderDirection>;
 };
 
 export type SchoolRole = UserRole & {
@@ -458,6 +460,7 @@ export type SchoolUpdate = {
   address?: InputMaybe<AddressUpdate>;
   logo?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
 };
 
 export type StatByDay = {
@@ -619,7 +622,7 @@ export type RegisterMutationVariables = Exact<{
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register?: string | null };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'JWT', token: string } };
 
 export type ResetPasswordMutationVariables = Exact<{
   password: Scalars['String'];
@@ -1165,7 +1168,9 @@ export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const RegisterDocument = gql`
     mutation register($email: String!, $password: String!, $user: UserCreate!, $school: SchoolCreate!) {
-  register(email: $email, password: $password, user: $user, school: $school)
+  register(email: $email, password: $password, user: $user, school: $school) {
+    token
+  }
 }
     `;
 export type RegisterMutationFn = Apollo.MutationFunction<RegisterMutation, RegisterMutationVariables>;

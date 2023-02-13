@@ -19,6 +19,7 @@ import { NavigationView } from '../../../components/common/NavigationView'
 import { checkPasswordStrength, PasswordStrength } from '../../../components/common/PasswordStrength'
 import { useForm } from '../../../helpers/form'
 import { RegisterMutationVariables, useRegisterMutation } from '../../../types/graphql'
+import { StorageManager } from '../../../utils/storage'
 
 const schemaStep1 = z
   .object({
@@ -203,8 +204,13 @@ function RegisterStep4(props: { data: RegisterMutationVariables }) {
   const [accept, setAccept] = useState(false)
 
   const [register, { loading }] = useRegisterMutation({
-    onCompleted() {
-      router.push('/auth/login')
+    onCompleted: async (data, options) => {
+      const { token } = data.register
+      StorageManager.set('token', token)
+
+      await options?.client?.clearStore()
+
+      router.push('/dashboard')
     },
   })
 
