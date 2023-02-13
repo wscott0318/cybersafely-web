@@ -76,6 +76,15 @@ export type FloatFilter = {
   not?: InputMaybe<Scalars['Float']>;
 };
 
+export type GlobalSettings = {
+  __typename?: 'GlobalSettings';
+  enableSignUps: Scalars['Boolean'];
+};
+
+export type GlobalSettingsUpdate = {
+  enableSignUps?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type Image = {
   __typename?: 'Image';
   url: Scalars['String'];
@@ -118,6 +127,7 @@ export type Mutation = {
   removeRole?: Maybe<Scalars['ID']>;
   requestResetPassword?: Maybe<Scalars['ID']>;
   resetPassword?: Maybe<Scalars['ID']>;
+  updateGlobalSettings?: Maybe<Scalars['ID']>;
   updatePassword?: Maybe<Scalars['ID']>;
   updateProfile?: Maybe<Scalars['ID']>;
   updateSchool?: Maybe<Scalars['ID']>;
@@ -200,6 +210,11 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationUpdateGlobalSettingsArgs = {
+  input: GlobalSettingsUpdate;
+};
+
+
 export type MutationUpdatePasswordArgs = {
   newPassword: Scalars['String'];
   oldPassword: Scalars['String'];
@@ -274,6 +289,8 @@ export type ParentRole = UserRole & {
 export type Query = {
   __typename?: 'Query';
   children: PaginatedUser;
+  globalSettings: GlobalSettings;
+  globalSettingsCanSignUp: Scalars['Boolean'];
   member: User;
   members: PaginatedUser;
   notifications: PaginatedNotification;
@@ -709,6 +726,23 @@ export type SchoolsQueryVariables = Exact<{
 
 
 export type SchoolsQuery = { __typename?: 'Query', schools: { __typename?: 'PaginatedSchool', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'School', id: string, createdAt: Date, name: string, memberCount: number, address?: { __typename?: 'Address', formatted: string } | null, logo?: { __typename?: 'Image', url: string } | null }> } };
+
+export type GlobalSettingsCanSignUpQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GlobalSettingsCanSignUpQuery = { __typename?: 'Query', globalSettingsCanSignUp: boolean };
+
+export type GlobalSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GlobalSettingsQuery = { __typename?: 'Query', globalSettings: { __typename?: 'GlobalSettings', enableSignUps: boolean } };
+
+export type UpdateGlobalSettingsMutationVariables = Exact<{
+  input: GlobalSettingsUpdate;
+}>;
+
+
+export type UpdateGlobalSettingsMutation = { __typename?: 'Mutation', updateGlobalSettings?: string | null };
 
 export type InviteStaffMutationVariables = Exact<{
   email: Scalars['String'];
@@ -1775,6 +1809,103 @@ export function useSchoolsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sc
 export type SchoolsQueryHookResult = ReturnType<typeof useSchoolsQuery>;
 export type SchoolsLazyQueryHookResult = ReturnType<typeof useSchoolsLazyQuery>;
 export type SchoolsQueryResult = Apollo.QueryResult<SchoolsQuery, SchoolsQueryVariables>;
+export const GlobalSettingsCanSignUpDocument = gql`
+    query globalSettingsCanSignUp {
+  globalSettingsCanSignUp
+}
+    `;
+
+/**
+ * __useGlobalSettingsCanSignUpQuery__
+ *
+ * To run a query within a React component, call `useGlobalSettingsCanSignUpQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGlobalSettingsCanSignUpQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGlobalSettingsCanSignUpQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGlobalSettingsCanSignUpQuery(baseOptions?: Apollo.QueryHookOptions<GlobalSettingsCanSignUpQuery, GlobalSettingsCanSignUpQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GlobalSettingsCanSignUpQuery, GlobalSettingsCanSignUpQueryVariables>(GlobalSettingsCanSignUpDocument, options);
+      }
+export function useGlobalSettingsCanSignUpLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GlobalSettingsCanSignUpQuery, GlobalSettingsCanSignUpQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GlobalSettingsCanSignUpQuery, GlobalSettingsCanSignUpQueryVariables>(GlobalSettingsCanSignUpDocument, options);
+        }
+export type GlobalSettingsCanSignUpQueryHookResult = ReturnType<typeof useGlobalSettingsCanSignUpQuery>;
+export type GlobalSettingsCanSignUpLazyQueryHookResult = ReturnType<typeof useGlobalSettingsCanSignUpLazyQuery>;
+export type GlobalSettingsCanSignUpQueryResult = Apollo.QueryResult<GlobalSettingsCanSignUpQuery, GlobalSettingsCanSignUpQueryVariables>;
+export const GlobalSettingsDocument = gql`
+    query globalSettings {
+  globalSettings {
+    enableSignUps
+  }
+}
+    `;
+
+/**
+ * __useGlobalSettingsQuery__
+ *
+ * To run a query within a React component, call `useGlobalSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGlobalSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGlobalSettingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGlobalSettingsQuery(baseOptions?: Apollo.QueryHookOptions<GlobalSettingsQuery, GlobalSettingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GlobalSettingsQuery, GlobalSettingsQueryVariables>(GlobalSettingsDocument, options);
+      }
+export function useGlobalSettingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GlobalSettingsQuery, GlobalSettingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GlobalSettingsQuery, GlobalSettingsQueryVariables>(GlobalSettingsDocument, options);
+        }
+export type GlobalSettingsQueryHookResult = ReturnType<typeof useGlobalSettingsQuery>;
+export type GlobalSettingsLazyQueryHookResult = ReturnType<typeof useGlobalSettingsLazyQuery>;
+export type GlobalSettingsQueryResult = Apollo.QueryResult<GlobalSettingsQuery, GlobalSettingsQueryVariables>;
+export const UpdateGlobalSettingsDocument = gql`
+    mutation updateGlobalSettings($input: GlobalSettingsUpdate!) {
+  updateGlobalSettings(input: $input)
+}
+    `;
+export type UpdateGlobalSettingsMutationFn = Apollo.MutationFunction<UpdateGlobalSettingsMutation, UpdateGlobalSettingsMutationVariables>;
+
+/**
+ * __useUpdateGlobalSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateGlobalSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateGlobalSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateGlobalSettingsMutation, { data, loading, error }] = useUpdateGlobalSettingsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateGlobalSettingsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateGlobalSettingsMutation, UpdateGlobalSettingsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateGlobalSettingsMutation, UpdateGlobalSettingsMutationVariables>(UpdateGlobalSettingsDocument, options);
+      }
+export type UpdateGlobalSettingsMutationHookResult = ReturnType<typeof useUpdateGlobalSettingsMutation>;
+export type UpdateGlobalSettingsMutationResult = Apollo.MutationResult<UpdateGlobalSettingsMutation>;
+export type UpdateGlobalSettingsMutationOptions = Apollo.BaseMutationOptions<UpdateGlobalSettingsMutation, UpdateGlobalSettingsMutationVariables>;
 export const InviteStaffDocument = gql`
     mutation inviteStaff($email: String!) {
   inviteStaff(email: $email)
@@ -1955,6 +2086,8 @@ export const namedOperations = {
     members: 'members',
     school: 'school',
     schools: 'schools',
+    globalSettingsCanSignUp: 'globalSettingsCanSignUp',
+    globalSettings: 'globalSettings',
     users: 'users'
   },
   Mutation: {
@@ -1973,6 +2106,7 @@ export const namedOperations = {
     inviteParent: 'inviteParent',
     readAllNotifications: 'readAllNotifications',
     createSchool: 'createSchool',
+    updateGlobalSettings: 'updateGlobalSettings',
     inviteStaff: 'inviteStaff',
     removeRole: 'removeRole',
     prepareForUpload: 'prepareForUpload'
