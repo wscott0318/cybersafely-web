@@ -25,6 +25,9 @@ query profile {
           logo {
             url
           }
+          cover {
+            url
+          }
         }
       }
       ... on ParentRole {

@@ -427,6 +427,7 @@ export type RoleStatus = typeof RoleStatus[keyof typeof RoleStatus];
 export type School = {
   __typename?: 'School';
   address?: Maybe<Address>;
+  cover?: Maybe<Image>;
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   logo?: Maybe<Image>;
@@ -458,6 +459,7 @@ export type SchoolRole = UserRole & {
 
 export type SchoolUpdate = {
   address?: InputMaybe<AddressUpdate>;
+  cover?: InputMaybe<Scalars['String']>;
   logo?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
@@ -541,7 +543,7 @@ export type UserRole = {
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', id: string, name: string, phone?: string | null, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', id: string, name: string, phone?: string | null, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }> } };
 
 export type RemoveMemberMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -721,7 +723,7 @@ export type SchoolQueryVariables = Exact<{
 }>;
 
 
-export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, phone?: string | null, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } };
+export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, phone?: string | null, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } };
 
 export type CreateSchoolMutationVariables = Exact<{
   input: SchoolCreate;
@@ -828,6 +830,9 @@ export const ProfileDocument = gql`
             zip
           }
           logo {
+            url
+          }
+          cover {
             url
           }
         }
@@ -1708,6 +1713,9 @@ export const SchoolDocument = gql`
       zip
     }
     logo {
+      url
+    }
+    cover {
       url
     }
   }

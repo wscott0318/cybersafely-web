@@ -16,7 +16,10 @@ import { AccordionContext } from '../common/AccordionContext'
 import { UploadImage } from '../common/UploadImage'
 
 type UpdateSchoolFormProps = {
-  school: Pick<School, 'id' | 'name' | 'phone'> & { logo?: Pick<Image, 'url'> | null } & {
+  school: Pick<School, 'id' | 'name' | 'phone'> & {
+    logo?: Pick<Image, 'url'> | null
+    cover?: Pick<Image, 'url'> | null
+  } & {
     address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null
   }
 }
@@ -32,6 +35,17 @@ function UpdateSchoolLogoForm({ school, updateSchool }: UpdateSchoolSubFormProps
       src={school.logo?.url}
       onUpload={(logo) => {
         updateSchool({ variables: { input: { logo } } })
+      }}
+    />
+  )
+}
+
+function UpdateSchoolCoverForm({ school, updateSchool }: UpdateSchoolSubFormProps) {
+  return (
+    <UploadImage
+      src={school.cover?.url}
+      onUpload={(cover) => {
+        updateSchool({ variables: { input: { cover } } })
       }}
     />
   )
@@ -161,11 +175,17 @@ export function UpdateSchoolForm(props: UpdateSchoolFormProps) {
   })
 
   return (
-    <AccordionContext initialSelected={1}>
+    <AccordionContext initialSelected={2}>
       <Accordion>
         <AccordionSummary>Logo</AccordionSummary>
         <AccordionDetails>
           <UpdateSchoolLogoForm {...props} updateSchool={updateSchool} loading={loading} />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary>Cover</AccordionSummary>
+        <AccordionDetails>
+          <UpdateSchoolCoverForm {...props} updateSchool={updateSchool} loading={loading} />
         </AccordionDetails>
       </Accordion>
       <Accordion>

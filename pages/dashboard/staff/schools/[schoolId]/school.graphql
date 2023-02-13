@@ -12,5 +12,8 @@ query school($id: ID!) {
     logo {
       url
     }
+    cover {
+      url
+    }
   }
 }

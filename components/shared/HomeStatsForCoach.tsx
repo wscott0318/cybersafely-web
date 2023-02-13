@@ -32,10 +32,11 @@ function useMissingCards() {
       cards.push({ href: '/dashboard/school', message: 'School Logo' })
     }
 
-    cards.push(
-      { href: '/dashboard/school', message: 'School Cover' },
-      { href: '/dashboard/school', message: 'Billing' }
-    )
+    if (!schoolRole?.school.cover) {
+      cards.push({ href: '/dashboard/school', message: 'School Cover' })
+    }
+
+    cards.push({ href: '/dashboard/school', message: 'Billing' })
 
     return cards
   }, [schoolRole])
