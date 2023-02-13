@@ -101,7 +101,10 @@ function RegisterStep1(props: { onNext: (data: z.infer<typeof schemaStep1>) => v
 
 const schemaStep2 = z.object({
   name: z.string().min(4),
-  phone: z.string().min(4).optional(),
+  phone: z
+    .union([z.string().min(4), z.string().length(0)])
+    .optional()
+    .transform((e) => (e === '' ? null : e)),
 })
 
 function RegisterStep2(props: { onNext: (data: z.infer<typeof schemaStep2>) => void }) {

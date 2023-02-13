@@ -16,7 +16,7 @@ import { AccordionContext } from '../common/AccordionContext'
 import { UploadImage } from '../common/UploadImage'
 
 type UpdateSchoolFormProps = {
-  school: Pick<School, 'id' | 'name'> & { logo?: Pick<Image, 'url'> | null } & {
+  school: Pick<School, 'id' | 'name' | 'phone'> & { logo?: Pick<Image, 'url'> | null } & {
     address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null
   }
 }
@@ -39,11 +39,16 @@ function UpdateSchoolLogoForm({ school, updateSchool }: UpdateSchoolSubFormProps
 
 const schemaGeneral = z.object({
   name: z.string().min(4),
+  phone: z
+    .union([z.string().min(4), z.string().length(0)])
+    .optional()
+    .transform((e) => (e === '' ? null : e)),
 })
 
 function UpdateSchoolGeneralForm({ school, updateSchool, loading }: UpdateSchoolSubFormProps) {
   const form = useForm(schemaGeneral, {
     name: school?.name,
+    phone: school?.phone ?? undefined,
   })
 
   return (
@@ -60,6 +65,13 @@ function UpdateSchoolGeneralForm({ school, updateSchool, loading }: UpdateSchool
           value={form.value.name ?? ''}
           helperText={form.getError('name')}
           onChange={(e) => form.onChange('name', e.target.value)}
+        />
+        <TextField
+          label="Phone"
+          error={form.hasError('phone')}
+          value={form.value.phone ?? ''}
+          helperText={form.getError('phone')}
+          onChange={(e) => form.onChange('phone', e.target.value)}
         />
         <LoadingButton type="submit" loading={loading}>
           Update

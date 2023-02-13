@@ -2,6 +2,7 @@ query school($id: ID!) {
   school(id: $id) {
     id
     name
+    phone
     address {
       street
       city

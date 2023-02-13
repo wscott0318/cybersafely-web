@@ -541,7 +541,7 @@ export type UserRole = {
 export type ProfileQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } }> } };
+export type ProfileQuery = { __typename?: 'Query', profile: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus, childUser: { __typename?: 'User', id: string, name: string } } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus, school: { __typename?: 'School', id: string, name: string, phone?: string | null, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } }> } };
 
 export type RemoveMemberMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -721,7 +721,7 @@ export type SchoolQueryVariables = Exact<{
 }>;
 
 
-export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } };
+export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, phone?: string | null, address?: { __typename?: 'Address', street: string, city: string, state: string, zip: string } | null, logo?: { __typename?: 'Image', url: string } | null } };
 
 export type CreateSchoolMutationVariables = Exact<{
   input: SchoolCreate;
@@ -820,6 +820,7 @@ export const ProfileDocument = gql`
         school {
           id
           name
+          phone
           address {
             street
             city
@@ -1699,6 +1700,7 @@ export const SchoolDocument = gql`
   school(id: $id) {
     id
     name
+    phone
     address {
       street
       city

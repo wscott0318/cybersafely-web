@@ -8,6 +8,7 @@ import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
 import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
 import PersonIcon from '@mui/icons-material/PeopleOutlined'
+import SchoolFilledIcon from '@mui/icons-material/School'
 import SchoolIcon from '@mui/icons-material/SchoolOutlined'
 import SettingsIcon from '@mui/icons-material/SettingsOutlined'
 import {
@@ -165,7 +166,7 @@ function SidebarAccount() {
           title={schoolRole.school.name}
           icon={
             <Avatar sx={{ width: 28, height: 28 }} src={schoolRole.school.logo?.url}>
-              <SchoolIcon fontSize="inherit" />
+              <SchoolFilledIcon fontSize="inherit" />
             </Avatar>
           }
         />
