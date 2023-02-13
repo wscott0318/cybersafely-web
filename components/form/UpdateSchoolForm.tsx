@@ -1,5 +1,5 @@
 import { LoadingButton } from '@mui/lab'
-import { Accordion, AccordionDetails, AccordionSummary, Stack, TextField } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
 import {
@@ -198,6 +198,12 @@ export function UpdateSchoolForm(props: UpdateSchoolFormProps) {
         <AccordionSummary>Address</AccordionSummary>
         <AccordionDetails>
           <UpdateSchoolAddressForm {...props} updateSchool={updateSchool} loading={loading} />
+        </AccordionDetails>
+      </Accordion>
+      <Accordion>
+        <AccordionSummary>Billing</AccordionSummary>
+        <AccordionDetails>
+          <Alert severity="info">Stripe coming soon</Alert>
         </AccordionDetails>
       </Accordion>
     </AccordionContext>
