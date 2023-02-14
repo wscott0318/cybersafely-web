@@ -403,7 +403,6 @@ function Sidebar() {
       return (
         <CollapsableList>
           <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
-          <SidebarLink href="/dashboard/athlete/members" icon={<PersonIcon />} title="Members" />
         </CollapsableList>
       )
 
