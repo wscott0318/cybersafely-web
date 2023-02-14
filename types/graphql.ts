@@ -111,12 +111,28 @@ export const InviteMemberRole = {
 } as const;
 
 export type InviteMemberRole = typeof InviteMemberRole[keyof typeof InviteMemberRole];
+export type Item = {
+  __typename?: 'Item';
+  id: Scalars['ID'];
+};
+
 export type Jwt = {
   __typename?: 'JWT';
   token: Scalars['String'];
   user: User;
 };
 
+export type MemberFilter = {
+  role?: InputMaybe<MemberRole>;
+};
+
+export const MemberRole = {
+  Admin: 'ADMIN',
+  Athlete: 'ATHLETE',
+  Coach: 'COACH'
+} as const;
+
+export type MemberRole = typeof MemberRole[keyof typeof MemberRole];
 export type Mutation = {
   __typename?: 'Mutation';
   activate?: Maybe<Scalars['ID']>;
@@ -266,6 +282,12 @@ export type PageInfo = {
   total: Scalars['Int'];
 };
 
+export type PaginatedItem = {
+  __typename?: 'PaginatedItem';
+  nodes: Array<Item>;
+  page: PageInfo;
+};
+
 export type PaginatedNotification = {
   __typename?: 'PaginatedNotification';
   nodes: Array<Notification>;
@@ -313,6 +335,7 @@ export type Query = {
   statsOfCreatedSchools: StatsByDay;
   statsOfCreatedUsers: StatsByDay;
   statsOfInvitedMembersInSchool: StatsByDay;
+  tempPaginatedItem: PaginatedItem;
   user: User;
   users: PaginatedUser;
 };
@@ -331,6 +354,7 @@ export type QueryMemberArgs = {
 
 
 export type QueryMembersArgs = {
+  filter?: InputMaybe<MemberFilter>;
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<Page>;
   search?: InputMaybe<Scalars['String']>;
@@ -394,6 +418,11 @@ export type QueryStatsOfCreatedUsersArgs = {
 
 export type QueryStatsOfInvitedMembersInSchoolArgs = {
   days?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryTempPaginatedItemArgs = {
+  page?: InputMaybe<Page>;
 };
 
 
@@ -674,6 +703,13 @@ export type ParentsQueryVariables = Exact<{
 
 export type ParentsQuery = { __typename?: 'Query', parents: { __typename?: 'PaginatedUser', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: Date, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyRole', id: string, role: Role, status: RoleStatus } | { __typename?: 'ParentRole', relation?: string | null, id: string, role: Role, status: RoleStatus } | { __typename?: 'SchoolRole', id: string, role: Role, status: RoleStatus }> }> } };
 
+export type TempPaginatedItemQueryVariables = Exact<{
+  page?: InputMaybe<Page>;
+}>;
+
+
+export type TempPaginatedItemQuery = { __typename?: 'Query', tempPaginatedItem: { __typename?: 'PaginatedItem', page: { __typename?: 'PageInfo', index: number, count: number, total: number }, nodes: Array<{ __typename?: 'Item', id: string }> } };
+
 export type NotificationsCountQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -713,6 +749,7 @@ export type MembersQueryVariables = Exact<{
   page?: InputMaybe<Page>;
   order?: InputMaybe<UserOrder>;
   search?: InputMaybe<Scalars['String']>;
+  filter?: InputMaybe<MemberFilter>;
 }>;
 
 
@@ -1431,6 +1468,48 @@ export function useParentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pa
 export type ParentsQueryHookResult = ReturnType<typeof useParentsQuery>;
 export type ParentsLazyQueryHookResult = ReturnType<typeof useParentsLazyQuery>;
 export type ParentsQueryResult = Apollo.QueryResult<ParentsQuery, ParentsQueryVariables>;
+export const TempPaginatedItemDocument = gql`
+    query tempPaginatedItem($page: Page) {
+  tempPaginatedItem(page: $page) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useTempPaginatedItemQuery__
+ *
+ * To run a query within a React component, call `useTempPaginatedItemQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTempPaginatedItemQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTempPaginatedItemQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useTempPaginatedItemQuery(baseOptions?: Apollo.QueryHookOptions<TempPaginatedItemQuery, TempPaginatedItemQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<TempPaginatedItemQuery, TempPaginatedItemQueryVariables>(TempPaginatedItemDocument, options);
+      }
+export function useTempPaginatedItemLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TempPaginatedItemQuery, TempPaginatedItemQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<TempPaginatedItemQuery, TempPaginatedItemQueryVariables>(TempPaginatedItemDocument, options);
+        }
+export type TempPaginatedItemQueryHookResult = ReturnType<typeof useTempPaginatedItemQuery>;
+export type TempPaginatedItemLazyQueryHookResult = ReturnType<typeof useTempPaginatedItemLazyQuery>;
+export type TempPaginatedItemQueryResult = Apollo.QueryResult<TempPaginatedItemQuery, TempPaginatedItemQueryVariables>;
 export const NotificationsCountDocument = gql`
     query notificationsCount {
   notificationsCount
@@ -1644,8 +1723,8 @@ export type StatsForStaffQueryHookResult = ReturnType<typeof useStatsForStaffQue
 export type StatsForStaffLazyQueryHookResult = ReturnType<typeof useStatsForStaffLazyQuery>;
 export type StatsForStaffQueryResult = Apollo.QueryResult<StatsForStaffQuery, StatsForStaffQueryVariables>;
 export const MembersDocument = gql`
-    query members($page: Page, $order: UserOrder, $search: String) {
-  members(page: $page, order: $order, search: $search) {
+    query members($page: Page, $order: UserOrder, $search: String, $filter: MemberFilter) {
+  members(page: $page, order: $order, search: $search, filter: $filter) {
     page {
       index
       count
@@ -1686,6 +1765,7 @@ export const MembersDocument = gql`
  *      page: // value for 'page'
  *      order: // value for 'order'
  *      search: // value for 'search'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -2104,6 +2184,7 @@ export const namedOperations = {
     statsForCoach: 'statsForCoach',
     member: 'member',
     parents: 'parents',
+    tempPaginatedItem: 'tempPaginatedItem',
     notificationsCount: 'notificationsCount',
     notifications: 'notifications',
     children: 'children',

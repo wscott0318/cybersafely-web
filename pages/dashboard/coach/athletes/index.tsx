@@ -1,15 +1,19 @@
 import { GridColumns } from '@mui/x-data-grid'
+import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { ChildrenQuery, SchoolRole, useChildrenQuery } from '../../../../types/graphql'
+import { MembersQuery, useMembersQuery } from '../../../../types/graphql'
 
-const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
+const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   {
     width: 250,
     field: 'name',
     headerName: 'Name',
+    renderCell(params) {
+      return <AvatarWithName src={params.row.avatar?.url} name={params.row.name} />
+    },
   },
   {
     width: 300,
@@ -17,24 +21,11 @@ const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
     headerName: 'E-mail',
   },
   {
-    width: 200,
-    field: 'relation',
-    sortable: false,
-    headerName: 'Relation',
-    valueGetter(params) {
-      return params.row.parentRole?.relation
-    },
-  },
-  {
-    width: 250,
-    field: 'school',
-    headerName: 'School',
-    valueGetter(params) {
-      const roles = params.row.roles.filter((e) => e.role === 'ATHLETE') as SchoolRole[]
-      return roles.map((e) => e.school.name)
-    },
-    valueFormatter(params) {
-      return params.value.join(', ')
+    width: 150,
+    field: 'posts',
+    headerName: 'Posts',
+    valueGetter() {
+      return 100
     },
   },
   {
@@ -47,16 +38,15 @@ const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
   },
 ]
 
-function Home() {
-  const query = useChildrenQuery()
+function Athletes() {
+  const query = useMembersQuery({ variables: { filter: { role: 'ATHLETE' } } })
 
   return (
     <DataGridViewer
-      title="Children"
       query={query}
+      title="Athletes"
       columns={columns}
-      data={query.data?.children}
-      href={(e) => `/dashboard/parent/child/${e.id}`}
+      data={query.data?.members}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
@@ -67,6 +57,6 @@ function Home() {
   )
 }
 
-export default withDashboardLayout(Home, {
-  title: 'Home',
+export default withDashboardLayout(Athletes, {
+  title: 'Athletes',
 })

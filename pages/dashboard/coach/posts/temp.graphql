@@ -1,0 +1,12 @@
+query tempPaginatedItem($page: Page) {
+  tempPaginatedItem(page: $page) {
+    page {
+      index
+      count
+      total
+    }
+    nodes {
+      id
+    }
+  }
+}

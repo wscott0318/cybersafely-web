@@ -385,11 +385,18 @@ function Sidebar() {
 
     case 'COACH':
       return (
-        <CollapsableList>
-          <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
-          <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
-          <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
-        </CollapsableList>
+        <>
+          <CollapsableList title="Dashboard">
+            <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
+          </CollapsableList>
+          <CollapsableList title="Management">
+            <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
+          </CollapsableList>
+          <CollapsableList title="Social">
+            <SidebarLink href="/dashboard/coach/athletes" icon={<PersonIcon />} title="Athletes" />
+            <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
+          </CollapsableList>
+        </>
       )
 
     case 'ATHLETE':

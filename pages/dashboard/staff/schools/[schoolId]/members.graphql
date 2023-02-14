@@ -1,5 +1,5 @@
-query members($page: Page, $order: UserOrder, $search: String) {
-  members(page: $page, order: $order, search: $search) {
+query members($page: Page, $order: UserOrder, $search: String, $filter: MemberFilter) {
+  members(page: $page, order: $order, search: $search, filter: $filter) {
     page {
       index
       count
