@@ -62,7 +62,7 @@ function Header() {
               Contact
             </Button>
             {/* TODO: This can be removed in the future */}
-            {Config.dev && (
+            {Config.enableLogin && (
               <Box pl={1}>
                 <NextLink href="/auth/login" passHref legacyBehavior>
                   <Button size="large">Login</Button>

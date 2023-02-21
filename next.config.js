@@ -6,7 +6,7 @@ const nextConfig = {
   },
   // TODO: This can be removed in the future
   async redirects() {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NEXT_PUBLIC_ENABLE_LOGIN !== 'true') {
       return [
         {
           source: '/auth/:sub*',
