@@ -1,7 +1,9 @@
+import { Box, Grid } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
+import { WelcomeCard } from '../../../../components/common/WelcomeCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { ChildrenQuery, SchoolRole, useChildrenQuery } from '../../../../types/graphql'
 
@@ -51,19 +53,28 @@ function Home() {
   const query = useChildrenQuery()
 
   return (
-    <DataGridViewer
-      title="Children"
-      query={query}
-      columns={columns}
-      data={query.data?.children}
-      href={(e) => `/dashboard/parent/child/${e.id}`}
-      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={
-        <DataGridActions>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
-        </DataGridActions>
-      }
-    />
+    <Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <WelcomeCard />
+        </Grid>
+        <Grid item xs={12}>
+          <DataGridViewer
+            title="Children"
+            query={query}
+            columns={columns}
+            data={query.data?.children}
+            href={(e) => `/dashboard/parent/child/${e.id}`}
+            initialSortModel={{ field: 'createdAt', sort: 'desc' }}
+            actions={
+              <DataGridActions>
+                <SearchBar onSearch={(search) => query.refetch({ search })} />
+              </DataGridActions>
+            }
+          />
+        </Grid>
+      </Grid>
+    </Box>
   )
 }
 

@@ -5,6 +5,7 @@ import { useStatsForCoachQuery } from '../../types/graphql'
 import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { NextLink } from '../common/NextLink'
+import { WelcomeCard } from '../common/WelcomeCard'
 
 type MissingInfoCardProps = {
   href: string
@@ -58,6 +59,9 @@ export function HomeStatsForCoach() {
   return (
     <Box>
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <WelcomeCard />
+        </Grid>
         {hasCards && (
           <Grid item xs={12}>
             <Typography variant="h5" flexGrow={1}>
