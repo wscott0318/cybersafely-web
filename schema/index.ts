@@ -48,8 +48,8 @@ export type CreateSchoolInput = {
 
 export type CreateUserRoleInput = {
   email: Scalars['String'];
+  relationId?: InputMaybe<Scalars['ID']>;
   type: UserRoleTypeEnum;
-  typeId?: InputMaybe<Scalars['ID']>;
 };
 
 export type FinalizeAccountInput = {
@@ -417,7 +417,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string } }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null } }> } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -615,6 +615,10 @@ export const MyUserDocument = gql`
         type
         school {
           id
+          name
+          logo {
+            url
+          }
         }
       }
       ... on ParentRole {

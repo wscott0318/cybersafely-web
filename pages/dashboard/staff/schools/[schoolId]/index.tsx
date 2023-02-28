@@ -112,16 +112,8 @@ function SchoolMembers({ schoolId }: Props) {
                 title: 'Invite Member',
                 message: 'Enter the information below',
                 content: InviteMemberForm,
-                result: ({ email, role }) => {
-                  createUserRole({
-                    variables: {
-                      input: {
-                        email,
-                        type: role,
-                        typeId: schoolId,
-                      },
-                    },
-                  })
+                result: ({ email, type }) => {
+                  createUserRole({ variables: { input: { email, type, relationId: schoolId } } })
                 },
               })
             }}

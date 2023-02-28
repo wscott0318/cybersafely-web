@@ -111,7 +111,7 @@ function MemberParents({ userId }: Props) {
                 content: InviteParentForm,
                 message: 'Enter the information below',
                 result: ({ email }) => {
-                  createUserRole({ variables: { input: { email, type: 'PARENT', typeId: userId } } })
+                  createUserRole({ variables: { input: { email, type: 'PARENT', relationId: userId } } })
                 },
               })
             }}

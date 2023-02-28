@@ -9,15 +9,13 @@ import {
   School,
   UpdateSchoolMutationFn,
   useCreateAddressMutation,
-  useRemoveImageMutation,
   useUpdateAddressMutation,
-  useUpdateImageMutation,
   useUpdateSchoolMutation,
 } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 import { AccordionContext } from '../common/AccordionContext'
-import { UploadImage } from '../common/UploadImage'
+import { UpdateImage } from '../common/UpdateImage'
 
 type UpdateSchoolFormProps = {
   school: Pick<School, 'id' | 'name' | 'phone'> & {
@@ -34,45 +32,23 @@ type UpdateSchoolSubFormProps = UpdateSchoolFormProps & {
 }
 
 function UpdateSchoolLogoForm({ school }: UpdateSchoolSubFormProps) {
-  const [updateImage] = useUpdateImageMutation({
-    refetchQueries: [namedOperations.Query.school],
-  })
-  const [removeImage] = useRemoveImageMutation({
-    refetchQueries: [namedOperations.Query.school],
-  })
-
   return (
-    <UploadImage
-      src={school.logo?.url}
-      onUpload={(uploadId) => {
-        if (typeof uploadId === 'string') {
-          updateImage({ variables: { input: { uploadId, for: 'SCHOOL_LOGO', forId: school.id } } })
-        } else if (school.logo) {
-          removeImage({ variables: { id: school.logo.id } })
-        }
-      }}
+    <UpdateImage
+      image={school.logo}
+      for="SCHOOL_LOGO"
+      forId={school.id}
+      refetchQueries={[namedOperations.Query.school, namedOperations.Query.myUser]}
     />
   )
 }
 
 function UpdateSchoolCoverForm({ school }: UpdateSchoolSubFormProps) {
-  const [updateImage] = useUpdateImageMutation({
-    refetchQueries: [namedOperations.Query.school],
-  })
-  const [removeImage] = useRemoveImageMutation({
-    refetchQueries: [namedOperations.Query.school],
-  })
-
   return (
-    <UploadImage
-      src={school.cover?.url}
-      onUpload={(uploadId) => {
-        if (typeof uploadId === 'string') {
-          updateImage({ variables: { input: { uploadId, for: 'SCHOOL_COVER', forId: school.id } } })
-        } else if (school.cover) {
-          removeImage({ variables: { id: school.cover.id } })
-        }
-      }}
+    <UpdateImage
+      image={school.cover}
+      for="SCHOOL_COVER"
+      forId={school.id}
+      refetchQueries={[namedOperations.Query.school]}
     />
   )
 }

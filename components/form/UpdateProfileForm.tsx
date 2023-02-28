@@ -2,37 +2,15 @@ import { LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
-import { useRemoveImageMutation, useUpdateImageMutation, useUpdateUserMutation } from '../../schema'
+import { useUpdateUserMutation } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
-import { UploadImage } from '../common/UploadImage'
+import { UpdateImage } from '../common/UpdateImage'
 
 export function UpdateAvatarForm() {
   const { user, refetchUser } = useUser()
 
-  const [updateImage] = useUpdateImageMutation({
-    onCompleted() {
-      refetchUser()
-    },
-  })
-  const [removeImage] = useRemoveImageMutation({
-    onCompleted() {
-      refetchUser()
-    },
-  })
-
-  return (
-    <UploadImage
-      src={user.avatar?.url}
-      onUpload={(uploadId) => {
-        if (typeof uploadId === 'string') {
-          updateImage({ variables: { input: { uploadId, for: 'USER_AVATAR', forId: user.id } } })
-        } else if (user.avatar) {
-          removeImage({ variables: { id: user.avatar.id } })
-        }
-      }}
-    />
-  )
+  return <UpdateImage image={user.avatar} for="USER_AVATAR" forId={user.id} onChange={() => refetchUser()} />
 }
 
 const schema = z.object({

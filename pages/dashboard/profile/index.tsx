@@ -43,31 +43,39 @@ function Profile() {
           <Grid container spacing={1}>
             <Grid item xs={6}>
               <SocialButton
-                icon={<img src="/images/logos/tiktok.svg" height={16} />}
+                icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
                 name="TikTok"
                 color="#000"
                 linked
               />
             </Grid>
             <Grid item xs={6}>
-              <SocialButton icon={<img src="/images/logos/twitter.svg" height={16} />} name="Twitter" color="#1d9bf0" />
+              <SocialButton
+                icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
+                name="Twitter"
+                color="#1d9bf0"
+              />
             </Grid>
             <Grid item xs={6}>
               <SocialButton
-                icon={<img src="/images/logos/instagram.svg" height={16} />}
+                icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
                 name="Instagram"
                 color="#ff543e"
               />
             </Grid>
             <Grid item xs={6}>
               <SocialButton
-                icon={<img src="/images/logos/facebook.svg" height={16} />}
+                icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
                 name="Facebook"
                 color="#0062e0"
               />
             </Grid>
             <Grid item xs={6}>
-              <SocialButton icon={<img src="/images/logos/youtube.svg" height={16} />} name="YouTube" color="#f61c0d" />
+              <SocialButton
+                icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
+                name="YouTube"
+                color="#f61c0d"
+              />
             </Grid>
           </Grid>
         </AccordionDetails>

@@ -16,6 +16,10 @@ query myUser($id: ID!) {
         type
         school {
           id
+          name
+          logo {
+            url
+          }
         }
       }
       ... on ParentRole {

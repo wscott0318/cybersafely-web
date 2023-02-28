@@ -81,7 +81,7 @@ function Post({ postId }: Props) {
                   <Chip
                     label="TikTok"
                     color="default"
-                    icon={<img src="/images/logos/tiktok.svg" height={14} style={{ marginLeft: 6 }} />}
+                    icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={14} style={{ marginLeft: 6 }} />}
                   />
                 }
                 last

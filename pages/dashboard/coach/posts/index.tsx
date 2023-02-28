@@ -35,7 +35,7 @@ const columns: GridColumns<InferNodeType<TempPaginatedItemQuery['tempPaginatedIt
         <Chip
           label="TikTok"
           color="default"
-          icon={<img src="/images/logos/tiktok.svg" height={14} style={{ marginLeft: 6 }} />}
+          icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={14} style={{ marginLeft: 6 }} />}
         />
       )
     },

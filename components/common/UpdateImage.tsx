@@ -2,15 +2,26 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import ImageIcon from '@mui/icons-material/ImageOutlined'
 import UploadIcon from '@mui/icons-material/UploadOutlined'
 import { Avatar, Badge, Box, Button, CircularProgress, IconButton, Stack } from '@mui/material'
+import { Image, UpdateImageInput, useRemoveImageMutation, useUpdateImageMutation } from '../../schema'
 import { useFileUpload } from '../../utils/upload'
 
-type UploadImageProps = {
-  src?: string
-  onUpload: (id: string | null) => void
-}
+type UpdateImageProps = {
+  image?: Pick<Image, 'id' | 'url'> | undefined | null
+  onChange?: () => void
+  refetchQueries?: string[]
+} & Pick<UpdateImageInput, 'for' | 'forId'>
 
-export function UploadImage(props: UploadImageProps) {
+export function UpdateImage(props: UpdateImageProps) {
   const { upload, loading } = useFileUpload()
+
+  const [updateImage] = useUpdateImageMutation({
+    refetchQueries: props.refetchQueries,
+    onCompleted: () => props.onChange?.(),
+  })
+  const [removeImage] = useRemoveImageMutation({
+    refetchQueries: props.refetchQueries,
+    onCompleted: () => props.onChange?.(),
+  })
 
   return (
     <Stack alignItems="center" spacing={1}>
@@ -24,16 +35,20 @@ export function UploadImage(props: UploadImageProps) {
             horizontal: 'right',
           }}
           badgeContent={
-            !!props.src ? (
+            props.image ? (
               <Box borderRadius={999} bgcolor="error.main" color="white">
-                <IconButton color="inherit" size="small" onClick={() => props.onUpload(null)}>
+                <IconButton
+                  size="small"
+                  color="inherit"
+                  onClick={() => removeImage({ variables: { id: props.image!.id } })}
+                >
                   <DeleteIcon fontSize="small" />
                 </IconButton>
               </Box>
             ) : undefined
           }
         >
-          <Avatar sx={{ width: 128, height: 128, fontSize: '3rem' }} src={props.src}>
+          <Avatar sx={{ width: 128, height: 128, fontSize: '3rem' }} src={props.image?.url}>
             <ImageIcon fontSize="inherit" />
           </Avatar>
         </Badge>
@@ -43,8 +58,19 @@ export function UploadImage(props: UploadImageProps) {
         disabled={loading}
         startIcon={<UploadIcon />}
         onClick={async () => {
-          const result = await upload({ accept: 'image/*', resize: 128 })
-          if (result) props.onUpload(result)
+          const uploadId = await upload({ accept: 'image/*', resize: 128 })
+
+          if (uploadId) {
+            await updateImage({
+              variables: {
+                input: {
+                  uploadId,
+                  for: props.for,
+                  forId: props.forId,
+                },
+              },
+            })
+          }
         }}
       >
         Upload new image
