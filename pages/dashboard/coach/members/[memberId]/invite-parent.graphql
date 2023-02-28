@@ -1,3 +1,0 @@
-mutation inviteParent($childId: ID!, $email: String!, $relation: String) {
-  inviteParent(childId: $childId, email: $email, relation: $relation)
-}

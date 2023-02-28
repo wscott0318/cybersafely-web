@@ -17,19 +17,19 @@ import { InviteMemberForm } from '../../../../../components/form/InviteMemberFor
 import { UpdateSchoolForm } from '../../../../../components/form/UpdateSchoolForm'
 import { ApolloClientProvider } from '../../../../../libs/apollo'
 import {
-  MembersQuery,
   namedOperations,
-  useInviteMemberMutation,
-  useMembersQuery,
+  useCreateUserRoleMutation,
+  UsersQuery,
   useSchoolQuery,
-} from '../../../../../types/graphql'
+  useUsersQuery,
+} from '../../../../../schema'
 import { useAlert } from '../../../../../utils/context/alert'
 
 type Props = {
   schoolId: string
 }
 
-const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
+const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
     width: 250,
     field: 'name',
@@ -58,13 +58,8 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
       return params.row.roles
     },
     renderCell(params) {
-      return <UserRoles roles={params.value} />
+      return <UserRoles roles={params.value} canRemove />
     },
-  },
-  {
-    width: 150,
-    field: 'parentCount',
-    headerName: 'Parents',
   },
   {
     width: 200,
@@ -87,10 +82,12 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
 function SchoolMembers({ schoolId }: Props) {
   const { pushAlert } = useAlert()
 
-  const query = useMembersQuery()
+  const query = useUsersQuery({
+    variables: { from: 'SCHOOL', fromId: schoolId },
+  })
 
-  const [inviteMember] = useInviteMemberMutation({
-    refetchQueries: [namedOperations.Query.members],
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
   })
 
   return (
@@ -98,7 +95,7 @@ function SchoolMembers({ schoolId }: Props) {
       query={query}
       title="Members"
       columns={columns}
-      data={query.data?.members}
+      data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       href={(e) => `/dashboard/staff/schools/${schoolId}/members/${e.id}`}
       actions={
@@ -112,15 +109,23 @@ function SchoolMembers({ schoolId }: Props) {
                 title: 'Invite Member',
                 message: 'Enter the information below',
                 content: InviteMemberForm,
-                result: (variables) => {
-                  inviteMember({ variables })
+                result: ({ email, role }) => {
+                  createUserRole({
+                    variables: {
+                      input: {
+                        email,
+                        type: role,
+                        typeId: schoolId,
+                      },
+                    },
+                  })
                 },
               })
             }}
           >
             Invite Member
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({})} />
         </DataGridActions>
       }
     />

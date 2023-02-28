@@ -5,26 +5,30 @@ import { useEffect, useState } from 'react'
 import { CoverLayout } from '../../components/common/CoverLayout'
 import { NextLink } from '../../components/common/NextLink'
 import { Config } from '../../helpers/config'
-import { AnyRole, ParentRole, SchoolRole, useProfileQuery } from '../../types/graphql'
+import { SchoolRole, useMyUserQuery } from '../../schema'
 import { StorageManager } from '../../utils/storage'
 
 export default function Dashboard() {
   const router = useRouter()
 
-  const { data } = useProfileQuery()
+  const { data } = useMyUserQuery({
+    variables: {
+      id: StorageManager.get('userId')!,
+    },
+  })
 
   const [error, setError] = useState(false)
 
   useEffect(() => {
     if (!data) return
 
-    const user = data.profile
+    const { user } = data
 
-    const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyRole | undefined
-    const admin = user.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED') as SchoolRole | undefined
-    const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as SchoolRole | undefined
-    const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as SchoolRole | undefined
-    const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
+    const staff = user.roles.find((e) => e.type === 'STAFF')
+    const admin = user.roles.find((e) => e.type === 'ADMIN') as SchoolRole | undefined
+    const coach = user.roles.find((e) => e.type === 'COACH') as SchoolRole | undefined
+    const athlete = user.roles.find((e) => e.type === 'ATHLETE') as SchoolRole | undefined
+    const parent = user.roles.find((e) => e.type === 'PARENT')
 
     if (staff) {
       router.replace('/dashboard/staff/home')
@@ -54,7 +58,7 @@ export default function Dashboard() {
         <Box>
           <Typography variant="h4">No user role!</Typography>
           <Typography>
-            The current logged in user, <b>{data?.profile.email}</b>, does not have any valid roles.
+            The current logged in user, <b>{data?.user.email}</b>, does not have any valid roles.
           </Typography>
         </Box>
         <NextLink href="/auth/login">

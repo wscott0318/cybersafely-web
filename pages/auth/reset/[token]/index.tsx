@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { CoverLayout } from '../../../../components/common/CoverLayout'
 import { checkPasswordStrength, PasswordStrength } from '../../../../components/common/PasswordStrength'
 import { useForm } from '../../../../helpers/form'
-import { useResetPasswordMutation } from '../../../../types/graphql'
+import { useResetPasswordMutation } from '../../../../schema'
 
 const schema = z
   .object({
@@ -27,10 +27,10 @@ const schema = z
   })
 
 type Props = {
-  passwordToken: string
+  token: string
 }
 
-export default function ResetPassword({ passwordToken }: Props) {
+export default function ResetPassword({ token }: Props) {
   const router = useRouter()
   const form = useForm(schema)
 
@@ -43,8 +43,8 @@ export default function ResetPassword({ passwordToken }: Props) {
   return (
     <CoverLayout>
       <form
-        onSubmit={form.onSubmit((variables) => {
-          resetPassword({ variables: { ...variables, passwordToken } })
+        onSubmit={form.onSubmit(({ password }) => {
+          resetPassword({ variables: { input: { token, password } } })
         })}
       >
         <Stack spacing={4}>
@@ -82,6 +82,6 @@ export default function ResetPassword({ passwordToken }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const passwordToken = ctx.params!.token as string
-  return { props: { passwordToken } }
+  const token = ctx.params!.token as string
+  return { props: { token } }
 }

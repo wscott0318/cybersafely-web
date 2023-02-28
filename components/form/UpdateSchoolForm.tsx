@@ -8,8 +8,12 @@ import {
   namedOperations,
   School,
   UpdateSchoolMutationFn,
+  useCreateAddressMutation,
+  useRemoveImageMutation,
+  useUpdateAddressMutation,
+  useUpdateImageMutation,
   useUpdateSchoolMutation,
-} from '../../types/graphql'
+} from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 import { AccordionContext } from '../common/AccordionContext'
@@ -17,10 +21,10 @@ import { UploadImage } from '../common/UploadImage'
 
 type UpdateSchoolFormProps = {
   school: Pick<School, 'id' | 'name' | 'phone'> & {
-    logo?: Pick<Image, 'url'> | null
-    cover?: Pick<Image, 'url'> | null
+    logo?: Pick<Image, 'id' | 'url'> | null
+    cover?: Pick<Image, 'id' | 'url'> | null
   } & {
-    address?: Pick<Address, 'street' | 'city' | 'state' | 'zip'> | null
+    address?: Pick<Address, 'id' | 'street' | 'city' | 'state' | 'zip'> | null
   }
 }
 
@@ -29,23 +33,45 @@ type UpdateSchoolSubFormProps = UpdateSchoolFormProps & {
   updateSchool: UpdateSchoolMutationFn
 }
 
-function UpdateSchoolLogoForm({ school, updateSchool }: UpdateSchoolSubFormProps) {
+function UpdateSchoolLogoForm({ school }: UpdateSchoolSubFormProps) {
+  const [updateImage] = useUpdateImageMutation({
+    refetchQueries: [namedOperations.Query.school],
+  })
+  const [removeImage] = useRemoveImageMutation({
+    refetchQueries: [namedOperations.Query.school],
+  })
+
   return (
     <UploadImage
       src={school.logo?.url}
-      onUpload={(logo) => {
-        updateSchool({ variables: { input: { logo } } })
+      onUpload={(uploadId) => {
+        if (typeof uploadId === 'string') {
+          updateImage({ variables: { input: { uploadId, for: 'SCHOOL_LOGO', forId: school.id } } })
+        } else if (school.logo) {
+          removeImage({ variables: { id: school.logo.id } })
+        }
       }}
     />
   )
 }
 
-function UpdateSchoolCoverForm({ school, updateSchool }: UpdateSchoolSubFormProps) {
+function UpdateSchoolCoverForm({ school }: UpdateSchoolSubFormProps) {
+  const [updateImage] = useUpdateImageMutation({
+    refetchQueries: [namedOperations.Query.school],
+  })
+  const [removeImage] = useRemoveImageMutation({
+    refetchQueries: [namedOperations.Query.school],
+  })
+
   return (
     <UploadImage
       src={school.cover?.url}
-      onUpload={(cover) => {
-        updateSchool({ variables: { input: { cover } } })
+      onUpload={(uploadId) => {
+        if (typeof uploadId === 'string') {
+          updateImage({ variables: { input: { uploadId, for: 'SCHOOL_COVER', forId: school.id } } })
+        } else if (school.cover) {
+          removeImage({ variables: { id: school.cover.id } })
+        }
       }}
     />
   )
@@ -68,7 +94,7 @@ function UpdateSchoolGeneralForm({ school, updateSchool, loading }: UpdateSchool
   return (
     <form
       onSubmit={form.onSubmit((_, input) => {
-        updateSchool({ variables: { input } })
+        updateSchool({ variables: { id: school.id, input } })
       })}
     >
       <Stack>
@@ -102,18 +128,29 @@ const schemaAddress = z.object({
   zip: z.string().min(4),
 })
 
-function UpdateSchoolAddressForm({ school, updateSchool, loading }: UpdateSchoolSubFormProps) {
+function UpdateSchoolAddressForm({ school, loading }: UpdateSchoolSubFormProps) {
+  const [createAddress] = useCreateAddressMutation({
+    refetchQueries: [namedOperations.Query.school],
+  })
+  const [updateAddress] = useUpdateAddressMutation({
+    refetchQueries: [namedOperations.Query.school],
+  })
+
   const form = useForm(schemaAddress, {
-    street: school?.address?.street,
-    city: school?.address?.city,
-    state: school?.address?.state,
-    zip: school?.address?.zip,
+    street: school.address?.street,
+    city: school.address?.city,
+    state: school.address?.state,
+    zip: school.address?.zip,
   })
 
   return (
     <form
-      onSubmit={form.onSubmit((address) => {
-        updateSchool({ variables: { input: { address } } })
+      onSubmit={form.onSubmit((data, delta) => {
+        if (!school.address) {
+          createAddress({ variables: { schoolId: school.id, input: data } })
+        } else {
+          updateAddress({ variables: { id: school.address.id, input: delta } })
+        }
       })}
     >
       <Stack>

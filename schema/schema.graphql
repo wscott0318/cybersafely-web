@@ -1,0 +1,225 @@
+query myUser($id: ID!) {
+  user(id: $id) {
+    id
+    email
+    emailConfirmed
+    name
+    avatar {
+      id
+      url
+    }
+    roles(status: ACCEPTED) {
+      ... on AnyUserRole {
+        type
+      }
+      ... on SchoolRole {
+        type
+        school {
+          id
+        }
+      }
+    }
+  }
+}
+
+mutation loginWithEmail($input: LoginWithEmailInput!) {
+  loginWithEmail(input: $input) {
+    token
+    user {
+      id
+    }
+  }
+}
+
+fragment PageFragment on Page {
+  index
+  size
+  count
+  total
+}
+
+query schools($page: PageInput, $order: SchoolOrder) {
+  schools(page: $page, order: $order) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      name
+      phone
+      createdAt
+      memberCount
+      logo {
+        url
+      }
+      address {
+        formatted
+      }
+    }
+  }
+}
+
+mutation createSchool($input: CreateSchoolInput!) {
+  createSchool(input: $input) {
+    id
+  }
+}
+
+query school($id: ID!) {
+  school(id: $id) {
+    id
+    name
+    phone
+    logo {
+      id
+      url
+    }
+    cover {
+      id
+      url
+    }
+    address {
+      id
+      street
+      state
+      city
+      zip
+    }
+  }
+}
+
+query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder) {
+  users(from: $from, fromId: $fromId, page: $page, order: $order) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      name
+      email
+      emailConfirmed
+      avatar {
+        url
+      }
+      roles {
+        ... on AnyUserRole {
+          id
+          type
+          status
+        }
+        ... on SchoolRole {
+          id
+          type
+          status
+          school {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
+  updateSchool(id: $id, input: $input) {
+    id
+  }
+}
+
+mutation prepareUpload {
+  prepareUpload {
+    id
+    url
+    method
+    headers {
+      key
+      value
+    }
+  }
+}
+
+mutation updateImage($input: UpdateImageInput!) {
+  updateImage(input: $input) {
+    id
+  }
+}
+
+mutation removeImage($id: ID!) {
+  removeImage(id: $id)
+}
+
+mutation createAddress($schoolId: ID!, $input: CreateAddressInput!) {
+  createAddress(schoolId: $schoolId, input: $input) {
+    id
+  }
+}
+
+mutation updateAddress($id: ID!, $input: UpdateAddressInput!) {
+  updateAddress(id: $id, input: $input) {
+    id
+  }
+}
+
+mutation removeAddress($id: ID!) {
+  removeAddress(id: $id)
+}
+
+mutation createUserRole($input: CreateUserRoleInput!) {
+  createUserRole(input: $input) {
+    id
+  }
+}
+
+mutation removeUserRole($id: ID!) {
+  removeUserRole(id: $id)
+}
+
+query settings {
+  settings {
+    enableSignUps
+  }
+}
+
+mutation updateSettings($input: UpdateSettingsInput!) {
+  updateSettings(input: $input)
+}
+
+mutation updatePassword($input: UpdatePasswordInput!) {
+  updatePassword(input: $input)
+}
+
+mutation updateUser($id: ID!, $input: UpdateUserInput!) {
+  updateUser(id: $id, input: $input) {
+    id
+  }
+}
+
+mutation finalizeAccount($input: FinalizeAccountInput!) {
+  finalizeAccount(input: $input) {
+    user {
+      id
+    }
+  }
+}
+
+mutation resetPassword($input: ResetPasswordInput!) {
+  resetPassword(input: $input) {
+    user {
+      id
+    }
+  }
+}
+
+mutation forgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+
+mutation registerWithEmail($input: RegisterWithEmailInput!) {
+  registerWithEmail(input: $input) {
+    token
+    user {
+      id
+    }
+  }
+}

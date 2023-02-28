@@ -45,7 +45,7 @@ export const InviteMemberForm = forwardRef<InviteMemberFormRefProps>(function Wr
           value={form.value.role ?? ''}
           onChange={(e) => form.onChange('role', e.target.value as any)}
         >
-          {schoolRole?.role === 'ADMIN' && <MenuItem value="ADMIN">Admin</MenuItem>}
+          <MenuItem value="ADMIN">Admin</MenuItem>
           <MenuItem value="COACH">Coach</MenuItem>
           <MenuItem value="ATHLETE">Athlete</MenuItem>
         </Select>

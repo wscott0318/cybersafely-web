@@ -6,7 +6,7 @@ import { z } from 'zod'
 import { CoverLayout } from '../../../../components/common/CoverLayout'
 import { checkPasswordStrength, PasswordStrength } from '../../../../components/common/PasswordStrength'
 import { useForm } from '../../../../helpers/form'
-import { useActivateMutation } from '../../../../types/graphql'
+import { useFinalizeAccountMutation } from '../../../../schema'
 
 const schema = z
   .object({
@@ -15,7 +15,7 @@ const schema = z
       .min(4)
       .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
     repeatPassword: z.string(),
-    userName: z.string().min(4),
+    name: z.string().min(4),
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
@@ -28,14 +28,14 @@ const schema = z
   })
 
 type Props = {
-  passwordToken: string
+  token: string
 }
 
-export default function Activate({ passwordToken }: Props) {
+export default function Activate({ token }: Props) {
   const router = useRouter()
   const form = useForm(schema)
 
-  const [activate, { loading }] = useActivateMutation({
+  const [activate, { loading }] = useFinalizeAccountMutation({
     onCompleted() {
       router.push('/auth/login')
     },
@@ -44,14 +44,8 @@ export default function Activate({ passwordToken }: Props) {
   return (
     <CoverLayout>
       <form
-        onSubmit={form.onSubmit(({ password, userName }) => {
-          activate({
-            variables: {
-              password,
-              passwordToken,
-              user: { name: userName },
-            },
-          })
+        onSubmit={form.onSubmit(({ password, name }) => {
+          activate({ variables: { input: { token, password, name } } })
         })}
       >
         <Stack spacing={4}>
@@ -61,10 +55,10 @@ export default function Activate({ passwordToken }: Props) {
             label="Name"
             size="medium"
             variant="outlined"
-            error={form.hasError('userName')}
-            value={form.value.userName ?? ''}
-            helperText={form.getError('userName')}
-            onChange={(e) => form.onChange('userName', e.target.value)}
+            error={form.hasError('name')}
+            value={form.value.name ?? ''}
+            helperText={form.getError('name')}
+            onChange={(e) => form.onChange('name', e.target.value)}
           />
           <TextField
             required
@@ -99,6 +93,6 @@ export default function Activate({ passwordToken }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const passwordToken = ctx.params!.token as string
-  return { props: { passwordToken } }
+  const token = ctx.params!.token as string
+  return { props: { token } }
 }

@@ -21,17 +21,13 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
     const authLink = new ApolloLink((operation, forward) => {
       const context = operation.getContext()
 
-      const headers = {
-        ...context.headers,
-        'x-token': StorageManager.get('token'),
-        'x-school-id': props.schoolId ?? StorageManager.get('schoolId'),
-      }
-
-      if (typeof context.schoolId === 'string') {
-        headers['x-school-id'] = context.schoolId
-      }
-
-      operation.setContext({ ...context, headers })
+      operation.setContext({
+        ...context,
+        headers: {
+          ...context.headers,
+          'x-token': StorageManager.get('token'),
+        },
+      })
 
       return forward(operation)
     })

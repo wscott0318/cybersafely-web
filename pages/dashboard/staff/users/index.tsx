@@ -8,7 +8,7 @@ import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { InviteEmailForm } from '../../../../components/form/InviteEmailForm'
-import { namedOperations, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
+import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
@@ -58,7 +58,7 @@ function Users() {
 
   const query = useUsersQuery()
 
-  const [inviteStaff] = useInviteStaffMutation({
+  const [createUserRole] = useCreateUserRoleMutation({
     refetchQueries: [namedOperations.Query.users],
   })
 
@@ -80,15 +80,15 @@ function Users() {
                 title: 'Invite Staff',
                 message: 'Enter an e-mail below',
                 content: InviteEmailForm,
-                result: (variables) => {
-                  inviteStaff({ variables })
+                result: ({ email }) => {
+                  createUserRole({ variables: { input: { email, type: 'STAFF' } } })
                 },
               })
             }}
           >
             Invite Staff
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({})} />
         </DataGridActions>
       }
     />

@@ -1,23 +1,24 @@
 const Storage = {
   token: 'token',
-  schoolId: 'schoolId',
+  userId: 'user_id',
+  schoolId: 'school_id',
 }
 
 export class StorageManager {
   static get<K extends keyof typeof Storage>(key: K) {
-    if (localStorage) {
+    if (global.localStorage) {
       return localStorage.getItem(Storage[key])
     }
   }
 
   static set<K extends keyof typeof Storage>(key: K, value: string) {
-    if (localStorage) {
+    if (global.localStorage) {
       localStorage.setItem(Storage[key], value)
     }
   }
 
   static clear() {
-    if (localStorage) {
+    if (global.localStorage) {
       localStorage.clear()
     }
   }

@@ -3,7 +3,7 @@ import { Stack, TextField, Typography } from '@mui/material'
 import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
 import { useForm } from '../../../helpers/form'
-import { useRequestResetPasswordMutation } from '../../../types/graphql'
+import { useForgotPasswordMutation } from '../../../schema'
 import { useAlert } from '../../../utils/context/alert'
 
 const schema = z.object({
@@ -15,7 +15,7 @@ export default function ResetPassword() {
 
   const { pushAlert } = useAlert()
 
-  const [reset, { loading }] = useRequestResetPasswordMutation({
+  const [forgotPassword, { loading }] = useForgotPasswordMutation({
     onCompleted: () => {
       pushAlert({
         type: 'alert',
@@ -29,7 +29,7 @@ export default function ResetPassword() {
     <CoverLayout>
       <form
         onSubmit={form.onSubmit((variables) => {
-          reset({ variables })
+          forgotPassword({ variables })
         })}
       >
         <Stack spacing={4}>

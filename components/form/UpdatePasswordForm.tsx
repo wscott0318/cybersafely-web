@@ -2,7 +2,7 @@ import { LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
-import { useUpdatePasswordMutation } from '../../types/graphql'
+import { useUpdatePasswordMutation } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { checkPasswordStrength, PasswordStrength } from '../common/PasswordStrength'
 
@@ -44,8 +44,8 @@ export function UpdatePasswordForm() {
 
   return (
     <form
-      onSubmit={form.onSubmit((variables) => {
-        updatePassword({ variables })
+      onSubmit={form.onSubmit(({ oldPassword, newPassword }) => {
+        updatePassword({ variables: { input: { oldPassword, newPassword } } })
       })}
     >
       <Stack>

@@ -21,7 +21,7 @@ import { NavigationView } from '../../../components/common/NavigationView'
 import { NextLink } from '../../../components/common/NextLink'
 import { checkPasswordStrength, PasswordStrength } from '../../../components/common/PasswordStrength'
 import { useForm } from '../../../helpers/form'
-import { RegisterMutationVariables, useRegisterMutation } from '../../../types/graphql'
+import { useCreateAddressMutation, useCreateSchoolMutation, useRegisterWithEmailMutation } from '../../../schema'
 import { StorageManager } from '../../../utils/storage'
 
 const schemaStep1 = z
@@ -204,21 +204,15 @@ function RegisterStep3(props: { onNext: (data: z.infer<typeof schemaStep3>) => v
   )
 }
 
-function RegisterStep4(props: { data: RegisterMutationVariables }) {
+function RegisterStep4(props: { data: Schema }) {
   const router = useRouter()
 
+  const [loading, setLoading] = useState(false)
   const [accept, setAccept] = useState(false)
 
-  const [register, { loading }] = useRegisterMutation({
-    onCompleted: async (data, options) => {
-      const { token } = data.register
-      StorageManager.set('token', token)
-
-      await options?.client?.clearStore()
-
-      router.push('/dashboard')
-    },
-  })
+  const [registerWithEmail] = useRegisterWithEmailMutation()
+  const [createSchool] = useCreateSchoolMutation()
+  const [createAddress] = useCreateAddressMutation()
 
   return (
     <Stack>
@@ -240,8 +234,51 @@ function RegisterStep4(props: { data: RegisterMutationVariables }) {
         size="large"
         loading={loading}
         disabled={!accept}
-        onClick={() => {
-          register({ variables: props.data })
+        onClick={async () => {
+          try {
+            setLoading(true)
+
+            const { data } = await registerWithEmail({
+              variables: {
+                input: {
+                  email: props.data.step1.email,
+                  password: props.data.step1.password,
+                  name: props.data.step1.name,
+                },
+              },
+            })
+
+            const userId = data!.registerWithEmail.user.id
+
+            StorageManager.set('token', data!.registerWithEmail.token)
+            StorageManager.set('userId', userId)
+
+            const { data: schoolData } = await createSchool({
+              variables: {
+                input: {
+                  userId,
+                  name: props.data.step2.name,
+                  phone: props.data.step2.phone,
+                },
+              },
+            })
+
+            await createAddress({
+              variables: {
+                schoolId: schoolData!.createSchool.id,
+                input: {
+                  street: props.data.step3.street,
+                  city: props.data.step3.city,
+                  state: props.data.step3.state,
+                  zip: props.data.step3.zip,
+                },
+              },
+            })
+
+            router.push('/dashboard')
+          } finally {
+            setLoading(false)
+          }
         }}
       >
         Register
@@ -250,9 +287,15 @@ function RegisterStep4(props: { data: RegisterMutationVariables }) {
   )
 }
 
+type Schema = {
+  step1: z.infer<typeof schemaStep1>
+  step2: z.infer<typeof schemaStep2>
+  step3: z.infer<typeof schemaStep3>
+}
+
 export default function Register() {
   const [step, setStep] = useState(0)
-  const [data, setData] = useState<Partial<RegisterMutationVariables>>({})
+  const [data, setData] = useState<Partial<Schema>>({})
 
   const onClickStep = useCallback(
     (index: number) => {
@@ -271,8 +314,8 @@ export default function Register() {
             <StepButton onClick={() => onClickStep(0)}>Credentials</StepButton>
             <StepContent TransitionProps={{ unmountOnExit: false }}>
               <RegisterStep1
-                onNext={({ email, password, name }) => {
-                  setData((data) => ({ ...data, email, password, user: { name } }))
+                onNext={async (step1) => {
+                  setData((data) => ({ ...data, step1 }))
                   setStep((step) => step + 1)
                 }}
               />
@@ -282,8 +325,8 @@ export default function Register() {
             <StepButton onClick={() => onClickStep(1)}>School</StepButton>
             <StepContent TransitionProps={{ unmountOnExit: false }}>
               <RegisterStep2
-                onNext={({ name, phone }) => {
-                  setData((data) => ({ ...data, school: { name, phone } }))
+                onNext={async (step2) => {
+                  setData((data) => ({ ...data, step2 }))
                   setStep((step) => step + 1)
                 }}
               />
@@ -293,8 +336,8 @@ export default function Register() {
             <StepButton onClick={() => onClickStep(2)}>Address</StepButton>
             <StepContent TransitionProps={{ unmountOnExit: false }}>
               <RegisterStep3
-                onNext={({ street, city, state, zip }) => {
-                  setData((data) => ({ ...data, school: { ...data.school!, address: { street, city, state, zip } } }))
+                onNext={async (step3) => {
+                  setData((data) => ({ ...data, step3 }))
                   setStep((step) => step + 1)
                 }}
               />
@@ -303,7 +346,7 @@ export default function Register() {
           <Step>
             <StepButton onClick={() => onClickStep(3)}>Finish</StepButton>
             <StepContent TransitionProps={{ unmountOnExit: false }}>
-              <RegisterStep4 data={data as RegisterMutationVariables} />
+              <RegisterStep4 data={data as Schema} />
             </StepContent>
           </Step>
         </Stepper>

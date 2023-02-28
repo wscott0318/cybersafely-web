@@ -41,9 +41,10 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
+import { useMyUserQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
+import { StorageManager } from '../../utils/storage'
 import { DropDownButton } from '../common/DropDownButton'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
 import { LoadingLogo } from '../common/NProgress'
@@ -56,11 +57,11 @@ function HeaderAccount() {
 
   const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
 
-  const { data } = useNotificationsCountQuery({
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-first',
-    initialFetchPolicy: 'network-only',
-  })
+  // const { data } = useNotificationsCountQuery({
+  //   fetchPolicy: 'cache-first',
+  //   nextFetchPolicy: 'cache-first',
+  //   initialFetchPolicy: 'network-only',
+  // })
 
   return (
     <>
@@ -79,7 +80,7 @@ function HeaderAccount() {
       </Snackbar>
       <NextLink href="/dashboard/notifications">
         <IconButton sx={{ mr: 1 }}>
-          <Badge color="primary" badgeContent={data?.notificationsCount}>
+          <Badge color="primary">
             <NotificationIcon />
           </Badge>
         </IconButton>
@@ -211,20 +212,21 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     return '280px'
   }, [isMobile])
 
-  const { data, error, refetch } = useProfileQuery({
+  const { data, error, refetch } = useMyUserQuery({
     fetchPolicy: 'cache-first',
     nextFetchPolicy: 'cache-first',
     initialFetchPolicy: 'network-only',
+    variables: { id: StorageManager.get('userId')! },
   })
 
   const userRole = useMemo(() => {
     if (!data) return
 
-    const staff = data.profile.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED')
-    const admin = data.profile.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED')
-    const coach = data.profile.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED')
-    const athlete = data.profile.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED')
-    const parent = data.profile.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED')
+    const staff = data.user.roles.find((e) => e.type === 'STAFF')
+    const admin = data.user.roles.find((e) => e.type === 'ADMIN')
+    const coach = data.user.roles.find((e) => e.type === 'COACH')
+    const athlete = data.user.roles.find((e) => e.type === 'ATHLETE')
+    const parent = data.user.roles.find((e) => e.type === 'PARENT')
 
     return staff ?? admin ?? coach ?? athlete ?? parent
   }, [data])
@@ -248,7 +250,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.profile} role={userRole!.role} refetchUser={refetchUser}>
+    <AuthContextProvider user={data.user} role={userRole?.type} refetchUser={refetchUser}>
       <Head>
         <title>{props.title}</title>
       </Head>
@@ -413,6 +415,9 @@ function Sidebar() {
           <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
         </CollapsableList>
       )
+
+    default:
+      return null
   }
 }
 

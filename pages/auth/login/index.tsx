@@ -5,7 +5,7 @@ import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
 import { useForm } from '../../../helpers/form'
-import { useGlobalSettingsCanSignUpQuery, useLoginMutation } from '../../../types/graphql'
+import { useLoginWithEmailMutation, useSettingsQuery } from '../../../schema'
 import { StorageManager } from '../../../utils/storage'
 
 const schema = z.object({
@@ -14,9 +14,9 @@ const schema = z.object({
 })
 
 function RegisterButton() {
-  const { data } = useGlobalSettingsCanSignUpQuery()
+  const { data } = useSettingsQuery()
 
-  if (!data || !data.globalSettingsCanSignUp) {
+  if (!data?.settings.enableSignUps) {
     return null
   }
 
@@ -37,10 +37,13 @@ export default function Login() {
   const router = useRouter()
   const form = useForm(schema)
 
-  const [login, { loading }] = useLoginMutation({
+  const [login, { loading }] = useLoginWithEmailMutation({
     onCompleted: async (data, options) => {
-      const { token } = data.login
+      const { token, user } = data.loginWithEmail
+
+      StorageManager.clear()
       StorageManager.set('token', token)
+      StorageManager.set('userId', user.id)
 
       await options?.client?.clearStore()
 
@@ -51,8 +54,8 @@ export default function Login() {
   return (
     <CoverLayout>
       <form
-        onSubmit={form.onSubmit((variables) => {
-          login({ variables })
+        onSubmit={form.onSubmit((input) => {
+          login({ variables: { input } })
         })}
       >
         <Stack spacing={4}>

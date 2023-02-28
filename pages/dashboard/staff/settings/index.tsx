@@ -1,13 +1,13 @@
 import { FormControlLabel, FormGroup, Paper, Stack, Switch } from '@mui/material'
 import { NavigationView } from '../../../../components/common/NavigationView'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { namedOperations, useGlobalSettingsQuery, useUpdateGlobalSettingsMutation } from '../../../../types/graphql'
+import { namedOperations, useSettingsQuery, useUpdateSettingsMutation } from '../../../../schema'
 
 function Settings() {
-  const { data, loading } = useGlobalSettingsQuery()
+  const { data, loading } = useSettingsQuery()
 
-  const [updateSettings] = useUpdateGlobalSettingsMutation({
-    refetchQueries: [namedOperations.Query.globalSettings],
+  const [updateSettings] = useUpdateSettingsMutation({
+    refetchQueries: [namedOperations.Query.settings],
   })
 
   return (
@@ -20,7 +20,7 @@ function Settings() {
               label="Enable Organization Sign Ups"
               control={
                 <Switch
-                  checked={data?.globalSettings.enableSignUps ?? false}
+                  checked={data?.settings.enableSignUps ?? false}
                   onChange={(_, enableSignUps) => {
                     updateSettings({ variables: { input: { enableSignUps } } })
                   }}

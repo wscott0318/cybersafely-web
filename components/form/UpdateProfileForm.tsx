@@ -2,32 +2,34 @@ import { LoadingButton } from '@mui/lab'
 import { Stack, TextField } from '@mui/material'
 import { z } from 'zod'
 import { useForm } from '../../helpers/form'
-import { useUpdateProfileMutation } from '../../types/graphql'
+import { useRemoveImageMutation, useUpdateImageMutation, useUpdateUserMutation } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 import { UploadImage } from '../common/UploadImage'
 
 export function UpdateAvatarForm() {
-  const { pushAlert } = useAlert()
   const { user, refetchUser } = useUser()
 
-  const [updateProfile] = useUpdateProfileMutation({
+  const [updateImage] = useUpdateImageMutation({
     onCompleted() {
       refetchUser()
-
-      pushAlert({
-        type: 'alert',
-        title: 'Success',
-        message: 'Your profile was updated successfully',
-      })
+    },
+  })
+  const [removeImage] = useRemoveImageMutation({
+    onCompleted() {
+      refetchUser()
     },
   })
 
   return (
     <UploadImage
       src={user.avatar?.url}
-      onUpload={(avatar) => {
-        updateProfile({ variables: { input: { avatar } } })
+      onUpload={(uploadId) => {
+        if (typeof uploadId === 'string') {
+          updateImage({ variables: { input: { uploadId, for: 'USER_AVATAR', forId: user.id } } })
+        } else if (user.avatar) {
+          removeImage({ variables: { id: user.avatar.id } })
+        }
       }}
     />
   )
@@ -47,7 +49,7 @@ export function UpdateProfileForm() {
     name: user.name,
   })
 
-  const [updateProfile, { loading }] = useUpdateProfileMutation({
+  const [updateUser, { loading }] = useUpdateUserMutation({
     onCompleted() {
       refetchUser()
 
@@ -62,7 +64,7 @@ export function UpdateProfileForm() {
   return (
     <form
       onSubmit={form.onSubmit(async (_, input) => {
-        await updateProfile({ variables: { input } })
+        await updateUser({ variables: { id: user.id, input } })
 
         if (!!input.newEmail) {
           pushAlert({
