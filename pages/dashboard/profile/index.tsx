@@ -1,5 +1,15 @@
-import UnlinkIcon from '@mui/icons-material/LinkOffOutlined'
-import { Accordion, AccordionDetails, AccordionSummary, Button, ButtonGroup, Grid, Tooltip } from '@mui/material'
+import UnlinkIcon from '@mui/icons-material/CloseOutlined'
+import OpenIcon from '@mui/icons-material/OpenInNewOutlined'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Button,
+  ButtonGroup,
+  Grid,
+  Tooltip,
+  Typography,
+} from '@mui/material'
 import React from 'react'
 import { AccordionContext } from '../../../components/common/AccordionContext'
 import { withDashboardLayout } from '../../../components/dashboard/Layout'
@@ -69,12 +79,34 @@ function Profile() {
 function SocialButton(props: { icon: React.ReactNode; name: string; color: string; linked?: boolean }) {
   if (props.linked) {
     return (
-      <ButtonGroup fullWidth variant="outlined" color="inherit" sx={{ color: props.color }}>
-        <Button startIcon={props.icon} sx={{ textTransform: 'unset' }}>
+      <ButtonGroup fullWidth variant="contained">
+        <Button
+          startIcon={props.icon}
+          sx={(theme) => ({
+            color: 'white',
+            bgcolor: props.color,
+            textTransform: 'unset',
+            justifyContent: 'flex-start',
+            borderColor: theme.palette.background.paper + ' !important',
+            ':hover': {
+              bgcolor: props.color,
+            },
+          })}
+        >
           @username
         </Button>
         <Tooltip title={`Unlink ${props.name}`}>
-          <Button sx={{ maxWidth: 40 }}>
+          <Button
+            sx={{
+              maxWidth: 40,
+              color: 'white',
+              bgcolor: props.color,
+              textTransform: 'unset',
+              ':hover': {
+                bgcolor: props.color,
+              },
+            }}
+          >
             <UnlinkIcon fontSize="small" />
           </Button>
         </Tooltip>
@@ -86,11 +118,21 @@ function SocialButton(props: { icon: React.ReactNode; name: string; color: strin
     <Button
       fullWidth
       color="inherit"
-      variant="outlined"
+      endIcon={<OpenIcon />}
       startIcon={props.icon}
-      sx={{ color: props.color, textTransform: 'unset' }}
+      sx={{
+        color: 'white',
+        bgcolor: props.color,
+        textTransform: 'unset',
+        justifyContent: 'flex-start',
+        ':hover': {
+          bgcolor: props.color,
+        },
+      }}
     >
-      Link {props.name}
+      <Typography variant="inherit" flexGrow={1} textAlign="start">
+        Link {props.name}
+      </Typography>
     </Button>
   )
 }

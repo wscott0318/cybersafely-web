@@ -1,20 +1,19 @@
 import RemoveIcon from '@mui/icons-material/PersonRemoveOutlined'
 import { ListItemIcon, ListItemText, MenuItem } from '@mui/material'
-import { namedOperations, useRemoveParentMutation } from '../../types/graphql'
+import { namedOperations, useRemoveUserRoleMutation } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { DropDownButton } from '../common/DropDownButton'
 
 type ParentActionsProps = {
-  parentId: string
-  childId: string
+  userRoleId: string
 }
 
-export function ParentActions({ parentId, childId }: ParentActionsProps) {
+export function ParentActions({ userRoleId }: ParentActionsProps) {
   const { pushAlert } = useAlert()
 
-  const [removeParent] = useRemoveParentMutation({
-    variables: { id: parentId, childId },
-    refetchQueries: [namedOperations.Query.parents],
+  const [removeUserRole] = useRemoveUserRoleMutation({
+    variables: { id: userRoleId },
+    refetchQueries: [namedOperations.Query.users],
   })
 
   return (
@@ -29,7 +28,7 @@ export function ParentActions({ parentId, childId }: ParentActionsProps) {
             title: 'Remove Parent',
             message: 'Are you sure you want to remove this parent?',
             confirm: () => {
-              removeParent()
+              removeUserRole()
             },
           })
         }}

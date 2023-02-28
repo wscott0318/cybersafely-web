@@ -52,7 +52,7 @@ export function UpdatePasswordForm() {
         <TextField
           required
           type="password"
-          label="Old Password"
+          label="Password"
           error={form.hasError('oldPassword')}
           value={form.value.oldPassword ?? ''}
           helperText={form.getError('oldPassword')}
@@ -71,7 +71,7 @@ export function UpdatePasswordForm() {
         <TextField
           required
           type="password"
-          label="Repeat New Password"
+          label="Repeat Password"
           error={form.hasError('repeatNewPassword')}
           value={form.value.repeatNewPassword ?? ''}
           helperText={form.getError('repeatNewPassword')}

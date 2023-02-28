@@ -24,8 +24,7 @@ const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
   },
   {
     width: 350,
-    sortable: false,
-    field: 'address.formatted',
+    field: 'address',
     headerName: 'Address',
     valueGetter(params) {
       return params.row.address?.formatted
@@ -82,7 +81,7 @@ function Schools() {
           >
             Create School
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({})} />
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
         </DataGridActions>
       }
     />

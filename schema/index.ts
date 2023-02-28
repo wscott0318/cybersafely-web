@@ -205,6 +205,14 @@ export type PageInput = {
   size?: InputMaybe<Scalars['Int']>;
 };
 
+export type ParentRole = {
+  __typename?: 'ParentRole';
+  childUser: User;
+  id: Scalars['ID'];
+  status: UserRoleStatusEnum;
+  type: UserRoleTypeEnum;
+};
+
 export type Query = {
   __typename?: 'Query';
   school: School;
@@ -223,6 +231,7 @@ export type QuerySchoolArgs = {
 export type QuerySchoolsArgs = {
   order?: InputMaybe<SchoolOrder>;
   page?: InputMaybe<PageInput>;
+  search?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -236,6 +245,7 @@ export type QueryUsersArgs = {
   fromId?: InputMaybe<Scalars['ID']>;
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<PageInput>;
+  search?: InputMaybe<Scalars['String']>;
 };
 
 export type RegisterWithEmailInput = {
@@ -267,7 +277,11 @@ export type SchoolMemberCountArgs = {
 };
 
 export type SchoolOrder = {
+  address?: InputMaybe<OrderDirectionEnum>;
   createdAt?: InputMaybe<OrderDirectionEnum>;
+  memberCount?: InputMaybe<OrderDirectionEnum>;
+  name?: InputMaybe<OrderDirectionEnum>;
+  phone?: InputMaybe<OrderDirectionEnum>;
 };
 
 export type SchoolPage = {
@@ -356,6 +370,9 @@ export type UserRolesArgs = {
 
 export type UserOrder = {
   createdAt?: InputMaybe<OrderDirectionEnum>;
+  email?: InputMaybe<OrderDirectionEnum>;
+  name?: InputMaybe<OrderDirectionEnum>;
+  roles?: InputMaybe<OrderDirectionEnum>;
 };
 
 export type UserPage = {
@@ -364,7 +381,7 @@ export type UserPage = {
   page: Page;
 };
 
-export type UserRole = AnyUserRole | SchoolRole;
+export type UserRole = AnyUserRole | ParentRole | SchoolRole;
 
 export const UserRoleStatusEnum = {
   Accepted: 'ACCEPTED',
@@ -400,7 +417,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string } }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string } }> } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -414,6 +431,7 @@ export type PageFragmentFragment = { __typename?: 'Page', index: number, size: n
 export type SchoolsQueryVariables = Exact<{
   page?: InputMaybe<PageInput>;
   order?: InputMaybe<SchoolOrder>;
+  search?: InputMaybe<Scalars['String']>;
 }>;
 
 
@@ -438,10 +456,18 @@ export type UsersQueryVariables = Exact<{
   fromId?: InputMaybe<Scalars['ID']>;
   page?: InputMaybe<PageInput>;
   order?: InputMaybe<UserOrder>;
+  search?: InputMaybe<Scalars['String']>;
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> }> } };
+
+export type UserQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> } };
 
 export type UpdateSchoolMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -591,6 +617,9 @@ export const MyUserDocument = gql`
           id
         }
       }
+      ... on ParentRole {
+        type
+      }
     }
   }
 }
@@ -660,8 +689,8 @@ export type LoginWithEmailMutationHookResult = ReturnType<typeof useLoginWithEma
 export type LoginWithEmailMutationResult = Apollo.MutationResult<LoginWithEmailMutation>;
 export type LoginWithEmailMutationOptions = Apollo.BaseMutationOptions<LoginWithEmailMutation, LoginWithEmailMutationVariables>;
 export const SchoolsDocument = gql`
-    query schools($page: PageInput, $order: SchoolOrder) {
-  schools(page: $page, order: $order) {
+    query schools($page: PageInput, $order: SchoolOrder, $search: String) {
+  schools(page: $page, order: $order, search: $search) {
     page {
       ...PageFragment
     }
@@ -696,6 +725,7 @@ export const SchoolsDocument = gql`
  *   variables: {
  *      page: // value for 'page'
  *      order: // value for 'order'
+ *      search: // value for 'search'
  *   },
  * });
  */
@@ -796,8 +826,8 @@ export type SchoolQueryHookResult = ReturnType<typeof useSchoolQuery>;
 export type SchoolLazyQueryHookResult = ReturnType<typeof useSchoolLazyQuery>;
 export type SchoolQueryResult = Apollo.QueryResult<SchoolQuery, SchoolQueryVariables>;
 export const UsersDocument = gql`
-    query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder) {
-  users(from: $from, fromId: $fromId, page: $page, order: $order) {
+    query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder, $search: String) {
+  users(from: $from, fromId: $fromId, page: $page, order: $order, search: $search) {
     page {
       ...PageFragment
     }
@@ -824,6 +854,14 @@ export const UsersDocument = gql`
             id
           }
         }
+        ... on ParentRole {
+          id
+          type
+          status
+          childUser {
+            id
+          }
+        }
       }
     }
   }
@@ -846,6 +884,7 @@ export const UsersDocument = gql`
  *      fromId: // value for 'fromId'
  *      page: // value for 'page'
  *      order: // value for 'order'
+ *      search: // value for 'search'
  *   },
  * });
  */
@@ -860,6 +899,71 @@ export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<User
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersQueryResult = Apollo.QueryResult<UsersQuery, UsersQueryVariables>;
+export const UserDocument = gql`
+    query user($id: ID!) {
+  user(id: $id) {
+    id
+    createdAt
+    name
+    email
+    emailConfirmed
+    avatar {
+      url
+    }
+    roles {
+      ... on AnyUserRole {
+        id
+        type
+        status
+      }
+      ... on SchoolRole {
+        id
+        type
+        status
+        school {
+          id
+        }
+      }
+      ... on ParentRole {
+        id
+        type
+        status
+        childUser {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useUserQuery__
+ *
+ * To run a query within a React component, call `useUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUserQuery(baseOptions: Apollo.QueryHookOptions<UserQuery, UserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+      }
+export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQuery, UserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<UserQuery, UserQueryVariables>(UserDocument, options);
+        }
+export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
+export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
+export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
 export const UpdateSchoolDocument = gql`
     mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
   updateSchool(id: $id, input: $input) {
@@ -1432,6 +1536,7 @@ export const namedOperations = {
     schools: 'schools',
     school: 'school',
     users: 'users',
+    user: 'user',
     settings: 'settings'
   },
   Mutation: {

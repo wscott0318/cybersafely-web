@@ -3,7 +3,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Button, CircularProgress, Container, Stack, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { EmptyFileAnimation } from '../../../../../components/common/EmptyFileAnimation'
@@ -29,7 +29,7 @@ type Props = {
   schoolId: string
 }
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (schoolId) => [
   {
     width: 250,
     field: 'name',
@@ -51,14 +51,14 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
   {
     width: 200,
-    field: 'roles',
+    field: 'role',
     sortable: false,
-    headerName: 'Roles',
+    headerName: 'Role',
     valueGetter(params) {
-      return params.row.roles
+      return params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
     },
     renderCell(params) {
-      return <UserRoles roles={params.value} canRemove />
+      return <UserRoles roles={[params.value]} />
     },
   },
   {
@@ -74,7 +74,8 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <MemberActions memberId={params.row.id} />
+      const userRole = params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
+      return <MemberActions userRoleId={userRole!.id} />
     },
   },
 ]
@@ -90,6 +91,8 @@ function SchoolMembers({ schoolId }: Props) {
     refetchQueries: [namedOperations.Query.users],
   })
 
+  const columns = useMemo(() => getColumns(schoolId), [schoolId])
+
   return (
     <DataGridViewer
       query={query}
@@ -97,7 +100,7 @@ function SchoolMembers({ schoolId }: Props) {
       columns={columns}
       data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      href={(e) => `/dashboard/staff/schools/${schoolId}/members/${e.id}`}
+      href={(e) => `/dashboard/staff/schools/${schoolId}/users/${e.id}`}
       actions={
         <DataGridActions>
           <Button
@@ -125,7 +128,7 @@ function SchoolMembers({ schoolId }: Props) {
           >
             Invite Member
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({})} />
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
         </DataGridActions>
       }
     />

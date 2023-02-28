@@ -138,6 +138,12 @@ export function createTheme(isDark: boolean) {
           disableElevation: true,
         },
       },
+      MuiButtonGroup: {
+        defaultProps: {
+          variant: 'contained',
+          disableElevation: true,
+        },
+      },
       MuiChip: {
         defaultProps: {
           size: 'small',

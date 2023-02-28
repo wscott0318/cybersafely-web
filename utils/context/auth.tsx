@@ -48,7 +48,7 @@ export function useUser() {
 export function useSchoolRole() {
   const context = useContext(AuthContext)
 
-  const role = useMemo(() => {
+  const userRole = useMemo(() => {
     if (context?.user) {
       const schoolId = StorageManager.get('schoolId')
 
@@ -64,5 +64,5 @@ export function useSchoolRole() {
     }
   }, [context?.user])
 
-  return role
+  return userRole
 }

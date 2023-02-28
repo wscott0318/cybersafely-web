@@ -9,21 +9,21 @@ import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../.
 import { NavigationActions, NavigationView } from '../../../../../../../components/common/NavigationView'
 import { SearchBar } from '../../../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../../../components/common/UserEmail'
+import { UserRoles } from '../../../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
 import { ParentActions } from '../../../../../../../components/data/ParentActions'
 import { InviteParentForm } from '../../../../../../../components/form/InviteParentForm'
 import { ApolloClientProvider } from '../../../../../../../libs/apollo'
 import {
   namedOperations,
-  ParentRole,
-  ParentsQuery,
-  useInviteParentMutation,
-  useMemberQuery,
-  useParentsQuery,
-} from '../../../../../../../types/graphql'
+  useCreateUserRoleMutation,
+  UsersQuery,
+  useUserQuery,
+  useUsersQuery,
+} from '../../../../../../../schema'
 import { useAlert } from '../../../../../../../utils/context/alert'
 
-const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (childId) => [
+const getColumns: (userId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (userId) => [
   {
     width: 250,
     field: 'name',
@@ -45,12 +45,14 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['p
   },
   {
     width: 200,
-    field: 'relation',
+    field: 'role',
     sortable: false,
-    headerName: 'Relation',
+    headerName: 'Role',
     valueGetter(params) {
-      const role = params.row.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
-      return role?.relation
+      return params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === userId)
+    },
+    renderCell(params) {
+      return <UserRoles roles={[params.value]} />
     },
   },
   {
@@ -66,35 +68,36 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['p
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <ParentActions parentId={params.row.id} childId={childId} />
+      const userRole = params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === userId)
+      return <ParentActions userRoleId={userRole!.id} />
     },
   },
 ]
 
 type Props = {
   schoolId: string
-  memberId: string
+  userId: string
 }
 
-function MemberParents({ memberId }: Props) {
+function MemberParents({ userId }: Props) {
   const { pushAlert } = useAlert()
 
-  const query = useParentsQuery({
-    variables: { childId: memberId },
+  const query = useUsersQuery({
+    variables: { from: 'CHILD', fromId: userId },
   })
 
-  const [inviteParent] = useInviteParentMutation({
-    refetchQueries: [namedOperations.Query.parents],
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
   })
 
-  const columns = useMemo(() => getColumns(memberId), [memberId])
+  const columns = useMemo(() => getColumns(userId), [userId])
 
   return (
     <DataGridViewer
       query={query}
       title="Parents"
       columns={columns}
-      data={query.data?.parents}
+      data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
@@ -107,8 +110,8 @@ function MemberParents({ memberId }: Props) {
                 title: 'Invite Parent',
                 content: InviteParentForm,
                 message: 'Enter the information below',
-                result: (variables) => {
-                  inviteParent({ variables: { ...variables, childId: memberId } })
+                result: ({ email }) => {
+                  createUserRole({ variables: { input: { email, type: 'PARENT', typeId: userId } } })
                 },
               })
             }}
@@ -125,14 +128,14 @@ function MemberParents({ memberId }: Props) {
 function MemberWrapper(props: Props) {
   const [tab, setTab] = useState('parents')
 
-  const { data } = useMemberQuery({
-    variables: { id: props.memberId },
+  const { data } = useUserQuery({
+    variables: { id: props.userId },
   })
 
   return (
     <TabContext value={tab}>
       <NavigationView
-        title={data?.member.name ?? 'Member'}
+        title={data?.user.name ?? 'Member'}
         back={`/dashboard/staff/schools/${props.schoolId}`}
         actions={
           <NavigationActions>
@@ -160,8 +163,8 @@ function Member(props: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const schoolId = ctx.params!.schoolId as string
-  const memberId = ctx.params!.memberId as string
-  return { props: { schoolId, memberId } }
+  const userId = ctx.params!.userId as string
+  return { props: { schoolId, userId } }
 }
 
 export default withDashboardLayout(Member, {

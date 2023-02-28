@@ -34,7 +34,6 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
     width: 350,
     field: 'roles',
-    sortable: false,
     headerName: 'Roles',
     valueGetter(params) {
       return params.row.roles
@@ -88,7 +87,7 @@ function Users() {
           >
             Invite Staff
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({})} />
+          <SearchBar onSearch={(search) => query.refetch({ search })} />
         </DataGridActions>
       }
     />

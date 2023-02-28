@@ -18,6 +18,9 @@ query myUser($id: ID!) {
           id
         }
       }
+      ... on ParentRole {
+        type
+      }
     }
   }
 }
@@ -38,8 +41,8 @@ fragment PageFragment on Page {
   total
 }
 
-query schools($page: PageInput, $order: SchoolOrder) {
-  schools(page: $page, order: $order) {
+query schools($page: PageInput, $order: SchoolOrder, $search: String) {
+  schools(page: $page, order: $order, search: $search) {
     page {
       ...PageFragment
     }
@@ -88,8 +91,8 @@ query school($id: ID!) {
   }
 }
 
-query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder) {
-  users(from: $from, fromId: $fromId, page: $page, order: $order) {
+query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder, $search: String) {
+  users(from: $from, fromId: $fromId, page: $page, order: $order, search: $search) {
     page {
       ...PageFragment
     }
@@ -115,6 +118,50 @@ query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrd
           school {
             id
           }
+        }
+        ... on ParentRole {
+          id
+          type
+          status
+          childUser {
+            id
+          }
+        }
+      }
+    }
+  }
+}
+
+query user($id: ID!) {
+  user(id: $id) {
+    id
+    createdAt
+    name
+    email
+    emailConfirmed
+    avatar {
+      url
+    }
+    roles {
+      ... on AnyUserRole {
+        id
+        type
+        status
+      }
+      ... on SchoolRole {
+        id
+        type
+        status
+        school {
+          id
+        }
+      }
+      ... on ParentRole {
+        id
+        type
+        status
+        childUser {
+          id
         }
       }
     }
