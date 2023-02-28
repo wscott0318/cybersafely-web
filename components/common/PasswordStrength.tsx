@@ -7,7 +7,7 @@ export function checkPasswordStrength(password: string) {
 }
 
 type PasswordStrengthProps = {
-  password?: string
+  password?: string | null
 }
 
 export function PasswordStrength(props: PasswordStrengthProps) {

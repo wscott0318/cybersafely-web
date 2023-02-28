@@ -1,5 +1,4 @@
-import { Button, Divider, Link, Typography } from '@mui/material'
-import { Box, Stack } from '@mui/system'
+import { Box, Button, Divider, Link, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { CoverLayout } from '../../components/common/CoverLayout'
