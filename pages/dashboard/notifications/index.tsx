@@ -1,7 +1,8 @@
+import { EmptyFileAnimation } from '../../../components/common/EmptyFileAnimation'
 import { withDashboardLayout } from '../../../components/dashboard/Layout'
 
 function Notifications() {
-  return null
+  return <EmptyFileAnimation />
 }
 
 export default withDashboardLayout(Notifications, {

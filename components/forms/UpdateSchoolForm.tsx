@@ -24,8 +24,6 @@ function Loading() {
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
-        <Skeleton variant="rounded" height={56} />
-        <Skeleton variant="rounded" height={56} />
       </Stack>
     </Stack>
   )
@@ -53,9 +51,9 @@ function Render({
   const [updateAddress] = useUpdateAddressMutation()
 
   return (
-    <AccordionContext title="School" initialSelected={0}>
+    <AccordionContext title="School">
       <Accordion>
-        <AccordionSummary>Account</AccordionSummary>
+        <AccordionSummary>Information</AccordionSummary>
         <AccordionDetails>
           <Form
             submit="Update"

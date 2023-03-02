@@ -1,4 +1,5 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material'
 import { useCallback, useState } from 'react'
 import { AlertInternal, useAlert } from '../../utils/context/alert'
 
@@ -29,12 +30,24 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
       PaperProps={{
         sx: {
           border: 'none',
+          position: 'relative',
         },
       }}
     >
+      <IconButton
+        size="small"
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          top: theme.spacing(1),
+          right: theme.spacing(1),
+        })}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
       <DialogTitle>{alert.title}</DialogTitle>
       <DialogContent>
-        <DialogContentText>{alert.message}</DialogContentText>
+        {!!alert.message && <DialogContentText>{alert.message}</DialogContentText>}
         {alert.type === 'custom' && (
           <alert.content
             {...alert.props}

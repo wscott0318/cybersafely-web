@@ -91,7 +91,6 @@ function Members() {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Member',
-                message: 'Enter the information below',
                 content: InviteUserForm,
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: schoolRole!.school.id } } })

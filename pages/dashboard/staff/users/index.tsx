@@ -77,7 +77,6 @@ function Users() {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Staff',
-                message: 'Enter an e-mail below',
                 content: InviteUserForm,
                 props: { allow: ['STAFF'] },
                 result: ({ email }) => {

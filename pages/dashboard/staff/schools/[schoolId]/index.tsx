@@ -6,13 +6,14 @@ import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { EmptyFileAnimation } from '../../../../../components/common/EmptyFileAnimation'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
+import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { MemberActions } from '../../../../../components/data/MemberActions'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
 import { ApolloClientProvider } from '../../../../../libs/apollo'
@@ -75,7 +76,11 @@ const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['us
     type: 'actions',
     renderCell(params) {
       const userRole = params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
-      return <MemberActions userRoleId={userRole!.id} />
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Member" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
@@ -100,7 +105,7 @@ function SchoolMembers({ schoolId }: Props) {
       columns={columns}
       data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      href={(e) => `/dashboard/staff/schools/${schoolId}/users/${e.id}`}
+      href={(e) => `/dashboard/staff/schools/${schoolId}/members/${e.id}`}
       actions={
         <DataGridActions>
           <Button
@@ -110,7 +115,6 @@ function SchoolMembers({ schoolId }: Props) {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Member',
-                message: 'Enter the information below',
                 content: InviteUserForm,
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: schoolId } } })

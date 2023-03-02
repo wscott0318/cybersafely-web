@@ -12,6 +12,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { useCallback } from 'react'
 import { z } from 'zod'
 import { UserQuery, useUpdatePasswordMutation, useUpdateUserMutation, useUserQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
@@ -100,8 +101,6 @@ function Loading() {
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
-        <Skeleton variant="rounded" height={56} />
-        <Skeleton variant="rounded" height={56} />
       </Stack>
     </Stack>
   )
@@ -133,6 +132,8 @@ const passwordSchema = z
 
 function Render({
   onChange,
+  include,
+  exclude,
   data: { user },
   query: { refetch },
 }: UpdateUserFormProps & QueryLoaderRenderProps<UserQuery>) {
@@ -141,124 +142,147 @@ function Render({
   const [updateUser] = useUpdateUserMutation()
   const [updatePassword] = useUpdatePasswordMutation()
 
-  return (
-    <AccordionContext title="Profile" initialSelected={0}>
-      <Accordion>
-        <AccordionSummary>Account</AccordionSummary>
-        <AccordionDetails>
-          <Form
-            submit="Update"
-            schema={accountSchema}
-            defaultValues={{
-              name: user.name,
-              newEmail: user.email,
-            }}
-            onSubmit={async (data, input) => {
-              await updateUser({ variables: { id: user.id, input } })
-              await refetch()
-              onChange?.()
+  const isShown = useCallback(
+    (section: Section) => {
+      if (include && include.length > 0) {
+        return include.includes(section)
+      }
+      if (exclude && exclude.length > 0) {
+        return !exclude.includes(section)
+      }
+      return false
+    },
+    [include, exclude]
+  )
 
-              if (!!input.newEmail) {
-                pushAlert({
-                  type: 'alert',
-                  title: 'Verify E-mail',
-                  message: 'Please check your inbox and follow the instructions',
-                })
-              }
-            }}
-          >
-            <Stack direction="row" alignItems="center" spacing={3}>
-              <FormAvatar
-                forId={user.id}
-                for="USER_AVATAR"
-                image={user.avatar}
-                onChange={async () => {
-                  await refetch()
-                  onChange?.()
-                }}
-              />
-              <Stack flexGrow={1}>
-                <FormText name="newEmail" label="E-mail" type="email" required />
-                <FormText name="name" label="Name" required />
+  return (
+    <AccordionContext title="Profile">
+      {isShown('information') && (
+        <Accordion>
+          <AccordionSummary>Information</AccordionSummary>
+          <AccordionDetails>
+            <Form
+              submit="Update"
+              schema={accountSchema}
+              defaultValues={{
+                name: user.name,
+                newEmail: user.email,
+              }}
+              onSubmit={async (data, input) => {
+                await updateUser({ variables: { id: user.id, input } })
+                await refetch()
+                onChange?.()
+
+                if (!!input.newEmail) {
+                  pushAlert({
+                    type: 'alert',
+                    title: 'Verify E-mail',
+                    message: 'Please check your inbox and follow the instructions',
+                  })
+                }
+              }}
+            >
+              <Stack direction="row" alignItems="center" spacing={3}>
+                <FormAvatar
+                  forId={user.id}
+                  for="USER_AVATAR"
+                  image={user.avatar}
+                  onChange={async () => {
+                    await refetch()
+                    onChange?.()
+                  }}
+                />
+                <Stack flexGrow={1}>
+                  <FormText name="newEmail" label="E-mail" type="email" required />
+                  <FormText name="name" label="Name" required />
+                </Stack>
               </Stack>
-            </Stack>
-          </Form>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary>Password</AccordionSummary>
-        <AccordionDetails>
-          <Form
-            submit="Update"
-            schema={passwordSchema}
-            onSubmit={async ({ newPassword, oldPassword }) => {
-              await updatePassword({ variables: { input: { newPassword, oldPassword } } })
-            }}
-          >
-            <Stack>
-              <FormText name="oldPassword" label="Current password" required type="password" hidePasswordStrength />
-              <FormText name="newPassword" label="New password" required type="password" />
-              <FormText
-                required
-                type="password"
-                hidePasswordStrength
-                label="Repeat password"
-                name="repeatNewPassword"
-              />
-            </Stack>
-          </Form>
-        </AccordionDetails>
-      </Accordion>
-      <Accordion>
-        <AccordionSummary>Socials</AccordionSummary>
-        <AccordionDetails>
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <SocialButton
-                icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
-                name="TikTok"
-                color="#000"
-                linked
-              />
+            </Form>
+          </AccordionDetails>
+        </Accordion>
+      )}
+      {isShown('password') && (
+        <Accordion>
+          <AccordionSummary>Password</AccordionSummary>
+          <AccordionDetails>
+            <Form
+              submit="Update"
+              schema={passwordSchema}
+              onSubmit={async ({ newPassword, oldPassword }) => {
+                await updatePassword({ variables: { input: { newPassword, oldPassword } } })
+              }}
+            >
+              <Stack>
+                <FormText name="oldPassword" label="Current password" required type="password" hidePasswordStrength />
+                <FormText name="newPassword" label="New password" required type="password" />
+                <FormText
+                  required
+                  type="password"
+                  hidePasswordStrength
+                  label="Repeat password"
+                  name="repeatNewPassword"
+                />
+              </Stack>
+            </Form>
+          </AccordionDetails>
+        </Accordion>
+      )}
+      {isShown('socials') && (
+        <Accordion>
+          <AccordionSummary>Socials</AccordionSummary>
+          <AccordionDetails>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <SocialButton
+                  icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
+                  name="TikTok"
+                  color="#000"
+                  linked
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <SocialButton
+                  icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
+                  name="Twitter"
+                  color="#1d9bf0"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <SocialButton
+                  icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
+                  name="Instagram"
+                  color="#ff543e"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <SocialButton
+                  icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
+                  name="Facebook"
+                  color="#0062e0"
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <SocialButton
+                  icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
+                  name="YouTube"
+                  color="#f61c0d"
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-              <SocialButton
-                icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
-                name="Twitter"
-                color="#1d9bf0"
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <SocialButton
-                icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
-                name="Instagram"
-                color="#ff543e"
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <SocialButton
-                icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
-                name="Facebook"
-                color="#0062e0"
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <SocialButton
-                icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
-                name="YouTube"
-                color="#f61c0d"
-              />
-            </Grid>
-          </Grid>
-        </AccordionDetails>
-      </Accordion>
+          </AccordionDetails>
+        </Accordion>
+      )}
     </AccordionContext>
   )
 }
 
+type Section = 'information' | 'password' | 'socials'
+
 type UpdateUserFormProps = {
   userId: string
   onChange?: () => void
+  include?: Section[]
+  exclude?: Section[]
 }
 
 export function UpdateUserForm(props: UpdateUserFormProps) {

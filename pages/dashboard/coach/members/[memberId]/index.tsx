@@ -5,10 +5,11 @@ import { GetServerSideProps } from 'next'
 import { useMemo } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../../components/common/DropDownButton'
+import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { ParentActions } from '../../../../../components/data/ParentActions'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import {
   namedOperations,
@@ -53,7 +54,11 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<UsersQuery['use
     type: 'actions',
     renderCell(params) {
       const userRole = params.row.roles.find((e) => e.type === 'PARENT')
-      return <ParentActions userRoleId={userRole!.id} />
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Parent" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
@@ -99,7 +104,6 @@ function Member({ memberId }: Props) {
                 type: 'custom',
                 title: 'Invite Parent',
                 content: InviteUserForm,
-                message: 'Enter the information below',
                 props: { allow: ['PARENT'] },
                 result: ({ email }) => {
                   createUserRole({

@@ -69,12 +69,6 @@ query schools($page: PageInput, $order: SchoolOrder, $search: String) {
   }
 }
 
-mutation createSchool($input: CreateSchoolInput!) {
-  createSchool(input: $input) {
-    id
-  }
-}
-
 query school($id: ID!) {
   school(id: $id) {
     id
@@ -95,6 +89,18 @@ query school($id: ID!) {
       city
       zip
     }
+  }
+}
+
+mutation createSchool($input: CreateSchoolInput!) {
+  createSchool(input: $input) {
+    id
+  }
+}
+
+mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
+  updateSchool(id: $id, input: $input) {
+    id
   }
 }
 
@@ -176,8 +182,8 @@ query user($id: ID!) {
   }
 }
 
-mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
-  updateSchool(id: $id, input: $input) {
+mutation updateUser($id: ID!, $input: UpdateUserInput!) {
+  updateUser(id: $id, input: $input) {
     id
   }
 }
@@ -244,12 +250,6 @@ mutation updatePassword($input: UpdatePasswordInput!) {
   updatePassword(input: $input)
 }
 
-mutation updateUser($id: ID!, $input: UpdateUserInput!) {
-  updateUser(id: $id, input: $input) {
-    id
-  }
-}
-
 mutation finalizeAccount($input: FinalizeAccountInput!) {
   finalizeAccount(input: $input) {
     user {
@@ -306,7 +306,7 @@ query statsForStaff($days: Int!) {
   }
 }
 
-query statsForCoach($schoolId: ID!, $days: Int!) {
+query statsForSchool($schoolId: ID!, $days: Int!) {
   statsOfCreatedMembersInSchool(schoolId: $schoolId, days: $days) {
     ...StatsByDayFragment
   }

@@ -6,12 +6,13 @@ import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../../../../components/common/DropDownButton'
 import { NavigationActions, NavigationView } from '../../../../../../../components/common/NavigationView'
+import { RemoveUserRoleMenuItem } from '../../../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
-import { ParentActions } from '../../../../../../../components/data/ParentActions'
 import { InviteUserForm } from '../../../../../../../components/forms/InviteUserForm'
 import { ApolloClientProvider } from '../../../../../../../libs/apollo'
 import {
@@ -23,7 +24,7 @@ import {
 } from '../../../../../../../schema'
 import { useAlert } from '../../../../../../../utils/context/alert'
 
-const getColumns: (userId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (userId) => [
+const getColumns: (memberId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (memberId) => [
   {
     width: 250,
     field: 'name',
@@ -49,7 +50,7 @@ const getColumns: (userId: string) => GridColumns<InferNodeType<UsersQuery['user
     sortable: false,
     headerName: 'Role',
     valueGetter(params) {
-      return params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === userId)
+      return params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === memberId)
     },
     renderCell(params) {
       return <UserRoles roles={[params.value]} />
@@ -68,29 +69,33 @@ const getColumns: (userId: string) => GridColumns<InferNodeType<UsersQuery['user
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      const userRole = params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === userId)
-      return <ParentActions userRoleId={userRole!.id} />
+      const userRole = params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === memberId)
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Parent" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
 
 type Props = {
   schoolId: string
-  userId: string
+  memberId: string
 }
 
-function MemberParents({ userId }: Props) {
+function MemberParents({ memberId }: Props) {
   const { pushAlert } = useAlert()
 
   const query = useUsersQuery({
-    variables: { from: 'CHILD', fromId: userId },
+    variables: { from: 'CHILD', fromId: memberId },
   })
 
   const [createUserRole] = useCreateUserRoleMutation({
     refetchQueries: [namedOperations.Query.users],
   })
 
-  const columns = useMemo(() => getColumns(userId), [userId])
+  const columns = useMemo(() => getColumns(memberId), [memberId])
 
   return (
     <DataGridViewer
@@ -109,7 +114,6 @@ function MemberParents({ userId }: Props) {
                 type: 'custom',
                 title: 'Invite Parent',
                 content: InviteUserForm,
-                message: 'Enter the information below',
                 props: { allow: ['PARENT'] },
                 result: ({ email }) => {
                   createUserRole({
@@ -117,7 +121,7 @@ function MemberParents({ userId }: Props) {
                       input: {
                         email,
                         type: 'PARENT',
-                        relationId: userId,
+                        relationId: memberId,
                       },
                     },
                   })
@@ -138,7 +142,7 @@ function MemberWrapper(props: Props) {
   const [tab, setTab] = useState('parents')
 
   const { data } = useUserQuery({
-    variables: { id: props.userId },
+    variables: { id: props.memberId },
   })
 
   return (
@@ -172,8 +176,8 @@ function Member(props: Props) {
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const schoolId = ctx.params!.schoolId as string
-  const userId = ctx.params!.userId as string
-  return { props: { schoolId, userId } }
+  const memberId = ctx.params!.memberId as string
+  return { props: { schoolId, memberId } }
 }
 
 export default withDashboardLayout(Member, {

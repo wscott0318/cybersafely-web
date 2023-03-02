@@ -4,11 +4,12 @@ import { GridColumns } from '@mui/x-data-grid'
 import { useMemo } from 'react'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../components/common/DropDownButton'
+import { RemoveUserRoleMenuItem } from '../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { MemberActions } from '../../../../components/data/MemberActions'
 import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
 import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
@@ -60,7 +61,11 @@ const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['us
     type: 'actions',
     renderCell(params) {
       const userRole = params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
-      return <MemberActions userRoleId={userRole!.id} />
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Member" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
@@ -96,7 +101,6 @@ function Members() {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Member',
-                message: 'Enter the information below',
                 content: InviteUserForm,
                 props: { allow: ['ADMIN', 'COACH', 'ATHLETE'] },
                 result: ({ email, type }) => {

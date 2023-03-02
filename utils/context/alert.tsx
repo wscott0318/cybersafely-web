@@ -2,7 +2,7 @@ import React, { createContext, useCallback, useContext, useRef, useState } from 
 
 type Alert<P, T> = {
   title: string
-  message: string
+  message?: string
 } & (
   | {
       type: 'alert'

@@ -513,6 +513,13 @@ export type SchoolsQueryVariables = Exact<{
 
 export type SchoolsQuery = { __typename?: 'Query', schools: { __typename?: 'SchoolPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'School', id: string, name: string, phone?: string | null, createdAt: string, memberCount: number, logo?: { __typename?: 'Image', url: string } | null, address?: { __typename?: 'Address', formatted: string } | null }> } };
 
+export type SchoolQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, phone?: string | null, logo?: { __typename?: 'Image', id: string, url: string } | null, cover?: { __typename?: 'Image', id: string, url: string } | null, address?: { __typename?: 'Address', id: string, street: string, state: string, city: string, zip: string } | null } };
+
 export type CreateSchoolMutationVariables = Exact<{
   input: CreateSchoolInput;
 }>;
@@ -520,12 +527,13 @@ export type CreateSchoolMutationVariables = Exact<{
 
 export type CreateSchoolMutation = { __typename?: 'Mutation', createSchool: { __typename?: 'School', id: string } };
 
-export type SchoolQueryVariables = Exact<{
+export type UpdateSchoolMutationVariables = Exact<{
   id: Scalars['ID'];
+  input: UpdateSchoolInput;
 }>;
 
 
-export type SchoolQuery = { __typename?: 'Query', school: { __typename?: 'School', id: string, name: string, phone?: string | null, logo?: { __typename?: 'Image', id: string, url: string } | null, cover?: { __typename?: 'Image', id: string, url: string } | null, address?: { __typename?: 'Address', id: string, street: string, state: string, city: string, zip: string } | null } };
+export type UpdateSchoolMutation = { __typename?: 'Mutation', updateSchool: { __typename?: 'School', id: string } };
 
 export type UsersQueryVariables = Exact<{
   from?: InputMaybe<UsersFromEnum>;
@@ -545,13 +553,13 @@ export type UserQueryVariables = Exact<{
 
 export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> } };
 
-export type UpdateSchoolMutationVariables = Exact<{
+export type UpdateUserMutationVariables = Exact<{
   id: Scalars['ID'];
-  input: UpdateSchoolInput;
+  input: UpdateUserInput;
 }>;
 
 
-export type UpdateSchoolMutation = { __typename?: 'Mutation', updateSchool: { __typename?: 'School', id: string } };
+export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: string } };
 
 export type PrepareUploadMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -628,14 +636,6 @@ export type UpdatePasswordMutationVariables = Exact<{
 
 export type UpdatePasswordMutation = { __typename?: 'Mutation', updatePassword: boolean };
 
-export type UpdateUserMutationVariables = Exact<{
-  id: Scalars['ID'];
-  input: UpdateUserInput;
-}>;
-
-
-export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'User', id: string } };
-
 export type FinalizeAccountMutationVariables = Exact<{
   input: FinalizeAccountInput;
 }>;
@@ -680,13 +680,13 @@ export type StatsForStaffQueryVariables = Exact<{
 
 export type StatsForStaffQuery = { __typename?: 'Query', statsOfCreatedUsers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfCreatedSchools: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfCreatedMembers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfCreatedParents: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
 
-export type StatsForCoachQueryVariables = Exact<{
+export type StatsForSchoolQueryVariables = Exact<{
   schoolId: Scalars['ID'];
   days: Scalars['Int'];
 }>;
 
 
-export type StatsForCoachQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
+export type StatsForSchoolQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -856,39 +856,6 @@ export function useSchoolsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sc
 export type SchoolsQueryHookResult = ReturnType<typeof useSchoolsQuery>;
 export type SchoolsLazyQueryHookResult = ReturnType<typeof useSchoolsLazyQuery>;
 export type SchoolsQueryResult = Apollo.QueryResult<SchoolsQuery, SchoolsQueryVariables>;
-export const CreateSchoolDocument = gql`
-    mutation createSchool($input: CreateSchoolInput!) {
-  createSchool(input: $input) {
-    id
-  }
-}
-    `;
-export type CreateSchoolMutationFn = Apollo.MutationFunction<CreateSchoolMutation, CreateSchoolMutationVariables>;
-
-/**
- * __useCreateSchoolMutation__
- *
- * To run a mutation, you first call `useCreateSchoolMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSchoolMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSchoolMutation, { data, loading, error }] = useCreateSchoolMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useCreateSchoolMutation(baseOptions?: Apollo.MutationHookOptions<CreateSchoolMutation, CreateSchoolMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSchoolMutation, CreateSchoolMutationVariables>(CreateSchoolDocument, options);
-      }
-export type CreateSchoolMutationHookResult = ReturnType<typeof useCreateSchoolMutation>;
-export type CreateSchoolMutationResult = Apollo.MutationResult<CreateSchoolMutation>;
-export type CreateSchoolMutationOptions = Apollo.BaseMutationOptions<CreateSchoolMutation, CreateSchoolMutationVariables>;
 export const SchoolDocument = gql`
     query school($id: ID!) {
   school(id: $id) {
@@ -941,6 +908,73 @@ export function useSchoolLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Sch
 export type SchoolQueryHookResult = ReturnType<typeof useSchoolQuery>;
 export type SchoolLazyQueryHookResult = ReturnType<typeof useSchoolLazyQuery>;
 export type SchoolQueryResult = Apollo.QueryResult<SchoolQuery, SchoolQueryVariables>;
+export const CreateSchoolDocument = gql`
+    mutation createSchool($input: CreateSchoolInput!) {
+  createSchool(input: $input) {
+    id
+  }
+}
+    `;
+export type CreateSchoolMutationFn = Apollo.MutationFunction<CreateSchoolMutation, CreateSchoolMutationVariables>;
+
+/**
+ * __useCreateSchoolMutation__
+ *
+ * To run a mutation, you first call `useCreateSchoolMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSchoolMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSchoolMutation, { data, loading, error }] = useCreateSchoolMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateSchoolMutation(baseOptions?: Apollo.MutationHookOptions<CreateSchoolMutation, CreateSchoolMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSchoolMutation, CreateSchoolMutationVariables>(CreateSchoolDocument, options);
+      }
+export type CreateSchoolMutationHookResult = ReturnType<typeof useCreateSchoolMutation>;
+export type CreateSchoolMutationResult = Apollo.MutationResult<CreateSchoolMutation>;
+export type CreateSchoolMutationOptions = Apollo.BaseMutationOptions<CreateSchoolMutation, CreateSchoolMutationVariables>;
+export const UpdateSchoolDocument = gql`
+    mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
+  updateSchool(id: $id, input: $input) {
+    id
+  }
+}
+    `;
+export type UpdateSchoolMutationFn = Apollo.MutationFunction<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
+
+/**
+ * __useUpdateSchoolMutation__
+ *
+ * To run a mutation, you first call `useUpdateSchoolMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSchoolMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSchoolMutation, { data, loading, error }] = useUpdateSchoolMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateSchoolMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSchoolMutation, UpdateSchoolMutationVariables>(UpdateSchoolDocument, options);
+      }
+export type UpdateSchoolMutationHookResult = ReturnType<typeof useUpdateSchoolMutation>;
+export type UpdateSchoolMutationResult = Apollo.MutationResult<UpdateSchoolMutation>;
+export type UpdateSchoolMutationOptions = Apollo.BaseMutationOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
 export const UsersDocument = gql`
     query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder, $search: String) {
   users(from: $from, fromId: $fromId, page: $page, order: $order, search: $search) {
@@ -1081,40 +1115,40 @@ export function useUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UserQ
 export type UserQueryHookResult = ReturnType<typeof useUserQuery>;
 export type UserLazyQueryHookResult = ReturnType<typeof useUserLazyQuery>;
 export type UserQueryResult = Apollo.QueryResult<UserQuery, UserQueryVariables>;
-export const UpdateSchoolDocument = gql`
-    mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
-  updateSchool(id: $id, input: $input) {
+export const UpdateUserDocument = gql`
+    mutation updateUser($id: ID!, $input: UpdateUserInput!) {
+  updateUser(id: $id, input: $input) {
     id
   }
 }
     `;
-export type UpdateSchoolMutationFn = Apollo.MutationFunction<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
+export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
 
 /**
- * __useUpdateSchoolMutation__
+ * __useUpdateUserMutation__
  *
- * To run a mutation, you first call `useUpdateSchoolMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateSchoolMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateSchoolMutation, { data, loading, error }] = useUpdateSchoolMutation({
+ * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
  *   variables: {
  *      id: // value for 'id'
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateSchoolMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>) {
+export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateSchoolMutation, UpdateSchoolMutationVariables>(UpdateSchoolDocument, options);
+        return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options);
       }
-export type UpdateSchoolMutationHookResult = ReturnType<typeof useUpdateSchoolMutation>;
-export type UpdateSchoolMutationResult = Apollo.MutationResult<UpdateSchoolMutation>;
-export type UpdateSchoolMutationOptions = Apollo.BaseMutationOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
+export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
+export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
+export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const PrepareUploadDocument = gql`
     mutation prepareUpload {
   prepareUpload {
@@ -1476,40 +1510,6 @@ export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
 export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
 export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
-export const UpdateUserDocument = gql`
-    mutation updateUser($id: ID!, $input: UpdateUserInput!) {
-  updateUser(id: $id, input: $input) {
-    id
-  }
-}
-    `;
-export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, UpdateUserMutationVariables>;
-
-/**
- * __useUpdateUserMutation__
- *
- * To run a mutation, you first call `useUpdateUserMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateUserMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
- *   variables: {
- *      id: // value for 'id'
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserMutation, UpdateUserMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateUserMutation, UpdateUserMutationVariables>(UpdateUserDocument, options);
-      }
-export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
-export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
-export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
 export const FinalizeAccountDocument = gql`
     mutation finalizeAccount($input: FinalizeAccountInput!) {
   finalizeAccount(input: $input) {
@@ -1722,8 +1722,8 @@ export function useStatsForStaffLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type StatsForStaffQueryHookResult = ReturnType<typeof useStatsForStaffQuery>;
 export type StatsForStaffLazyQueryHookResult = ReturnType<typeof useStatsForStaffLazyQuery>;
 export type StatsForStaffQueryResult = Apollo.QueryResult<StatsForStaffQuery, StatsForStaffQueryVariables>;
-export const StatsForCoachDocument = gql`
-    query statsForCoach($schoolId: ID!, $days: Int!) {
+export const StatsForSchoolDocument = gql`
+    query statsForSchool($schoolId: ID!, $days: Int!) {
   statsOfCreatedMembersInSchool(schoolId: $schoolId, days: $days) {
     ...StatsByDayFragment
   }
@@ -1737,33 +1737,33 @@ export const StatsForCoachDocument = gql`
     ${StatsByDayFragmentFragmentDoc}`;
 
 /**
- * __useStatsForCoachQuery__
+ * __useStatsForSchoolQuery__
  *
- * To run a query within a React component, call `useStatsForCoachQuery` and pass it any options that fit your needs.
- * When your component renders, `useStatsForCoachQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useStatsForSchoolQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStatsForSchoolQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useStatsForCoachQuery({
+ * const { data, loading, error } = useStatsForSchoolQuery({
  *   variables: {
  *      schoolId: // value for 'schoolId'
  *      days: // value for 'days'
  *   },
  * });
  */
-export function useStatsForCoachQuery(baseOptions: Apollo.QueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+export function useStatsForSchoolQuery(baseOptions: Apollo.QueryHookOptions<StatsForSchoolQuery, StatsForSchoolQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+        return Apollo.useQuery<StatsForSchoolQuery, StatsForSchoolQueryVariables>(StatsForSchoolDocument, options);
       }
-export function useStatsForCoachLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+export function useStatsForSchoolLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForSchoolQuery, StatsForSchoolQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+          return Apollo.useLazyQuery<StatsForSchoolQuery, StatsForSchoolQueryVariables>(StatsForSchoolDocument, options);
         }
-export type StatsForCoachQueryHookResult = ReturnType<typeof useStatsForCoachQuery>;
-export type StatsForCoachLazyQueryHookResult = ReturnType<typeof useStatsForCoachLazyQuery>;
-export type StatsForCoachQueryResult = Apollo.QueryResult<StatsForCoachQuery, StatsForCoachQueryVariables>;
+export type StatsForSchoolQueryHookResult = ReturnType<typeof useStatsForSchoolQuery>;
+export type StatsForSchoolLazyQueryHookResult = ReturnType<typeof useStatsForSchoolLazyQuery>;
+export type StatsForSchoolQueryResult = Apollo.QueryResult<StatsForSchoolQuery, StatsForSchoolQueryVariables>;
 export const namedOperations = {
   Query: {
     myUser: 'myUser',
@@ -1773,12 +1773,13 @@ export const namedOperations = {
     user: 'user',
     settings: 'settings',
     statsForStaff: 'statsForStaff',
-    statsForCoach: 'statsForCoach'
+    statsForSchool: 'statsForSchool'
   },
   Mutation: {
     loginWithEmail: 'loginWithEmail',
     createSchool: 'createSchool',
     updateSchool: 'updateSchool',
+    updateUser: 'updateUser',
     prepareUpload: 'prepareUpload',
     updateImage: 'updateImage',
     removeImage: 'removeImage',
@@ -1789,7 +1790,6 @@ export const namedOperations = {
     removeUserRole: 'removeUserRole',
     updateSettings: 'updateSettings',
     updatePassword: 'updatePassword',
-    updateUser: 'updateUser',
     finalizeAccount: 'finalizeAccount',
     resetPassword: 'resetPassword',
     forgotPassword: 'forgotPassword',

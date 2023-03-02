@@ -72,7 +72,6 @@ function Schools() {
               pushAlert({
                 type: 'custom',
                 title: 'Create School',
-                message: 'Enter a name below',
                 content: CreateSchoolForm,
                 result: (input) => {
                   createSchool({ variables: { input } })

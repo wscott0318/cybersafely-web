@@ -4,7 +4,7 @@ import { Button, ButtonProps, Menu } from '@mui/material'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 
 type DropDownButtonProps = {
-  title: string
+  title?: string
   children: React.ReactNode
   uppercase?: boolean
 } & Pick<ButtonProps, 'startIcon' | 'variant' | 'size' | 'fullWidth' | 'color'>
@@ -43,6 +43,8 @@ export function DropDownButton(props: DropDownButtonProps) {
   return (
     <>
       <Button
+        size="small"
+        variant="text"
         {...buttonProps}
         ref={anchorEl}
         onClick={handleClick}
@@ -52,7 +54,7 @@ export function DropDownButton(props: DropDownButtonProps) {
           textTransform: uppercase === false ? 'unset' : undefined,
         }}
       >
-        {title}
+        {title ?? 'Actions'}
       </Button>
       <Menu
         open={open}

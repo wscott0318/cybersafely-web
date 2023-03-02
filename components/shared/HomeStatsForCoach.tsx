@@ -1,7 +1,7 @@
 import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { Alert, AlertTitle, Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { useStatsForCoachQuery } from '../../schema'
+import { useStatsForSchoolQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { NextLink } from '../common/NextLink'
@@ -56,7 +56,7 @@ export function HomeStatsForCoach() {
 
   const [days, setDays] = useState(14)
 
-  const { data } = useStatsForCoachQuery({
+  const { data } = useStatsForSchoolQuery({
     variables: { schoolId: schoolRole!.school.id, days },
   })
 
