@@ -104,8 +104,15 @@ mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
   }
 }
 
-query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder, $search: String) {
-  users(from: $from, fromId: $fromId, page: $page, order: $order, search: $search) {
+query users(
+  $from: UsersFromEnum
+  $fromId: ID
+  $page: PageInput
+  $order: UserOrder
+  $search: String
+  $schoolRole: SchoolRoleTypeEnum
+) {
+  users(from: $from, fromId: $fromId, page: $page, order: $order, search: $search, schoolRole: $schoolRole) {
     page {
       ...PageFragment
     }

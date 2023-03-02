@@ -309,6 +309,7 @@ export type QueryUsersArgs = {
   fromId?: InputMaybe<Scalars['ID']>;
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<PageInput>;
+  schoolRole?: InputMaybe<SchoolRoleTypeEnum>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -362,6 +363,13 @@ export type SchoolRole = {
   type: UserRoleTypeEnum;
 };
 
+export const SchoolRoleTypeEnum = {
+  Admin: 'ADMIN',
+  Athlete: 'ATHLETE',
+  Coach: 'COACH'
+} as const;
+
+export type SchoolRoleTypeEnum = typeof SchoolRoleTypeEnum[keyof typeof SchoolRoleTypeEnum];
 export type Settings = {
   __typename?: 'Settings';
   enableSignUps: Scalars['Boolean'];
@@ -541,6 +549,7 @@ export type UsersQueryVariables = Exact<{
   page?: InputMaybe<PageInput>;
   order?: InputMaybe<UserOrder>;
   search?: InputMaybe<Scalars['String']>;
+  schoolRole?: InputMaybe<SchoolRoleTypeEnum>;
 }>;
 
 
@@ -976,8 +985,15 @@ export type UpdateSchoolMutationHookResult = ReturnType<typeof useUpdateSchoolMu
 export type UpdateSchoolMutationResult = Apollo.MutationResult<UpdateSchoolMutation>;
 export type UpdateSchoolMutationOptions = Apollo.BaseMutationOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
 export const UsersDocument = gql`
-    query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder, $search: String) {
-  users(from: $from, fromId: $fromId, page: $page, order: $order, search: $search) {
+    query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder, $search: String, $schoolRole: SchoolRoleTypeEnum) {
+  users(
+    from: $from
+    fromId: $fromId
+    page: $page
+    order: $order
+    search: $search
+    schoolRole: $schoolRole
+  ) {
     page {
       ...PageFragment
     }
@@ -1035,6 +1051,7 @@ export const UsersDocument = gql`
  *      page: // value for 'page'
  *      order: // value for 'order'
  *      search: // value for 'search'
+ *      schoolRole: // value for 'schoolRole'
  *   },
  * });
  */

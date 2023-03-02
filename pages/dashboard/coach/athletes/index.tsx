@@ -45,6 +45,7 @@ function Athletes() {
   const query = useUsersQuery({
     variables: {
       from: 'SCHOOL',
+      schoolRole: 'ATHLETE',
       fromId: schoolRole!.school.id,
     },
   })
