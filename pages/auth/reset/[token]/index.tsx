@@ -1,11 +1,11 @@
-import { LoadingButton } from '@mui/lab'
-import { Stack, TextField, Typography } from '@mui/material'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { CoverLayout } from '../../../../components/common/CoverLayout'
-import { checkPasswordStrength, PasswordStrength } from '../../../../components/common/PasswordStrength'
-import { useForm } from '../../../../helpers/form'
+import { Form } from '../../../../components/common/form/Form'
+import { FormText } from '../../../../components/common/form/FormText'
+import { checkPasswordStrength } from '../../../../components/common/PasswordStrength'
+import { addIssue } from '../../../../helpers/zod'
 import { useResetPasswordMutation } from '../../../../schema'
 
 const schema = z
@@ -18,11 +18,7 @@ const schema = z
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['repeatPassword'],
-        message: "The passwords don't match",
-      })
+      addIssue('repeatNewPassword', "The passwords don't match", ctx)
     }
   })
 
@@ -32,9 +28,8 @@ type Props = {
 
 export default function ResetPassword({ token }: Props) {
   const router = useRouter()
-  const form = useForm(schema)
 
-  const [resetPassword, { loading }] = useResetPasswordMutation({
+  const [resetPassword] = useResetPasswordMutation({
     onCompleted: () => {
       router.push('/auth/login')
     },
@@ -42,41 +37,15 @@ export default function ResetPassword({ token }: Props) {
 
   return (
     <CoverLayout>
-      <form
-        onSubmit={form.onSubmit(({ password }) => {
-          resetPassword({ variables: { input: { token, password } } })
-        })}
+      <Form
+        schema={schema}
+        onSubmit={async ({ password }) => {
+          await resetPassword({ variables: { input: { token, password } } })
+        }}
       >
-        <Stack spacing={4}>
-          <Typography variant="h4">Change Password</Typography>
-          <TextField
-            required
-            size="medium"
-            type="password"
-            variant="outlined"
-            label="New Password"
-            error={form.hasError('password')}
-            value={form.value.password ?? ''}
-            helperText={form.getError('password')}
-            onChange={(e) => form.onChange('password', e.target.value)}
-            InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
-          />
-          <TextField
-            required
-            size="medium"
-            type="password"
-            variant="outlined"
-            label="Repeat Password"
-            error={form.hasError('repeatPassword')}
-            value={form.value.repeatPassword ?? ''}
-            helperText={form.getError('repeatPassword')}
-            onChange={(e) => form.onChange('repeatPassword', e.target.value)}
-          />
-          <LoadingButton type="submit" loading={loading} size="large">
-            Submit
-          </LoadingButton>
-        </Stack>
-      </form>
+        <FormText name="password" label="New Password" type="password" />
+        <FormText name="repeatPassword" label="Repeat Password" type="password" hidePasswordStrength />
+      </Form>
     </CoverLayout>
   )
 }

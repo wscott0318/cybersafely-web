@@ -1,6 +1,5 @@
 import { LoadingButton } from '@mui/lab'
 import {
-  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -10,17 +9,18 @@ import {
   StepButton,
   StepContent,
   Stepper,
-  TextField,
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useCallback, useState } from 'react'
 import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
+import { Form } from '../../../components/common/form/Form'
+import { FormText } from '../../../components/common/form/FormText'
 import { NavigationView } from '../../../components/common/NavigationView'
 import { NextLink } from '../../../components/common/NextLink'
-import { checkPasswordStrength, PasswordStrength } from '../../../components/common/PasswordStrength'
-import { useForm } from '../../../helpers/form'
+import { checkPasswordStrength } from '../../../components/common/PasswordStrength'
+import { addIssue } from '../../../helpers/zod'
 import { useCreateAddressMutation, useCreateSchoolMutation, useRegisterWithEmailMutation } from '../../../schema'
 import { StorageManager } from '../../../utils/storage'
 
@@ -36,69 +36,18 @@ const schemaStep1 = z
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['repeatPassword'],
-        message: "The passwords don't match",
-      })
+      addIssue('repeatNewPassword', "The passwords don't match", ctx)
     }
   })
 
 function RegisterStep1(props: { onNext: (data: z.infer<typeof schemaStep1>) => void }) {
-  const form = useForm(schemaStep1)
-
   return (
-    <form onSubmit={form.onSubmit(props.onNext)}>
-      <Stack>
-        <TextField
-          required
-          label="Name"
-          size="medium"
-          variant="outlined"
-          error={form.hasError('name')}
-          value={form.value.name ?? ''}
-          helperText={form.getError('name')}
-          onChange={(e) => form.onChange('name', e.target.value)}
-        />
-        <TextField
-          required
-          type="email"
-          size="medium"
-          label="E-mail"
-          variant="outlined"
-          error={form.hasError('email')}
-          value={form.value.email ?? ''}
-          helperText={form.getError('email')}
-          onChange={(e) => form.onChange('email', e.target.value)}
-        />
-        <TextField
-          required
-          size="medium"
-          type="password"
-          label="Password"
-          variant="outlined"
-          error={form.hasError('password')}
-          value={form.value.password ?? ''}
-          helperText={form.getError('password')}
-          onChange={(e) => form.onChange('password', e.target.value)}
-          InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
-        />
-        <TextField
-          required
-          size="medium"
-          type="password"
-          label="Repeat Password"
-          variant="outlined"
-          error={form.hasError('repeatPassword')}
-          value={form.value.repeatPassword ?? ''}
-          helperText={form.getError('repeatPassword')}
-          onChange={(e) => form.onChange('repeatPassword', e.target.value)}
-        />
-        <Button type="submit" size="large">
-          Next
-        </Button>
-      </Stack>
-    </form>
+    <Form schema={schemaStep1} onSubmit={(data) => props.onNext(data)} submit="Next">
+      <FormText name="name" label="Name" required />
+      <FormText name="email" label="E-mail" type="email" required />
+      <FormText name="password" label="Password" type="password" required />
+      <FormText name="repeatPassword" label="Repeat Password" type="password" required hidePasswordStrength />
+    </Form>
   )
 }
 
@@ -111,35 +60,11 @@ const schemaStep2 = z.object({
 })
 
 function RegisterStep2(props: { onNext: (data: z.infer<typeof schemaStep2>) => void }) {
-  const form = useForm(schemaStep2)
-
   return (
-    <form onSubmit={form.onSubmit(props.onNext)}>
-      <Stack>
-        <TextField
-          required
-          label="Name"
-          size="medium"
-          variant="outlined"
-          error={form.hasError('name')}
-          value={form.value.name ?? ''}
-          helperText={form.getError('name')}
-          onChange={(e) => form.onChange('name', e.target.value)}
-        />
-        <TextField
-          label="Phone"
-          size="medium"
-          variant="outlined"
-          error={form.hasError('phone')}
-          value={form.value.phone ?? ''}
-          helperText={form.getError('phone')}
-          onChange={(e) => form.onChange('phone', e.target.value)}
-        />
-        <Button type="submit" size="large">
-          Next
-        </Button>
-      </Stack>
-    </form>
+    <Form schema={schemaStep2} onSubmit={(data) => props.onNext(data)} submit="Next">
+      <FormText name="name" label="Name" required />
+      <FormText name="phone" label="Phone" type="phone" />
+    </Form>
   )
 }
 
@@ -151,56 +76,13 @@ const schemaStep3 = z.object({
 })
 
 function RegisterStep3(props: { onNext: (data: z.infer<typeof schemaStep3>) => void }) {
-  const form = useForm(schemaStep3)
-
   return (
-    <form onSubmit={form.onSubmit(props.onNext)}>
-      <Stack>
-        <TextField
-          required
-          label="Street"
-          size="medium"
-          variant="outlined"
-          error={form.hasError('street')}
-          value={form.value.street ?? ''}
-          helperText={form.getError('street')}
-          onChange={(e) => form.onChange('street', e.target.value)}
-        />
-        <TextField
-          required
-          label="City"
-          size="medium"
-          variant="outlined"
-          error={form.hasError('city')}
-          value={form.value.city ?? ''}
-          helperText={form.getError('city')}
-          onChange={(e) => form.onChange('city', e.target.value)}
-        />
-        <TextField
-          required
-          label="State"
-          size="medium"
-          variant="outlined"
-          error={form.hasError('state')}
-          value={form.value.state ?? ''}
-          helperText={form.getError('state')}
-          onChange={(e) => form.onChange('state', e.target.value)}
-        />
-        <TextField
-          required
-          label="ZIP"
-          size="medium"
-          variant="outlined"
-          error={form.hasError('zip')}
-          value={form.value.zip ?? ''}
-          helperText={form.getError('zip')}
-          onChange={(e) => form.onChange('zip', e.target.value)}
-        />
-        <Button type="submit" size="large">
-          Next
-        </Button>
-      </Stack>
-    </form>
+    <Form schema={schemaStep3} onSubmit={(data) => props.onNext(data)} submit="Next">
+      <FormText name="street" label="Street" />
+      <FormText name="city" label="City" />
+      <FormText name="state" label="State" />
+      <FormText name="zip" label="ZIP" />
+    </Form>
   )
 }
 

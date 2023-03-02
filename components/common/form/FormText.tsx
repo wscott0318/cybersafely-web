@@ -25,9 +25,10 @@ const CustomPhoneInput = forwardRef<any, any>(function CustomPhoneInput(props, r
 type FormTextProps = {
   name: string
   label: string
+  required?: boolean
   type?: 'email' | 'password' | 'phone'
   hidePasswordStrength?: boolean
-  required?: boolean
+  multiline?: boolean
 }
 
 function PasswordStrengthAdornment(props: FormTextProps) {
@@ -52,6 +53,7 @@ export function FormText(props: FormTextProps) {
         control={control}
         render={({ field: { value, onChange } }) => (
           <TextField
+            fullWidth
             value={value}
             type={props.type}
             label={props.label}
@@ -69,10 +71,13 @@ export function FormText(props: FormTextProps) {
   return (
     <TextField
       {...register(props.name)}
+      fullWidth
       type={props.type}
       label={props.label}
       required={props.required}
+      multiline={props.multiline}
       error={!!errors[props.name]}
+      minRows={props.multiline ? 3 : undefined}
       helperText={errors[props.name]?.message as string | undefined}
       InputProps={{
         endAdornment:

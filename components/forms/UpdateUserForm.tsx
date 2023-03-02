@@ -14,6 +14,7 @@ import {
 } from '@mui/material'
 import { useCallback } from 'react'
 import { z } from 'zod'
+import { addIssue } from '../../helpers/zod'
 import { UserQuery, useUpdatePasswordMutation, useUpdateUserMutation, useUserQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AccordionContext } from '../common/AccordionContext'
@@ -122,11 +123,7 @@ const passwordSchema = z
   })
   .superRefine(({ newPassword, repeatNewPassword }, ctx) => {
     if (newPassword !== repeatNewPassword) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['repeatNewPassword'],
-        message: "The passwords don't match",
-      })
+      addIssue('repeatNewPassword', "The passwords don't match", ctx)
     }
   })
 

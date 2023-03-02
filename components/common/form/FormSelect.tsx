@@ -16,6 +16,7 @@ export function FormSelect(props: FormSelectProps) {
 
   return (
     <FormControl
+      fullWidth
       variant="standard"
       required={props.required}
       error={!!errors[props.name]}

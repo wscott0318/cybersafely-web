@@ -1,26 +1,11 @@
-import { LoadingButton } from '@mui/lab'
-import {
-  alpha,
-  AppBar,
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Toolbar,
-  Typography,
-} from '@mui/material'
+import { alpha, AppBar, Box, Button, Container, Divider, Stack, Toolbar, Typography } from '@mui/material'
 import NextImage from 'next/image'
 import NextLink from 'next/link'
 import { z } from 'zod'
+import { Form } from '../components/common/form/Form'
+import { FormSelect } from '../components/common/form/FormSelect'
+import { FormText } from '../components/common/form/FormText'
 import { Config } from '../helpers/config'
-import { useForm } from '../helpers/form'
 import { useLogoUrl, useOnTop } from '../helpers/hooks'
 import { useContactMutation } from '../schema'
 import { useAlert } from '../utils/context/alert'
@@ -147,10 +132,9 @@ const schema = z.object({
 })
 
 function Contact() {
-  const form = useForm(schema)
   const { pushAlert } = useAlert()
 
-  const [contact, { loading }] = useContactMutation()
+  const [contact] = useContactMutation()
 
   return (
     <Box position="relative">
@@ -161,134 +145,42 @@ function Contact() {
           <Typography variant="h6">
             Learn more about how your school can help students pivot damaging behavior.
           </Typography>
-          <form
-            style={{ width: '100%', maxWidth: 600 }}
-            onSubmit={form.onSubmit(async (input) => {
-              await contact({ variables: { input } })
+          <Box maxWidth={500} width="100%" textAlign="left">
+            <Form
+              schema={schema}
+              onSubmit={async (input) => {
+                await contact({ variables: { input } })
 
-              form.clear()
-              pushAlert({
-                type: 'alert',
-                title: 'Success',
-                message: 'Your message was successfully sent!',
-              })
-            })}
-          >
-            <Stack textAlign="left">
+                pushAlert({
+                  type: 'alert',
+                  title: 'Success',
+                  message: 'Your message was successfully sent!',
+                })
+              }}
+            >
               <Stack direction="row">
-                <TextField
-                  required
-                  fullWidth
-                  size="medium"
-                  label="First Name"
-                  variant="outlined"
-                  value={form.value.firstName ?? ''}
-                  error={form.hasError('firstName')}
-                  helperText={form.getError('firstName')}
-                  onChange={(e) => form.onChange('firstName', e.target.value)}
-                />
-                <TextField
-                  required
-                  fullWidth
-                  size="medium"
-                  label="Last Name"
-                  variant="outlined"
-                  value={form.value.lastName ?? ''}
-                  error={form.hasError('lastName')}
-                  helperText={form.getError('lastName')}
-                  onChange={(e) => form.onChange('lastName', e.target.value)}
-                />
+                <FormText name="firstName" label="First Name" required />
+                <FormText name="lastName" label="Last Name" required />
               </Stack>
-              <TextField
+              <FormText name="email" label="E-mail Address" type="email" required />
+              <FormText name="phone" label="Phone Number" type="phone" />
+              <FormText name="jobTitle" label="Job Title" />
+              <FormText name="schoolName" label="School Name" required />
+              <FormText name="state" label="State/Region" required />
+              <FormText name="students" label="Number of Students" required />
+              <FormSelect
                 required
-                type="email"
-                size="medium"
-                variant="outlined"
-                label="E-mail Address"
-                value={form.value.email ?? ''}
-                error={form.hasError('email')}
-                helperText={form.getError('email')}
-                onChange={(e) => form.onChange('email', e.target.value)}
+                name="describe"
+                label="What best describes your school?"
+                options={[
+                  { value: 'Public District', title: 'Public District' },
+                  { value: 'Private School', title: 'Private School' },
+                  { value: 'Other', title: 'Other' },
+                ]}
               />
-              <TextField
-                size="medium"
-                variant="outlined"
-                label="Phone Number"
-                value={form.value.phone ?? ''}
-                error={form.hasError('phone')}
-                helperText={form.getError('phone')}
-                onChange={(e) => form.onChange('phone', e.target.value)}
-              />
-              <TextField
-                size="medium"
-                label="Job Title"
-                variant="outlined"
-                value={form.value.jobTitle ?? ''}
-                error={form.hasError('jobTitle')}
-                helperText={form.getError('jobTitle')}
-                onChange={(e) => form.onChange('jobTitle', e.target.value)}
-              />
-              <TextField
-                required
-                size="medium"
-                variant="outlined"
-                label="School Name"
-                value={form.value.schoolName ?? ''}
-                error={form.hasError('schoolName')}
-                helperText={form.getError('schoolName')}
-                onChange={(e) => form.onChange('schoolName', e.target.value)}
-              />
-              <TextField
-                required
-                size="medium"
-                variant="outlined"
-                label="State/Region"
-                value={form.value.state ?? ''}
-                error={form.hasError('state')}
-                helperText={form.getError('state')}
-                onChange={(e) => form.onChange('state', e.target.value)}
-              />
-              <TextField
-                required
-                size="medium"
-                variant="outlined"
-                label="Number of Students"
-                value={form.value.students ?? ''}
-                error={form.hasError('students')}
-                helperText={form.getError('students')}
-                onChange={(e) => form.onChange('students', e.target.value)}
-              />
-              <FormControl required variant="outlined" size="medium" error={form.hasError('describe')}>
-                <InputLabel>What best describes your school?</InputLabel>
-                <Select
-                  size="medium"
-                  variant="outlined"
-                  value={form.value.describe ?? ''}
-                  label="What best describes your school?"
-                  onChange={(e) => form.onChange('describe', e.target.value)}
-                >
-                  <MenuItem value="Public District">Public District</MenuItem>
-                  <MenuItem value="Private School">Private School</MenuItem>
-                  <MenuItem value="Other">Other</MenuItem>
-                </Select>
-                {form.hasError('describe') && <FormHelperText>{form.getError('describe')}</FormHelperText>}
-              </FormControl>
-              <TextField
-                multiline
-                minRows={5}
-                size="medium"
-                variant="outlined"
-                value={form.value.comments ?? ''}
-                error={form.hasError('comments')}
-                label="Comments, questions, concerns?"
-                helperText={form.getError('comments')}
-                onChange={(e) => form.onChange('comments', e.target.value)}
-              />
-              <LoadingButton type="submit" size="large" loading={loading}>
-                Submit
-              </LoadingButton>
-            </Stack>
-          </form>
+              <FormText name="comments" label="Comments, questions, concerns?" multiline />
+            </Form>
+          </Box>
         </Stack>
       </Container>
     </Box>

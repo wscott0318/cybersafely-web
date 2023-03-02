@@ -1,11 +1,11 @@
-import { LoadingButton } from '@mui/lab'
-import { Stack, TextField, Typography } from '@mui/material'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import { z } from 'zod'
 import { CoverLayout } from '../../../../components/common/CoverLayout'
-import { checkPasswordStrength, PasswordStrength } from '../../../../components/common/PasswordStrength'
-import { useForm } from '../../../../helpers/form'
+import { Form } from '../../../../components/common/form/Form'
+import { FormText } from '../../../../components/common/form/FormText'
+import { checkPasswordStrength } from '../../../../components/common/PasswordStrength'
+import { addIssue } from '../../../../helpers/zod'
 import { useFinalizeAccountMutation } from '../../../../schema'
 
 const schema = z
@@ -19,11 +19,7 @@ const schema = z
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['repeatPassword'],
-        message: "The passwords don't match",
-      })
+      addIssue('repeatNewPassword', "The passwords don't match", ctx)
     }
   })
 
@@ -33,7 +29,6 @@ type Props = {
 
 export default function Activate({ token }: Props) {
   const router = useRouter()
-  const form = useForm(schema)
 
   const [activate, { loading }] = useFinalizeAccountMutation({
     onCompleted() {
@@ -43,51 +38,16 @@ export default function Activate({ token }: Props) {
 
   return (
     <CoverLayout>
-      <form
-        onSubmit={form.onSubmit(({ password, name }) => {
-          activate({ variables: { input: { token, password, name } } })
-        })}
+      <Form
+        schema={schema}
+        onSubmit={async ({ password, name }) => {
+          await activate({ variables: { input: { token, password, name } } })
+        }}
       >
-        <Stack spacing={4}>
-          <Typography variant="h4">Finish Registration</Typography>
-          <TextField
-            required
-            label="Name"
-            size="medium"
-            variant="outlined"
-            error={form.hasError('name')}
-            value={form.value.name ?? ''}
-            helperText={form.getError('name')}
-            onChange={(e) => form.onChange('name', e.target.value)}
-          />
-          <TextField
-            required
-            size="medium"
-            type="password"
-            label="Password"
-            variant="outlined"
-            error={form.hasError('password')}
-            value={form.value.password ?? ''}
-            helperText={form.getError('password')}
-            onChange={(e) => form.onChange('password', e.target.value)}
-            InputProps={{ endAdornment: <PasswordStrength password={form.value.password} /> }}
-          />
-          <TextField
-            required
-            size="medium"
-            type="password"
-            label="Repeat Password"
-            variant="outlined"
-            error={form.hasError('repeatPassword')}
-            value={form.value.repeatPassword ?? ''}
-            helperText={form.getError('repeatPassword')}
-            onChange={(e) => form.onChange('repeatPassword', e.target.value)}
-          />
-          <LoadingButton type="submit" loading={loading} size="large">
-            Submit
-          </LoadingButton>
-        </Stack>
-      </form>
+        <FormText name="name" label="Name" required />
+        <FormText name="password" label="Password" type="password" required />
+        <FormText name="repeatPassword" label="Repeat Password" type="password" required hidePasswordStrength />
+      </Form>
     </CoverLayout>
   )
 }
