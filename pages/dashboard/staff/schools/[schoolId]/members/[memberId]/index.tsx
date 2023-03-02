@@ -14,7 +14,6 @@ import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../../../../components/forms/InviteUserForm'
-import { ApolloClientProvider } from '../../../../../../../libs/apollo'
 import {
   namedOperations,
   useCreateUserRoleMutation,
@@ -138,7 +137,7 @@ function MemberParents({ memberId }: Props) {
   )
 }
 
-function MemberWrapper(props: Props) {
+function Members(props: Props) {
   const [tab, setTab] = useState('parents')
 
   const { data } = useUserQuery({
@@ -166,20 +165,12 @@ function MemberWrapper(props: Props) {
   )
 }
 
-function Member(props: Props) {
-  return (
-    <ApolloClientProvider schoolId={props.schoolId}>
-      <MemberWrapper {...props} />
-    </ApolloClientProvider>
-  )
-}
-
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const schoolId = ctx.params!.schoolId as string
   const memberId = ctx.params!.memberId as string
   return { props: { schoolId, memberId } }
 }
 
-export default withDashboardLayout(Member, {
+export default withDashboardLayout(Members, {
   title: 'Members',
 })

@@ -226,7 +226,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
       alert(error)
       router.replace('/auth/login')
     }
-  }, [])
+  }, [client, router])
 
   useEffect(() => {
     refetchUser()

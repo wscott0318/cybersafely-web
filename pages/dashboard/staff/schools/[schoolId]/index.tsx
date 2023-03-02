@@ -16,7 +16,6 @@ import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
-import { ApolloClientProvider } from '../../../../../libs/apollo'
 import {
   namedOperations,
   useCreateUserRoleMutation,
@@ -148,7 +147,7 @@ function Loader<T>({ data, children }: LoaderProps<T>) {
   return children(data)
 }
 
-function SchoolWrapper(props: Props) {
+function School(props: Props) {
   const [tab, setTab] = useState('members')
 
   const { data } = useSchoolQuery({
@@ -177,7 +176,7 @@ function SchoolWrapper(props: Props) {
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <UpdateSchoolForm schoolId={school.id} />
+                <UpdateSchoolForm schoolId={school.id} exclude={['billing']} />
               </Container>
             </TabPanel>
             <TabPanel value="posts">
@@ -187,14 +186,6 @@ function SchoolWrapper(props: Props) {
         )}
       </Loader>
     </TabContext>
-  )
-}
-
-function School(props: Props) {
-  return (
-    <ApolloClientProvider schoolId={props.schoolId}>
-      <SchoolWrapper {...props} />
-    </ApolloClientProvider>
   )
 }
 

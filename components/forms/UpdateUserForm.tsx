@@ -147,7 +147,7 @@ function Render({
       if (exclude && exclude.length > 0) {
         return !exclude.includes(section)
       }
-      return false
+      return true
     },
     [include, exclude]
   )
