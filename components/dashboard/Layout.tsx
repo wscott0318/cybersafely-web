@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client'
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import FeedIcon from '@mui/icons-material/FeedOutlined'
@@ -41,7 +42,7 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { useMyUserQuery } from '../../schema'
+import { MyUserDocument, MyUserQuery, MyUserQueryVariables } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
 import { StorageManager } from '../../utils/storage'
@@ -56,12 +57,6 @@ function HeaderAccount() {
   const { pushAlert } = useAlert()
 
   const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
-
-  // const { data } = useNotificationsCountQuery({
-  //   fetchPolicy: 'cache-first',
-  //   nextFetchPolicy: 'cache-first',
-  //   initialFetchPolicy: 'network-only',
-  // })
 
   return (
     <>
@@ -191,9 +186,11 @@ export type DashboardLayoutProps = {
 
 export function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter()
+  const client = useApolloClient()
   const logoUrl = useLogoUrl()
   const { isMobile, isTablet } = useMobile()
 
+  const [user, setUser] = useState<MyUserQuery['user']>()
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
@@ -212,36 +209,42 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     return '280px'
   }, [isMobile])
 
-  const { data, error, refetch } = useMyUserQuery({
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-first',
-    initialFetchPolicy: 'network-only',
-    variables: { id: StorageManager.get('userId')! },
-  })
-
-  const userRole = useMemo(() => {
-    if (!data) return
-
-    const staff = data.user.roles.find((e) => e.type === 'STAFF')
-    const admin = data.user.roles.find((e) => e.type === 'ADMIN')
-    const coach = data.user.roles.find((e) => e.type === 'COACH')
-    const athlete = data.user.roles.find((e) => e.type === 'ATHLETE')
-    const parent = data.user.roles.find((e) => e.type === 'PARENT')
-
-    return staff ?? admin ?? coach ?? athlete ?? parent
-  }, [data])
-
   const refetchUser = useCallback(async () => {
-    await refetch()
-  }, [refetch])
+    try {
+      const id = StorageManager.get('userId')
+
+      if (typeof id === 'string') {
+        const { data } = await client.query<MyUserQuery, MyUserQueryVariables>({
+          variables: { id },
+          query: MyUserDocument,
+        })
+        setUser(data.user)
+      } else {
+        throw new Error('No user')
+      }
+    } catch (error) {
+      alert(error)
+      router.replace('/auth/login')
+    }
+  }, [])
 
   useEffect(() => {
-    if (error) {
-      router.push('/auth/login')
-    }
-  }, [error, router])
+    refetchUser()
+  }, [])
 
-  if (!data) {
+  const userRole = useMemo(() => {
+    if (!user) return
+
+    const staff = user.roles.find((e) => e.type === 'STAFF')
+    const admin = user.roles.find((e) => e.type === 'ADMIN')
+    const coach = user.roles.find((e) => e.type === 'COACH')
+    const athlete = user.roles.find((e) => e.type === 'ATHLETE')
+    const parent = user.roles.find((e) => e.type === 'PARENT')
+
+    return staff ?? admin ?? coach ?? athlete ?? parent
+  }, [user])
+
+  if (!user) {
     return (
       <Stack alignItems="center" justifyContent="center" minHeight="100vh">
         <LoadingLogo />
@@ -250,7 +253,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.user} role={userRole?.type} refetchUser={refetchUser}>
+    <AuthContextProvider user={user} role={userRole?.type} refetchUser={refetchUser}>
       <Head>
         <title>{props.title}</title>
       </Head>

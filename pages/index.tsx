@@ -22,7 +22,7 @@ import { z } from 'zod'
 import { Config } from '../helpers/config'
 import { useForm } from '../helpers/form'
 import { useLogoUrl, useOnTop } from '../helpers/hooks'
-import { useContactMutation } from '../types/graphql'
+import { useContactMutation } from '../schema'
 import { useAlert } from '../utils/context/alert'
 
 const TOOLBAR_HEIGHT = 88.5

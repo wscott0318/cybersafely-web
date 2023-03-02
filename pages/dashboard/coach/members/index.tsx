@@ -7,11 +7,12 @@ import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { InviteMemberForm } from '../../../../components/form/InviteMemberForm'
-import { MembersQuery, namedOperations, useInviteMemberMutation, useMembersQuery } from '../../../../types/graphql'
+import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
+import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
+import { useSchoolRole } from '../../../../utils/context/auth'
 
-const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
+const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
     width: 250,
     field: 'name',
@@ -60,11 +61,17 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
 
 function Members() {
   const { pushAlert } = useAlert()
+  const schoolRole = useSchoolRole()
 
-  const query = useMembersQuery()
+  const query = useUsersQuery({
+    variables: {
+      from: 'SCHOOL',
+      fromId: schoolRole!.school.id,
+    },
+  })
 
-  const [inviteMember] = useInviteMemberMutation({
-    refetchQueries: [namedOperations.Query.members],
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
   })
 
   return (
@@ -72,7 +79,7 @@ function Members() {
       query={query}
       title="Members"
       columns={columns}
-      data={query.data?.members}
+      data={query.data?.users}
       href={(e) => `/dashboard/coach/members/${e.id}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
@@ -85,9 +92,9 @@ function Members() {
                 type: 'custom',
                 title: 'Invite Member',
                 message: 'Enter the information below',
-                content: InviteMemberForm,
-                result: (variables) => {
-                  inviteMember({ variables })
+                content: InviteUserForm,
+                result: ({ email, type }) => {
+                  createUserRole({ variables: { input: { email, type, relationId: schoolRole!.school.id } } })
                 },
               })
             }}

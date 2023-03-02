@@ -9,7 +9,7 @@ import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { MemberActions } from '../../../../components/data/MemberActions'
-import { InviteMemberForm } from '../../../../components/form/InviteMemberForm'
+import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
 import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 import { useSchoolRole } from '../../../../utils/context/auth'
@@ -97,7 +97,8 @@ function Members() {
                 type: 'custom',
                 title: 'Invite Member',
                 message: 'Enter the information below',
-                content: InviteMemberForm,
+                content: InviteUserForm,
+                props: { allow: ['ADMIN', 'COACH', 'ATHLETE'] },
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: userRole!.school.id } } })
                 },

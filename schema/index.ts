@@ -33,6 +33,19 @@ export type AnyUserRole = {
   type: UserRoleTypeEnum;
 };
 
+export type ContactInput = {
+  comments?: InputMaybe<Scalars['String']>;
+  describe: Scalars['String'];
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  jobTitle?: InputMaybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  phone?: InputMaybe<Scalars['String']>;
+  schoolName: Scalars['String'];
+  state: Scalars['String'];
+  students: Scalars['String'];
+};
+
 export type CreateAddressInput = {
   city: Scalars['String'];
   state: Scalars['String'];
@@ -77,6 +90,7 @@ export type LoginWithEmailInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  contact: Scalars['Boolean'];
   createAddress: Address;
   createSchool: School;
   createUserRole: User;
@@ -95,6 +109,11 @@ export type Mutation = {
   updateSchool: School;
   updateSettings: Scalars['Boolean'];
   updateUser: User;
+};
+
+
+export type MutationContactArgs = {
+  input: ContactInput;
 };
 
 
@@ -218,6 +237,13 @@ export type Query = {
   school: School;
   schools: SchoolPage;
   settings: Settings;
+  statsOfAcceptedMembersInSchool: StatsByDay;
+  statsOfCreatedMembers: StatsByDay;
+  statsOfCreatedMembersInSchool: StatsByDay;
+  statsOfCreatedParents: StatsByDay;
+  statsOfCreatedSchools: StatsByDay;
+  statsOfCreatedUsers: StatsByDay;
+  statsOfInvitedMembersInSchool: StatsByDay;
   user: User;
   users: UserPage;
 };
@@ -232,6 +258,44 @@ export type QuerySchoolsArgs = {
   order?: InputMaybe<SchoolOrder>;
   page?: InputMaybe<PageInput>;
   search?: InputMaybe<Scalars['String']>;
+};
+
+
+export type QueryStatsOfAcceptedMembersInSchoolArgs = {
+  days?: Scalars['Int'];
+  schoolId: Scalars['ID'];
+};
+
+
+export type QueryStatsOfCreatedMembersArgs = {
+  days?: Scalars['Int'];
+};
+
+
+export type QueryStatsOfCreatedMembersInSchoolArgs = {
+  days?: Scalars['Int'];
+  schoolId: Scalars['ID'];
+};
+
+
+export type QueryStatsOfCreatedParentsArgs = {
+  days?: Scalars['Int'];
+};
+
+
+export type QueryStatsOfCreatedSchoolsArgs = {
+  days?: Scalars['Int'];
+};
+
+
+export type QueryStatsOfCreatedUsersArgs = {
+  days?: Scalars['Int'];
+};
+
+
+export type QueryStatsOfInvitedMembersInSchoolArgs = {
+  days?: Scalars['Int'];
+  schoolId: Scalars['ID'];
 };
 
 
@@ -301,6 +365,18 @@ export type SchoolRole = {
 export type Settings = {
   __typename?: 'Settings';
   enableSignUps: Scalars['Boolean'];
+};
+
+export type StatByDay = {
+  __typename?: 'StatByDay';
+  day: Scalars['String'];
+  value: Scalars['Int'];
+};
+
+export type StatsByDay = {
+  __typename?: 'StatsByDay';
+  stats: Array<StatByDay>;
+  total: Scalars['Int'];
 };
 
 export type UpdateAddressInput = {
@@ -417,7 +493,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null } }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }> } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -467,7 +543,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> } };
 
 export type UpdateSchoolMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -588,11 +664,44 @@ export type RegisterWithEmailMutationVariables = Exact<{
 
 export type RegisterWithEmailMutation = { __typename?: 'Mutation', registerWithEmail: { __typename?: 'UserWithToken', token: string, user: { __typename?: 'User', id: string } } };
 
+export type ContactMutationVariables = Exact<{
+  input: ContactInput;
+}>;
+
+
+export type ContactMutation = { __typename?: 'Mutation', contact: boolean };
+
+export type StatsByDayFragmentFragment = { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> };
+
+export type StatsForStaffQueryVariables = Exact<{
+  days: Scalars['Int'];
+}>;
+
+
+export type StatsForStaffQuery = { __typename?: 'Query', statsOfCreatedUsers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfCreatedSchools: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfCreatedMembers: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfCreatedParents: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
+
+export type StatsForCoachQueryVariables = Exact<{
+  schoolId: Scalars['ID'];
+  days: Scalars['Int'];
+}>;
+
+
+export type StatsForCoachQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
+
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
   index
   size
   count
+  total
+}
+    `;
+export const StatsByDayFragmentFragmentDoc = gql`
+    fragment StatsByDayFragment on StatsByDay {
+  stats {
+    day
+    value
+  }
   total
 }
     `;
@@ -617,6 +726,9 @@ export const MyUserDocument = gql`
           id
           name
           logo {
+            url
+          }
+          cover {
             url
           }
         }
@@ -912,6 +1024,7 @@ export const UserDocument = gql`
     email
     emailConfirmed
     avatar {
+      id
       url
     }
     roles {
@@ -1534,6 +1647,123 @@ export function useRegisterWithEmailMutation(baseOptions?: Apollo.MutationHookOp
 export type RegisterWithEmailMutationHookResult = ReturnType<typeof useRegisterWithEmailMutation>;
 export type RegisterWithEmailMutationResult = Apollo.MutationResult<RegisterWithEmailMutation>;
 export type RegisterWithEmailMutationOptions = Apollo.BaseMutationOptions<RegisterWithEmailMutation, RegisterWithEmailMutationVariables>;
+export const ContactDocument = gql`
+    mutation contact($input: ContactInput!) {
+  contact(input: $input)
+}
+    `;
+export type ContactMutationFn = Apollo.MutationFunction<ContactMutation, ContactMutationVariables>;
+
+/**
+ * __useContactMutation__
+ *
+ * To run a mutation, you first call `useContactMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useContactMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [contactMutation, { data, loading, error }] = useContactMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useContactMutation(baseOptions?: Apollo.MutationHookOptions<ContactMutation, ContactMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ContactMutation, ContactMutationVariables>(ContactDocument, options);
+      }
+export type ContactMutationHookResult = ReturnType<typeof useContactMutation>;
+export type ContactMutationResult = Apollo.MutationResult<ContactMutation>;
+export type ContactMutationOptions = Apollo.BaseMutationOptions<ContactMutation, ContactMutationVariables>;
+export const StatsForStaffDocument = gql`
+    query statsForStaff($days: Int!) {
+  statsOfCreatedUsers(days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfCreatedSchools(days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfCreatedMembers(days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfCreatedParents(days: $days) {
+    ...StatsByDayFragment
+  }
+}
+    ${StatsByDayFragmentFragmentDoc}`;
+
+/**
+ * __useStatsForStaffQuery__
+ *
+ * To run a query within a React component, call `useStatsForStaffQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStatsForStaffQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStatsForStaffQuery({
+ *   variables: {
+ *      days: // value for 'days'
+ *   },
+ * });
+ */
+export function useStatsForStaffQuery(baseOptions: Apollo.QueryHookOptions<StatsForStaffQuery, StatsForStaffQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StatsForStaffQuery, StatsForStaffQueryVariables>(StatsForStaffDocument, options);
+      }
+export function useStatsForStaffLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForStaffQuery, StatsForStaffQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StatsForStaffQuery, StatsForStaffQueryVariables>(StatsForStaffDocument, options);
+        }
+export type StatsForStaffQueryHookResult = ReturnType<typeof useStatsForStaffQuery>;
+export type StatsForStaffLazyQueryHookResult = ReturnType<typeof useStatsForStaffLazyQuery>;
+export type StatsForStaffQueryResult = Apollo.QueryResult<StatsForStaffQuery, StatsForStaffQueryVariables>;
+export const StatsForCoachDocument = gql`
+    query statsForCoach($schoolId: ID!, $days: Int!) {
+  statsOfCreatedMembersInSchool(schoolId: $schoolId, days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfInvitedMembersInSchool(schoolId: $schoolId, days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfAcceptedMembersInSchool(schoolId: $schoolId, days: $days) {
+    ...StatsByDayFragment
+  }
+}
+    ${StatsByDayFragmentFragmentDoc}`;
+
+/**
+ * __useStatsForCoachQuery__
+ *
+ * To run a query within a React component, call `useStatsForCoachQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStatsForCoachQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStatsForCoachQuery({
+ *   variables: {
+ *      schoolId: // value for 'schoolId'
+ *      days: // value for 'days'
+ *   },
+ * });
+ */
+export function useStatsForCoachQuery(baseOptions: Apollo.QueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+      }
+export function useStatsForCoachLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StatsForCoachQuery, StatsForCoachQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StatsForCoachQuery, StatsForCoachQueryVariables>(StatsForCoachDocument, options);
+        }
+export type StatsForCoachQueryHookResult = ReturnType<typeof useStatsForCoachQuery>;
+export type StatsForCoachLazyQueryHookResult = ReturnType<typeof useStatsForCoachLazyQuery>;
+export type StatsForCoachQueryResult = Apollo.QueryResult<StatsForCoachQuery, StatsForCoachQueryVariables>;
 export const namedOperations = {
   Query: {
     myUser: 'myUser',
@@ -1541,7 +1771,9 @@ export const namedOperations = {
     school: 'school',
     users: 'users',
     user: 'user',
-    settings: 'settings'
+    settings: 'settings',
+    statsForStaff: 'statsForStaff',
+    statsForCoach: 'statsForCoach'
   },
   Mutation: {
     loginWithEmail: 'loginWithEmail',
@@ -1561,9 +1793,11 @@ export const namedOperations = {
     finalizeAccount: 'finalizeAccount',
     resetPassword: 'resetPassword',
     forgotPassword: 'forgotPassword',
-    registerWithEmail: 'registerWithEmail'
+    registerWithEmail: 'registerWithEmail',
+    contact: 'contact'
   },
   Fragment: {
-    PageFragment: 'PageFragment'
+    PageFragment: 'PageFragment',
+    StatsByDayFragment: 'StatsByDayFragment'
   }
 }

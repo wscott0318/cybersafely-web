@@ -4,9 +4,10 @@ import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../comp
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { MembersQuery, useMembersQuery } from '../../../../types/graphql'
+import { UsersQuery, useUsersQuery } from '../../../../schema'
+import { useSchoolRole } from '../../../../utils/context/auth'
 
-const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
+const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
     width: 250,
     field: 'name',
@@ -39,14 +40,21 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
 ]
 
 function Athletes() {
-  const query = useMembersQuery({ variables: { filter: { role: 'ATHLETE' } } })
+  const schoolRole = useSchoolRole()
+
+  const query = useUsersQuery({
+    variables: {
+      from: 'SCHOOL',
+      fromId: schoolRole!.school.id,
+    },
+  })
 
   return (
     <DataGridViewer
       query={query}
       title="Athletes"
       columns={columns}
-      data={query.data?.members}
+      data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>

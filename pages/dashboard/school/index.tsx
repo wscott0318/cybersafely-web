@@ -1,18 +1,15 @@
 import { withDashboardLayout } from '../../../components/dashboard/Layout'
-import { UpdateSchoolForm } from '../../../components/form/UpdateSchoolForm'
-import { useSchoolQuery } from '../../../schema'
+import { UpdateSchoolForm } from '../../../components/forms/UpdateSchoolForm'
 import { useSchoolRole } from '../../../utils/context/auth'
 
 function School() {
   const schoolRole = useSchoolRole()
 
-  const { data } = useSchoolQuery({ variables: { id: schoolRole!.school.id } })
-
-  if (!data) {
-    return null
+  if (schoolRole && schoolRole.type !== 'ATHLETE') {
+    return <UpdateSchoolForm schoolId={schoolRole.school.id} />
   }
 
-  return <UpdateSchoolForm school={data.school} />
+  return null
 }
 
 export default withDashboardLayout(School, {

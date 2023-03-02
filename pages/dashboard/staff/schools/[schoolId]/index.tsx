@@ -13,8 +13,8 @@ import { UserEmail } from '../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { MemberActions } from '../../../../../components/data/MemberActions'
-import { InviteMemberForm } from '../../../../../components/form/InviteMemberForm'
-import { UpdateSchoolForm } from '../../../../../components/form/UpdateSchoolForm'
+import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
+import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
 import { ApolloClientProvider } from '../../../../../libs/apollo'
 import {
   namedOperations,
@@ -111,7 +111,7 @@ function SchoolMembers({ schoolId }: Props) {
                 type: 'custom',
                 title: 'Invite Member',
                 message: 'Enter the information below',
-                content: InviteMemberForm,
+                content: InviteUserForm,
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: schoolId } } })
                 },
@@ -173,7 +173,7 @@ function SchoolWrapper(props: Props) {
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <UpdateSchoolForm school={school} />
+                <UpdateSchoolForm schoolId={school.id} />
               </Container>
             </TabPanel>
             <TabPanel value="posts">

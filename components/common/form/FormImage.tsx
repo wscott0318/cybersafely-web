@@ -1,104 +1,74 @@
-import ImageIcon from '@mui/icons-material/Image'
-import { Avatar, Box } from '@mui/material'
-import { useCallback, useEffect, useState } from 'react'
-import { useFilePicker, useUpload } from '../../../utils/upload'
+import { Box, CircularProgress } from '@mui/material'
+import { useState } from 'react'
+import { Image, UpdateImageForEnum, useRemoveImageMutation, useUpdateImageMutation } from '../../../schema'
+import { useFileUpload } from '../../../utils/upload'
 import { AspectImage } from '../AspectImage'
 import { DeleteBadge } from '../DeleteBadge'
-import { FormInputProps, useFormInput } from './Form'
-import { FormCustomControl } from './FormCustomControl'
 
-type Props = {
-  label: string
-  required?: boolean
-  type?: 'avatar' | 'image'
-  aspect?: number
+type FormImageProps = {
+  aspect: number
+  image: Pick<Image, 'id' | 'url'> | undefined | null
+  for: UpdateImageForEnum
+  forId: string
+  onChange?: () => void | Promise<void>
 }
 
-export function FormImage(props: FormInputProps<string | null, Props>) {
-  const [file, setFile] = useState<File>()
-  const [src, setSrc] = useState<string>()
+export function FormImage(props: FormImageProps) {
+  const { upload } = useFileUpload()
 
-  const { pick } = useFilePicker()
-  const { upload } = useUpload()
+  const [updateImage] = useUpdateImageMutation()
+  const [removeImage] = useRemoveImageMutation()
 
-  const { value, onChange, disabled, error, hasError } = useFormInput(props.name, props.defaultValue, async () => {
-    if (file) {
-      const id = await upload(file)
-      if (id) onChange(id)
-    }
+  const [loading, setLoading] = useState(false)
 
-    return () => {
-      setFile(undefined)
-      onChange(undefined)
-    }
-  })
+  return (
+    <DeleteBadge
+      canDelete={!!props.image}
+      onDelete={async () => {
+        try {
+          setLoading(true)
 
-  useEffect(() => {
-    if (file) {
-      const src = URL.createObjectURL(file)
-      setSrc(src)
-      return () => URL.revokeObjectURL(src)
-    } else if (value === null) {
-      setSrc(undefined)
-    } else if (typeof props.defaultValue === 'string') {
-      setSrc(props.defaultValue)
-    } else {
-      setSrc(undefined)
-    }
-  }, [value, props.defaultValue, file])
+          await removeImage({ variables: { id: props.image!.id } })
+          await props.onChange?.()
+        } finally {
+          setLoading(false)
+        }
+      }}
+    >
+      <Box width="100%" display="flex" alignItems="center" justifyContent="center">
+        <AspectImage
+          aspect={props.aspect}
+          src={props.image?.url}
+          onClick={async () => {
+            try {
+              setLoading(true)
 
-  const onPick = useCallback(async () => {
-    const file = await pick('image/*')
-    if (file) setFile(file)
-  }, [pick])
+              const uploadId = await upload()
 
-  const onClear = useCallback(async () => {
-    setFile(undefined)
-    if (typeof props.defaultValue === 'string') onChange(null)
-  }, [props.defaultValue, onChange])
+              if (uploadId) {
+                await updateImage({
+                  variables: {
+                    input: {
+                      uploadId,
+                      for: props.for,
+                      forId: props.forId,
+                    },
+                  },
+                })
 
-  switch (props.type) {
-    case 'avatar':
-      return (
-        <FormCustomControl
-          error={hasError}
-          helperText={error}
-          label={props.label}
-          disabled={disabled}
-          required={props.required}
-        >
-          <Box>
-            <DeleteBadge overlap="circular" canDelete={!disabled && !!src} onDelete={onClear}>
-              <Avatar
-                src={src}
-                onClick={!disabled ? onPick : undefined}
-                sx={{ width: 100, height: 100, cursor: 'pointer', bgcolor: 'divider', color: 'text.disabled' }}
-              >
-                <ImageIcon />
-              </Avatar>
-            </DeleteBadge>
+                await props.onChange?.()
+              }
+            } finally {
+              setLoading(false)
+            }
+          }}
+        />
+        {loading && (
+          <Box borderRadius="999px" position="absolute" bgcolor="rgba(0,0,0,0.5)">
+            <CircularProgress size={50} thickness={2.5} sx={{ display: 'block', m: 1 }} />
           </Box>
-        </FormCustomControl>
-      )
-
-    default:
-      return (
-        <FormCustomControl
-          error={hasError}
-          helperText={error}
-          label={props.label}
-          disabled={disabled}
-          required={props.required}
-        >
-          <DeleteBadge canDelete={!disabled && !!src} onDelete={onClear}>
-            <AspectImage
-              src={src}
-              aspect={props.aspect}
-              sx={{ cursor: 'pointer' }}
-              onClick={!disabled ? onPick : undefined}
-            />
-          </DeleteBadge>
-        </FormCustomControl>
-      )
-  }
+        )}
+      </Box>
+    </DeleteBadge>
+  )
 }

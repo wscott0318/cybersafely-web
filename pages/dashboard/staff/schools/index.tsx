@@ -5,6 +5,7 @@ import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { CreateSchoolForm } from '../../../../components/forms/CreateSchoolForm'
 import { namedOperations, SchoolsQuery, useCreateSchoolMutation, useSchoolsQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
@@ -69,12 +70,12 @@ function Schools() {
             startIcon={<AddIcon />}
             onClick={() => {
               pushAlert({
-                type: 'result',
+                type: 'custom',
                 title: 'Create School',
                 message: 'Enter a name below',
-                label: 'Name',
-                result: (name) => {
-                  createSchool({ variables: { input: { name } } })
+                content: CreateSchoolForm,
+                result: (input) => {
+                  createSchool({ variables: { input } })
                 },
               })
             }}

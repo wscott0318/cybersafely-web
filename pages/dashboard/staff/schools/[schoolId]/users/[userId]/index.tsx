@@ -12,7 +12,7 @@ import { UserEmail } from '../../../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
 import { ParentActions } from '../../../../../../../components/data/ParentActions'
-import { InviteParentForm } from '../../../../../../../components/form/InviteParentForm'
+import { InviteUserForm } from '../../../../../../../components/forms/InviteUserForm'
 import { ApolloClientProvider } from '../../../../../../../libs/apollo'
 import {
   namedOperations,
@@ -108,10 +108,19 @@ function MemberParents({ userId }: Props) {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Parent',
-                content: InviteParentForm,
+                content: InviteUserForm,
                 message: 'Enter the information below',
+                props: { allow: ['PARENT'] },
                 result: ({ email }) => {
-                  createUserRole({ variables: { input: { email, type: 'PARENT', relationId: userId } } })
+                  createUserRole({
+                    variables: {
+                      input: {
+                        email,
+                        type: 'PARENT',
+                        relationId: userId,
+                      },
+                    },
+                  })
                 },
               })
             }}

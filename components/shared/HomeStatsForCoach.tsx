@@ -1,7 +1,7 @@
 import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { Alert, AlertTitle, Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { useStatsForCoachQuery } from '../../types/graphql'
+import { useStatsForCoachQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { NextLink } from '../common/NextLink'
@@ -29,15 +29,17 @@ function useMissingCards() {
   const cards = useMemo(() => {
     const cards: MissingInfoCardProps[] = []
 
-    if (!schoolRole?.school.logo) {
-      cards.push({ href: '/dashboard/school', message: 'School Logo' })
-    }
+    if (schoolRole) {
+      if (!schoolRole.school.logo) {
+        cards.push({ href: '/dashboard/school', message: 'School Logo' })
+      }
 
-    if (!schoolRole?.school.cover) {
-      cards.push({ href: '/dashboard/school', message: 'School Cover' })
-    }
+      if (!schoolRole.school.cover) {
+        cards.push({ href: '/dashboard/school', message: 'School Cover' })
+      }
 
-    cards.push({ href: '/dashboard/school', message: 'Billing' })
+      cards.push({ href: '/dashboard/school', message: 'Billing' })
+    }
 
     return cards
   }, [schoolRole])
@@ -49,11 +51,13 @@ function useMissingCards() {
 }
 
 export function HomeStatsForCoach() {
+  const schoolRole = useSchoolRole()
   const { cards, hasCards } = useMissingCards()
+
   const [days, setDays] = useState(14)
 
   const { data } = useStatsForCoachQuery({
-    variables: { days },
+    variables: { schoolId: schoolRole!.school.id, days },
   })
 
   return (

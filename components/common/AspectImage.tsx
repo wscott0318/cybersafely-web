@@ -2,7 +2,7 @@ import ImageIcon from '@mui/icons-material/Image'
 import { Box, SxProps, Theme } from '@mui/material'
 
 type AspectImageProps = {
-  sx: SxProps<Theme>
+  sx?: SxProps<Theme>
   src?: string | null
   onClick?: () => void
   aspect?: number

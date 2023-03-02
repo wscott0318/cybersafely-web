@@ -1,8 +1,8 @@
 import { TextField } from '@mui/material'
-import { ChangeEvent, forwardRef, useCallback } from 'react'
+import { forwardRef } from 'react'
+import { Controller, useFormContext } from 'react-hook-form'
 import PhoneInput from 'react-phone-number-input/input'
 import { PasswordStrength } from '../PasswordStrength'
-import { FormInputProps, useFormInput } from './Form'
 
 const CustomPhoneInput = forwardRef<any, any>(function CustomPhoneInput(props, ref) {
   const { onChange, ...rest } = props
@@ -22,88 +22,65 @@ const CustomPhoneInput = forwardRef<any, any>(function CustomPhoneInput(props, r
   )
 })
 
-type Props = {
+type FormTextProps = {
+  name: string
   label: string
+  type?: 'email' | 'password' | 'phone'
+  hidePasswordStrength?: boolean
   required?: boolean
-  type?: 'email' | 'password' | 'phone' | 'text' | 'textarea'
 }
 
-export function FormText(props: FormInputProps<string | null, Props>) {
-  const { value, onChange, disabled, error, hasError } = useFormInput(props.name, props.defaultValue)
+function PasswordStrengthAdornment(props: FormTextProps) {
+  const { watch } = useFormContext()
 
-  const onChanged = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (!!e.target.value) {
-        onChange(e.target.value)
-      } else {
-        onChange(null)
-      }
-    },
-    [onChange]
-  )
+  const value = watch(props.name)
 
-  switch (props.type) {
-    case 'phone':
-      return (
-        <TextField
-          fullWidth
-          error={hasError}
-          type={props.type}
-          helperText={error}
-          label={props.label}
-          value={value ?? ''}
-          disabled={disabled}
-          onChange={onChanged}
-          required={props.required}
-          InputProps={{ inputComponent: CustomPhoneInput }}
-        />
-      )
+  return <PasswordStrength password={value} />
+}
 
-    case 'textarea':
-      return (
-        <TextField
-          fullWidth
-          multiline
-          error={hasError}
-          type={props.type}
-          helperText={error}
-          label={props.label}
-          value={value ?? ''}
-          disabled={disabled}
-          onChange={onChanged}
-          required={props.required}
-        />
-      )
+export function FormText(props: FormTextProps) {
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = useFormContext()
 
-    case 'password':
-      return (
-        <TextField
-          fullWidth
-          error={hasError}
-          type="password"
-          helperText={error}
-          label={props.label}
-          value={value ?? ''}
-          disabled={disabled}
-          onChange={onChanged}
-          required={props.required}
-          InputProps={{ endAdornment: <PasswordStrength password={value} /> }}
-        />
-      )
-
-    default:
-      return (
-        <TextField
-          fullWidth
-          error={hasError}
-          type={props.type}
-          helperText={error}
-          label={props.label}
-          value={value ?? ''}
-          disabled={disabled}
-          onChange={onChanged}
-          required={props.required}
-        />
-      )
+  if (props.type === 'phone') {
+    return (
+      <Controller
+        name={props.name}
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <TextField
+            value={value}
+            type={props.type}
+            label={props.label}
+            onChange={onChange}
+            required={props.required}
+            error={!!errors[props.name]}
+            InputProps={{ inputComponent: CustomPhoneInput }}
+            helperText={errors[props.name]?.message as string | undefined}
+          />
+        )}
+      />
+    )
   }
+
+  return (
+    <TextField
+      {...register(props.name)}
+      type={props.type}
+      label={props.label}
+      required={props.required}
+      error={!!errors[props.name]}
+      helperText={errors[props.name]?.message as string | undefined}
+      InputProps={{
+        endAdornment:
+          props.type === 'password' && !props.hidePasswordStrength ? (
+            <PasswordStrengthAdornment {...props} />
+          ) : undefined,
+      }}
+    />
+  )
 }
+546545

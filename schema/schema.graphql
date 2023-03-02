@@ -20,6 +20,9 @@ query myUser($id: ID!) {
           logo {
             url
           }
+          cover {
+            url
+          }
         }
       }
       ... on ParentRole {
@@ -144,6 +147,7 @@ query user($id: ID!) {
     email
     emailConfirmed
     avatar {
+      id
       url
     }
     roles {
@@ -272,5 +276,44 @@ mutation registerWithEmail($input: RegisterWithEmailInput!) {
     user {
       id
     }
+  }
+}
+
+mutation contact($input: ContactInput!) {
+  contact(input: $input)
+}
+
+fragment StatsByDayFragment on StatsByDay {
+  stats {
+    day
+    value
+  }
+  total
+}
+
+query statsForStaff($days: Int!) {
+  statsOfCreatedUsers(days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfCreatedSchools(days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfCreatedMembers(days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfCreatedParents(days: $days) {
+    ...StatsByDayFragment
+  }
+}
+
+query statsForCoach($schoolId: ID!, $days: Int!) {
+  statsOfCreatedMembersInSchool(schoolId: $schoolId, days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfInvitedMembersInSchool(schoolId: $schoolId, days: $days) {
+    ...StatsByDayFragment
+  }
+  statsOfAcceptedMembersInSchool(schoolId: $schoolId, days: $days) {
+    ...StatsByDayFragment
   }
 }

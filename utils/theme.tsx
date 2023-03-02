@@ -200,6 +200,9 @@ export function createTheme(isDark: boolean) {
             paddingInline: theme.spacing(3),
             paddingBlock: theme.spacing(0.5),
           }),
+          expandIconWrapper: ({ theme }) => ({
+            marginLeft: theme.spacing(1),
+          }),
         },
       },
       MuiAccordionDetails: {

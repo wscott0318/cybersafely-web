@@ -1,32 +1,41 @@
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
-import { FormInputProps, useFormInput } from './Form'
+import { Controller, useFormContext } from 'react-hook-form'
 
-type Props<M extends boolean> = {
+type FormSelectProps = {
+  name: string
   label: string
   required?: boolean
-  multiple?: M
-  options: { title: string; value: string }[]
+  options: { value: string; title: string }[]
 }
 
-export function FormSelect<M extends boolean>(props: FormInputProps<M extends true ? string[] : string, Props<M>>) {
-  const { value, onChange, disabled, error, hasError } = useFormInput(props.name, props.defaultValue)
+export function FormSelect(props: FormSelectProps) {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext()
 
   return (
-    <FormControl fullWidth variant="standard" error={hasError} disabled={disabled} required={props.required}>
+    <FormControl
+      variant="standard"
+      required={props.required}
+      error={!!errors[props.name]}
+      disabled={props.options.length === 1}
+    >
       <InputLabel>{props.label}</InputLabel>
-      <Select
-        label={props.label}
-        multiple={props.multiple}
-        onChange={(e) => onChange(e.target.value as any)}
-        value={props.multiple ? value ?? [] : value ?? ''}
-      >
-        {props.options.map((option, index) => (
-          <MenuItem key={String(index)} value={option.value}>
-            {option.title}
-          </MenuItem>
-        ))}
-      </Select>
-      {hasError && <FormHelperText>{error}</FormHelperText>}
+      <Controller
+        name={props.name}
+        control={control}
+        render={({ field: { value, onChange } }) => (
+          <Select value={value ?? ''} onChange={onChange}>
+            {props.options.map((option, index) => (
+              <MenuItem key={String(index)} value={option.value}>
+                {option.title}
+              </MenuItem>
+            ))}
+          </Select>
+        )}
+      />
+      {!!errors[props.name] && <FormHelperText>{errors[props.name]?.message as string | undefined}</FormHelperText>}
     </FormControl>
   )
 }

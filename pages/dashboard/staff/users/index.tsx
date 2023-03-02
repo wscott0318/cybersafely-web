@@ -7,7 +7,7 @@ import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { InviteEmailForm } from '../../../../components/form/InviteEmailForm'
+import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
 import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
@@ -78,7 +78,8 @@ function Users() {
                 type: 'custom',
                 title: 'Invite Staff',
                 message: 'Enter an e-mail below',
-                content: InviteEmailForm,
+                content: InviteUserForm,
+                props: { allow: ['STAFF'] },
                 result: ({ email }) => {
                   createUserRole({ variables: { input: { email, type: 'STAFF' } } })
                 },
