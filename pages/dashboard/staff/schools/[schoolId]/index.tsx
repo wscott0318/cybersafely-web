@@ -88,7 +88,12 @@ function SchoolMembers({ schoolId }: Props) {
   const { pushAlert } = useAlert()
 
   const query = useUsersQuery({
-    variables: { from: 'SCHOOL', fromId: schoolId },
+    variables: {
+      filter: {
+        from: 'SCHOOL',
+        fromId: schoolId,
+      },
+    },
   })
 
   const [createUserRole] = useCreateUserRoleMutation({
@@ -115,6 +120,7 @@ function SchoolMembers({ schoolId }: Props) {
                 type: 'custom',
                 title: 'Invite Member',
                 content: InviteUserForm,
+                props: { allow: ['ADMIN', 'COACH', 'ATHLETE'] },
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: schoolId } } })
                 },
@@ -123,7 +129,7 @@ function SchoolMembers({ schoolId }: Props) {
           >
             Invite Member
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

@@ -48,8 +48,8 @@ fragment PageFragment on Page {
   total
 }
 
-query schools($page: PageInput, $order: SchoolOrder, $search: String) {
-  schools(page: $page, order: $order, search: $search) {
+query schools($page: PageInput, $order: SchoolOrder, $filter: SchoolFilter) {
+  schools(page: $page, order: $order, filter: $filter) {
     page {
       ...PageFragment
     }
@@ -104,15 +104,8 @@ mutation updateSchool($id: ID!, $input: UpdateSchoolInput!) {
   }
 }
 
-query users(
-  $from: UsersFromEnum
-  $fromId: ID
-  $page: PageInput
-  $order: UserOrder
-  $search: String
-  $schoolRole: SchoolRoleTypeEnum
-) {
-  users(from: $from, fromId: $fromId, page: $page, order: $order, search: $search, schoolRole: $schoolRole) {
+query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
+  users(page: $page, order: $order, filter: $filter) {
     page {
       ...PageFragment
     }

@@ -255,9 +255,9 @@ export type QuerySchoolArgs = {
 
 
 export type QuerySchoolsArgs = {
+  filter?: InputMaybe<SchoolFilter>;
   order?: InputMaybe<SchoolOrder>;
   page?: InputMaybe<PageInput>;
-  search?: InputMaybe<Scalars['String']>;
 };
 
 
@@ -305,12 +305,9 @@ export type QueryUserArgs = {
 
 
 export type QueryUsersArgs = {
-  from?: InputMaybe<UsersFromEnum>;
-  fromId?: InputMaybe<Scalars['ID']>;
+  filter?: InputMaybe<UserFilter>;
   order?: InputMaybe<UserOrder>;
   page?: InputMaybe<PageInput>;
-  schoolRole?: InputMaybe<SchoolRoleTypeEnum>;
-  search?: InputMaybe<Scalars['String']>;
 };
 
 export type RegisterWithEmailInput = {
@@ -339,6 +336,10 @@ export type School = {
 
 export type SchoolMemberCountArgs = {
   status?: InputMaybe<UserRoleStatusEnum>;
+};
+
+export type SchoolFilter = {
+  search?: InputMaybe<Scalars['String']>;
 };
 
 export type SchoolOrder = {
@@ -452,6 +453,13 @@ export type UserRolesArgs = {
   status?: InputMaybe<UserRoleStatusEnum>;
 };
 
+export type UserFilter = {
+  from?: InputMaybe<UsersFromEnum>;
+  fromId?: InputMaybe<Scalars['ID']>;
+  schoolRole?: InputMaybe<SchoolRoleTypeEnum>;
+  search?: InputMaybe<Scalars['String']>;
+};
+
 export type UserOrder = {
   createdAt?: InputMaybe<OrderDirectionEnum>;
   email?: InputMaybe<OrderDirectionEnum>;
@@ -515,7 +523,7 @@ export type PageFragmentFragment = { __typename?: 'Page', index: number, size: n
 export type SchoolsQueryVariables = Exact<{
   page?: InputMaybe<PageInput>;
   order?: InputMaybe<SchoolOrder>;
-  search?: InputMaybe<Scalars['String']>;
+  filter?: InputMaybe<SchoolFilter>;
 }>;
 
 
@@ -544,12 +552,9 @@ export type UpdateSchoolMutationVariables = Exact<{
 export type UpdateSchoolMutation = { __typename?: 'Mutation', updateSchool: { __typename?: 'School', id: string } };
 
 export type UsersQueryVariables = Exact<{
-  from?: InputMaybe<UsersFromEnum>;
-  fromId?: InputMaybe<Scalars['ID']>;
   page?: InputMaybe<PageInput>;
   order?: InputMaybe<UserOrder>;
-  search?: InputMaybe<Scalars['String']>;
-  schoolRole?: InputMaybe<SchoolRoleTypeEnum>;
+  filter?: InputMaybe<UserFilter>;
 }>;
 
 
@@ -814,8 +819,8 @@ export type LoginWithEmailMutationHookResult = ReturnType<typeof useLoginWithEma
 export type LoginWithEmailMutationResult = Apollo.MutationResult<LoginWithEmailMutation>;
 export type LoginWithEmailMutationOptions = Apollo.BaseMutationOptions<LoginWithEmailMutation, LoginWithEmailMutationVariables>;
 export const SchoolsDocument = gql`
-    query schools($page: PageInput, $order: SchoolOrder, $search: String) {
-  schools(page: $page, order: $order, search: $search) {
+    query schools($page: PageInput, $order: SchoolOrder, $filter: SchoolFilter) {
+  schools(page: $page, order: $order, filter: $filter) {
     page {
       ...PageFragment
     }
@@ -850,7 +855,7 @@ export const SchoolsDocument = gql`
  *   variables: {
  *      page: // value for 'page'
  *      order: // value for 'order'
- *      search: // value for 'search'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -985,15 +990,8 @@ export type UpdateSchoolMutationHookResult = ReturnType<typeof useUpdateSchoolMu
 export type UpdateSchoolMutationResult = Apollo.MutationResult<UpdateSchoolMutation>;
 export type UpdateSchoolMutationOptions = Apollo.BaseMutationOptions<UpdateSchoolMutation, UpdateSchoolMutationVariables>;
 export const UsersDocument = gql`
-    query users($from: UsersFromEnum, $fromId: ID, $page: PageInput, $order: UserOrder, $search: String, $schoolRole: SchoolRoleTypeEnum) {
-  users(
-    from: $from
-    fromId: $fromId
-    page: $page
-    order: $order
-    search: $search
-    schoolRole: $schoolRole
-  ) {
+    query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
+  users(page: $page, order: $order, filter: $filter) {
     page {
       ...PageFragment
     }
@@ -1046,12 +1044,9 @@ export const UsersDocument = gql`
  * @example
  * const { data, loading, error } = useUsersQuery({
  *   variables: {
- *      from: // value for 'from'
- *      fromId: // value for 'fromId'
  *      page: // value for 'page'
  *      order: // value for 'order'
- *      search: // value for 'search'
- *      schoolRole: // value for 'schoolRole'
+ *      filter: // value for 'filter'
  *   },
  * });
  */

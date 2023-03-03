@@ -75,7 +75,12 @@ function Members() {
   const { pushAlert } = useAlert()
 
   const query = useUsersQuery({
-    variables: { from: 'SCHOOL', fromId: userRole!.school.id },
+    variables: {
+      filter: {
+        from: 'SCHOOL',
+        fromId: userRole!.school.id,
+      },
+    },
   })
 
   const [createUserRole] = useCreateUserRoleMutation({
@@ -111,7 +116,7 @@ function Members() {
           >
             Invite Member
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

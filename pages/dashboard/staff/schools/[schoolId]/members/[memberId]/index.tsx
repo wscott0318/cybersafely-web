@@ -87,7 +87,12 @@ function MemberParents({ memberId }: Props) {
   const { pushAlert } = useAlert()
 
   const query = useUsersQuery({
-    variables: { from: 'CHILD', fromId: memberId },
+    variables: {
+      filter: {
+        from: 'CHILD',
+        fromId: memberId,
+      },
+    },
   })
 
   const [createUserRole] = useCreateUserRoleMutation({
@@ -130,7 +135,7 @@ function MemberParents({ memberId }: Props) {
           >
             Invite Parent
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

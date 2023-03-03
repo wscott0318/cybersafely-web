@@ -36,7 +36,7 @@ function RegisterButton() {
 export default function Login() {
   const router = useRouter()
 
-  const [login, { loading }] = useLoginWithEmailMutation({
+  const [login] = useLoginWithEmailMutation({
     onCompleted: async (data, options) => {
       const { token, user } = data.loginWithEmail
 

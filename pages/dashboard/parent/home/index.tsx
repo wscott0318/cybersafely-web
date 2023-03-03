@@ -45,7 +45,12 @@ function Home() {
   const { user } = useUser()
 
   const query = useUsersQuery({
-    variables: { from: 'PARENT', fromId: user.id },
+    variables: {
+      filter: {
+        from: 'PARENT',
+        fromId: user.id,
+      },
+    },
   })
 
   return (
@@ -64,7 +69,7 @@ function Home() {
             initialSortModel={{ field: 'createdAt', sort: 'desc' }}
             actions={
               <DataGridActions>
-                <SearchBar onSearch={(search) => query.refetch({ search })} />
+                <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
               </DataGridActions>
             }
           />

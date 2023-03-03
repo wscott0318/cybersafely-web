@@ -44,9 +44,11 @@ function Athletes() {
 
   const query = useUsersQuery({
     variables: {
-      from: 'SCHOOL',
-      schoolRole: 'ATHLETE',
-      fromId: schoolRole!.school.id,
+      filter: {
+        from: 'SCHOOL',
+        schoolRole: 'ATHLETE',
+        fromId: schoolRole!.school.id,
+      },
     },
   })
 
@@ -59,7 +61,7 @@ function Athletes() {
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

@@ -10,16 +10,16 @@ import { useFinalizeAccountMutation } from '../../../../schema'
 
 const schema = z
   .object({
+    name: z.string().min(4),
     password: z
       .string()
       .min(4)
       .refine((password) => checkPasswordStrength(password) > 50, 'Password is too weak'),
     repeatPassword: z.string(),
-    name: z.string().min(4),
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
-      addIssue('repeatNewPassword', "The passwords don't match", ctx)
+      addIssue('repeatPassword', "The passwords don't match", ctx)
     }
   })
 
@@ -30,7 +30,7 @@ type Props = {
 export default function Activate({ token }: Props) {
   const router = useRouter()
 
-  const [activate, { loading }] = useFinalizeAccountMutation({
+  const [activate] = useFinalizeAccountMutation({
     onCompleted() {
       router.push('/auth/login')
     },

@@ -18,7 +18,7 @@ const schema = z
   })
   .superRefine(({ password, repeatPassword }, ctx) => {
     if (password !== repeatPassword) {
-      addIssue('repeatNewPassword', "The passwords don't match", ctx)
+      addIssue('repeatPassword', "The passwords don't match", ctx)
     }
   })
 
