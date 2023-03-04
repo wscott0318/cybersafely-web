@@ -25,12 +25,7 @@ export function Form<T extends {}>(props: FormProps<T>) {
     async (data: FieldValues) => {
       const { dirtyFields } = methods.formState
 
-      const dirty = Object.keys(data)
-        .filter((key) => (dirtyFields as any)[key] === true)
-        .reduce((dict: Record<string, any>, key) => {
-          dict[key] = (data as any)[key]
-          return dict
-        }, {})
+      const dirty = Object.fromEntries(Object.entries(data).filter(([key]) => (dirtyFields as any)[key] === true))
 
       try {
         setLoading(true)
