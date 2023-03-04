@@ -75,7 +75,7 @@ function HeaderAccount() {
       </Snackbar>
       <NextLink href="/dashboard/notifications">
         <IconButton sx={{ mr: 1 }}>
-          <Badge color="primary">
+          <Badge color="primary" badgeContent={user.notificationCount ?? 0}>
             <NotificationIcon />
           </Badge>
         </IconButton>

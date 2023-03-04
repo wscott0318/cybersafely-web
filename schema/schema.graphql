@@ -1,9 +1,28 @@
+query notifications($page: PageInput) {
+  notifications(page: $page) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      body
+      url
+    }
+  }
+}
+
+mutation readNotifications {
+  readNotifications
+}
+
 query myUser($id: ID!) {
   user(id: $id) {
     id
     email
     emailConfirmed
     name
+    notificationCount
     avatar {
       id
       url

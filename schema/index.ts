@@ -98,6 +98,7 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'];
   loginWithEmail: UserWithToken;
   prepareUpload: Upload;
+  readNotifications: Scalars['Boolean'];
   registerWithEmail: UserWithToken;
   removeAddress: Scalars['Boolean'];
   removeImage: Scalars['Boolean'];
@@ -205,6 +206,20 @@ export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
 };
 
+export type Notification = {
+  __typename?: 'Notification';
+  body: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  url?: Maybe<Scalars['String']>;
+};
+
+export type NotificationPage = {
+  __typename?: 'NotificationPage';
+  nodes: Array<Notification>;
+  page: Page;
+};
+
 export const OrderDirectionEnum = {
   Asc: 'ASC',
   Desc: 'DESC'
@@ -234,6 +249,7 @@ export type ParentRole = {
 
 export type Query = {
   __typename?: 'Query';
+  notifications: NotificationPage;
   school: School;
   schools: SchoolPage;
   settings: Settings;
@@ -246,6 +262,11 @@ export type Query = {
   statsOfInvitedMembersInSchool: StatsByDay;
   user: User;
   users: UserPage;
+};
+
+
+export type QueryNotificationsArgs = {
+  page?: InputMaybe<PageInput>;
 };
 
 
@@ -445,6 +466,7 @@ export type User = {
   emailConfirmed: Scalars['Boolean'];
   id: Scalars['ID'];
   name: Scalars['String'];
+  notificationCount: Scalars['Int'];
   roles: Array<UserRole>;
 };
 
@@ -504,12 +526,24 @@ export const UsersFromEnum = {
 } as const;
 
 export type UsersFromEnum = typeof UsersFromEnum[keyof typeof UsersFromEnum];
+export type NotificationsQueryVariables = Exact<{
+  page?: InputMaybe<PageInput>;
+}>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Notification', id: string, createdAt: string, body: string, url?: string | null }> } };
+
+export type ReadNotificationsMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReadNotificationsMutation = { __typename?: 'Mutation', readNotifications: boolean };
+
 export type MyUserQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }> } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -719,6 +753,79 @@ export const StatsByDayFragmentFragmentDoc = gql`
   total
 }
     `;
+export const NotificationsDocument = gql`
+    query notifications($page: PageInput) {
+  notifications(page: $page) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      body
+      url
+    }
+  }
+}
+    ${PageFragmentFragmentDoc}`;
+
+/**
+ * __useNotificationsQuery__
+ *
+ * To run a query within a React component, call `useNotificationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useNotificationsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function useNotificationsQuery(baseOptions?: Apollo.QueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+      }
+export function useNotificationsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationsQuery, NotificationsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<NotificationsQuery, NotificationsQueryVariables>(NotificationsDocument, options);
+        }
+export type NotificationsQueryHookResult = ReturnType<typeof useNotificationsQuery>;
+export type NotificationsLazyQueryHookResult = ReturnType<typeof useNotificationsLazyQuery>;
+export type NotificationsQueryResult = Apollo.QueryResult<NotificationsQuery, NotificationsQueryVariables>;
+export const ReadNotificationsDocument = gql`
+    mutation readNotifications {
+  readNotifications
+}
+    `;
+export type ReadNotificationsMutationFn = Apollo.MutationFunction<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
+
+/**
+ * __useReadNotificationsMutation__
+ *
+ * To run a mutation, you first call `useReadNotificationsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReadNotificationsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [readNotificationsMutation, { data, loading, error }] = useReadNotificationsMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useReadNotificationsMutation(baseOptions?: Apollo.MutationHookOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ReadNotificationsMutation, ReadNotificationsMutationVariables>(ReadNotificationsDocument, options);
+      }
+export type ReadNotificationsMutationHookResult = ReturnType<typeof useReadNotificationsMutation>;
+export type ReadNotificationsMutationResult = Apollo.MutationResult<ReadNotificationsMutation>;
+export type ReadNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
 export const MyUserDocument = gql`
     query myUser($id: ID!) {
   user(id: $id) {
@@ -726,6 +833,7 @@ export const MyUserDocument = gql`
     email
     emailConfirmed
     name
+    notificationCount
     avatar {
       id
       url
@@ -1778,6 +1886,7 @@ export type StatsForSchoolLazyQueryHookResult = ReturnType<typeof useStatsForSch
 export type StatsForSchoolQueryResult = Apollo.QueryResult<StatsForSchoolQuery, StatsForSchoolQueryVariables>;
 export const namedOperations = {
   Query: {
+    notifications: 'notifications',
     myUser: 'myUser',
     schools: 'schools',
     school: 'school',
@@ -1788,6 +1897,7 @@ export const namedOperations = {
     statsForSchool: 'statsForSchool'
   },
   Mutation: {
+    readNotifications: 'readNotifications',
     loginWithEmail: 'loginWithEmail',
     createSchool: 'createSchool',
     updateSchool: 'updateSchool',
