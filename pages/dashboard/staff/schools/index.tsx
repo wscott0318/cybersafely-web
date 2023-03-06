@@ -5,7 +5,8 @@ import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { namedOperations, SchoolsQuery, useCreateSchoolMutation, useSchoolsQuery } from '../../../../types/graphql'
+import { CreateSchoolForm } from '../../../../components/forms/CreateSchoolForm'
+import { namedOperations, SchoolsQuery, useCreateSchoolMutation, useSchoolsQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
@@ -24,8 +25,7 @@ const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
   },
   {
     width: 350,
-    sortable: false,
-    field: 'address.formatted',
+    field: 'address',
     headerName: 'Address',
     valueGetter(params) {
       return params.row.address?.formatted
@@ -70,19 +70,18 @@ function Schools() {
             startIcon={<AddIcon />}
             onClick={() => {
               pushAlert({
-                type: 'result',
+                type: 'custom',
                 title: 'Create School',
-                message: 'Enter a name below',
-                label: 'Name',
-                result: (name) => {
-                  createSchool({ variables: { input: { name } } })
+                content: CreateSchoolForm,
+                result: (input) => {
+                  createSchool({ variables: { input } })
                 },
               })
             }}
           >
             Create School
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

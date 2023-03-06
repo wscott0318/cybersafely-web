@@ -5,22 +5,22 @@ import { GetServerSideProps } from 'next'
 import { useMemo } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../../components/common/DropDownButton'
+import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { ParentActions } from '../../../../../components/data/ParentActions'
-import { InviteParentForm } from '../../../../../components/form/InviteParentForm'
+import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import {
   namedOperations,
-  ParentRole,
-  ParentsQuery,
-  useInviteParentMutation,
-  useMemberQuery,
-  useParentsQuery,
-} from '../../../../../types/graphql'
+  useCreateUserRoleMutation,
+  UsersQuery,
+  useUserQuery,
+  useUsersQuery,
+} from '../../../../../schema'
 import { useAlert } from '../../../../../utils/context/alert'
 
-const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (childId) => [
+const getColumns: (childId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (childId) => [
   {
     width: 250,
     field: 'name',
@@ -42,16 +42,6 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['p
   },
   {
     width: 200,
-    field: 'relation',
-    sortable: false,
-    headerName: 'Relation',
-    valueGetter(params) {
-      const role = params.row.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
-      return role?.relation
-    },
-  },
-  {
-    width: 200,
     field: 'createdAt',
     headerName: 'Joined',
     valueFormatter(params) {
@@ -63,7 +53,12 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['p
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <ParentActions parentId={params.row.id} childId={childId} />
+      const userRole = params.row.roles.find((e) => e.type === 'PARENT')
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Parent" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
@@ -75,15 +70,20 @@ type Props = {
 function Member({ memberId }: Props) {
   const { pushAlert } = useAlert()
 
-  const { data } = useMemberQuery({
+  const { data } = useUserQuery({
     variables: { id: memberId },
   })
-  const query = useParentsQuery({
-    variables: { childId: memberId },
+  const query = useUsersQuery({
+    variables: {
+      filter: {
+        from: 'CHILD',
+        fromId: memberId,
+      },
+    },
   })
 
-  const [inviteParent] = useInviteParentMutation({
-    refetchQueries: [namedOperations.Query.parents],
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
   })
 
   const columns = useMemo(() => getColumns(memberId), [memberId])
@@ -92,10 +92,10 @@ function Member({ memberId }: Props) {
     <DataGridViewer
       query={query}
       columns={columns}
-      data={query.data?.parents}
+      data={query.data?.users}
       back="/dashboard/coach/members"
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      title={data ? `Parents of "${data.member.name}"` : 'Parents'}
+      title={data ? `Parents of "${data.user.name}"` : 'Parents'}
       actions={
         <DataGridActions>
           <Button
@@ -105,17 +105,25 @@ function Member({ memberId }: Props) {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Parent',
-                content: InviteParentForm,
-                message: 'Enter the information below',
-                result: (variables) => {
-                  inviteParent({ variables: { ...variables, childId: memberId } })
+                content: InviteUserForm,
+                props: { allow: ['PARENT'] },
+                result: ({ email }) => {
+                  createUserRole({
+                    variables: {
+                      input: {
+                        email,
+                        type: 'PARENT',
+                        relationId: memberId,
+                      },
+                    },
+                  })
                 },
               })
             }}
           >
             Invite Parent
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

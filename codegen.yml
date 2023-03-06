@@ -1,8 +1,8 @@
 overwrite: true
 schema: "http://127.0.0.1:3001/graphql"
-documents: "./**/*.graphql"
+documents: "./schema/**/*.graphql"
 generates:
-  ./types/graphql.ts:
+  ./schema/index.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
@@ -11,5 +11,4 @@ generates:
     config:
       enumsAsConst: true
       scalars:
-        DateTime: Date
-        NullObject: "null"
+        DateTime: string

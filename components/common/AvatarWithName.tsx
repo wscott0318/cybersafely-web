@@ -20,7 +20,7 @@ export function AvatarWithName(props: AvatarWithNameProps) {
         {props.type === 'school' ? <SchoolIcon fontSize="inherit" /> : undefined}
       </Avatar>
       <Box flexGrow={1}>
-        <Typography variant="inherit">{props.name}</Typography>
+        <Typography variant="inherit">{props.name || '<No Name>'}</Typography>
         {!!props.email && (
           <Typography variant="body2" color="text.disabled">
             {props.email}

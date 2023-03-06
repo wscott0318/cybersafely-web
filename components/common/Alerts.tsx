@@ -1,16 +1,14 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material'
-import { useCallback, useRef, useState } from 'react'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@mui/material'
+import { useCallback, useState } from 'react'
 import { AlertInternal, useAlert } from '../../utils/context/alert'
 
 type SimpleAlertProps = {
-  alert: AlertInternal<any>
+  alert: AlertInternal<any, {}>
 }
 
 function SimpleAlert({ alert }: SimpleAlertProps) {
-  const ref = useRef<{ onSubmit: (callback: (value: any) => void) => void }>(null)
-
   const [open, setOpen] = useState(true)
-  const [input, setInput] = useState('')
 
   const onClose = useCallback(() => {
     setOpen(false)
@@ -32,98 +30,58 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
       PaperProps={{
         sx: {
           border: 'none',
+          position: 'relative',
         },
       }}
     >
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-
-          switch (alert.type) {
-            case 'result':
-              alert.result(input)
-              onClose()
-
-              break
-
-            case 'custom':
-              if (ref.current) {
-                ref.current.onSubmit((value) => {
-                  alert.result(value)
-                  onClose()
-                })
-              }
-
-              break
-
-            default:
-              break
-          }
-        }}
+      <IconButton
+        size="small"
+        onClick={onClose}
+        sx={(theme) => ({
+          position: 'absolute',
+          top: theme.spacing(1),
+          right: theme.spacing(1),
+        })}
       >
-        <DialogTitle>{alert.title}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{alert.message}</DialogContentText>
-          {alert.type === 'result' && (
-            <TextField
-              required
+        <CloseIcon fontSize="small" />
+      </IconButton>
+      <DialogTitle>{alert.title}</DialogTitle>
+      <DialogContent>
+        {!!alert.message && <DialogContentText>{alert.message}</DialogContentText>}
+        {alert.type === 'custom' && (
+          <alert.content
+            {...alert.props}
+            onSubmit={(value) => {
+              alert.result(value)
+              onClose()
+            }}
+          />
+        )}
+      </DialogContent>
+      <DialogActions>
+        {alert.type === 'alert' && (
+          <Button autoFocus variant="text" onClick={onClose}>
+            OK
+          </Button>
+        )}
+        {alert.type === 'confirm' && (
+          <>
+            <Button variant="text" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button
               autoFocus
-              fullWidth
-              value={input}
-              margin="dense"
-              variant="standard"
-              label={alert.label}
-              type={alert.resultType}
-              onChange={(e) => setInput(e.target.value)}
-            />
-          )}
-          {alert.type === 'custom' && <alert.content ref={ref} />}
-        </DialogContent>
-        <DialogActions>
-          {alert.type === 'alert' && (
-            <Button autoFocus variant="text" onClick={onClose}>
+              variant="text"
+              onClick={() => {
+                onClose()
+                alert.confirm!()
+              }}
+            >
               OK
             </Button>
-          )}
-          {alert.type === 'confirm' && (
-            <>
-              <Button variant="text" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button
-                autoFocus
-                variant="text"
-                onClick={() => {
-                  onClose()
-                  alert.confirm!()
-                }}
-              >
-                OK
-              </Button>
-            </>
-          )}
-          {alert.type === 'result' && (
-            <>
-              <Button variant="text" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="text">
-                OK
-              </Button>
-            </>
-          )}
-          {alert.type === 'custom' && (
-            <>
-              <Button variant="text" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" variant="text">
-                OK
-              </Button>
-            </>
-          )}
-        </DialogActions>
-      </form>
+          </>
+        )}
+      </DialogActions>
     </Dialog>
   )
 }

@@ -6,24 +6,24 @@ import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../../../../components/common/DropDownButton'
 import { NavigationActions, NavigationView } from '../../../../../../../components/common/NavigationView'
+import { RemoveUserRoleMenuItem } from '../../../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../../../components/common/UserEmail'
+import { UserRoles } from '../../../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../../../components/dashboard/Layout'
-import { ParentActions } from '../../../../../../../components/data/ParentActions'
-import { InviteParentForm } from '../../../../../../../components/form/InviteParentForm'
-import { ApolloClientProvider } from '../../../../../../../libs/apollo'
+import { InviteUserForm } from '../../../../../../../components/forms/InviteUserForm'
 import {
   namedOperations,
-  ParentRole,
-  ParentsQuery,
-  useInviteParentMutation,
-  useMemberQuery,
-  useParentsQuery,
-} from '../../../../../../../types/graphql'
+  useCreateUserRoleMutation,
+  UsersQuery,
+  useUserQuery,
+  useUsersQuery,
+} from '../../../../../../../schema'
 import { useAlert } from '../../../../../../../utils/context/alert'
 
-const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['parents']>> = (childId) => [
+const getColumns: (memberId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (memberId) => [
   {
     width: 250,
     field: 'name',
@@ -45,12 +45,14 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['p
   },
   {
     width: 200,
-    field: 'relation',
+    field: 'role',
     sortable: false,
-    headerName: 'Relation',
+    headerName: 'Role',
     valueGetter(params) {
-      const role = params.row.roles.find((e) => e.role === 'PARENT') as ParentRole | undefined
-      return role?.relation
+      return params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === memberId)
+    },
+    renderCell(params) {
+      return <UserRoles roles={[params.value]} />
     },
   },
   {
@@ -66,7 +68,12 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<ParentsQuery['p
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <ParentActions parentId={params.row.id} childId={childId} />
+      const userRole = params.row.roles.find((e) => e.__typename === 'ParentRole' && e.childUser.id === memberId)
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Parent" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
@@ -79,12 +86,17 @@ type Props = {
 function MemberParents({ memberId }: Props) {
   const { pushAlert } = useAlert()
 
-  const query = useParentsQuery({
-    variables: { childId: memberId },
+  const query = useUsersQuery({
+    variables: {
+      filter: {
+        from: 'CHILD',
+        fromId: memberId,
+      },
+    },
   })
 
-  const [inviteParent] = useInviteParentMutation({
-    refetchQueries: [namedOperations.Query.parents],
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
   })
 
   const columns = useMemo(() => getColumns(memberId), [memberId])
@@ -94,7 +106,7 @@ function MemberParents({ memberId }: Props) {
       query={query}
       title="Parents"
       columns={columns}
-      data={query.data?.parents}
+      data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
@@ -105,34 +117,42 @@ function MemberParents({ memberId }: Props) {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Parent',
-                content: InviteParentForm,
-                message: 'Enter the information below',
-                result: (variables) => {
-                  inviteParent({ variables: { ...variables, childId: memberId } })
+                content: InviteUserForm,
+                props: { allow: ['PARENT'] },
+                result: ({ email }) => {
+                  createUserRole({
+                    variables: {
+                      input: {
+                        email,
+                        type: 'PARENT',
+                        relationId: memberId,
+                      },
+                    },
+                  })
                 },
               })
             }}
           >
             Invite Parent
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />
   )
 }
 
-function MemberWrapper(props: Props) {
+function Members(props: Props) {
   const [tab, setTab] = useState('parents')
 
-  const { data } = useMemberQuery({
+  const { data } = useUserQuery({
     variables: { id: props.memberId },
   })
 
   return (
     <TabContext value={tab}>
       <NavigationView
-        title={data?.member.name ?? 'Member'}
+        title={data?.user.name ?? 'Member'}
         back={`/dashboard/staff/schools/${props.schoolId}`}
         actions={
           <NavigationActions>
@@ -150,20 +170,12 @@ function MemberWrapper(props: Props) {
   )
 }
 
-function Member(props: Props) {
-  return (
-    <ApolloClientProvider schoolId={props.schoolId}>
-      <MemberWrapper {...props} />
-    </ApolloClientProvider>
-  )
-}
-
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   const schoolId = ctx.params!.schoolId as string
   const memberId = ctx.params!.memberId as string
   return { props: { schoolId, memberId } }
 }
 
-export default withDashboardLayout(Member, {
+export default withDashboardLayout(Members, {
   title: 'Members',
 })

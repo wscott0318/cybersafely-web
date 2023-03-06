@@ -7,8 +7,8 @@ import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { InviteEmailForm } from '../../../../components/form/InviteEmailForm'
-import { namedOperations, useInviteStaffMutation, UsersQuery, useUsersQuery } from '../../../../types/graphql'
+import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
+import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
@@ -34,7 +34,6 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
     width: 350,
     field: 'roles',
-    sortable: false,
     headerName: 'Roles',
     valueGetter(params) {
       return params.row.roles
@@ -58,7 +57,7 @@ function Users() {
 
   const query = useUsersQuery()
 
-  const [inviteStaff] = useInviteStaffMutation({
+  const [createUserRole] = useCreateUserRoleMutation({
     refetchQueries: [namedOperations.Query.users],
   })
 
@@ -78,17 +77,17 @@ function Users() {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Staff',
-                message: 'Enter an e-mail below',
-                content: InviteEmailForm,
-                result: (variables) => {
-                  inviteStaff({ variables })
+                content: InviteUserForm,
+                props: { allow: ['STAFF'] },
+                result: ({ email }) => {
+                  createUserRole({ variables: { input: { email, type: 'STAFF' } } })
                 },
               })
             }}
           >
             Invite Staff
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

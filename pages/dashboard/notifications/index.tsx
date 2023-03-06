@@ -1,81 +1,61 @@
-import ChevronIcon from '@mui/icons-material/ChevronRightOutlined'
-import CheckIcon from '@mui/icons-material/DoneOutlined'
+import CheckIcon from '@mui/icons-material/DoneAllOutlined'
 import { LoadingButton } from '@mui/lab'
-import {
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemSecondaryAction,
-  ListItemText,
-  Pagination,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material'
-import { NextLink } from '../../../components/common/NextLink'
+import { GridColumns } from '@mui/x-data-grid'
+import { DataGridActions, DataGridViewer, InferNodeType } from '../../../components/common/DataGridViewer'
 import { withDashboardLayout } from '../../../components/dashboard/Layout'
-import { namedOperations, useNotificationsQuery, useReadAllNotificationsMutation } from '../../../types/graphql'
+import {
+  namedOperations,
+  NotificationsQuery,
+  useNotificationsQuery,
+  useReadNotificationsMutation,
+} from '../../../schema'
+import { useUser } from '../../../utils/context/auth'
+
+const columns: GridColumns<InferNodeType<NotificationsQuery['notifications']>> = [
+  {
+    width: 500,
+    field: 'body',
+    headerName: 'Message',
+  },
+  {
+    width: 200,
+    field: 'createdAt',
+    headerName: 'Created',
+    valueFormatter(params) {
+      return new Date(params.value).toLocaleString()
+    },
+  },
+]
 
 function Notifications() {
-  const { data, refetch } = useNotificationsQuery()
+  const { user, refetchUser } = useUser()
 
-  const [readAllNotifications, { loading }] = useReadAllNotificationsMutation({
-    refetchQueries: [namedOperations.Query.notificationsCount, namedOperations.Query.notifications],
+  const query = useNotificationsQuery()
+
+  const [readNotifications, { loading }] = useReadNotificationsMutation({
+    refetchQueries: [namedOperations.Query.notifications],
+    onCompleted: () => {
+      refetchUser()
+    },
   })
 
   return (
-    <Stack>
-      <Stack direction="row" alignItems="center">
-        <Typography variant="h5" flexGrow={1}>
-          Notifications
-        </Typography>
-        {data && data.notifications.page.total > 0 && (
-          <LoadingButton startIcon={<CheckIcon />} loading={loading} onClick={() => readAllNotifications()}>
-            Read All
-          </LoadingButton>
-        )}
-      </Stack>
-      {data && data.notifications.page.total > 0 && (
-        <Paper>
-          <List>
-            {data.notifications.nodes.map((notification, index, { length }) => {
-              if (notification.url) {
-                return (
-                  <NextLink key={notification.id} href={notification.url}>
-                    <ListItemButton component="a" divider={index < length - 1}>
-                      <ListItemText
-                        primary={notification.message}
-                        secondary={new Date(notification.createdAt).toLocaleString()}
-                      />
-                      <ListItemSecondaryAction sx={{ display: 'flex', alignItems: 'center' }}>
-                        <ChevronIcon color="disabled" />
-                      </ListItemSecondaryAction>
-                    </ListItemButton>
-                  </NextLink>
-                )
-              }
-
-              return (
-                <ListItem key={notification.id} divider={index < length - 1}>
-                  <ListItemText
-                    primary={notification.message}
-                    secondary={new Date(notification.createdAt).toLocaleString()}
-                  />
-                </ListItem>
-              )
-            })}
-          </List>
-        </Paper>
-      )}
-      {data && data.notifications.page.count > 1 && (
-        <Pagination
-          sx={{ alignSelf: 'center' }}
-          count={data.notifications.page.count}
-          page={data.notifications.page.index + 1}
-          onChange={(_, page) => refetch({ page: { index: page - 1 } })}
-        />
-      )}
-    </Stack>
+    <DataGridViewer
+      query={query}
+      columns={columns}
+      title="Notifications"
+      href={(e) => e.url ?? '#'}
+      data={query.data?.notifications}
+      actions={
+        user.notificationCount > 0 ? (
+          <DataGridActions>
+            <LoadingButton fullWidth loading={loading} startIcon={<CheckIcon />} onClick={() => readNotifications()}>
+              Read All
+            </LoadingButton>
+          </DataGridActions>
+        ) : undefined
+      }
+    />
   )
 }
 

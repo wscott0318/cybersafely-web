@@ -1,9 +1,8 @@
-import { LoadingButton } from '@mui/lab'
-import { Stack, TextField, Typography } from '@mui/material'
 import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
-import { useForm } from '../../../helpers/form'
-import { useRequestResetPasswordMutation } from '../../../types/graphql'
+import { Form } from '../../../components/common/form/Form'
+import { FormText } from '../../../components/common/form/FormText'
+import { useForgotPasswordMutation } from '../../../schema'
 import { useAlert } from '../../../utils/context/alert'
 
 const schema = z.object({
@@ -11,11 +10,9 @@ const schema = z.object({
 })
 
 export default function ResetPassword() {
-  const form = useForm(schema)
-
   const { pushAlert } = useAlert()
 
-  const [reset, { loading }] = useRequestResetPasswordMutation({
+  const [forgotPassword] = useForgotPasswordMutation({
     onCompleted: () => {
       pushAlert({
         type: 'alert',
@@ -27,30 +24,14 @@ export default function ResetPassword() {
 
   return (
     <CoverLayout>
-      <form
-        onSubmit={form.onSubmit((variables) => {
-          reset({ variables })
-        })}
+      <Form
+        schema={schema}
+        onSubmit={async (variables) => {
+          await forgotPassword({ variables })
+        }}
       >
-        <Stack spacing={4}>
-          <Typography variant="h4">Forgot Password</Typography>
-          <TextField
-            required
-            autoFocus
-            type="email"
-            size="medium"
-            label="E-mail"
-            variant="outlined"
-            error={form.hasError('email')}
-            value={form.value.email ?? ''}
-            helperText={form.getError('email')}
-            onChange={(e) => form.onChange('email', e.target.value)}
-          />
-          <LoadingButton type="submit" loading={loading} size="large">
-            Submit
-          </LoadingButton>
-        </Stack>
-      </form>
+        <FormText name="email" label="E-mail" type="email" required />
+      </Form>
     </CoverLayout>
   )
 }

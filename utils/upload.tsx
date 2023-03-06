@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { usePrepareForUploadMutation } from '../types/graphql'
+import { usePrepareUploadMutation } from '../schema'
 
 type Accept = 'image/*'
 
@@ -36,7 +36,7 @@ export function useFilePicker() {
 export function useUpload() {
   const [loading, setLoading] = useState(false)
 
-  const [prepareForUpload] = usePrepareForUploadMutation()
+  const [prepareForUpload] = usePrepareUploadMutation()
 
   const upload = useCallback(async (body: File | Blob | Buffer) => {
     try {
@@ -45,7 +45,7 @@ export function useUpload() {
       const { data } = await prepareForUpload()
 
       if (data) {
-        const { id, url, method, headers } = data.prepareForUpload
+        const { id, url, method, headers } = data.prepareUpload
 
         await fetch(url, {
           body,

@@ -1,3 +1,0 @@
-mutation removeRole($id: ID!) {
-  removeRole(id: $id)
-}

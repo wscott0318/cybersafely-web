@@ -1,12 +1,12 @@
 import { useApolloClient } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { createContext, useCallback, useContext, useMemo } from 'react'
-import { ProfileQuery, Role, SchoolRole } from '../../types/graphql'
+import { MyUserQuery, SchoolRole, UserRoleTypeEnum } from '../../schema'
 import { StorageManager } from '../storage'
 
 type AuthContext = {
-  user: ProfileQuery['profile']
-  role: Role
+  user: MyUserQuery['user']
+  role: UserRoleTypeEnum | undefined
   refetchUser: () => Promise<void>
 }
 
@@ -48,21 +48,21 @@ export function useUser() {
 export function useSchoolRole() {
   const context = useContext(AuthContext)
 
-  const role = useMemo(() => {
+  const userRole = useMemo(() => {
     if (context?.user) {
       const schoolId = StorageManager.get('schoolId')
 
       if (schoolId) {
-        const role = context.user.roles.find(
-          (e) => e.role === 'ADMIN' || e.role === 'COACH' || e.role === 'ATHLETE'
-        ) as SchoolRole | undefined
+        const userRole = context.user.roles.find((e) => ['ADMIN', 'COACH', 'ATHLETE'].includes(e.type)) as
+          | SchoolRole
+          | undefined
 
-        if (role && role.school.id === schoolId) {
-          return role
+        if (userRole && userRole.school.id === schoolId) {
+          return userRole
         }
       }
     }
   }, [context?.user])
 
-  return role
+  return userRole
 }
