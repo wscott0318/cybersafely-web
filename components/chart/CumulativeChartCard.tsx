@@ -14,7 +14,6 @@ import {
 import 'chartjs-adapter-date-fns'
 import { useMemo } from 'react'
 import { Chart } from 'react-chartjs-2'
-import { StatByDay } from '../../types/graphql'
 
 const HEIGHT = 140
 
@@ -24,7 +23,7 @@ const CompactNumberFormatter = Intl.NumberFormat('en-US', { notation: 'compact' 
 
 type CumulativeChartCardProps = {
   title: string
-  data?: StatByDay[] | null
+  data?: { day: string; value: number }[] | null
   total?: number | null
   helper?: string
   fillHeight?: boolean

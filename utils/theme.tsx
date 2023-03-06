@@ -138,6 +138,12 @@ export function createTheme(isDark: boolean) {
           disableElevation: true,
         },
       },
+      MuiButtonGroup: {
+        defaultProps: {
+          variant: 'contained',
+          disableElevation: true,
+        },
+      },
       MuiChip: {
         defaultProps: {
           size: 'small',
@@ -193,6 +199,9 @@ export function createTheme(isDark: boolean) {
           root: ({ theme }) => ({
             paddingInline: theme.spacing(3),
             paddingBlock: theme.spacing(0.5),
+          }),
+          expandIconWrapper: ({ theme }) => ({
+            marginLeft: theme.spacing(1),
           }),
         },
       },

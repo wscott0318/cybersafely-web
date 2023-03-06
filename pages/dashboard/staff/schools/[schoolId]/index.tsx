@@ -3,33 +3,33 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Button, CircularProgress, Container, Stack, Tab } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { EmptyFileAnimation } from '../../../../../components/common/EmptyFileAnimation'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
+import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { MemberActions } from '../../../../../components/data/MemberActions'
-import { InviteMemberForm } from '../../../../../components/form/InviteMemberForm'
-import { UpdateSchoolForm } from '../../../../../components/form/UpdateSchoolForm'
-import { ApolloClientProvider } from '../../../../../libs/apollo'
+import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
+import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
 import {
-  MembersQuery,
   namedOperations,
-  useInviteMemberMutation,
-  useMembersQuery,
+  useCreateUserRoleMutation,
+  UsersQuery,
   useSchoolQuery,
-} from '../../../../../types/graphql'
+  useUsersQuery,
+} from '../../../../../schema'
 import { useAlert } from '../../../../../utils/context/alert'
 
 type Props = {
   schoolId: string
 }
 
-const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
+const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (schoolId) => [
   {
     width: 250,
     field: 'name',
@@ -51,20 +51,15 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   },
   {
     width: 200,
-    field: 'roles',
+    field: 'role',
     sortable: false,
-    headerName: 'Roles',
+    headerName: 'Role',
     valueGetter(params) {
-      return params.row.roles
+      return params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
     },
     renderCell(params) {
-      return <UserRoles roles={params.value} />
+      return <UserRoles roles={[params.value]} />
     },
-  },
-  {
-    width: 150,
-    field: 'parentCount',
-    headerName: 'Parents',
   },
   {
     width: 200,
@@ -79,7 +74,12 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <MemberActions memberId={params.row.id} />
+      const userRole = params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Member" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
@@ -87,18 +87,27 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
 function SchoolMembers({ schoolId }: Props) {
   const { pushAlert } = useAlert()
 
-  const query = useMembersQuery()
-
-  const [inviteMember] = useInviteMemberMutation({
-    refetchQueries: [namedOperations.Query.members],
+  const query = useUsersQuery({
+    variables: {
+      filter: {
+        from: 'SCHOOL',
+        fromId: schoolId,
+      },
+    },
   })
+
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
+  })
+
+  const columns = useMemo(() => getColumns(schoolId), [schoolId])
 
   return (
     <DataGridViewer
       query={query}
       title="Members"
       columns={columns}
-      data={query.data?.members}
+      data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       href={(e) => `/dashboard/staff/schools/${schoolId}/members/${e.id}`}
       actions={
@@ -110,17 +119,17 @@ function SchoolMembers({ schoolId }: Props) {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Member',
-                message: 'Enter the information below',
-                content: InviteMemberForm,
-                result: (variables) => {
-                  inviteMember({ variables })
+                content: InviteUserForm,
+                props: { allow: ['ADMIN', 'COACH', 'ATHLETE'] },
+                result: ({ email, type }) => {
+                  createUserRole({ variables: { input: { email, type, relationId: schoolId } } })
                 },
               })
             }}
           >
             Invite Member
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />
@@ -144,7 +153,7 @@ function Loader<T>({ data, children }: LoaderProps<T>) {
   return children(data)
 }
 
-function SchoolWrapper(props: Props) {
+function School(props: Props) {
   const [tab, setTab] = useState('members')
 
   const { data } = useSchoolQuery({
@@ -173,7 +182,7 @@ function SchoolWrapper(props: Props) {
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <UpdateSchoolForm school={school} />
+                <UpdateSchoolForm schoolId={school.id} exclude={['billing']} />
               </Container>
             </TabPanel>
             <TabPanel value="posts">
@@ -183,14 +192,6 @@ function SchoolWrapper(props: Props) {
         )}
       </Loader>
     </TabContext>
-  )
-}
-
-function School(props: Props) {
-  return (
-    <ApolloClientProvider schoolId={props.schoolId}>
-      <SchoolWrapper {...props} />
-    </ApolloClientProvider>
   )
 }
 

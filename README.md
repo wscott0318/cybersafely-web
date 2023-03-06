@@ -28,6 +28,13 @@ NEXT_PUBLIC_API_URL=
 NEXT_PUBLIC_APP_NAME=
 NEXT_PUBLIC_APP_SHORT_NAME=
 NEXT_PUBLIC_EMAIL_SUPPORT=
+NEXT_PUBLIC_ENABLE_LOGIN=
+```
+
+Create an `.env` file at the root of the project:
+
+```bash
+NEXT_PUBLIC_ENABLE_LOGIN=true
 ```
 
 ## Seeded Logins

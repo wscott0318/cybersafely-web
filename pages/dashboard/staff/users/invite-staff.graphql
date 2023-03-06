@@ -1,3 +1,0 @@
-mutation inviteStaff($email: String!) {
-  inviteStaff(email: $email)
-}

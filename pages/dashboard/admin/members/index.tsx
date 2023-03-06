@@ -1,18 +1,21 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
+import { useMemo } from 'react'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../components/common/DropDownButton'
+import { RemoveUserRoleMenuItem } from '../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { MemberActions } from '../../../../components/data/MemberActions'
-import { InviteMemberForm } from '../../../../components/form/InviteMemberForm'
-import { MembersQuery, namedOperations, useInviteMemberMutation, useMembersQuery } from '../../../../types/graphql'
+import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
+import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
+import { useSchoolRole } from '../../../../utils/context/auth'
 
-const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
+const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (schoolId) => [
   {
     width: 250,
     field: 'name',
@@ -34,20 +37,15 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
   },
   {
     width: 200,
-    field: 'roles',
+    field: 'role',
     sortable: false,
-    headerName: 'Roles',
+    headerName: 'Role',
     valueGetter(params) {
-      return params.row.roles
+      return params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
     },
     renderCell(params) {
-      return <UserRoles roles={params.value} />
+      return <UserRoles roles={[params.value]} />
     },
-  },
-  {
-    width: 150,
-    field: 'parentCount',
-    headerName: 'Parents',
   },
   {
     width: 200,
@@ -62,26 +60,41 @@ const columns: GridColumns<InferNodeType<MembersQuery['members']>> = [
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return <MemberActions memberId={params.row.id} />
+      const userRole = params.row.roles.find((e) => e.__typename === 'SchoolRole' && e.school.id === schoolId)
+      return (
+        <DropDownButton>
+          <RemoveUserRoleMenuItem title="Remove Member" userRoleId={userRole!.id} />
+        </DropDownButton>
+      )
     },
   },
 ]
 
 function Members() {
+  const userRole = useSchoolRole()
   const { pushAlert } = useAlert()
 
-  const query = useMembersQuery()
-
-  const [inviteMember] = useInviteMemberMutation({
-    refetchQueries: [namedOperations.Query.members],
+  const query = useUsersQuery({
+    variables: {
+      filter: {
+        from: 'SCHOOL',
+        fromId: userRole!.school.id,
+      },
+    },
   })
+
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
+  })
+
+  const columns = useMemo(() => getColumns(userRole!.school.id), [userRole])
 
   return (
     <DataGridViewer
       query={query}
       title="Members"
       columns={columns}
-      data={query.data?.members}
+      data={query.data?.users}
       href={(e) => `/dashboard/admin/members/${e.id}`}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
@@ -93,17 +106,17 @@ function Members() {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Member',
-                message: 'Enter the information below',
-                content: InviteMemberForm,
-                result: (variables) => {
-                  inviteMember({ variables })
+                content: InviteUserForm,
+                props: { allow: ['ADMIN', 'COACH', 'ATHLETE'] },
+                result: ({ email, type }) => {
+                  createUserRole({ variables: { input: { email, type, relationId: userRole!.school.id } } })
                 },
               })
             }}
           >
             Invite Member
           </Button>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
+          <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }
     />

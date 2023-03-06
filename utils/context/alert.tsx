@@ -1,8 +1,8 @@
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 
-type Alert<P> = {
+type Alert<P, T> = {
   title: string
-  message: string
+  message?: string
 } & (
   | {
       type: 'alert'
@@ -12,28 +12,21 @@ type Alert<P> = {
       confirm: () => void
     }
   | {
-      type: 'result'
-      label: string
-      resultType?: string
-      result: (value: string) => void
-    }
-  | {
       type: 'custom'
-      content: React.ForwardRefExoticComponent<
-        React.RefAttributes<{ onSubmit: (callback: (value: P) => void) => void }>
-      >
+      content: (props: { onSubmit: (value: P) => void } & T) => JSX.Element
+      props?: Omit<T, 'onSubmit'>
       result: (value: P) => void
     }
 )
 
-export type AlertInternal<P> = Alert<P> & {
+export type AlertInternal<P, T> = Alert<P, T> & {
   id: number
   onClose: () => void
 }
 
 type AlertContext = {
-  alerts: AlertInternal<any>[]
-  pushAlert: <P>(alert: Alert<P>) => () => void
+  alerts: AlertInternal<any, {}>[]
+  pushAlert: <P, T>(alert: Alert<P, T>) => () => void
 }
 
 const AlertContext = createContext<AlertContext | null>(null)
@@ -45,9 +38,9 @@ type AlertProviderProps = {
 export function AlertContextProvider(props: AlertProviderProps) {
   let prevId = useRef(0).current
 
-  const [alerts, setAlerts] = useState<AlertInternal<any>[]>([])
+  const [alerts, setAlerts] = useState<AlertInternal<any, any>[]>([])
 
-  const pushAlert = useCallback(<P extends any>(alert: Alert<P>) => {
+  const pushAlert = useCallback(<P extends any, T extends any>(alert: Alert<P, T>) => {
     const id = ++prevId
 
     const onClose = () => {

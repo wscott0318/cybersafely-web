@@ -1,11 +1,14 @@
-import { CircularProgress, Stack, Typography } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
+import { UserScore } from '../../../../components/common/UserScore'
+import { WelcomeCard } from '../../../../components/common/WelcomeCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { ChildrenQuery, SchoolRole, useChildrenQuery } from '../../../../types/graphql'
+import { SchoolRole, UsersQuery, useUsersQuery } from '../../../../schema'
+import { useUser } from '../../../../utils/context/auth'
 
-const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
+const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
     width: 250,
     field: 'name',
@@ -17,20 +20,11 @@ const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
     headerName: 'E-mail',
   },
   {
-    width: 200,
-    field: 'relation',
-    sortable: false,
-    headerName: 'Relation',
-    valueGetter(params) {
-      return params.row.parentRole?.relation
-    },
-  },
-  {
     width: 250,
     field: 'school',
     headerName: 'School',
     valueGetter(params) {
-      const roles = params.row.roles.filter((e) => e.role === 'ATHLETE') as SchoolRole[]
+      const roles = params.row.roles.filter((e) => e.type === 'ATHLETE') as SchoolRole[]
       return roles.map((e) => e.school.name)
     },
     valueFormatter(params) {
@@ -42,33 +36,46 @@ const columns: GridColumns<InferNodeType<ChildrenQuery['children']>> = [
     field: 'score',
     headerName: 'Score',
     renderCell() {
-      return (
-        <Stack spacing={1} direction="row" alignItems="center">
-          <CircularProgress color="success" size={20} variant="determinate" value={100} />
-          <Typography color="success.main">Good (100%)</Typography>
-        </Stack>
-      )
+      return <UserScore />
     },
   },
 ]
 
 function Home() {
-  const query = useChildrenQuery()
+  const { user } = useUser()
+
+  const query = useUsersQuery({
+    variables: {
+      filter: {
+        from: 'PARENT',
+        fromId: user.id,
+      },
+    },
+  })
 
   return (
-    <DataGridViewer
-      title="Children"
-      query={query}
-      columns={columns}
-      data={query.data?.children}
-      href={(e) => `/dashboard/parent/child/${e.id}`}
-      initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      actions={
-        <DataGridActions>
-          <SearchBar onSearch={(search) => query.refetch({ search })} />
-        </DataGridActions>
-      }
-    />
+    <Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <WelcomeCard />
+        </Grid>
+        <Grid item xs={12}>
+          <DataGridViewer
+            title="Children"
+            query={query}
+            columns={columns}
+            data={query.data?.users}
+            href={(e) => `/dashboard/parent/child/${e.id}`}
+            initialSortModel={{ field: 'createdAt', sort: 'desc' }}
+            actions={
+              <DataGridActions>
+                <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
+              </DataGridActions>
+            }
+          />
+        </Grid>
+      </Grid>
+    </Box>
   )
 }
 

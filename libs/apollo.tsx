@@ -7,7 +7,6 @@ import { StorageManager } from '../utils/storage'
 
 type ApolloClientProviderProps = {
   children: React.ReactNode
-  schoolId?: string
 }
 
 export function ApolloClientProvider(props: ApolloClientProviderProps) {
@@ -23,12 +22,12 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
 
       const headers = {
         ...context.headers,
-        'x-token': StorageManager.get('token'),
-        'x-school-id': props.schoolId ?? StorageManager.get('schoolId'),
       }
 
-      if (typeof context.schoolId === 'string') {
-        headers['x-school-id'] = context.schoolId
+      const token = StorageManager.get('token')
+
+      if (!!token) {
+        headers['x-token'] = token
       }
 
       operation.setContext({ ...context, headers })
@@ -70,7 +69,7 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
         },
       },
     })
-  }, [props.schoolId])
+  }, [])
 
   return <ApolloProvider client={client}>{props.children}</ApolloProvider>
 }

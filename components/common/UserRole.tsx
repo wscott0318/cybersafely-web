@@ -3,9 +3,9 @@ import CheckIcon from '@mui/icons-material/CheckCircle'
 import PendingIcon from '@mui/icons-material/Pending'
 import { Chip, Tooltip } from '@mui/material'
 import { useMemo } from 'react'
-import { Role, RoleStatus } from '../../types/graphql'
+import { UserRoleStatusEnum, UserRoleTypeEnum } from '../../schema'
 
-export function userRoleDisplayText(role: Role) {
+export function userRoleDisplayText(role: UserRoleTypeEnum) {
   switch (role) {
     case 'STAFF':
       return 'Staff'
@@ -21,13 +21,13 @@ export function userRoleDisplayText(role: Role) {
 }
 
 type UserRoleProps = {
-  role: Role
-  status: RoleStatus
+  type: UserRoleTypeEnum
+  status: UserRoleStatusEnum
   onDelete?: () => void
 }
 
-export function UserRole({ role, status, onDelete }: UserRoleProps) {
-  const label = useMemo(() => userRoleDisplayText(role), [role])
+export function UserRole({ type, status, onDelete }: UserRoleProps) {
+  const label = useMemo(() => userRoleDisplayText(type), [type])
 
   const color = useMemo(() => {
     switch (status) {

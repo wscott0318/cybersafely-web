@@ -1,48 +1,66 @@
-import { Button, Divider, Link, Typography } from '@mui/material'
-import { Box, Stack } from '@mui/system'
+import { useApolloClient } from '@apollo/client'
+import { Box, Button, Divider, Link, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { CoverLayout } from '../../components/common/CoverLayout'
 import { NextLink } from '../../components/common/NextLink'
 import { Config } from '../../helpers/config'
-import { AnyRole, ParentRole, SchoolRole, useProfileQuery } from '../../types/graphql'
+import { MyUserDocument, MyUserQuery, MyUserQueryVariables, SchoolRole } from '../../schema'
 import { StorageManager } from '../../utils/storage'
 
 export default function Dashboard() {
   const router = useRouter()
 
-  const { data } = useProfileQuery()
+  const client = useApolloClient()
 
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    if (!data) return
+    async function check() {
+      try {
+        const id = StorageManager.get('userId')
 
-    const user = data.profile
+        if (typeof id === 'string') {
+          const { data } = await client.query<MyUserQuery, MyUserQueryVariables>({
+            variables: { id },
+            query: MyUserDocument,
+          })
 
-    const staff = user.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED') as AnyRole | undefined
-    const admin = user.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED') as SchoolRole | undefined
-    const coach = user.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED') as SchoolRole | undefined
-    const athlete = user.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED') as SchoolRole | undefined
-    const parent = user.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED') as ParentRole | undefined
+          const { user } = data!
 
-    if (staff) {
-      router.replace('/dashboard/staff/home')
-    } else if (admin) {
-      StorageManager.set('schoolId', admin.school.id)
-      router.replace('/dashboard/admin/home')
-    } else if (coach) {
-      StorageManager.set('schoolId', coach.school.id)
-      router.replace('/dashboard/coach/home')
-    } else if (athlete) {
-      StorageManager.set('schoolId', athlete.school.id)
-      router.replace('/dashboard/athlete/home')
-    } else if (parent) {
-      router.replace('/dashboard/parent/home')
-    } else {
-      setError(true)
+          const staff = user.roles.find((e) => e.type === 'STAFF')
+          const admin = user.roles.find((e) => e.type === 'ADMIN') as SchoolRole | undefined
+          const coach = user.roles.find((e) => e.type === 'COACH') as SchoolRole | undefined
+          const athlete = user.roles.find((e) => e.type === 'ATHLETE') as SchoolRole | undefined
+          const parent = user.roles.find((e) => e.type === 'PARENT')
+
+          if (staff) {
+            router.replace('/dashboard/staff/home')
+          } else if (admin) {
+            StorageManager.set('schoolId', admin.school.id)
+            router.replace('/dashboard/admin/home')
+          } else if (coach) {
+            StorageManager.set('schoolId', coach.school.id)
+            router.replace('/dashboard/coach/home')
+          } else if (athlete) {
+            StorageManager.set('schoolId', athlete.school.id)
+            router.replace('/dashboard/athlete/home')
+          } else if (parent) {
+            router.replace('/dashboard/parent/home')
+          } else {
+            setError(true)
+          }
+        } else {
+          throw new Error('No user')
+        }
+      } catch (error) {
+        console.error(error)
+        router.replace('/auth/login')
+      }
     }
-  }, [data, router])
+
+    check()
+  }, [])
 
   if (!error) {
     return null
@@ -53,9 +71,7 @@ export default function Dashboard() {
       <Stack spacing={4}>
         <Box>
           <Typography variant="h4">No user role!</Typography>
-          <Typography>
-            The current logged in user, <b>{data?.profile.email}</b>, does not have any valid roles.
-          </Typography>
+          <Typography>The current logged in user does not have any valid roles.</Typography>
         </Box>
         <NextLink href="/auth/login">
           <Button size="large">Login Again</Button>

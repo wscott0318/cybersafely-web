@@ -1,3 +1,4 @@
+import { useApolloClient } from '@apollo/client'
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import FeedIcon from '@mui/icons-material/FeedOutlined'
@@ -8,7 +9,9 @@ import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
 import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
 import PersonIcon from '@mui/icons-material/PeopleOutlined'
-import SchoolIcon from '@mui/icons-material/School'
+import SchoolFilledIcon from '@mui/icons-material/School'
+import SchoolIcon from '@mui/icons-material/SchoolOutlined'
+import SettingsIcon from '@mui/icons-material/SettingsOutlined'
 import {
   Alert,
   AppBar,
@@ -39,9 +42,10 @@ import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
-import { useNotificationsCountQuery, useProfileQuery } from '../../types/graphql'
+import { MyUserDocument, MyUserQuery, MyUserQueryVariables } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
+import { StorageManager } from '../../utils/storage'
 import { DropDownButton } from '../common/DropDownButton'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
 import { LoadingLogo } from '../common/NProgress'
@@ -53,12 +57,6 @@ function HeaderAccount() {
   const { pushAlert } = useAlert()
 
   const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
-
-  const { data } = useNotificationsCountQuery({
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-first',
-    initialFetchPolicy: 'network-only',
-  })
 
   return (
     <>
@@ -77,7 +75,7 @@ function HeaderAccount() {
       </Snackbar>
       <NextLink href="/dashboard/notifications">
         <IconButton sx={{ mr: 1 }}>
-          <Badge color="primary" badgeContent={data?.notificationsCount}>
+          <Badge color="primary" badgeContent={user.notificationCount ?? 0}>
             <NotificationIcon />
           </Badge>
         </IconButton>
@@ -164,7 +162,7 @@ function SidebarAccount() {
           title={schoolRole.school.name}
           icon={
             <Avatar sx={{ width: 28, height: 28 }} src={schoolRole.school.logo?.url}>
-              <SchoolIcon fontSize="inherit" />
+              <SchoolFilledIcon fontSize="inherit" />
             </Avatar>
           }
         />
@@ -188,9 +186,11 @@ export type DashboardLayoutProps = {
 
 export function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter()
+  const client = useApolloClient()
   const logoUrl = useLogoUrl()
   const { isMobile, isTablet } = useMobile()
 
+  const [user, setUser] = useState<MyUserQuery['user']>()
   const [open, setOpen] = useState(true)
 
   useEffect(() => {
@@ -209,35 +209,42 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     return '280px'
   }, [isMobile])
 
-  const { data, error, refetch } = useProfileQuery({
-    fetchPolicy: 'cache-first',
-    nextFetchPolicy: 'cache-first',
-    initialFetchPolicy: 'network-only',
-  })
-
-  const userRole = useMemo(() => {
-    if (!data) return
-
-    const staff = data.profile.roles.find((e) => e.role === 'STAFF' && e.status === 'ACCEPTED')
-    const admin = data.profile.roles.find((e) => e.role === 'ADMIN' && e.status === 'ACCEPTED')
-    const coach = data.profile.roles.find((e) => e.role === 'COACH' && e.status === 'ACCEPTED')
-    const athlete = data.profile.roles.find((e) => e.role === 'ATHLETE' && e.status === 'ACCEPTED')
-    const parent = data.profile.roles.find((e) => e.role === 'PARENT' && e.status === 'ACCEPTED')
-
-    return staff ?? admin ?? coach ?? athlete ?? parent
-  }, [data])
-
   const refetchUser = useCallback(async () => {
-    await refetch()
-  }, [refetch])
+    try {
+      const id = StorageManager.get('userId')
+
+      if (typeof id === 'string') {
+        const { data } = await client.query<MyUserQuery, MyUserQueryVariables>({
+          variables: { id },
+          query: MyUserDocument,
+        })
+        setUser(data.user)
+      } else {
+        throw new Error('No user')
+      }
+    } catch (error) {
+      alert(error)
+      router.replace('/auth/login')
+    }
+  }, [client, router])
 
   useEffect(() => {
-    if (error) {
-      router.push('/auth/login')
-    }
-  }, [error, router])
+    refetchUser()
+  }, [])
 
-  if (!data) {
+  const userRole = useMemo(() => {
+    if (!user) return
+
+    const staff = user.roles.find((e) => e.type === 'STAFF')
+    const admin = user.roles.find((e) => e.type === 'ADMIN')
+    const coach = user.roles.find((e) => e.type === 'COACH')
+    const athlete = user.roles.find((e) => e.type === 'ATHLETE')
+    const parent = user.roles.find((e) => e.type === 'PARENT')
+
+    return staff ?? admin ?? coach ?? athlete ?? parent
+  }, [user])
+
+  if (!user) {
     return (
       <Stack alignItems="center" justifyContent="center" minHeight="100vh">
         <LoadingLogo />
@@ -246,7 +253,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <AuthContextProvider user={data.profile} role={userRole!.role} refetchUser={refetchUser}>
+    <AuthContextProvider user={user} role={userRole?.type} refetchUser={refetchUser}>
       <Head>
         <title>{props.title}</title>
       </Head>
@@ -366,6 +373,9 @@ function Sidebar() {
             <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
             <SidebarLink href="/dashboard/staff/schools" icon={<SchoolIcon />} title="Schools" />
           </CollapsableList>
+          <CollapsableList title="Settings">
+            <SidebarLink href="/dashboard/staff/settings" icon={<SettingsIcon />} title="Settings" />
+          </CollapsableList>
         </>
       )
 
@@ -383,6 +393,7 @@ function Sidebar() {
         <CollapsableList>
           <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
           <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
+          <SidebarLink href="/dashboard/coach/athletes" icon={<PersonIcon />} title="Athletes" />
           <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
@@ -391,7 +402,7 @@ function Sidebar() {
       return (
         <CollapsableList>
           <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
-          <SidebarLink href="/dashboard/athlete/members" icon={<PersonIcon />} title="Members" />
+          <SidebarLink href="/dashboard/athlete/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
 
@@ -401,6 +412,9 @@ function Sidebar() {
           <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
         </CollapsableList>
       )
+
+    default:
+      return null
   }
 }
 
