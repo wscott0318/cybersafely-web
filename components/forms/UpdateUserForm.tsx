@@ -12,10 +12,18 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 import { z } from 'zod'
 import { addIssue } from '../../helpers/zod'
-import { UserQuery, useUpdatePasswordMutation, useUpdateUserMutation, useUserQuery } from '../../schema'
+import {
+  MyUserQuery,
+  useAuthWithTwitterMutation,
+  useMyUserQuery,
+  useRemoveTwitterMutation,
+  useUpdatePasswordMutation,
+  useUpdateUserMutation,
+} from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AccordionContext } from '../common/AccordionContext'
 import { Form } from '../common/form/Form'
@@ -29,9 +37,14 @@ type SocialButtonProps = {
   name: string
   color: string
   linked?: boolean
+  username?: string
+  onLink?: () => Promise<string>
+  onUnlink?: () => Promise<void>
 }
 
 function SocialButton(props: SocialButtonProps) {
+  const router = useRouter()
+
   if (props.linked) {
     return (
       <ButtonGroup fullWidth variant="contained">
@@ -48,7 +61,7 @@ function SocialButton(props: SocialButtonProps) {
             },
           })}
         >
-          @username
+          {props.username ?? props.name}
         </Button>
         <Tooltip title={`Unlink ${props.name}`}>
           <Button
@@ -60,6 +73,11 @@ function SocialButton(props: SocialButtonProps) {
               ':hover': {
                 bgcolor: props.color,
               },
+            }}
+            onClick={async () => {
+              if (props.onUnlink) {
+                await props.onUnlink()
+              }
             }}
           >
             <UnlinkIcon fontSize="small" />
@@ -83,6 +101,12 @@ function SocialButton(props: SocialButtonProps) {
         ':hover': {
           bgcolor: props.color,
         },
+      }}
+      onClick={async () => {
+        if (props.onLink) {
+          const url = await props.onLink()
+          router.push(url)
+        }
       }}
     >
       <Typography variant="inherit" flexGrow={1} textAlign="start">
@@ -133,11 +157,18 @@ function Render({
   exclude,
   data: { user },
   query: { refetch },
-}: UpdateUserFormProps & QueryLoaderRenderProps<UserQuery>) {
+}: UpdateUserFormProps & QueryLoaderRenderProps<MyUserQuery>) {
   const { pushAlert } = useAlert()
 
   const [updateUser] = useUpdateUserMutation()
   const [updatePassword] = useUpdatePasswordMutation()
+
+  const [authWithTwitter] = useAuthWithTwitterMutation()
+  const [removeTwitter] = useRemoveTwitterMutation({
+    onCompleted: () => {
+      refetch()
+    },
+  })
 
   const isShown = useCallback(
     (section: Section) => {
@@ -234,7 +265,6 @@ function Render({
                   icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
                   name="TikTok"
                   color="#000"
-                  linked
                 />
               </Grid>
               <Grid item xs={6}>
@@ -242,6 +272,12 @@ function Render({
                   icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
                   name="Twitter"
                   color="#1d9bf0"
+                  linked={!!user.twitter}
+                  username={user.twitter?.username}
+                  onLink={() => authWithTwitter().then(({ data }) => data!.authWithTwitter)}
+                  onUnlink={async () => {
+                    await removeTwitter({ variables: { id: user.twitter!.id } })
+                  }}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -283,7 +319,7 @@ type UpdateUserFormProps = {
 }
 
 export function UpdateUserForm(props: UpdateUserFormProps) {
-  const query = useUserQuery({
+  const query = useMyUserQuery({
     variables: { id: props.userId },
     notifyOnNetworkStatusChange: false,
   })

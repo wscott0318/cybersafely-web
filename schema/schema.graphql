@@ -48,6 +48,10 @@ query myUser($id: ID!) {
         type
       }
     }
+    twitter {
+      id
+      username
+    }
   }
 }
 
@@ -335,4 +339,12 @@ query statsForSchool($schoolId: ID!, $days: Int!) {
   statsOfAcceptedMembersInSchool(schoolId: $schoolId, days: $days) {
     ...StatsByDayFragment
   }
+}
+
+mutation authWithTwitter {
+  authWithTwitter
+}
+
+mutation removeTwitter($id: ID!) {
+  removeTwitter(id: $id)
 }

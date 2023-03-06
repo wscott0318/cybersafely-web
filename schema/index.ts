@@ -90,6 +90,7 @@ export type LoginWithEmailInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  authWithTwitter: Scalars['String'];
   contact: Scalars['Boolean'];
   createAddress: Address;
   createSchool: School;
@@ -102,6 +103,7 @@ export type Mutation = {
   registerWithEmail: UserWithToken;
   removeAddress: Scalars['Boolean'];
   removeImage: Scalars['Boolean'];
+  removeTwitter: Scalars['Boolean'];
   removeUserRole: Scalars['Boolean'];
   resetPassword: UserWithToken;
   updateAddress: Address;
@@ -160,6 +162,11 @@ export type MutationRemoveAddressArgs = {
 
 
 export type MutationRemoveImageArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationRemoveTwitterArgs = {
   id: Scalars['ID'];
 };
 
@@ -409,6 +416,12 @@ export type StatsByDay = {
   total: Scalars['Int'];
 };
 
+export type Twitter = {
+  __typename?: 'Twitter';
+  id: Scalars['ID'];
+  username: Scalars['String'];
+};
+
 export type UpdateAddressInput = {
   city?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
@@ -468,6 +481,7 @@ export type User = {
   name: Scalars['String'];
   notificationCount: Scalars['Int'];
   roles: Array<UserRole>;
+  twitter?: Maybe<Twitter>;
 };
 
 
@@ -543,7 +557,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, twitter?: { __typename?: 'Twitter', id: string, username: string } | null } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -736,6 +750,18 @@ export type StatsForSchoolQueryVariables = Exact<{
 
 export type StatsForSchoolQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
 
+export type AuthWithTwitterMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AuthWithTwitterMutation = { __typename?: 'Mutation', authWithTwitter: string };
+
+export type RemoveTwitterMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveTwitterMutation = { __typename?: 'Mutation', removeTwitter: boolean };
+
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
   index
@@ -858,6 +884,10 @@ export const MyUserDocument = gql`
       ... on ParentRole {
         type
       }
+    }
+    twitter {
+      id
+      username
     }
   }
 }
@@ -1884,6 +1914,67 @@ export function useStatsForSchoolLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type StatsForSchoolQueryHookResult = ReturnType<typeof useStatsForSchoolQuery>;
 export type StatsForSchoolLazyQueryHookResult = ReturnType<typeof useStatsForSchoolLazyQuery>;
 export type StatsForSchoolQueryResult = Apollo.QueryResult<StatsForSchoolQuery, StatsForSchoolQueryVariables>;
+export const AuthWithTwitterDocument = gql`
+    mutation authWithTwitter {
+  authWithTwitter
+}
+    `;
+export type AuthWithTwitterMutationFn = Apollo.MutationFunction<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>;
+
+/**
+ * __useAuthWithTwitterMutation__
+ *
+ * To run a mutation, you first call `useAuthWithTwitterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAuthWithTwitterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [authWithTwitterMutation, { data, loading, error }] = useAuthWithTwitterMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAuthWithTwitterMutation(baseOptions?: Apollo.MutationHookOptions<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>(AuthWithTwitterDocument, options);
+      }
+export type AuthWithTwitterMutationHookResult = ReturnType<typeof useAuthWithTwitterMutation>;
+export type AuthWithTwitterMutationResult = Apollo.MutationResult<AuthWithTwitterMutation>;
+export type AuthWithTwitterMutationOptions = Apollo.BaseMutationOptions<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>;
+export const RemoveTwitterDocument = gql`
+    mutation removeTwitter($id: ID!) {
+  removeTwitter(id: $id)
+}
+    `;
+export type RemoveTwitterMutationFn = Apollo.MutationFunction<RemoveTwitterMutation, RemoveTwitterMutationVariables>;
+
+/**
+ * __useRemoveTwitterMutation__
+ *
+ * To run a mutation, you first call `useRemoveTwitterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveTwitterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeTwitterMutation, { data, loading, error }] = useRemoveTwitterMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveTwitterMutation(baseOptions?: Apollo.MutationHookOptions<RemoveTwitterMutation, RemoveTwitterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveTwitterMutation, RemoveTwitterMutationVariables>(RemoveTwitterDocument, options);
+      }
+export type RemoveTwitterMutationHookResult = ReturnType<typeof useRemoveTwitterMutation>;
+export type RemoveTwitterMutationResult = Apollo.MutationResult<RemoveTwitterMutation>;
+export type RemoveTwitterMutationOptions = Apollo.BaseMutationOptions<RemoveTwitterMutation, RemoveTwitterMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -1916,7 +2007,9 @@ export const namedOperations = {
     resetPassword: 'resetPassword',
     forgotPassword: 'forgotPassword',
     registerWithEmail: 'registerWithEmail',
-    contact: 'contact'
+    contact: 'contact',
+    authWithTwitter: 'authWithTwitter',
+    removeTwitter: 'removeTwitter'
   },
   Fragment: {
     PageFragment: 'PageFragment',
