@@ -358,3 +358,17 @@ query emailSettings {
 mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
   updateEmailSettings(input: $input)
 }
+
+query posts($schoolId: ID, $page: PageInput) {
+  posts(schoolId: $schoolId, page: $page) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      text
+      flagged
+    }
+  }
+}

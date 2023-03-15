@@ -265,10 +265,25 @@ export type ParentRole = {
   type: UserRoleTypeEnum;
 };
 
+export type Post = {
+  __typename?: 'Post';
+  createdAt: Scalars['DateTime'];
+  flagged: Scalars['Boolean'];
+  id: Scalars['ID'];
+  text: Scalars['String'];
+};
+
+export type PostPage = {
+  __typename?: 'PostPage';
+  nodes: Array<Post>;
+  page: Page;
+};
+
 export type Query = {
   __typename?: 'Query';
   emailSettings: EmailSettings;
   notifications: NotificationPage;
+  posts: PostPage;
   school: School;
   schools: SchoolPage;
   settings: Settings;
@@ -286,6 +301,12 @@ export type Query = {
 
 export type QueryNotificationsArgs = {
   page?: InputMaybe<PageInput>;
+};
+
+
+export type QueryPostsArgs = {
+  page?: InputMaybe<PageInput>;
+  schoolId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -789,6 +810,14 @@ export type UpdateEmailSettingsMutationVariables = Exact<{
 
 
 export type UpdateEmailSettingsMutation = { __typename?: 'Mutation', updateEmailSettings: boolean };
+
+export type PostsQueryVariables = Exact<{
+  schoolId?: InputMaybe<Scalars['ID']>;
+  page?: InputMaybe<PageInput>;
+}>;
+
+
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, text: string, flagged: boolean }> } };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -2068,6 +2097,50 @@ export function useUpdateEmailSettingsMutation(baseOptions?: Apollo.MutationHook
 export type UpdateEmailSettingsMutationHookResult = ReturnType<typeof useUpdateEmailSettingsMutation>;
 export type UpdateEmailSettingsMutationResult = Apollo.MutationResult<UpdateEmailSettingsMutation>;
 export type UpdateEmailSettingsMutationOptions = Apollo.BaseMutationOptions<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>;
+export const PostsDocument = gql`
+    query posts($schoolId: ID, $page: PageInput) {
+  posts(schoolId: $schoolId, page: $page) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      text
+      flagged
+    }
+  }
+}
+    ${PageFragmentFragmentDoc}`;
+
+/**
+ * __usePostsQuery__
+ *
+ * To run a query within a React component, call `usePostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostsQuery({
+ *   variables: {
+ *      schoolId: // value for 'schoolId'
+ *      page: // value for 'page'
+ *   },
+ * });
+ */
+export function usePostsQuery(baseOptions?: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, options);
+      }
+export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostsQuery, PostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostsQuery, PostsQueryVariables>(PostsDocument, options);
+        }
+export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
+export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
+export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2079,7 +2152,8 @@ export const namedOperations = {
     settings: 'settings',
     statsForStaff: 'statsForStaff',
     statsForSchool: 'statsForSchool',
-    emailSettings: 'emailSettings'
+    emailSettings: 'emailSettings',
+    posts: 'posts'
   },
   Mutation: {
     readNotifications: 'readNotifications',
