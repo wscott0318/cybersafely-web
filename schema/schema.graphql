@@ -348,3 +348,13 @@ mutation authWithTwitter {
 mutation removeTwitter($id: ID!) {
   removeTwitter(id: $id)
 }
+
+query emailSettings {
+  emailSettings {
+    receivePostFlagged
+  }
+}
+
+mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
+  updateEmailSettings(input: $input)
+}

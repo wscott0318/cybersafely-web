@@ -6,9 +6,12 @@ import {
   AccordionSummary,
   Button,
   ButtonGroup,
+  FormControlLabel,
+  FormGroup,
   Grid,
   Skeleton,
   Stack,
+  Switch,
   Tooltip,
   Typography,
 } from '@mui/material'
@@ -18,9 +21,12 @@ import { z } from 'zod'
 import { addIssue } from '../../helpers/zod'
 import {
   MyUserQuery,
+  namedOperations,
   useAuthWithTwitterMutation,
+  useEmailSettingsQuery,
   useMyUserQuery,
   useRemoveTwitterMutation,
+  useUpdateEmailSettingsMutation,
   useUpdatePasswordMutation,
   useUpdateUserMutation,
 } from '../../schema'
@@ -126,6 +132,7 @@ function Loading() {
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
+        <Skeleton variant="rounded" height={56} />
       </Stack>
     </Stack>
   )
@@ -168,6 +175,11 @@ function Render({
     onCompleted: () => {
       refetch()
     },
+  })
+
+  const { data: emailSettingsData } = useEmailSettingsQuery()
+  const [updateEmailSettings] = useUpdateEmailSettingsMutation({
+    refetchQueries: [namedOperations.Query.emailSettings],
   })
 
   const isShown = useCallback(
@@ -305,11 +317,33 @@ function Render({
           </AccordionDetails>
         </Accordion>
       )}
+      {isShown('email-settings') && (
+        <Accordion>
+          <AccordionSummary>Email Settings</AccordionSummary>
+          <AccordionDetails>
+            <Stack spacing={1}>
+              <FormGroup>
+                <FormControlLabel
+                  label="Receive Post Flagged"
+                  control={
+                    <Switch
+                      checked={emailSettingsData?.emailSettings.receivePostFlagged ?? false}
+                      onChange={(_, receivePostFlagged) => {
+                        updateEmailSettings({ variables: { input: { receivePostFlagged } } })
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+            </Stack>
+          </AccordionDetails>
+        </Accordion>
+      )}
     </AccordionContext>
   )
 }
 
-type Section = 'information' | 'password' | 'socials'
+export type Section = 'information' | 'password' | 'socials' | 'email-settings'
 
 type UpdateUserFormProps = {
   userId: string
