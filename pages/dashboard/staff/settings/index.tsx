@@ -40,7 +40,7 @@ function Render({ data }: QueryLoaderRenderProps<SettingsQuery>) {
             }
             control={
               <Switch
-                checked={data.settings.enableSignUps ?? false}
+                checked={data.settings.enableSignUps}
                 onChange={(_, enableSignUps) => {
                   updateSettings({ variables: { input: { enableSignUps } } })
                 }}

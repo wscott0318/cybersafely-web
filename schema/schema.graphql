@@ -48,6 +48,10 @@ query myUser($id: ID!) {
         type
       }
     }
+    twitter {
+      id
+      username
+    }
   }
 }
 
@@ -334,5 +338,41 @@ query statsForSchool($schoolId: ID!, $days: Int!) {
   }
   statsOfAcceptedMembersInSchool(schoolId: $schoolId, days: $days) {
     ...StatsByDayFragment
+  }
+}
+
+mutation authWithTwitter {
+  authWithTwitter
+}
+
+mutation removeTwitter($id: ID!) {
+  removeTwitter(id: $id)
+}
+
+query emailSettings {
+  emailSettings {
+    receivePostFlagged
+  }
+}
+
+mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
+  updateEmailSettings(input: $input)
+}
+
+query posts($schoolId: ID, $page: PageInput) {
+  posts(schoolId: $schoolId, page: $page) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      url
+      text
+      flag {
+        flagged
+        reasons
+      }
+    }
   }
 }
