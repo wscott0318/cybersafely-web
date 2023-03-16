@@ -367,8 +367,12 @@ query posts($schoolId: ID, $page: PageInput) {
     nodes {
       id
       createdAt
+      url
       text
-      flagged
+      flag {
+        flagged
+        reasons
+      }
     }
   }
 }

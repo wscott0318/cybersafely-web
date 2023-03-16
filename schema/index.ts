@@ -76,6 +76,12 @@ export type FinalizeAccountInput = {
   token: Scalars['String'];
 };
 
+export type Flag = {
+  __typename?: 'Flag';
+  flagged: Scalars['Boolean'];
+  reasons: Array<Scalars['String']>;
+};
+
 export type Header = {
   __typename?: 'Header';
   key: Scalars['String'];
@@ -268,9 +274,10 @@ export type ParentRole = {
 export type Post = {
   __typename?: 'Post';
   createdAt: Scalars['DateTime'];
-  flagged: Scalars['Boolean'];
+  flag?: Maybe<Flag>;
   id: Scalars['ID'];
   text: Scalars['String'];
+  url: Scalars['String'];
 };
 
 export type PostPage = {
@@ -817,7 +824,7 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, text: string, flagged: boolean }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null }> } };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -2106,8 +2113,12 @@ export const PostsDocument = gql`
     nodes {
       id
       createdAt
+      url
       text
-      flagged
+      flag {
+        flagged
+        reasons
+      }
     }
   }
 }
