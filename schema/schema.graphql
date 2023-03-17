@@ -378,13 +378,13 @@ query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
   }
 }
 
-query staffCards {
-  totalPosts: posts {
+query postCards($schoolId: ID) {
+  totalPosts: posts(schoolId: $schoolId) {
     page {
       total
     }
   }
-  flaggedPosts: posts(filter: { flagged: true }) {
+  flaggedPosts: posts(schoolId: $schoolId, filter: { flagged: true }) {
     page {
       total
     }

@@ -4,7 +4,7 @@ import { Button, ButtonProps, Menu } from '@mui/material'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 
 type DropDownButtonProps = {
-  title?: string
+  title?: React.ReactNode
   children: React.ReactNode
   uppercase?: boolean
 } & Pick<ButtonProps, 'startIcon' | 'variant' | 'size' | 'fullWidth' | 'color'>

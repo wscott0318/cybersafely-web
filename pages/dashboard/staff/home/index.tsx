@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { CumulativeChartCard } from '../../../../components/chart/CumulativeChartCard'
 import { InfoCard } from '../../../../components/common/InfoCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { useStaffCardsQuery, useStatsForStaffQuery } from '../../../../schema'
+import { usePostCardsQuery, useStatsForStaffQuery } from '../../../../schema'
 
 function Home() {
   const [days, setDays] = useState(14)
 
-  const { data: cardsData } = useStaffCardsQuery()
+  const { data: cardsData } = usePostCardsQuery()
 
   const { data } = useStatsForStaffQuery({
     variables: { days },

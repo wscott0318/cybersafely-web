@@ -832,10 +832,12 @@ export type PostsQueryVariables = Exact<{
 
 export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null }> } };
 
-export type StaffCardsQueryVariables = Exact<{ [key: string]: never; }>;
+export type PostCardsQueryVariables = Exact<{
+  schoolId?: InputMaybe<Scalars['ID']>;
+}>;
 
 
-export type StaffCardsQuery = { __typename?: 'Query', totalPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } }, flaggedPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } } };
+export type PostCardsQuery = { __typename?: 'Query', totalPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } }, flaggedPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } } };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -2165,14 +2167,14 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
-export const StaffCardsDocument = gql`
-    query staffCards {
-  totalPosts: posts {
+export const PostCardsDocument = gql`
+    query postCards($schoolId: ID) {
+  totalPosts: posts(schoolId: $schoolId) {
     page {
       total
     }
   }
-  flaggedPosts: posts(filter: {flagged: true}) {
+  flaggedPosts: posts(schoolId: $schoolId, filter: {flagged: true}) {
     page {
       total
     }
@@ -2181,31 +2183,32 @@ export const StaffCardsDocument = gql`
     `;
 
 /**
- * __useStaffCardsQuery__
+ * __usePostCardsQuery__
  *
- * To run a query within a React component, call `useStaffCardsQuery` and pass it any options that fit your needs.
- * When your component renders, `useStaffCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePostCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useStaffCardsQuery({
+ * const { data, loading, error } = usePostCardsQuery({
  *   variables: {
+ *      schoolId: // value for 'schoolId'
  *   },
  * });
  */
-export function useStaffCardsQuery(baseOptions?: Apollo.QueryHookOptions<StaffCardsQuery, StaffCardsQueryVariables>) {
+export function usePostCardsQuery(baseOptions?: Apollo.QueryHookOptions<PostCardsQuery, PostCardsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<StaffCardsQuery, StaffCardsQueryVariables>(StaffCardsDocument, options);
+        return Apollo.useQuery<PostCardsQuery, PostCardsQueryVariables>(PostCardsDocument, options);
       }
-export function useStaffCardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StaffCardsQuery, StaffCardsQueryVariables>) {
+export function usePostCardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostCardsQuery, PostCardsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<StaffCardsQuery, StaffCardsQueryVariables>(StaffCardsDocument, options);
+          return Apollo.useLazyQuery<PostCardsQuery, PostCardsQueryVariables>(PostCardsDocument, options);
         }
-export type StaffCardsQueryHookResult = ReturnType<typeof useStaffCardsQuery>;
-export type StaffCardsLazyQueryHookResult = ReturnType<typeof useStaffCardsLazyQuery>;
-export type StaffCardsQueryResult = Apollo.QueryResult<StaffCardsQuery, StaffCardsQueryVariables>;
+export type PostCardsQueryHookResult = ReturnType<typeof usePostCardsQuery>;
+export type PostCardsLazyQueryHookResult = ReturnType<typeof usePostCardsLazyQuery>;
+export type PostCardsQueryResult = Apollo.QueryResult<PostCardsQuery, PostCardsQueryVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2219,7 +2222,7 @@ export const namedOperations = {
     statsForSchool: 'statsForSchool',
     emailSettings: 'emailSettings',
     posts: 'posts',
-    staffCards: 'staffCards'
+    postCards: 'postCards'
   },
   Mutation: {
     readNotifications: 'readNotifications',

@@ -1,8 +1,8 @@
 import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { useStatsForSchoolQuery } from '../../schema'
-import { useSchoolRole } from '../../utils/context/auth'
+import { usePostCardsQuery, useStatsForSchoolQuery } from '../../schema'
+import { useSchoolRole, useUser } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { InfoCard, InfoCardProps } from '../common/InfoCard'
 import { WelcomeCard } from '../common/WelcomeCard'
@@ -34,15 +34,22 @@ function useMissingCards() {
   }
 }
 
-export function HomeStatsForCoach() {
+export function HomeStatsForAdminAndCoach() {
   const schoolRole = useSchoolRole()
-  const { cards, hasCards } = useMissingCards()
+  const { cards } = useMissingCards()
+  const { role } = useUser()
 
   const [days, setDays] = useState(14)
+
+  const { data: cardsData } = usePostCardsQuery({
+    variables: { schoolId: schoolRole!.school.id },
+  })
 
   const { data } = useStatsForSchoolQuery({
     variables: { schoolId: schoolRole!.school.id, days },
   })
+
+  const dashboard = role === 'ADMIN' ? '/dashboard/admin' : '/dashboard/coach'
 
   return (
     <Box>
@@ -50,13 +57,27 @@ export function HomeStatsForCoach() {
         <Grid item xs={12}>
           <WelcomeCard />
         </Grid>
-        {hasCards && (
-          <Grid item xs={12}>
-            <Typography variant="h5" flexGrow={1}>
-              Cards
-            </Typography>
-          </Grid>
-        )}
+        <Grid item xs={12}>
+          <Typography variant="h5" flexGrow={1}>
+            Cards
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InfoCard
+            severity="info"
+            title="Total Posts"
+            href={dashboard + '/posts'}
+            message={cardsData?.totalPosts.page.total ?? 0}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InfoCard
+            severity="error"
+            title="Concerning Posts"
+            href={dashboard + '/posts?flagged=true'}
+            message={cardsData?.flaggedPosts.page.total ?? 0}
+          />
+        </Grid>
         {cards.map((card, index) => (
           <Grid key={String(index)} item xs={12} sm={6} md={4}>
             <InfoCard {...card} />

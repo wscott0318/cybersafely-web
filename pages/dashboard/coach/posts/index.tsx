@@ -3,6 +3,7 @@ import { Button, Checkbox, Stack, Typography } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { useQueryParam } from '../../../../helpers/hooks'
 import { PostsQuery, usePostsQuery } from '../../../../schema'
 import { useSchoolRole } from '../../../../utils/context/auth'
 
@@ -59,8 +60,13 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
 function Posts() {
   const schoolRole = useSchoolRole()
 
+  const [flagged] = useQueryParam('flagged', 'boolean')
+
   const query = usePostsQuery({
-    variables: { schoolId: schoolRole!.school.id },
+    variables: {
+      filter: { flagged },
+      schoolId: schoolRole!.school.id,
+    },
   })
 
   return <DataGridViewer title="Posts" query={query} columns={columns} data={query.data?.posts} />
