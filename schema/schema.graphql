@@ -153,6 +153,7 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
           status
           school {
             id
+            name
           }
         }
         ... on ParentRole {
@@ -359,8 +360,8 @@ mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
   updateEmailSettings(input: $input)
 }
 
-query posts($schoolId: ID, $page: PageInput) {
-  posts(schoolId: $schoolId, page: $page) {
+query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(schoolId: $schoolId, page: $page, filter: $filter) {
     page {
       ...PageFragment
     }
@@ -373,6 +374,19 @@ query posts($schoolId: ID, $page: PageInput) {
         flagged
         reasons
       }
+    }
+  }
+}
+
+query staffCards {
+  totalPosts: posts {
+    page {
+      total
+    }
+  }
+  flaggedPosts: posts(filter: { flagged: true }) {
+    page {
+      total
     }
   }
 }

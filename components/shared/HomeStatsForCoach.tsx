@@ -1,33 +1,17 @@
 import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
-import { Alert, AlertTitle, Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
+import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useStatsForSchoolQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
-import { NextLink } from '../common/NextLink'
+import { InfoCard, InfoCardProps } from '../common/InfoCard'
 import { WelcomeCard } from '../common/WelcomeCard'
-
-type MissingInfoCardProps = {
-  href: string
-  message: string
-}
-
-function MissingInfoCard(props: MissingInfoCardProps) {
-  return (
-    <NextLink href={props.href}>
-      <Alert severity="warning" sx={{ cursor: 'pointer' }}>
-        <AlertTitle>Missing Information</AlertTitle>
-        {props.message}
-      </Alert>
-    </NextLink>
-  )
-}
 
 function useMissingCards() {
   const schoolRole = useSchoolRole()
 
   const cards = useMemo(() => {
-    const cards: MissingInfoCardProps[] = []
+    const cards: InfoCardProps[] = []
 
     if (schoolRole) {
       if (!schoolRole.school.logo) {
@@ -75,7 +59,7 @@ export function HomeStatsForCoach() {
         )}
         {cards.map((card, index) => (
           <Grid key={String(index)} item xs={12} sm={6} md={4}>
-            <MissingInfoCard {...card} />
+            <InfoCard {...card} />
           </Grid>
         ))}
         <Grid item xs={12}>

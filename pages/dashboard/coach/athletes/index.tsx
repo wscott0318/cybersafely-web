@@ -46,7 +46,7 @@ function Athletes() {
     variables: {
       filter: {
         from: 'SCHOOL',
-        schoolRole: 'ATHLETE',
+        roles: ['ATHLETE'],
         fromId: schoolRole!.school.id,
       },
     },

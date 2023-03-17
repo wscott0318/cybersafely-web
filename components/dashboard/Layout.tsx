@@ -366,14 +366,12 @@ function Sidebar() {
     case 'STAFF':
       return (
         <>
-          <CollapsableList title="Dashboard">
+          <CollapsableList>
             <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
-          </CollapsableList>
-          <CollapsableList title="Management">
+            <SidebarLink href="/dashboard/staff/staff" icon={<PersonIcon />} title="Staff" />
             <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
             <SidebarLink href="/dashboard/staff/schools" icon={<SchoolIcon />} title="Schools" />
-          </CollapsableList>
-          <CollapsableList title="Settings">
+            <SidebarLink href="/dashboard/staff/posts" icon={<FeedIcon />} title="Posts" />
             <SidebarLink href="/dashboard/staff/settings" icon={<SettingsIcon />} title="Settings" />
           </CollapsableList>
         </>

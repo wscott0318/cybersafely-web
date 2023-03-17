@@ -280,6 +280,10 @@ export type Post = {
   url: Scalars['String'];
 };
 
+export type PostFilter = {
+  flagged?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type PostPage = {
   __typename?: 'PostPage';
   nodes: Array<Post>;
@@ -312,6 +316,7 @@ export type QueryNotificationsArgs = {
 
 
 export type QueryPostsArgs = {
+  filter?: InputMaybe<PostFilter>;
   page?: InputMaybe<PageInput>;
   schoolId?: InputMaybe<Scalars['ID']>;
 };
@@ -536,7 +541,7 @@ export type UserRolesArgs = {
 export type UserFilter = {
   from?: InputMaybe<UsersFromEnum>;
   fromId?: InputMaybe<Scalars['ID']>;
-  schoolRole?: InputMaybe<SchoolRoleTypeEnum>;
+  roles?: InputMaybe<Array<UserRoleTypeEnum>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -650,7 +655,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -821,10 +826,16 @@ export type UpdateEmailSettingsMutation = { __typename?: 'Mutation', updateEmail
 export type PostsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
   page?: InputMaybe<PageInput>;
+  filter?: InputMaybe<PostFilter>;
 }>;
 
 
 export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null }> } };
+
+export type StaffCardsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type StaffCardsQuery = { __typename?: 'Query', totalPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } }, flaggedPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } } };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -1218,6 +1229,7 @@ export const UsersDocument = gql`
           status
           school {
             id
+            name
           }
         }
         ... on ParentRole {
@@ -2105,8 +2117,8 @@ export type UpdateEmailSettingsMutationHookResult = ReturnType<typeof useUpdateE
 export type UpdateEmailSettingsMutationResult = Apollo.MutationResult<UpdateEmailSettingsMutation>;
 export type UpdateEmailSettingsMutationOptions = Apollo.BaseMutationOptions<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>;
 export const PostsDocument = gql`
-    query posts($schoolId: ID, $page: PageInput) {
-  posts(schoolId: $schoolId, page: $page) {
+    query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(schoolId: $schoolId, page: $page, filter: $filter) {
     page {
       ...PageFragment
     }
@@ -2138,6 +2150,7 @@ export const PostsDocument = gql`
  *   variables: {
  *      schoolId: // value for 'schoolId'
  *      page: // value for 'page'
+ *      filter: // value for 'filter'
  *   },
  * });
  */
@@ -2152,6 +2165,47 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const StaffCardsDocument = gql`
+    query staffCards {
+  totalPosts: posts {
+    page {
+      total
+    }
+  }
+  flaggedPosts: posts(filter: {flagged: true}) {
+    page {
+      total
+    }
+  }
+}
+    `;
+
+/**
+ * __useStaffCardsQuery__
+ *
+ * To run a query within a React component, call `useStaffCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStaffCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStaffCardsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useStaffCardsQuery(baseOptions?: Apollo.QueryHookOptions<StaffCardsQuery, StaffCardsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StaffCardsQuery, StaffCardsQueryVariables>(StaffCardsDocument, options);
+      }
+export function useStaffCardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StaffCardsQuery, StaffCardsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StaffCardsQuery, StaffCardsQueryVariables>(StaffCardsDocument, options);
+        }
+export type StaffCardsQueryHookResult = ReturnType<typeof useStaffCardsQuery>;
+export type StaffCardsLazyQueryHookResult = ReturnType<typeof useStaffCardsLazyQuery>;
+export type StaffCardsQueryResult = Apollo.QueryResult<StaffCardsQuery, StaffCardsQueryVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2164,7 +2218,8 @@ export const namedOperations = {
     statsForStaff: 'statsForStaff',
     statsForSchool: 'statsForSchool',
     emailSettings: 'emailSettings',
-    posts: 'posts'
+    posts: 'posts',
+    staffCards: 'staffCards'
   },
   Mutation: {
     readNotifications: 'readNotifications',
