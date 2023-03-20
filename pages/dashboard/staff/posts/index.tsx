@@ -1,12 +1,24 @@
 import OpenIcon from '@mui/icons-material/OpenInNewOutlined'
 import { Button, Checkbox, Stack, Typography } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
+import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { useQueryParam } from '../../../../helpers/hooks'
 import { PostsQuery, usePostsQuery } from '../../../../schema'
 
 const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
+  {
+    width: 250,
+    field: 'user',
+    sortable: false,
+    headerName: 'User',
+    renderCell(params) {
+      return (
+        <AvatarWithName src={params.row.user.avatar?.url} name={params.row.user.name} email={params.row.user.email} />
+      )
+    },
+  },
   {
     width: 150,
     field: 'url',

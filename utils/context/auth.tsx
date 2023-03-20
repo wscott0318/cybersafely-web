@@ -1,5 +1,3 @@
-import { useApolloClient } from '@apollo/client'
-import { useRouter } from 'next/router'
 import { createContext, useCallback, useContext, useMemo } from 'react'
 import { MyUserQuery, SchoolRole, UserRoleTypeEnum } from '../../schema'
 import { StorageManager } from '../storage'
@@ -23,15 +21,12 @@ export function AuthContextProvider(props: AuthContextProviderProps) {
 }
 
 export function useUser() {
-  const router = useRouter()
-  const client = useApolloClient()
   const context = useContext(AuthContext)
 
   const logout = useCallback(async () => {
     StorageManager.clear()
     sessionStorage.clear()
-    await client.clearStore()
-    router.push('/auth/login')
+    document.location = '/auth/login'
   }, [])
 
   const refetchUser = useCallback(async () => {

@@ -374,6 +374,40 @@ query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
         flagged
         reasons
       }
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
+    }
+  }
+}
+
+query post($id: ID!) {
+  post(id: $id) {
+    id
+    createdAt
+    url
+    text
+    flag {
+      flagged
+      reasons
+    }
+    user {
+      id
+      name
+      email
+      avatar {
+        url
+      }
+    }
+    media {
+      id
+      url
+      type
     }
   }
 }

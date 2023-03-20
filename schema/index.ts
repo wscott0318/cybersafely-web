@@ -99,6 +99,19 @@ export type LoginWithEmailInput = {
   password: Scalars['String'];
 };
 
+export type Media = {
+  __typename?: 'Media';
+  id: Scalars['ID'];
+  type: MediaTypeEnum;
+  url: Scalars['String'];
+};
+
+export const MediaTypeEnum = {
+  Image: 'IMAGE',
+  Video: 'VIDEO'
+} as const;
+
+export type MediaTypeEnum = typeof MediaTypeEnum[keyof typeof MediaTypeEnum];
 export type Mutation = {
   __typename?: 'Mutation';
   authWithTwitter: Scalars['String'];
@@ -276,8 +289,10 @@ export type Post = {
   createdAt: Scalars['DateTime'];
   flag?: Maybe<Flag>;
   id: Scalars['ID'];
+  media: Array<Media>;
   text: Scalars['String'];
   url: Scalars['String'];
+  user: User;
 };
 
 export type PostFilter = {
@@ -294,6 +309,7 @@ export type Query = {
   __typename?: 'Query';
   emailSettings: EmailSettings;
   notifications: NotificationPage;
+  post: Post;
   posts: PostPage;
   school: School;
   schools: SchoolPage;
@@ -312,6 +328,11 @@ export type Query = {
 
 export type QueryNotificationsArgs = {
   page?: InputMaybe<PageInput>;
+};
+
+
+export type QueryPostArgs = {
+  id: Scalars['ID'];
 };
 
 
@@ -830,7 +851,14 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } }> } };
+
+export type PostQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }> } };
 
 export type PostCardsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
@@ -2133,6 +2161,14 @@ export const PostsDocument = gql`
         flagged
         reasons
       }
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
     }
   }
 }
@@ -2167,6 +2203,61 @@ export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Post
 export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
 export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
 export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const PostDocument = gql`
+    query post($id: ID!) {
+  post(id: $id) {
+    id
+    createdAt
+    url
+    text
+    flag {
+      flagged
+      reasons
+    }
+    user {
+      id
+      name
+      email
+      avatar {
+        url
+      }
+    }
+    media {
+      id
+      url
+      type
+    }
+  }
+}
+    `;
+
+/**
+ * __usePostQuery__
+ *
+ * To run a query within a React component, call `usePostQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePostQuery(baseOptions: Apollo.QueryHookOptions<PostQuery, PostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostQuery, PostQueryVariables>(PostDocument, options);
+      }
+export function usePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostQuery, PostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostQuery, PostQueryVariables>(PostDocument, options);
+        }
+export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
+export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
+export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
 export const PostCardsDocument = gql`
     query postCards($schoolId: ID) {
   totalPosts: posts(schoolId: $schoolId) {
@@ -2222,6 +2313,7 @@ export const namedOperations = {
     statsForSchool: 'statsForSchool',
     emailSettings: 'emailSettings',
     posts: 'posts',
+    post: 'post',
     postCards: 'postCards'
   },
   Mutation: {
