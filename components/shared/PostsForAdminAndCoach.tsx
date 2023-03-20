@@ -40,6 +40,15 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
   },
   {
     width: 100,
+    field: 'media',
+    sortable: false,
+    headerName: 'Media',
+    valueGetter(params) {
+      return params.row.media.length
+    },
+  },
+  {
+    width: 100,
     field: 'flagged',
     sortable: false,
     headerName: 'Flagged',

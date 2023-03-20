@@ -1,3 +1,4 @@
+import OpenIcon from '@mui/icons-material/OpenInNewOutlined'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Button, Chip, CircularProgress, Divider, Grid, Paper, Tab, Typography } from '@mui/material'
 import { useState } from 'react'
@@ -56,9 +57,24 @@ export function PostForAdminAndCoachWrapper({
                 <Row
                   title="Media"
                   key={media.id}
-                  message={media.type === 'IMAGE' ? <img src={media.url} /> : <video src={media.url} controls />}
+                  message={
+                    media.type === 'IMAGE' ? (
+                      <img src={media.url} style={{ width: '100%' }} />
+                    ) : (
+                      <video src={media.url} style={{ width: '100%' }} autoPlay={false} controls />
+                    )
+                  }
                 />
               ))}
+
+              <Row
+                title="URL"
+                message={
+                  <Button size="small" target="_blank" href={post.url} variant="text" startIcon={<OpenIcon />}>
+                    Open Link
+                  </Button>
+                }
+              />
               <Row title="Text" message={post.text} />
               <Row title="Date" message={new Date(post.createdAt).toLocaleString()} />
               <Row

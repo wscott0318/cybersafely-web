@@ -382,6 +382,9 @@ query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
           url
         }
       }
+      media {
+        id
+      }
     }
   }
 }
