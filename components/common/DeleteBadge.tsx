@@ -29,6 +29,7 @@ export function DeleteBadge(props: DeleteBadgeProps) {
   return (
     <Badge
       overlap={props.overlap}
+      style={{ width: '100%' }}
       badgeContent={props.canDelete && show && <DeleteIconButton onClick={props.onDelete} />}
       componentsProps={{
         root: {

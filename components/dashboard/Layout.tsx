@@ -84,7 +84,7 @@ function HeaderAccount() {
         variant="text"
         color="inherit"
         uppercase={false}
-        startIcon={<Avatar sx={{ width: 32, height: 32 }} src={user.avatar?.url} />}
+        startIcon={<Avatar sx={{ width: 36, height: 36 }} src={user.avatar?.url} />}
         title={
           <Typography variant="inherit" textAlign="left">
             {user.name}
