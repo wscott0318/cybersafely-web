@@ -94,7 +94,7 @@ export function HomeStatsForAdminAndCoach() {
               onChange={(e) => setDays(e.target.value as number)}
               startAdornment={
                 <InputAdornment position="start">
-                  <CalendarIcon />
+                  <CalendarIcon fontSize="small" />
                 </InputAdornment>
               }
             >

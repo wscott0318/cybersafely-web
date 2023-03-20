@@ -3,6 +3,7 @@ import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Button, Chip, CircularProgress, Divider, Grid, Paper, Tab, Typography } from '@mui/material'
 import { useState } from 'react'
 import { PostQuery, usePostQuery } from '../../schema'
+import { AvatarWithName } from '../common/AvatarWithName'
 import { NavigationActions, NavigationView } from '../common/NavigationView'
 
 function Row(props: { title: string; message: React.ReactNode; last?: boolean }) {
@@ -87,7 +88,11 @@ export function PostForAdminAndCoachWrapper({
                     icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={14} style={{ marginLeft: 6 }} />}
                   />
                 }
+              />
+              <Row
                 last
+                title="User"
+                message={<AvatarWithName src={post.user.avatar?.url} name={post.user.name} email={post.user.email} />}
               />
             </Grid>
           </Paper>

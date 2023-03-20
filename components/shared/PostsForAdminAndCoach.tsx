@@ -1,11 +1,22 @@
+import FilterIcon from '@mui/icons-material/FilterAltOutlined'
 import OpenIcon from '@mui/icons-material/OpenInNewOutlined'
-import { Button, Checkbox, MenuItem, Select, Stack, Typography } from '@mui/material'
+import {
+  Checkbox,
+  InputAdornment,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
+} from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { useQueryParam } from '../../helpers/hooks'
 import { PostsQuery, usePostsQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { AvatarWithName } from '../common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../common/DataGridViewer'
+import { DropDownButton } from '../common/DropDownButton'
 
 const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
   {
@@ -16,19 +27,6 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     renderCell(params) {
       return (
         <AvatarWithName src={params.row.user.avatar?.url} name={params.row.user.name} email={params.row.user.email} />
-      )
-    },
-  },
-  {
-    width: 150,
-    field: 'url',
-    sortable: false,
-    headerName: 'URL',
-    renderCell(params) {
-      return (
-        <Button size="small" target="_blank" href={params.row.url} variant="text" startIcon={<OpenIcon />}>
-          Open Link
-        </Button>
       )
     },
   },
@@ -75,6 +73,23 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
       )
     },
   },
+  {
+    width: 200,
+    field: 'actions',
+    type: 'actions',
+    renderCell(params) {
+      return (
+        <DropDownButton>
+          <MenuItem component="a" target="_blank" href={params.row.url}>
+            <ListItemIcon>
+              <OpenIcon fontSize="small" color="error" />
+            </ListItemIcon>
+            <ListItemText>Open Link</ListItemText>
+          </MenuItem>
+        </DropDownButton>
+      )
+    },
+  },
 ]
 
 type PostsForAdminAndCoachProps = {
@@ -106,10 +121,15 @@ export function PostsForAdminAndCoach({ baseURL }: PostsForAdminAndCoachProps) {
             variant="outlined"
             value={flagged === undefined ? '-' : flagged === true ? 'true' : 'false'}
             onChange={(e) => setFlagged(e.target.value === '-' ? undefined : e.target.value === 'true')}
+            startAdornment={
+              <InputAdornment position="start">
+                <FilterIcon fontSize="small" />
+              </InputAdornment>
+            }
           >
-            <MenuItem value="-">All</MenuItem>
-            <MenuItem value="true">Flagged</MenuItem>
-            <MenuItem value="false">Not Flagged</MenuItem>
+            <MenuItem value="-">All Posts</MenuItem>
+            <MenuItem value="true">Flagged Posts</MenuItem>
+            <MenuItem value="false">Not Flagged Posts</MenuItem>
           </Select>
         </DataGridActions>
       }
