@@ -1,5 +1,17 @@
-import { TabContext, TabList, TabPanel } from '@mui/lab'
-import { Checkbox, CircularProgress, Divider, Grid, Paper, Tab, Typography } from '@mui/material'
+import {
+  TabContext,
+  TabList,
+  TabPanel,
+  Timeline,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+  TimelineItem,
+  TimelineOppositeContent,
+  timelineOppositeContentClasses,
+  TimelineSeparator,
+} from '@mui/lab'
+import { CircularProgress, Divider, Grid, Paper, Tab, Typography } from '@mui/material'
 import { useState } from 'react'
 import { PostQuery, usePostQuery } from '../../schema'
 import { AvatarWithName } from '../common/AvatarWithName'
@@ -82,24 +94,39 @@ export function PostForAdminAndCoachWrapper({
         <TabPanel value="actions">
           <Paper sx={{ py: 2 }}>
             <Grid container spacing={2}>
-              <Row title="Flagged" message={<Checkbox checked={post.flag?.flagged ?? false} />} />
-              <Row title="Reasons" message={post.flag?.reasons.join(', ')} />
+              <Row title="Flagged" message={post.flag?.flagged ? 'Yes' : 'No'} />
+              <Row title="Reasons" message={post.flag?.reasons.join(', ') || 'None'} />
               <Row title="Actions" message={<PostActions url={post.url} postId={post.id} />} />
               <Row
                 last
                 title="Logs"
-                message={post.actions.map((action) => (
-                  <AvatarWithName
-                    key={action.id}
-                    name={action.name}
-                    src={action.user?.avatar?.url}
-                    email={
-                      (action.user?.name ?? action.user?.email ?? 'System') +
-                      ' - ' +
-                      new Date(action.createdAt).toLocaleString()
-                    }
-                  />
-                ))}
+                message={
+                  <Timeline sx={{ [`& .${timelineOppositeContentClasses.root}`]: { flex: 0.25 } }}>
+                    {post.actions.map((action) => (
+                      <TimelineItem key={action.id}>
+                        <TimelineOppositeContent
+                          align="right"
+                          variant="body2"
+                          sx={{ m: 'auto 0' }}
+                          color="text.secondary"
+                        >
+                          {new Date(action.createdAt).toLocaleString()}
+                        </TimelineOppositeContent>
+                        <TimelineSeparator>
+                          <TimelineConnector />
+                          <TimelineDot />
+                          <TimelineConnector />
+                        </TimelineSeparator>
+                        <TimelineContent sx={{ px: 2 }}>
+                          <Typography variant="h6" component="span">
+                            {action.name}
+                          </Typography>
+                          <Typography>{action.user?.name ?? 'System'}</Typography>
+                        </TimelineContent>
+                      </TimelineItem>
+                    ))}
+                  </Timeline>
+                }
               />
             </Grid>
           </Paper>

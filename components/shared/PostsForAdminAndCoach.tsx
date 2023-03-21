@@ -142,7 +142,7 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     width: 250,
     field: 'latestAction',
     sortable: false,
-    headerName: 'Action',
+    headerName: 'Latest Action',
   },
   {
     width: 200,
