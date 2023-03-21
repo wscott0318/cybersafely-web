@@ -1,7 +1,11 @@
+import CheckIcon from '@mui/icons-material/CheckCircleOutlined'
+import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import FilterIcon from '@mui/icons-material/FilterAltOutlined'
+import NotifyIcon from '@mui/icons-material/NotificationsOutlined'
 import OpenIcon from '@mui/icons-material/OpenInNewOutlined'
 import {
   Checkbox,
+  Divider,
   InputAdornment,
   ListItemIcon,
   ListItemText,
@@ -12,11 +16,63 @@ import {
 } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { useQueryParam } from '../../helpers/hooks'
-import { PostsQuery, usePostsQuery } from '../../schema'
+import { namedOperations, PostsQuery, useExecuteActionMutation, usePostsQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { AvatarWithName } from '../common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
+import { PlatformChip } from '../common/PlatformChip'
+
+export function PostActions({ postId, url }: { postId: string; url: string }) {
+  const [executeAction] = useExecuteActionMutation({
+    refetchQueries: [namedOperations.Query.posts, namedOperations.Query.post],
+  })
+
+  return (
+    <DropDownButton>
+      <MenuItem component="a" target="_blank" href={url}>
+        <ListItemIcon>
+          <OpenIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>Open Link</ListItemText>
+      </MenuItem>
+      <Divider />
+      <MenuItem
+        onClick={() => {
+          executeAction({ variables: { type: 'MARK_AS_ACCEPTABLE', postId } })
+        }}
+      >
+        <ListItemIcon>
+          <CheckIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>Mark as Acceptable</ListItemText>
+      </MenuItem>
+      <MenuItem
+        onClick={() => {
+          executeAction({ variables: { type: 'NOTIFY_ATHLETE', postId } })
+        }}
+      >
+        <ListItemIcon>
+          <NotifyIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>Notify Athlete</ListItemText>
+      </MenuItem>
+      <MenuItem
+        sx={(theme) => ({
+          color: theme.palette.error.main,
+        })}
+        onClick={() => {
+          executeAction({ variables: { type: 'TAKE_DOWN_POST', postId } })
+        }}
+      >
+        <ListItemIcon>
+          <DeleteIcon fontSize="small" color="error" />
+        </ListItemIcon>
+        <ListItemText>Take Down Post</ListItemText>
+      </MenuItem>
+    </DropDownButton>
+  )
+}
 
 const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
   {
@@ -37,6 +93,15 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     headerName: 'Text',
   },
   {
+    width: 150,
+    field: 'platform',
+    sortable: false,
+    headerName: 'Platform',
+    renderCell(params) {
+      return <PlatformChip platform={params.row.platform} />
+    },
+  },
+  {
     width: 100,
     field: 'media',
     sortable: false,
@@ -55,7 +120,7 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     },
   },
   {
-    width: 300,
+    width: 250,
     field: 'reasons',
     sortable: false,
     headerName: 'Reasons',
@@ -74,20 +139,17 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     },
   },
   {
+    width: 250,
+    field: 'latestAction',
+    sortable: false,
+    headerName: 'Action',
+  },
+  {
     width: 200,
     field: 'actions',
     type: 'actions',
     renderCell(params) {
-      return (
-        <DropDownButton>
-          <MenuItem component="a" target="_blank" href={params.row.url}>
-            <ListItemIcon>
-              <OpenIcon fontSize="small" color="error" />
-            </ListItemIcon>
-            <ListItemText>Open Link</ListItemText>
-          </MenuItem>
-        </DropDownButton>
-      )
+      return <PostActions url={params.row.url} postId={params.row.id} />
     },
   },
 ]

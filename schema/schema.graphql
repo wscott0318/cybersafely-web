@@ -370,6 +370,8 @@ query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
       createdAt
       url
       text
+      platform
+      latestAction
       flag {
         flagged
         reasons
@@ -395,6 +397,7 @@ query post($id: ID!) {
     createdAt
     url
     text
+    platform
     flag {
       flagged
       reasons
@@ -412,6 +415,19 @@ query post($id: ID!) {
       url
       type
     }
+    actions {
+      id
+      createdAt
+      name
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
+    }
   }
 }
 
@@ -426,4 +442,8 @@ query postCards($schoolId: ID) {
       total
     }
   }
+}
+
+mutation executeAction($type: ActionEnum!, $postId: ID!) {
+  executeAction(type: $type, postId: $postId)
 }

@@ -16,6 +16,21 @@ export type Scalars = {
   DateTime: string;
 };
 
+export type Action = {
+  __typename?: 'Action';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  user?: Maybe<User>;
+};
+
+export const ActionEnum = {
+  MarkAsAcceptable: 'MARK_AS_ACCEPTABLE',
+  NotifyAthlete: 'NOTIFY_ATHLETE',
+  TakeDownPost: 'TAKE_DOWN_POST'
+} as const;
+
+export type ActionEnum = typeof ActionEnum[keyof typeof ActionEnum];
 export type Address = {
   __typename?: 'Address';
   city: Scalars['String'];
@@ -119,6 +134,7 @@ export type Mutation = {
   createAddress: Address;
   createSchool: School;
   createUserRole: User;
+  executeAction: Scalars['Boolean'];
   finalizeAccount: UserWithToken;
   forgotPassword: Scalars['Boolean'];
   loginWithEmail: UserWithToken;
@@ -158,6 +174,12 @@ export type MutationCreateSchoolArgs = {
 
 export type MutationCreateUserRoleArgs = {
   input: CreateUserRoleInput;
+};
+
+
+export type MutationExecuteActionArgs = {
+  postId: Scalars['ID'];
+  type: ActionEnum;
 };
 
 
@@ -284,12 +306,21 @@ export type ParentRole = {
   type: UserRoleTypeEnum;
 };
 
+export const PlatformEnum = {
+  Twitter: 'TWITTER',
+  Unknown: 'UNKNOWN'
+} as const;
+
+export type PlatformEnum = typeof PlatformEnum[keyof typeof PlatformEnum];
 export type Post = {
   __typename?: 'Post';
+  actions: Array<Action>;
   createdAt: Scalars['DateTime'];
   flag?: Maybe<Flag>;
   id: Scalars['ID'];
+  latestAction?: Maybe<Scalars['String']>;
   media: Array<Media>;
+  platform: PlatformEnum;
   text: Scalars['String'];
   url: Scalars['String'];
   user: User;
@@ -851,14 +882,14 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }> } };
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
 
 export type PostCardsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
@@ -866,6 +897,14 @@ export type PostCardsQueryVariables = Exact<{
 
 
 export type PostCardsQuery = { __typename?: 'Query', totalPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } }, flaggedPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } } };
+
+export type ExecuteActionMutationVariables = Exact<{
+  type: ActionEnum;
+  postId: Scalars['ID'];
+}>;
+
+
+export type ExecuteActionMutation = { __typename?: 'Mutation', executeAction: boolean };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -2157,6 +2196,8 @@ export const PostsDocument = gql`
       createdAt
       url
       text
+      platform
+      latestAction
       flag {
         flagged
         reasons
@@ -2213,6 +2254,7 @@ export const PostDocument = gql`
     createdAt
     url
     text
+    platform
     flag {
       flagged
       reasons
@@ -2229,6 +2271,19 @@ export const PostDocument = gql`
       id
       url
       type
+    }
+    actions {
+      id
+      createdAt
+      name
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
     }
   }
 }
@@ -2303,6 +2358,38 @@ export function usePostCardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<
 export type PostCardsQueryHookResult = ReturnType<typeof usePostCardsQuery>;
 export type PostCardsLazyQueryHookResult = ReturnType<typeof usePostCardsLazyQuery>;
 export type PostCardsQueryResult = Apollo.QueryResult<PostCardsQuery, PostCardsQueryVariables>;
+export const ExecuteActionDocument = gql`
+    mutation executeAction($type: ActionEnum!, $postId: ID!) {
+  executeAction(type: $type, postId: $postId)
+}
+    `;
+export type ExecuteActionMutationFn = Apollo.MutationFunction<ExecuteActionMutation, ExecuteActionMutationVariables>;
+
+/**
+ * __useExecuteActionMutation__
+ *
+ * To run a mutation, you first call `useExecuteActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useExecuteActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [executeActionMutation, { data, loading, error }] = useExecuteActionMutation({
+ *   variables: {
+ *      type: // value for 'type'
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useExecuteActionMutation(baseOptions?: Apollo.MutationHookOptions<ExecuteActionMutation, ExecuteActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ExecuteActionMutation, ExecuteActionMutationVariables>(ExecuteActionDocument, options);
+      }
+export type ExecuteActionMutationHookResult = ReturnType<typeof useExecuteActionMutation>;
+export type ExecuteActionMutationResult = Apollo.MutationResult<ExecuteActionMutation>;
+export type ExecuteActionMutationOptions = Apollo.BaseMutationOptions<ExecuteActionMutation, ExecuteActionMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2342,7 +2429,8 @@ export const namedOperations = {
     contact: 'contact',
     authWithTwitter: 'authWithTwitter',
     removeTwitter: 'removeTwitter',
-    updateEmailSettings: 'updateEmailSettings'
+    updateEmailSettings: 'updateEmailSettings',
+    executeAction: 'executeAction'
   },
   Fragment: {
     PageFragment: 'PageFragment',
