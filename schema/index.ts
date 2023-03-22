@@ -94,8 +94,6 @@ export type FinalizeAccountInput = {
 
 export type Flag = {
   __typename?: 'Flag';
-  flagged: Scalars['Boolean'];
-  manualReview: Scalars['Boolean'];
   reasons: Array<Scalars['String']>;
 };
 
@@ -319,8 +317,10 @@ export type Post = {
   actions: Array<Action>;
   createdAt: Scalars['DateTime'];
   flag?: Maybe<Flag>;
+  flagged: Scalars['Boolean'];
   id: Scalars['ID'];
   latestAction?: Maybe<Scalars['String']>;
+  manualReview: Scalars['Boolean'];
   media: Array<Media>;
   platform: PlatformEnum;
   text: Scalars['String'];
@@ -884,14 +884,14 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string>, manualReview: boolean } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string>, manualReview: boolean } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
 
 export type PostCardsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
@@ -2200,10 +2200,10 @@ export const PostsDocument = gql`
       text
       platform
       latestAction
+      flagged
+      manualReview
       flag {
-        flagged
         reasons
-        manualReview
       }
       user {
         id
@@ -2258,10 +2258,10 @@ export const PostDocument = gql`
     url
     text
     platform
+    flagged
+    manualReview
     flag {
-      flagged
       reasons
-      manualReview
     }
     user {
       id

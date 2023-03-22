@@ -136,7 +136,7 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     sortable: false,
     headerName: 'Flagged',
     renderCell(params) {
-      return <Checkbox checked={params.row.flag?.flagged ?? false} />
+      return <Checkbox checked={params.row.flagged} />
     },
   },
   {
@@ -145,7 +145,7 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     sortable: false,
     headerName: 'Manual Review',
     renderCell(params) {
-      return <Checkbox checked={params.row.flag?.manualReview ?? false} />
+      return <Checkbox checked={params.row.manualReview} />
     },
   },
   {
@@ -154,8 +154,8 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     sortable: false,
     headerName: 'Reasons',
     renderCell(params) {
-      if (!params.row.flag) {
-        return
+      if (!params.row.flag || params.row.flag.reasons.length === 0) {
+        return '-'
       }
 
       return (

@@ -372,10 +372,10 @@ query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
       text
       platform
       latestAction
+      flagged
+      manualReview
       flag {
-        flagged
         reasons
-        manualReview
       }
       user {
         id
@@ -399,10 +399,10 @@ query post($id: ID!) {
     url
     text
     platform
+    flagged
+    manualReview
     flag {
-      flagged
       reasons
-      manualReview
     }
     user {
       id

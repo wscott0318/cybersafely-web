@@ -208,7 +208,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         throw new Error('No user')
       }
     } catch (error) {
-      alert(error)
+      console.error(error)
       router.replace('/auth/login')
     }
   }, [client, router])

@@ -44,7 +44,7 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     sortable: false,
     headerName: 'Flagged',
     renderCell(params) {
-      return <Checkbox checked={params.row.flag?.flagged ?? false} />
+      return <Checkbox checked={params.row.flagged} />
     },
   },
   {
