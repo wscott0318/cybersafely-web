@@ -2,7 +2,7 @@ import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { usePostCardsQuery, useStatsForSchoolQuery } from '../../schema'
-import { useSchoolRole, useUser } from '../../utils/context/auth'
+import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { InfoCard, InfoCardProps } from '../common/InfoCard'
 import { WelcomeCard } from '../common/WelcomeCard'
@@ -37,7 +37,6 @@ function useMissingCards() {
 export function HomeStatsForAdminAndCoach() {
   const schoolRole = useSchoolRole()
   const { cards } = useMissingCards()
-  const { role } = useUser()
 
   const [days, setDays] = useState(14)
 
@@ -48,8 +47,6 @@ export function HomeStatsForAdminAndCoach() {
   const { data } = useStatsForSchoolQuery({
     variables: { schoolId: schoolRole!.school.id, days },
   })
-
-  const dashboard = role === 'ADMIN' ? '/dashboard/admin' : '/dashboard/coach'
 
   return (
     <Box>
@@ -66,16 +63,20 @@ export function HomeStatsForAdminAndCoach() {
           <InfoCard
             severity="info"
             title="Total Posts"
-            href={dashboard + '/posts'}
             message={cardsData?.totalPosts.page.total ?? 0}
+            href={schoolRole!.type === 'ADMIN' ? '/dashboard/admin/posts' : '/dashboard/coach/posts'}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <InfoCard
             severity="error"
             title="Concerning Posts"
-            href={dashboard + '/posts?flagged=true'}
             message={cardsData?.flaggedPosts.page.total ?? 0}
+            href={
+              schoolRole!.type === 'ADMIN'
+                ? { pathname: '/dashboard/admin/posts', query: { flagged: 'true' } }
+                : { pathname: '/dashboard/coach/posts', query: { flagged: 'true' } }
+            }
           />
         </Grid>
         {cards.map((card, index) => (

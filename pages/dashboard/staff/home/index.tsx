@@ -35,8 +35,8 @@ function Home() {
           <InfoCard
             severity="error"
             title="Concerning Posts"
-            href="/dashboard/staff/posts?flagged=true"
             message={cardsData?.flaggedPosts.page.total ?? 0}
+            href={{ pathname: '/dashboard/staff/posts', query: { flagged: 'true' } }}
           />
         </Grid>
         <Grid item xs={12}>

@@ -41,7 +41,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
         <>
           {params.value.map((school: any, index: number, { length }: { length: number }) => (
             <>
-              <NextLink href={'/dashboard/staff/schools/' + school.id}>
+              <NextLink href={{ pathname: '/dashboard/staff/schools/[schoolId]', query: { schoolId: school.id } }}>
                 <Link>{school.name}</Link>
               </NextLink>
               {index < length - 1 && ', '}

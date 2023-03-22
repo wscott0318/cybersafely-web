@@ -154,11 +154,9 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
   },
 ]
 
-type PostsForAdminAndCoachProps = {
-  baseURL: string
-}
+type PostsForAdminAndCoachProps = {}
 
-export function PostsForAdminAndCoach({ baseURL }: PostsForAdminAndCoachProps) {
+export function PostsForAdminAndCoach({}: PostsForAdminAndCoachProps) {
   const schoolRole = useSchoolRole()
 
   const [flagged, setFlagged] = useQueryParam('flagged', 'boolean')
@@ -176,7 +174,11 @@ export function PostsForAdminAndCoach({ baseURL }: PostsForAdminAndCoachProps) {
       query={query}
       columns={columns}
       data={query.data?.posts}
-      href={(e) => baseURL + '/posts/' + e.id}
+      href={(e) =>
+        schoolRole!.type === 'ADMIN'
+          ? { pathname: '/dashboard/admin/posts/[postId]', query: { postId: e.id } }
+          : { pathname: '/dashboard/coach/posts/[postId]', query: { postId: e.id } }
+      }
       actions={
         <DataGridActions>
           <Select

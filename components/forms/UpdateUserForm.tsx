@@ -114,7 +114,7 @@ function SocialButton(props: SocialButtonProps) {
       onClick={async () => {
         if (props.onLink) {
           const url = await props.onLink()
-          router.push(url)
+          document.location = url
         }
       }}
     >

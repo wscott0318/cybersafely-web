@@ -12,6 +12,7 @@ import {
   TimelineSeparator,
 } from '@mui/lab'
 import { CircularProgress, Divider, Grid, Paper, Tab, Typography } from '@mui/material'
+import { LinkProps } from 'next/link'
 import { useState } from 'react'
 import { PostQuery, usePostQuery } from '../../schema'
 import { AvatarWithName } from '../common/AvatarWithName'
@@ -41,7 +42,7 @@ function Row(props: { title: string; message: React.ReactNode; last?: boolean })
 
 type PostForAdminAndCoachProps = {
   postId: string
-  backURL: string
+  backURL: LinkProps['href']
 }
 
 export function PostForAdminAndCoachWrapper({

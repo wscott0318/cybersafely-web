@@ -1,9 +1,10 @@
 import { Alert, AlertColor, AlertTitle } from '@mui/material'
+import { LinkProps } from 'next/link'
 import React from 'react'
 import { NextLink } from './NextLink'
 
 export type InfoCardProps = {
-  href: string
+  href: LinkProps['href']
   title?: string
   message: React.ReactNode
   severity?: AlertColor

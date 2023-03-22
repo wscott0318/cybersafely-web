@@ -1,6 +1,7 @@
 import { QueryResult } from '@apollo/client'
 import { Alert, LinearProgress, Pagination, Stack } from '@mui/material'
 import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
+import { LinkProps } from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useCallbackRef } from '../../helpers/hooks'
@@ -50,10 +51,10 @@ type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
   query: QueryResult<TQuery, any>
   data: TData | undefined
   columns: GridColumns<TNode>
-  href?: (node: TNode) => string
+  href?: (node: TNode) => LinkProps['href']
   title: string
   actions?: React.ReactNode
-  back?: string
+  back?: LinkProps['href']
   initialSortModel?: GridSortItem
 }
 

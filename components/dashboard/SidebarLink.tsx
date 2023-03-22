@@ -1,4 +1,5 @@
 import { ListItemButton, listItemButtonClasses, ListItemIcon, listItemIconClasses, ListItemText } from '@mui/material'
+import { LinkProps } from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
 import { NextLink } from '../common/NextLink'
@@ -8,12 +9,12 @@ type SidebarLinkProps = {
   title: string
   subtitle?: string
   color?: string
-  href: string
+  href: LinkProps['href']
 }
 
 export function SidebarLink(props: SidebarLinkProps) {
   const router = useRouter()
-  const isSelected = router.pathname.startsWith(props.href)
+  const isSelected = router.pathname.startsWith(typeof props.href === 'string' ? props.href : '/')
 
   return (
     <NextLink href={props.href}>

@@ -1,8 +1,8 @@
-import Link from 'next/link'
+import Link, { LinkProps } from 'next/link'
 
 type NextLinkProps = {
   children: JSX.Element
-  href: string
+  href: LinkProps['href']
 }
 
 export function NextLink(props: NextLinkProps) {
