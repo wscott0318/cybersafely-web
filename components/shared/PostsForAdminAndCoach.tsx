@@ -17,6 +17,7 @@ import {
 import { GridColumns } from '@mui/x-data-grid'
 import { useQueryParam } from '../../helpers/hooks'
 import { namedOperations, PostsQuery, useExecuteActionMutation, usePostsQuery } from '../../schema'
+import { useAlert } from '../../utils/context/alert'
 import { useSchoolRole } from '../../utils/context/auth'
 import { AvatarWithName } from '../common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../common/DataGridViewer'
@@ -24,6 +25,8 @@ import { DropDownButton } from '../common/DropDownButton'
 import { PlatformChip } from '../common/PlatformChip'
 
 export function PostActions({ postId, url }: { postId: string; url: string }) {
+  const { pushAlert } = useAlert()
+
   const [executeAction] = useExecuteActionMutation({
     refetchQueries: [namedOperations.Query.posts, namedOperations.Query.post],
   })
@@ -58,11 +61,16 @@ export function PostActions({ postId, url }: { postId: string; url: string }) {
         <ListItemText>Notify Athlete</ListItemText>
       </MenuItem>
       <MenuItem
-        sx={(theme) => ({
-          color: theme.palette.error.main,
-        })}
+        sx={(theme) => ({ color: theme.palette.error.main })}
         onClick={() => {
-          executeAction({ variables: { type: 'TAKE_DOWN_POST', postId } })
+          pushAlert({
+            type: 'confirm',
+            title: 'Confirm',
+            message: 'Are you sure you want to take this post down?',
+            confirm: () => {
+              executeAction({ variables: { type: 'TAKE_DOWN_POST', postId } })
+            },
+          })
         }}
       >
         <ListItemIcon>
