@@ -51,6 +51,18 @@ export function PostActions({ postId, url }: { postId: string; url: string }) {
         <ListItemText>Mark as Acceptable</ListItemText>
       </MenuItem>
       <MenuItem
+        sx={(theme) => ({ color: theme.palette.error.main })}
+        onClick={() => {
+          executeAction({ variables: { type: 'MARK_AS_NOT_ACCEPTABLE', postId } })
+        }}
+      >
+        <ListItemIcon>
+          <CheckIcon fontSize="small" color="error" />
+        </ListItemIcon>
+        <ListItemText>Mark as Not Acceptable</ListItemText>
+      </MenuItem>
+      <Divider />
+      <MenuItem
         onClick={() => {
           executeAction({ variables: { type: 'NOTIFY_ATHLETE', postId } })
         }}
@@ -125,6 +137,15 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     headerName: 'Flagged',
     renderCell(params) {
       return <Checkbox checked={params.row.flag?.flagged ?? false} />
+    },
+  },
+  {
+    width: 100,
+    field: 'manualReview',
+    sortable: false,
+    headerName: 'Manual Review',
+    renderCell(params) {
+      return <Checkbox checked={params.row.flag?.manualReview ?? false} />
     },
   },
   {

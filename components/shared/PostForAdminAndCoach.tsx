@@ -96,6 +96,7 @@ export function PostForAdminAndCoachWrapper({
           <Paper sx={{ py: 2 }}>
             <Grid container spacing={2}>
               <Row title="Flagged" message={post.flag?.flagged ? 'Yes' : 'No'} />
+              <Row title="Manual Review" message={post.flag?.manualReview ? 'Yes' : 'No'} />
               <Row title="Reasons" message={post.flag?.reasons.join(', ') || 'None'} />
               <Row title="Actions" message={<PostActions url={post.url} postId={post.id} />} />
               <Row

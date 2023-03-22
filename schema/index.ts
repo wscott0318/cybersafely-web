@@ -26,6 +26,7 @@ export type Action = {
 
 export const ActionEnum = {
   MarkAsAcceptable: 'MARK_AS_ACCEPTABLE',
+  MarkAsNotAcceptable: 'MARK_AS_NOT_ACCEPTABLE',
   NotifyAthlete: 'NOTIFY_ATHLETE',
   TakeDownPost: 'TAKE_DOWN_POST'
 } as const;
@@ -94,6 +95,7 @@ export type FinalizeAccountInput = {
 export type Flag = {
   __typename?: 'Flag';
   flagged: Scalars['Boolean'];
+  manualReview: Scalars['Boolean'];
   reasons: Array<Scalars['String']>;
 };
 
@@ -882,14 +884,14 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string>, manualReview: boolean } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flag?: { __typename?: 'Flag', flagged: boolean, reasons: Array<string>, manualReview: boolean } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
 
 export type PostCardsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
@@ -2201,6 +2203,7 @@ export const PostsDocument = gql`
       flag {
         flagged
         reasons
+        manualReview
       }
       user {
         id
@@ -2258,6 +2261,7 @@ export const PostDocument = gql`
     flag {
       flagged
       reasons
+      manualReview
     }
     user {
       id

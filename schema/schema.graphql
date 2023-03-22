@@ -375,6 +375,7 @@ query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
       flag {
         flagged
         reasons
+        manualReview
       }
       user {
         id
@@ -401,6 +402,7 @@ query post($id: ID!) {
     flag {
       flagged
       reasons
+      manualReview
     }
     user {
       id
