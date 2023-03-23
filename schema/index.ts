@@ -153,6 +153,7 @@ export type Mutation = {
   updateSchool: School;
   updateSettings: Scalars['Boolean'];
   updateUser: User;
+  updateUserParentalApproval: Scalars['Boolean'];
 };
 
 
@@ -263,6 +264,12 @@ export type MutationUpdateSettingsArgs = {
 export type MutationUpdateUserArgs = {
   id: Scalars['ID'];
   input: UpdateUserInput;
+};
+
+
+export type MutationUpdateUserParentalApprovalArgs = {
+  approve: Scalars['Boolean'];
+  id: Scalars['ID'];
 };
 
 export type Notification = {
@@ -583,6 +590,8 @@ export type User = {
   id: Scalars['ID'];
   name: Scalars['String'];
   notificationCount: Scalars['Int'];
+  parentalApproval?: Maybe<Scalars['Boolean']>;
+  platforms: Array<PlatformEnum>;
   roles: Array<UserRole>;
   twitter?: Maybe<Twitter>;
 };
@@ -709,7 +718,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, parentalApproval?: boolean | null, platforms: Array<PlatformEnum>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -907,6 +916,14 @@ export type ExecuteActionMutationVariables = Exact<{
 
 
 export type ExecuteActionMutation = { __typename?: 'Mutation', executeAction: boolean };
+
+export type UpdateUserParentalApprovalMutationVariables = Exact<{
+  id: Scalars['ID'];
+  approve: Scalars['Boolean'];
+}>;
+
+
+export type UpdateUserParentalApprovalMutation = { __typename?: 'Mutation', updateUserParentalApproval: boolean };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -1285,6 +1302,8 @@ export const UsersDocument = gql`
       name
       email
       emailConfirmed
+      parentalApproval
+      platforms
       avatar {
         url
       }
@@ -2394,6 +2413,38 @@ export function useExecuteActionMutation(baseOptions?: Apollo.MutationHookOption
 export type ExecuteActionMutationHookResult = ReturnType<typeof useExecuteActionMutation>;
 export type ExecuteActionMutationResult = Apollo.MutationResult<ExecuteActionMutation>;
 export type ExecuteActionMutationOptions = Apollo.BaseMutationOptions<ExecuteActionMutation, ExecuteActionMutationVariables>;
+export const UpdateUserParentalApprovalDocument = gql`
+    mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
+  updateUserParentalApproval(id: $id, approve: $approve)
+}
+    `;
+export type UpdateUserParentalApprovalMutationFn = Apollo.MutationFunction<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>;
+
+/**
+ * __useUpdateUserParentalApprovalMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserParentalApprovalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserParentalApprovalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserParentalApprovalMutation, { data, loading, error }] = useUpdateUserParentalApprovalMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      approve: // value for 'approve'
+ *   },
+ * });
+ */
+export function useUpdateUserParentalApprovalMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>(UpdateUserParentalApprovalDocument, options);
+      }
+export type UpdateUserParentalApprovalMutationHookResult = ReturnType<typeof useUpdateUserParentalApprovalMutation>;
+export type UpdateUserParentalApprovalMutationResult = Apollo.MutationResult<UpdateUserParentalApprovalMutation>;
+export type UpdateUserParentalApprovalMutationOptions = Apollo.BaseMutationOptions<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2434,7 +2485,8 @@ export const namedOperations = {
     authWithTwitter: 'authWithTwitter',
     removeTwitter: 'removeTwitter',
     updateEmailSettings: 'updateEmailSettings',
-    executeAction: 'executeAction'
+    executeAction: 'executeAction',
+    updateUserParentalApproval: 'updateUserParentalApproval'
   },
   Fragment: {
     PageFragment: 'PageFragment',

@@ -138,6 +138,8 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
       name
       email
       emailConfirmed
+      parentalApproval
+      platforms
       avatar {
         url
       }
@@ -448,4 +450,8 @@ query postCards($schoolId: ID) {
 
 mutation executeAction($type: ActionEnum!, $postId: ID!) {
   executeAction(type: $type, postId: $postId)
+}
+
+mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
+  updateUserParentalApproval(id: $id, approve: $approve)
 }

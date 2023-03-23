@@ -1,14 +1,25 @@
-import { Box, Grid } from '@mui/material'
+import { Box, Grid, Stack, Switch } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
+import { useMemo } from 'react'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { PlatformChip } from '../../../../components/common/PlatformChip'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
 import { WelcomeCard } from '../../../../components/common/WelcomeCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { SchoolRole, UsersQuery, useUsersQuery } from '../../../../schema'
+import {
+  namedOperations,
+  SchoolRole,
+  UpdateUserParentalApprovalMutationHookResult,
+  UsersQuery,
+  useUpdateUserParentalApprovalMutation,
+  useUsersQuery,
+} from '../../../../schema'
 import { useUser } from '../../../../utils/context/auth'
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const getColumns: (props: {
+  mutation: UpdateUserParentalApprovalMutationHookResult
+}) => GridColumns<InferNodeType<UsersQuery['users']>> = ({ mutation }) => [
   {
     width: 250,
     field: 'name',
@@ -32,11 +43,41 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     },
   },
   {
+    width: 350,
+    field: 'platforms',
+    headerName: 'Platforms',
+    renderCell(params) {
+      return (
+        <Stack direction="row" spacing={0.5}>
+          {params.row.platforms.map((platform) => (
+            <PlatformChip key={platform} platform={platform} />
+          ))}
+        </Stack>
+      )
+    },
+  },
+  {
     width: 200,
     field: 'score',
     headerName: 'Score',
     renderCell() {
       return <UserScore />
+    },
+  },
+  {
+    width: 200,
+    type: 'actions',
+    field: 'parentalApproval',
+    headerName: 'Parental Approval',
+    renderCell(params) {
+      return (
+        <Switch
+          checked={params.row.parentalApproval ?? false}
+          onChange={(_, approve) => {
+            mutation[0]({ variables: { id: params.row.id, approve } })
+          }}
+        />
+      )
     },
   },
 ]
@@ -52,6 +93,12 @@ function Home() {
       },
     },
   })
+
+  const mutation = useUpdateUserParentalApprovalMutation({
+    refetchQueries: [namedOperations.Query.users],
+  })
+
+  const columns = useMemo(() => getColumns({ mutation }), [mutation])
 
   return (
     <Box>
