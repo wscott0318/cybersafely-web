@@ -48,6 +48,10 @@ query myUser($id: ID!) {
         type
       }
     }
+    twitter {
+      id
+      username
+    }
   }
 }
 
@@ -134,6 +138,8 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
       name
       email
       emailConfirmed
+      parentalApproval
+      platforms
       avatar {
         url
       }
@@ -149,6 +155,7 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
           status
           school {
             id
+            name
           }
         }
         ... on ParentRole {
@@ -335,4 +342,116 @@ query statsForSchool($schoolId: ID!, $days: Int!) {
   statsOfAcceptedMembersInSchool(schoolId: $schoolId, days: $days) {
     ...StatsByDayFragment
   }
+}
+
+mutation authWithTwitter {
+  authWithTwitter
+}
+
+mutation removeTwitter($id: ID!) {
+  removeTwitter(id: $id)
+}
+
+query emailSettings {
+  emailSettings {
+    receivePostFlagged
+  }
+}
+
+mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
+  updateEmailSettings(input: $input)
+}
+
+query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(schoolId: $schoolId, page: $page, filter: $filter) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      url
+      text
+      platform
+      latestAction
+      flagged
+      manualReview
+      flag {
+        reasons
+      }
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
+      media {
+        id
+      }
+    }
+  }
+}
+
+query post($id: ID!) {
+  post(id: $id) {
+    id
+    createdAt
+    url
+    text
+    platform
+    flagged
+    manualReview
+    flag {
+      reasons
+    }
+    user {
+      id
+      name
+      email
+      avatar {
+        url
+      }
+    }
+    media {
+      id
+      url
+      type
+    }
+    actions {
+      id
+      createdAt
+      name
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
+    }
+  }
+}
+
+query postCards($schoolId: ID) {
+  totalPosts: posts(schoolId: $schoolId) {
+    page {
+      total
+    }
+  }
+  flaggedPosts: posts(schoolId: $schoolId, filter: { flagged: true }) {
+    page {
+      total
+    }
+  }
+}
+
+mutation executeAction($type: ActionEnum!, $postId: ID!) {
+  executeAction(type: $type, postId: $postId)
+}
+
+mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
+  updateUserParentalApproval(id: $id, approve: $approve)
 }

@@ -9,7 +9,6 @@ import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
 import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
 import PersonIcon from '@mui/icons-material/PeopleOutlined'
-import SchoolFilledIcon from '@mui/icons-material/School'
 import SchoolIcon from '@mui/icons-material/SchoolOutlined'
 import SettingsIcon from '@mui/icons-material/SettingsOutlined'
 import {
@@ -84,9 +83,21 @@ function HeaderAccount() {
         size="large"
         variant="text"
         color="inherit"
-        title={user.name}
         uppercase={false}
-        startIcon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
+        startIcon={<Avatar sx={{ width: 36, height: 36 }} src={user.avatar?.url} />}
+        title={
+          <Typography variant="inherit" textAlign="left">
+            {user.name}
+            {schoolRole && (
+              <>
+                <br />
+                <Typography variant="body2" color="text.disabled" mt={-0.5}>
+                  {schoolRole.school.name}
+                </Typography>
+              </>
+            )}
+          </Typography>
+        }
       >
         {schoolRole && (
           <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
@@ -97,9 +108,9 @@ function HeaderAccount() {
           <NextLinkLegacy href="/dashboard/school">
             <MenuItem>
               <ListItemIcon>
-                <SchoolIcon fontSize="small" />
+                <Avatar sx={{ width: 24, height: 24 }} src={schoolRole.school.logo?.url} />
               </ListItemIcon>
-              <ListItemText>Manage</ListItemText>
+              <ListItemText>{schoolRole.school.name}</ListItemText>
             </MenuItem>
           </NextLinkLegacy>
         )}
@@ -150,32 +161,6 @@ function Footer() {
   )
 }
 
-function SidebarAccount() {
-  const { user } = useUser()
-  const schoolRole = useSchoolRole()
-
-  return (
-    <List>
-      {schoolRole && (
-        <SidebarLink
-          href="/dashboard/school"
-          title={schoolRole.school.name}
-          icon={
-            <Avatar sx={{ width: 28, height: 28 }} src={schoolRole.school.logo?.url}>
-              <SchoolFilledIcon fontSize="inherit" />
-            </Avatar>
-          }
-        />
-      )}
-      <SidebarLink
-        title={user.name}
-        href="/dashboard/profile"
-        icon={<Avatar sx={{ width: 28, height: 28 }} src={user.avatar?.url} />}
-      />
-    </List>
-  )
-}
-
 export type DashboardLayoutProps = {
   children: JSX.Element | JSX.Element[]
   title: string
@@ -223,7 +208,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
         throw new Error('No user')
       }
     } catch (error) {
-      alert(error)
+      console.error(error)
       router.replace('/auth/login')
     }
   }, [client, router])
@@ -314,9 +299,6 @@ export function DashboardLayout(props: DashboardLayoutProps) {
                 </NextLink>
               </Box>
               {props.sidebar}
-              <Box flexGrow={1} />
-              <Divider sx={{ mx: 2 }} />
-              <SidebarAccount />
             </Stack>
           </Drawer>
           {open && !isTablet && <Box width={width} flexShrink={0} />}
@@ -366,14 +348,12 @@ function Sidebar() {
     case 'STAFF':
       return (
         <>
-          <CollapsableList title="Dashboard">
+          <CollapsableList>
             <SidebarLink href="/dashboard/staff/home" icon={<HomeIcon />} title="Home" />
-          </CollapsableList>
-          <CollapsableList title="Management">
+            <SidebarLink href="/dashboard/staff/staff" icon={<PersonIcon />} title="Staff" />
             <SidebarLink href="/dashboard/staff/users" icon={<PersonIcon />} title="Users" />
             <SidebarLink href="/dashboard/staff/schools" icon={<SchoolIcon />} title="Schools" />
-          </CollapsableList>
-          <CollapsableList title="Settings">
+            <SidebarLink href="/dashboard/staff/posts" icon={<FeedIcon />} title="Posts" />
             <SidebarLink href="/dashboard/staff/settings" icon={<SettingsIcon />} title="Settings" />
           </CollapsableList>
         </>

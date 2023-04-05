@@ -1,10 +1,15 @@
+import AddIcon from '@mui/icons-material/AddOutlined'
+import { Button, Stack } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { PlatformChip } from '../../../../components/common/PlatformChip'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { UsersQuery, useUsersQuery } from '../../../../schema'
+import { InviteAthleteForm } from '../../../../components/forms/InviteAthleteForm'
+import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
+import { useAlert } from '../../../../utils/context/alert'
 import { useSchoolRole } from '../../../../utils/context/auth'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
@@ -20,6 +25,31 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     width: 300,
     field: 'email',
     headerName: 'E-mail',
+  },
+  {
+    width: 350,
+    field: 'platforms',
+    headerName: 'Platforms',
+    renderCell(params) {
+      return (
+        <Stack direction="row" spacing={0.5}>
+          {params.row.platforms.map((platform) => (
+            <PlatformChip key={platform} platform={platform} />
+          ))}
+        </Stack>
+      )
+    },
+  },
+  {
+    width: 200,
+    field: 'parentalApproval',
+    headerName: 'Parental Approval',
+    valueFormatter(params) {
+      if (typeof params.value === 'boolean') {
+        return params.value ? 'Yes' : 'No'
+      }
+      return 'Pending'
+    },
   },
   {
     width: 150,
@@ -40,16 +70,21 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
 ]
 
 function Athletes() {
+  const { pushAlert } = useAlert()
   const schoolRole = useSchoolRole()
 
   const query = useUsersQuery({
     variables: {
       filter: {
         from: 'SCHOOL',
-        schoolRole: 'ATHLETE',
+        roles: ['ATHLETE'],
         fromId: schoolRole!.school.id,
       },
     },
+  })
+
+  const [createUserRole] = useCreateUserRoleMutation({
+    refetchQueries: [namedOperations.Query.users],
   })
 
   return (
@@ -59,8 +94,42 @@ function Athletes() {
       columns={columns}
       data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
+      href={(e) => ({ pathname: '/dashboard/coach/members/[memberId]', query: { memberId: e.id } })}
       actions={
         <DataGridActions>
+          <Button
+            fullWidth
+            startIcon={<AddIcon />}
+            onClick={() => {
+              pushAlert({
+                type: 'custom',
+                title: 'Invite Athlete',
+                content: InviteAthleteForm,
+                result: async ({ email, parentEmail }) => {
+                  const { data } = await createUserRole({
+                    variables: {
+                      input: {
+                        email,
+                        type: 'ATHLETE',
+                        relationId: schoolRole!.school.id,
+                      },
+                    },
+                  })
+                  await createUserRole({
+                    variables: {
+                      input: {
+                        email: parentEmail,
+                        type: 'PARENT',
+                        relationId: data!.createUserRole.id,
+                      },
+                    },
+                  })
+                },
+              })
+            }}
+          >
+            Invite Athlete
+          </Button>
           <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }

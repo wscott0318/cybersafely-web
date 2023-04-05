@@ -3,7 +3,7 @@ import UserIcon from '@mui/icons-material/Person'
 import { accordionClasses, dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, green, grey, red } from '@mui/material/colors'
 import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
-import { Roboto } from '@next/font/google'
+import { Roboto } from 'next/font/google'
 
 export const roboto = Roboto({
   preload: true,

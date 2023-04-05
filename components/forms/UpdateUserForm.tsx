@@ -6,16 +6,30 @@ import {
   AccordionSummary,
   Button,
   ButtonGroup,
+  FormControlLabel,
+  FormGroup,
   Grid,
   Skeleton,
   Stack,
+  Switch,
   Tooltip,
   Typography,
 } from '@mui/material'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 import { z } from 'zod'
 import { addIssue } from '../../helpers/zod'
-import { UserQuery, useUpdatePasswordMutation, useUpdateUserMutation, useUserQuery } from '../../schema'
+import {
+  MyUserQuery,
+  namedOperations,
+  useAuthWithTwitterMutation,
+  useEmailSettingsQuery,
+  useMyUserQuery,
+  useRemoveTwitterMutation,
+  useUpdateEmailSettingsMutation,
+  useUpdatePasswordMutation,
+  useUpdateUserMutation,
+} from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AccordionContext } from '../common/AccordionContext'
 import { Form } from '../common/form/Form'
@@ -29,9 +43,15 @@ type SocialButtonProps = {
   name: string
   color: string
   linked?: boolean
+  username?: string
+  onLink?: () => Promise<string>
+  onUnlink?: () => Promise<void>
+  disabled?: boolean
 }
 
 function SocialButton(props: SocialButtonProps) {
+  const router = useRouter()
+
   if (props.linked) {
     return (
       <ButtonGroup fullWidth variant="contained">
@@ -48,7 +68,7 @@ function SocialButton(props: SocialButtonProps) {
             },
           })}
         >
-          @username
+          {props.username ?? props.name}
         </Button>
         <Tooltip title={`Unlink ${props.name}`}>
           <Button
@@ -60,6 +80,11 @@ function SocialButton(props: SocialButtonProps) {
               ':hover': {
                 bgcolor: props.color,
               },
+            }}
+            onClick={async () => {
+              if (props.onUnlink) {
+                await props.onUnlink()
+              }
             }}
           >
             <UnlinkIcon fontSize="small" />
@@ -80,9 +105,17 @@ function SocialButton(props: SocialButtonProps) {
         bgcolor: props.color,
         textTransform: 'unset',
         justifyContent: 'flex-start',
+        opacity: props.disabled ? 0.1 : 1,
+        pointerEvents: props.disabled ? 'none' : 'auto',
         ':hover': {
           bgcolor: props.color,
         },
+      }}
+      onClick={async () => {
+        if (props.onLink) {
+          const url = await props.onLink()
+          document.location = url
+        }
       }}
     >
       <Typography variant="inherit" flexGrow={1} textAlign="start">
@@ -99,6 +132,7 @@ function Loading() {
         <Typography variant="h5">Loading</Typography>
       </Skeleton>
       <Stack spacing={1}>
+        <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
         <Skeleton variant="rounded" height={56} />
@@ -133,11 +167,23 @@ function Render({
   exclude,
   data: { user },
   query: { refetch },
-}: UpdateUserFormProps & QueryLoaderRenderProps<UserQuery>) {
+}: UpdateUserFormProps & QueryLoaderRenderProps<MyUserQuery>) {
   const { pushAlert } = useAlert()
 
   const [updateUser] = useUpdateUserMutation()
   const [updatePassword] = useUpdatePasswordMutation()
+
+  const [authWithTwitter] = useAuthWithTwitterMutation()
+  const [removeTwitter] = useRemoveTwitterMutation({
+    onCompleted: () => {
+      refetch()
+    },
+  })
+
+  const { data: emailSettingsData } = useEmailSettingsQuery()
+  const [updateEmailSettings] = useUpdateEmailSettingsMutation({
+    refetchQueries: [namedOperations.Query.emailSettings],
+  })
 
   const isShown = useCallback(
     (section: Section) => {
@@ -231,17 +277,23 @@ function Render({
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <SocialButton
-                  icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
-                  name="TikTok"
-                  color="#000"
-                  linked
+                  icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
+                  name="Twitter"
+                  color="#1d9bf0"
+                  linked={!!user.twitter}
+                  username={user.twitter?.username}
+                  onLink={() => authWithTwitter().then(({ data }) => data!.authWithTwitter)}
+                  onUnlink={async () => {
+                    await removeTwitter({ variables: { id: user.twitter!.id } })
+                  }}
                 />
               </Grid>
               <Grid item xs={6}>
                 <SocialButton
-                  icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
-                  name="Twitter"
-                  color="#1d9bf0"
+                  icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
+                  name="TikTok"
+                  color="#000"
+                  disabled
                 />
               </Grid>
               <Grid item xs={6}>
@@ -249,6 +301,7 @@ function Render({
                   icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
                   name="Instagram"
                   color="#ff543e"
+                  disabled
                 />
               </Grid>
               <Grid item xs={6}>
@@ -256,6 +309,7 @@ function Render({
                   icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
                   name="Facebook"
                   color="#0062e0"
+                  disabled
                 />
               </Grid>
               <Grid item xs={6}>
@@ -263,9 +317,32 @@ function Render({
                   icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
                   name="YouTube"
                   color="#f61c0d"
+                  disabled
                 />
               </Grid>
             </Grid>
+          </AccordionDetails>
+        </Accordion>
+      )}
+      {isShown('email-settings') && (
+        <Accordion>
+          <AccordionSummary>Email Settings</AccordionSummary>
+          <AccordionDetails>
+            <Stack spacing={1}>
+              <FormGroup>
+                <FormControlLabel
+                  label="Receive Post Flagged"
+                  control={
+                    <Switch
+                      checked={emailSettingsData?.emailSettings.receivePostFlagged ?? false}
+                      onChange={(_, receivePostFlagged) => {
+                        updateEmailSettings({ variables: { input: { receivePostFlagged } } })
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+            </Stack>
           </AccordionDetails>
         </Accordion>
       )}
@@ -273,7 +350,7 @@ function Render({
   )
 }
 
-type Section = 'information' | 'password' | 'socials'
+export type Section = 'information' | 'password' | 'socials' | 'email-settings'
 
 type UpdateUserFormProps = {
   userId: string
@@ -283,7 +360,7 @@ type UpdateUserFormProps = {
 }
 
 export function UpdateUserForm(props: UpdateUserFormProps) {
-  const query = useUserQuery({
+  const query = useMyUserQuery({
     variables: { id: props.userId },
     notifyOnNetworkStatusChange: false,
   })

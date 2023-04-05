@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Skeleton, Stack, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Skeleton, Stack, Typography } from '@mui/material'
 import { useCallback } from 'react'
 import { z } from 'zod'
 import {
@@ -67,103 +67,105 @@ function Render({
   )
 
   return (
-    <AccordionContext title="School">
-      {isShown('information') && (
-        <Accordion>
-          <AccordionSummary>Information</AccordionSummary>
-          <AccordionDetails>
-            <Form
-              submit="Update"
-              schema={schoolSchema}
-              defaultValues={{
-                name: school.name,
-                phone: school.phone,
-              }}
-              onSubmit={async (data, input) => {
-                await updateSchool({ variables: { id: school.id, input } })
-                await refetch()
-                onChange?.()
-              }}
-            >
-              <FormImage
-                aspect={9 / 21}
-                forId={school.id}
-                for="SCHOOL_COVER"
-                image={school.cover}
-                onChange={async () => {
+    <Stack>
+      <Box position="relative">
+        <FormImage
+          aspect={9 / 21}
+          forId={school.id}
+          for="SCHOOL_COVER"
+          image={school.cover}
+          onChange={async () => {
+            await refetch()
+            onChange?.()
+          }}
+        />
+        <Box position="absolute" right={(theme) => theme.spacing(3)} bottom={-50}>
+          <FormAvatar
+            forId={school.id}
+            for="SCHOOL_LOGO"
+            image={school.logo}
+            onChange={async () => {
+              await refetch()
+              onChange?.()
+            }}
+          />
+        </Box>
+      </Box>
+      <AccordionContext title={school.name}>
+        {isShown('information') && (
+          <Accordion>
+            <AccordionSummary>Information</AccordionSummary>
+            <AccordionDetails>
+              <Form
+                submit="Update"
+                schema={schoolSchema}
+                defaultValues={{
+                  name: school.name,
+                  phone: school.phone,
+                }}
+                onSubmit={async (data, input) => {
+                  await updateSchool({ variables: { id: school.id, input } })
                   await refetch()
                   onChange?.()
                 }}
-              />
-              <Stack direction="row" alignItems="center" spacing={3}>
-                <FormAvatar
-                  forId={school.id}
-                  for="SCHOOL_LOGO"
-                  image={school.logo}
-                  onChange={async () => {
-                    await refetch()
-                    onChange?.()
-                  }}
-                />
-                <Stack flexGrow={1}>
-                  <FormText name="name" label="Name" required />
-                  <FormText name="phone" label="Phone" type="phone" />
-                </Stack>
-              </Stack>
-            </Form>
-          </AccordionDetails>
-        </Accordion>
-      )}
-      {isShown('address') && (
-        <Accordion>
-          <AccordionSummary>Address</AccordionSummary>
-          <AccordionDetails>
-            <Form
-              submit="Update"
-              schema={addressSchema}
-              defaultValues={{
-                street: school.address?.street,
-                city: school.address?.city,
-                state: school.address?.state,
-                zip: school.address?.zip,
-              }}
-              onSubmit={async (data, input) => {
-                if (!school.address) {
-                  await createAddress({
-                    variables: {
-                      input: data,
-                      schoolId: school.id,
-                    },
-                  })
-                } else {
-                  await updateAddress({
-                    variables: {
-                      input,
-                      id: school.address.id,
-                    },
-                  })
-                }
-                await refetch()
-                onChange?.()
-              }}
-            >
-              <FormText name="street" label="Street" required />
-              <FormText name="city" label="City" required />
-              <FormText name="state" label="State" required />
-              <FormText name="zip" label="ZIP" required />
-            </Form>
-          </AccordionDetails>
-        </Accordion>
-      )}
-      {isShown('billing') && (
-        <Accordion>
-          <AccordionSummary>Billing</AccordionSummary>
-          <AccordionDetails>
-            <Alert severity="info">Billing coming soon</Alert>
-          </AccordionDetails>
-        </Accordion>
-      )}
-    </AccordionContext>
+              >
+                <FormText name="name" label="Name" required />
+                <FormText name="phone" label="Phone" type="phone" />
+              </Form>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {isShown('address') && (
+          <Accordion>
+            <AccordionSummary>Address</AccordionSummary>
+            <AccordionDetails>
+              <Form
+                submit="Update"
+                schema={addressSchema}
+                defaultValues={{
+                  street: school.address?.street,
+                  city: school.address?.city,
+                  state: school.address?.state,
+                  zip: school.address?.zip,
+                }}
+                onSubmit={async (data, input) => {
+                  if (!school.address) {
+                    await createAddress({
+                      variables: {
+                        input: data,
+                        schoolId: school.id,
+                      },
+                    })
+                  } else {
+                    await updateAddress({
+                      variables: {
+                        input,
+                        id: school.address.id,
+                      },
+                    })
+                  }
+                  await refetch()
+                  onChange?.()
+                }}
+              >
+                <FormText name="street" label="Street" required />
+                <FormText name="city" label="City" required />
+                <FormText name="state" label="State" required />
+                <FormText name="zip" label="ZIP" required />
+              </Form>
+            </AccordionDetails>
+          </Accordion>
+        )}
+        {isShown('billing') && (
+          <Accordion>
+            <AccordionSummary>Billing</AccordionSummary>
+            <AccordionDetails>
+              <Alert severity="info">Billing coming soon</Alert>
+            </AccordionDetails>
+          </Accordion>
+        )}
+      </AccordionContext>
+    </Stack>
   )
 }
 

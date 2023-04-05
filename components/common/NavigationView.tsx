@@ -1,5 +1,6 @@
 import BackIcon from '@mui/icons-material/ArrowBackOutlined'
 import { Box, Grid, IconButton, Stack, Typography } from '@mui/material'
+import { LinkProps } from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useMemo } from 'react'
 import { useMobile } from '../../helpers/hooks'
@@ -25,7 +26,7 @@ type NavigationViewProps = {
   title: string
   subtitle?: string
   actions?: React.ReactNode
-  back?: string
+  back?: LinkProps['href']
 }
 
 export function NavigationView(props: NavigationViewProps) {

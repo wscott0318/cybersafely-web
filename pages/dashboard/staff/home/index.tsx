@@ -2,11 +2,14 @@ import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { CumulativeChartCard } from '../../../../components/chart/CumulativeChartCard'
+import { InfoCard } from '../../../../components/common/InfoCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { useStatsForStaffQuery } from '../../../../schema'
+import { usePostCardsQuery, useStatsForStaffQuery } from '../../../../schema'
 
 function Home() {
   const [days, setDays] = useState(14)
+
+  const { data: cardsData } = usePostCardsQuery()
 
   const { data } = useStatsForStaffQuery({
     variables: { days },
@@ -15,6 +18,27 @@ function Home() {
   return (
     <Box>
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant="h5" flexGrow={1}>
+            Cards
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InfoCard
+            severity="info"
+            title="Total Posts"
+            href="/dashboard/staff/posts"
+            message={cardsData?.totalPosts.page.total ?? 0}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InfoCard
+            severity="error"
+            title="Concerning Posts"
+            message={cardsData?.flaggedPosts.page.total ?? 0}
+            href={{ pathname: '/dashboard/staff/posts', query: { flagged: 'true' } }}
+          />
+        </Grid>
         <Grid item xs={12}>
           <Stack direction="row" alignItems="center">
             <Typography variant="h5" flexGrow={1}>

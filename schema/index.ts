@@ -16,6 +16,22 @@ export type Scalars = {
   DateTime: string;
 };
 
+export type Action = {
+  __typename?: 'Action';
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  user?: Maybe<User>;
+};
+
+export const ActionEnum = {
+  MarkAsAcceptable: 'MARK_AS_ACCEPTABLE',
+  MarkAsNotAcceptable: 'MARK_AS_NOT_ACCEPTABLE',
+  NotifyAthlete: 'NOTIFY_ATHLETE',
+  TakeDownPost: 'TAKE_DOWN_POST'
+} as const;
+
+export type ActionEnum = typeof ActionEnum[keyof typeof ActionEnum];
 export type Address = {
   __typename?: 'Address';
   city: Scalars['String'];
@@ -65,10 +81,20 @@ export type CreateUserRoleInput = {
   type: UserRoleTypeEnum;
 };
 
+export type EmailSettings = {
+  __typename?: 'EmailSettings';
+  receivePostFlagged: Scalars['Boolean'];
+};
+
 export type FinalizeAccountInput = {
   name: Scalars['String'];
   password: Scalars['String'];
   token: Scalars['String'];
+};
+
+export type Flag = {
+  __typename?: 'Flag';
+  reasons: Array<Scalars['String']>;
 };
 
 export type Header = {
@@ -88,12 +114,27 @@ export type LoginWithEmailInput = {
   password: Scalars['String'];
 };
 
+export type Media = {
+  __typename?: 'Media';
+  id: Scalars['ID'];
+  type: MediaTypeEnum;
+  url: Scalars['String'];
+};
+
+export const MediaTypeEnum = {
+  Image: 'IMAGE',
+  Video: 'VIDEO'
+} as const;
+
+export type MediaTypeEnum = typeof MediaTypeEnum[keyof typeof MediaTypeEnum];
 export type Mutation = {
   __typename?: 'Mutation';
+  authWithTwitter: Scalars['String'];
   contact: Scalars['Boolean'];
   createAddress: Address;
   createSchool: School;
   createUserRole: User;
+  executeAction: Scalars['Boolean'];
   finalizeAccount: UserWithToken;
   forgotPassword: Scalars['Boolean'];
   loginWithEmail: UserWithToken;
@@ -102,14 +143,17 @@ export type Mutation = {
   registerWithEmail: UserWithToken;
   removeAddress: Scalars['Boolean'];
   removeImage: Scalars['Boolean'];
+  removeTwitter: Scalars['Boolean'];
   removeUserRole: Scalars['Boolean'];
   resetPassword: UserWithToken;
   updateAddress: Address;
+  updateEmailSettings: Scalars['Boolean'];
   updateImage: Image;
   updatePassword: Scalars['Boolean'];
   updateSchool: School;
   updateSettings: Scalars['Boolean'];
   updateUser: User;
+  updateUserParentalApproval: Scalars['Boolean'];
 };
 
 
@@ -131,6 +175,12 @@ export type MutationCreateSchoolArgs = {
 
 export type MutationCreateUserRoleArgs = {
   input: CreateUserRoleInput;
+};
+
+
+export type MutationExecuteActionArgs = {
+  postId: Scalars['ID'];
+  type: ActionEnum;
 };
 
 
@@ -164,6 +214,11 @@ export type MutationRemoveImageArgs = {
 };
 
 
+export type MutationRemoveTwitterArgs = {
+  id: Scalars['ID'];
+};
+
+
 export type MutationRemoveUserRoleArgs = {
   id: Scalars['ID'];
 };
@@ -177,6 +232,11 @@ export type MutationResetPasswordArgs = {
 export type MutationUpdateAddressArgs = {
   id: Scalars['ID'];
   input: UpdateAddressInput;
+};
+
+
+export type MutationUpdateEmailSettingsArgs = {
+  input: UpdateEmailSettingsInput;
 };
 
 
@@ -204,6 +264,12 @@ export type MutationUpdateSettingsArgs = {
 export type MutationUpdateUserArgs = {
   id: Scalars['ID'];
   input: UpdateUserInput;
+};
+
+
+export type MutationUpdateUserParentalApprovalArgs = {
+  approve: Scalars['Boolean'];
+  id: Scalars['ID'];
 };
 
 export type Notification = {
@@ -247,9 +313,44 @@ export type ParentRole = {
   type: UserRoleTypeEnum;
 };
 
+export const PlatformEnum = {
+  Twitter: 'TWITTER',
+  Unknown: 'UNKNOWN'
+} as const;
+
+export type PlatformEnum = typeof PlatformEnum[keyof typeof PlatformEnum];
+export type Post = {
+  __typename?: 'Post';
+  actions: Array<Action>;
+  createdAt: Scalars['DateTime'];
+  flag?: Maybe<Flag>;
+  flagged: Scalars['Boolean'];
+  id: Scalars['ID'];
+  latestAction?: Maybe<Scalars['String']>;
+  manualReview: Scalars['Boolean'];
+  media: Array<Media>;
+  platform: PlatformEnum;
+  text: Scalars['String'];
+  url: Scalars['String'];
+  user: User;
+};
+
+export type PostFilter = {
+  flagged?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type PostPage = {
+  __typename?: 'PostPage';
+  nodes: Array<Post>;
+  page: Page;
+};
+
 export type Query = {
   __typename?: 'Query';
+  emailSettings: EmailSettings;
   notifications: NotificationPage;
+  post: Post;
+  posts: PostPage;
   school: School;
   schools: SchoolPage;
   settings: Settings;
@@ -267,6 +368,18 @@ export type Query = {
 
 export type QueryNotificationsArgs = {
   page?: InputMaybe<PageInput>;
+};
+
+
+export type QueryPostArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type QueryPostsArgs = {
+  filter?: InputMaybe<PostFilter>;
+  page?: InputMaybe<PageInput>;
+  schoolId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -409,11 +522,21 @@ export type StatsByDay = {
   total: Scalars['Int'];
 };
 
+export type Twitter = {
+  __typename?: 'Twitter';
+  id: Scalars['ID'];
+  username: Scalars['String'];
+};
+
 export type UpdateAddressInput = {
   city?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
   street?: InputMaybe<Scalars['String']>;
   zip?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateEmailSettingsInput = {
+  receivePostFlagged?: InputMaybe<Scalars['Boolean']>;
 };
 
 export const UpdateImageForEnum = {
@@ -467,7 +590,10 @@ export type User = {
   id: Scalars['ID'];
   name: Scalars['String'];
   notificationCount: Scalars['Int'];
+  parentalApproval?: Maybe<Scalars['Boolean']>;
+  platforms: Array<PlatformEnum>;
   roles: Array<UserRole>;
+  twitter?: Maybe<Twitter>;
 };
 
 
@@ -478,7 +604,7 @@ export type UserRolesArgs = {
 export type UserFilter = {
   from?: InputMaybe<UsersFromEnum>;
   fromId?: InputMaybe<Scalars['ID']>;
-  schoolRole?: InputMaybe<SchoolRoleTypeEnum>;
+  roles?: InputMaybe<Array<UserRoleTypeEnum>>;
   search?: InputMaybe<Scalars['String']>;
 };
 
@@ -543,7 +669,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, twitter?: { __typename?: 'Twitter', id: string, username: string } | null } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -592,7 +718,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, parentalApproval?: boolean | null, platforms: Array<PlatformEnum>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -736,6 +862,69 @@ export type StatsForSchoolQueryVariables = Exact<{
 
 export type StatsForSchoolQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
 
+export type AuthWithTwitterMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type AuthWithTwitterMutation = { __typename?: 'Mutation', authWithTwitter: string };
+
+export type RemoveTwitterMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RemoveTwitterMutation = { __typename?: 'Mutation', removeTwitter: boolean };
+
+export type EmailSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type EmailSettingsQuery = { __typename?: 'Query', emailSettings: { __typename?: 'EmailSettings', receivePostFlagged: boolean } };
+
+export type UpdateEmailSettingsMutationVariables = Exact<{
+  input: UpdateEmailSettingsInput;
+}>;
+
+
+export type UpdateEmailSettingsMutation = { __typename?: 'Mutation', updateEmailSettings: boolean };
+
+export type PostsQueryVariables = Exact<{
+  schoolId?: InputMaybe<Scalars['ID']>;
+  page?: InputMaybe<PageInput>;
+  filter?: InputMaybe<PostFilter>;
+}>;
+
+
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
+
+export type PostQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
+
+export type PostCardsQueryVariables = Exact<{
+  schoolId?: InputMaybe<Scalars['ID']>;
+}>;
+
+
+export type PostCardsQuery = { __typename?: 'Query', totalPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } }, flaggedPosts: { __typename?: 'PostPage', page: { __typename?: 'Page', total: number } } };
+
+export type ExecuteActionMutationVariables = Exact<{
+  type: ActionEnum;
+  postId: Scalars['ID'];
+}>;
+
+
+export type ExecuteActionMutation = { __typename?: 'Mutation', executeAction: boolean };
+
+export type UpdateUserParentalApprovalMutationVariables = Exact<{
+  id: Scalars['ID'];
+  approve: Scalars['Boolean'];
+}>;
+
+
+export type UpdateUserParentalApprovalMutation = { __typename?: 'Mutation', updateUserParentalApproval: boolean };
+
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
   index
@@ -858,6 +1047,10 @@ export const MyUserDocument = gql`
       ... on ParentRole {
         type
       }
+    }
+    twitter {
+      id
+      username
     }
   }
 }
@@ -1109,6 +1302,8 @@ export const UsersDocument = gql`
       name
       email
       emailConfirmed
+      parentalApproval
+      platforms
       avatar {
         url
       }
@@ -1124,6 +1319,7 @@ export const UsersDocument = gql`
           status
           school {
             id
+            name
           }
         }
         ... on ParentRole {
@@ -1884,6 +2080,371 @@ export function useStatsForSchoolLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type StatsForSchoolQueryHookResult = ReturnType<typeof useStatsForSchoolQuery>;
 export type StatsForSchoolLazyQueryHookResult = ReturnType<typeof useStatsForSchoolLazyQuery>;
 export type StatsForSchoolQueryResult = Apollo.QueryResult<StatsForSchoolQuery, StatsForSchoolQueryVariables>;
+export const AuthWithTwitterDocument = gql`
+    mutation authWithTwitter {
+  authWithTwitter
+}
+    `;
+export type AuthWithTwitterMutationFn = Apollo.MutationFunction<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>;
+
+/**
+ * __useAuthWithTwitterMutation__
+ *
+ * To run a mutation, you first call `useAuthWithTwitterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAuthWithTwitterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [authWithTwitterMutation, { data, loading, error }] = useAuthWithTwitterMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useAuthWithTwitterMutation(baseOptions?: Apollo.MutationHookOptions<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>(AuthWithTwitterDocument, options);
+      }
+export type AuthWithTwitterMutationHookResult = ReturnType<typeof useAuthWithTwitterMutation>;
+export type AuthWithTwitterMutationResult = Apollo.MutationResult<AuthWithTwitterMutation>;
+export type AuthWithTwitterMutationOptions = Apollo.BaseMutationOptions<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>;
+export const RemoveTwitterDocument = gql`
+    mutation removeTwitter($id: ID!) {
+  removeTwitter(id: $id)
+}
+    `;
+export type RemoveTwitterMutationFn = Apollo.MutationFunction<RemoveTwitterMutation, RemoveTwitterMutationVariables>;
+
+/**
+ * __useRemoveTwitterMutation__
+ *
+ * To run a mutation, you first call `useRemoveTwitterMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveTwitterMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeTwitterMutation, { data, loading, error }] = useRemoveTwitterMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useRemoveTwitterMutation(baseOptions?: Apollo.MutationHookOptions<RemoveTwitterMutation, RemoveTwitterMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveTwitterMutation, RemoveTwitterMutationVariables>(RemoveTwitterDocument, options);
+      }
+export type RemoveTwitterMutationHookResult = ReturnType<typeof useRemoveTwitterMutation>;
+export type RemoveTwitterMutationResult = Apollo.MutationResult<RemoveTwitterMutation>;
+export type RemoveTwitterMutationOptions = Apollo.BaseMutationOptions<RemoveTwitterMutation, RemoveTwitterMutationVariables>;
+export const EmailSettingsDocument = gql`
+    query emailSettings {
+  emailSettings {
+    receivePostFlagged
+  }
+}
+    `;
+
+/**
+ * __useEmailSettingsQuery__
+ *
+ * To run a query within a React component, call `useEmailSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useEmailSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useEmailSettingsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useEmailSettingsQuery(baseOptions?: Apollo.QueryHookOptions<EmailSettingsQuery, EmailSettingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<EmailSettingsQuery, EmailSettingsQueryVariables>(EmailSettingsDocument, options);
+      }
+export function useEmailSettingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmailSettingsQuery, EmailSettingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<EmailSettingsQuery, EmailSettingsQueryVariables>(EmailSettingsDocument, options);
+        }
+export type EmailSettingsQueryHookResult = ReturnType<typeof useEmailSettingsQuery>;
+export type EmailSettingsLazyQueryHookResult = ReturnType<typeof useEmailSettingsLazyQuery>;
+export type EmailSettingsQueryResult = Apollo.QueryResult<EmailSettingsQuery, EmailSettingsQueryVariables>;
+export const UpdateEmailSettingsDocument = gql`
+    mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
+  updateEmailSettings(input: $input)
+}
+    `;
+export type UpdateEmailSettingsMutationFn = Apollo.MutationFunction<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>;
+
+/**
+ * __useUpdateEmailSettingsMutation__
+ *
+ * To run a mutation, you first call `useUpdateEmailSettingsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateEmailSettingsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateEmailSettingsMutation, { data, loading, error }] = useUpdateEmailSettingsMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateEmailSettingsMutation(baseOptions?: Apollo.MutationHookOptions<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>(UpdateEmailSettingsDocument, options);
+      }
+export type UpdateEmailSettingsMutationHookResult = ReturnType<typeof useUpdateEmailSettingsMutation>;
+export type UpdateEmailSettingsMutationResult = Apollo.MutationResult<UpdateEmailSettingsMutation>;
+export type UpdateEmailSettingsMutationOptions = Apollo.BaseMutationOptions<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>;
+export const PostsDocument = gql`
+    query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(schoolId: $schoolId, page: $page, filter: $filter) {
+    page {
+      ...PageFragment
+    }
+    nodes {
+      id
+      createdAt
+      url
+      text
+      platform
+      latestAction
+      flagged
+      manualReview
+      flag {
+        reasons
+      }
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
+      media {
+        id
+      }
+    }
+  }
+}
+    ${PageFragmentFragmentDoc}`;
+
+/**
+ * __usePostsQuery__
+ *
+ * To run a query within a React component, call `usePostsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostsQuery({
+ *   variables: {
+ *      schoolId: // value for 'schoolId'
+ *      page: // value for 'page'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function usePostsQuery(baseOptions?: Apollo.QueryHookOptions<PostsQuery, PostsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostsQuery, PostsQueryVariables>(PostsDocument, options);
+      }
+export function usePostsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostsQuery, PostsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostsQuery, PostsQueryVariables>(PostsDocument, options);
+        }
+export type PostsQueryHookResult = ReturnType<typeof usePostsQuery>;
+export type PostsLazyQueryHookResult = ReturnType<typeof usePostsLazyQuery>;
+export type PostsQueryResult = Apollo.QueryResult<PostsQuery, PostsQueryVariables>;
+export const PostDocument = gql`
+    query post($id: ID!) {
+  post(id: $id) {
+    id
+    createdAt
+    url
+    text
+    platform
+    flagged
+    manualReview
+    flag {
+      reasons
+    }
+    user {
+      id
+      name
+      email
+      avatar {
+        url
+      }
+    }
+    media {
+      id
+      url
+      type
+    }
+    actions {
+      id
+      createdAt
+      name
+      user {
+        id
+        name
+        email
+        avatar {
+          url
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __usePostQuery__
+ *
+ * To run a query within a React component, call `usePostQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function usePostQuery(baseOptions: Apollo.QueryHookOptions<PostQuery, PostQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostQuery, PostQueryVariables>(PostDocument, options);
+      }
+export function usePostLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostQuery, PostQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostQuery, PostQueryVariables>(PostDocument, options);
+        }
+export type PostQueryHookResult = ReturnType<typeof usePostQuery>;
+export type PostLazyQueryHookResult = ReturnType<typeof usePostLazyQuery>;
+export type PostQueryResult = Apollo.QueryResult<PostQuery, PostQueryVariables>;
+export const PostCardsDocument = gql`
+    query postCards($schoolId: ID) {
+  totalPosts: posts(schoolId: $schoolId) {
+    page {
+      total
+    }
+  }
+  flaggedPosts: posts(schoolId: $schoolId, filter: {flagged: true}) {
+    page {
+      total
+    }
+  }
+}
+    `;
+
+/**
+ * __usePostCardsQuery__
+ *
+ * To run a query within a React component, call `usePostCardsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostCardsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePostCardsQuery({
+ *   variables: {
+ *      schoolId: // value for 'schoolId'
+ *   },
+ * });
+ */
+export function usePostCardsQuery(baseOptions?: Apollo.QueryHookOptions<PostCardsQuery, PostCardsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<PostCardsQuery, PostCardsQueryVariables>(PostCardsDocument, options);
+      }
+export function usePostCardsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PostCardsQuery, PostCardsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<PostCardsQuery, PostCardsQueryVariables>(PostCardsDocument, options);
+        }
+export type PostCardsQueryHookResult = ReturnType<typeof usePostCardsQuery>;
+export type PostCardsLazyQueryHookResult = ReturnType<typeof usePostCardsLazyQuery>;
+export type PostCardsQueryResult = Apollo.QueryResult<PostCardsQuery, PostCardsQueryVariables>;
+export const ExecuteActionDocument = gql`
+    mutation executeAction($type: ActionEnum!, $postId: ID!) {
+  executeAction(type: $type, postId: $postId)
+}
+    `;
+export type ExecuteActionMutationFn = Apollo.MutationFunction<ExecuteActionMutation, ExecuteActionMutationVariables>;
+
+/**
+ * __useExecuteActionMutation__
+ *
+ * To run a mutation, you first call `useExecuteActionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useExecuteActionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [executeActionMutation, { data, loading, error }] = useExecuteActionMutation({
+ *   variables: {
+ *      type: // value for 'type'
+ *      postId: // value for 'postId'
+ *   },
+ * });
+ */
+export function useExecuteActionMutation(baseOptions?: Apollo.MutationHookOptions<ExecuteActionMutation, ExecuteActionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ExecuteActionMutation, ExecuteActionMutationVariables>(ExecuteActionDocument, options);
+      }
+export type ExecuteActionMutationHookResult = ReturnType<typeof useExecuteActionMutation>;
+export type ExecuteActionMutationResult = Apollo.MutationResult<ExecuteActionMutation>;
+export type ExecuteActionMutationOptions = Apollo.BaseMutationOptions<ExecuteActionMutation, ExecuteActionMutationVariables>;
+export const UpdateUserParentalApprovalDocument = gql`
+    mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
+  updateUserParentalApproval(id: $id, approve: $approve)
+}
+    `;
+export type UpdateUserParentalApprovalMutationFn = Apollo.MutationFunction<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>;
+
+/**
+ * __useUpdateUserParentalApprovalMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserParentalApprovalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserParentalApprovalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserParentalApprovalMutation, { data, loading, error }] = useUpdateUserParentalApprovalMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      approve: // value for 'approve'
+ *   },
+ * });
+ */
+export function useUpdateUserParentalApprovalMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>(UpdateUserParentalApprovalDocument, options);
+      }
+export type UpdateUserParentalApprovalMutationHookResult = ReturnType<typeof useUpdateUserParentalApprovalMutation>;
+export type UpdateUserParentalApprovalMutationResult = Apollo.MutationResult<UpdateUserParentalApprovalMutation>;
+export type UpdateUserParentalApprovalMutationOptions = Apollo.BaseMutationOptions<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -1894,7 +2455,11 @@ export const namedOperations = {
     user: 'user',
     settings: 'settings',
     statsForStaff: 'statsForStaff',
-    statsForSchool: 'statsForSchool'
+    statsForSchool: 'statsForSchool',
+    emailSettings: 'emailSettings',
+    posts: 'posts',
+    post: 'post',
+    postCards: 'postCards'
   },
   Mutation: {
     readNotifications: 'readNotifications',
@@ -1916,7 +2481,12 @@ export const namedOperations = {
     resetPassword: 'resetPassword',
     forgotPassword: 'forgotPassword',
     registerWithEmail: 'registerWithEmail',
-    contact: 'contact'
+    contact: 'contact',
+    authWithTwitter: 'authWithTwitter',
+    removeTwitter: 'removeTwitter',
+    updateEmailSettings: 'updateEmailSettings',
+    executeAction: 'executeAction',
+    updateUserParentalApproval: 'updateUserParentalApproval'
   },
   Fragment: {
     PageFragment: 'PageFragment',

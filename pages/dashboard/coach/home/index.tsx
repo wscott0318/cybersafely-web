@@ -1,8 +1,8 @@
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { HomeStatsForCoach } from '../../../../components/shared/HomeStatsForCoach'
+import { HomeStatsForAdminAndCoach } from '../../../../components/shared/HomeStatsForAdminAndCoach'
 
 function Home() {
-  return <HomeStatsForCoach />
+  return <HomeStatsForAdminAndCoach />
 }
 
 export default withDashboardLayout(Home, {

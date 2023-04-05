@@ -1,6 +1,7 @@
 import CheckIcon from '@mui/icons-material/DoneAllOutlined'
 import { LoadingButton } from '@mui/lab'
 import { GridColumns } from '@mui/x-data-grid'
+import { LinkProps } from 'next/link'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../components/common/DataGridViewer'
 import { withDashboardLayout } from '../../../components/dashboard/Layout'
 import {
@@ -44,8 +45,8 @@ function Notifications() {
       query={query}
       columns={columns}
       title="Notifications"
-      href={(e) => e.url ?? '#'}
       data={query.data?.notifications}
+      href={(e) => (e.url ?? '#') as LinkProps['href']}
       actions={
         user.notificationCount > 0 ? (
           <DataGridActions>

@@ -1,33 +1,17 @@
 import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
-import { Alert, AlertTitle, Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
+import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
-import { useStatsForSchoolQuery } from '../../schema'
+import { usePostCardsQuery, useStatsForSchoolQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
-import { NextLink } from '../common/NextLink'
+import { InfoCard, InfoCardProps } from '../common/InfoCard'
 import { WelcomeCard } from '../common/WelcomeCard'
-
-type MissingInfoCardProps = {
-  href: string
-  message: string
-}
-
-function MissingInfoCard(props: MissingInfoCardProps) {
-  return (
-    <NextLink href={props.href}>
-      <Alert severity="warning" sx={{ cursor: 'pointer' }}>
-        <AlertTitle>Missing Information</AlertTitle>
-        {props.message}
-      </Alert>
-    </NextLink>
-  )
-}
 
 function useMissingCards() {
   const schoolRole = useSchoolRole()
 
   const cards = useMemo(() => {
-    const cards: MissingInfoCardProps[] = []
+    const cards: InfoCardProps[] = []
 
     if (schoolRole) {
       if (!schoolRole.school.logo) {
@@ -50,11 +34,15 @@ function useMissingCards() {
   }
 }
 
-export function HomeStatsForCoach() {
+export function HomeStatsForAdminAndCoach() {
   const schoolRole = useSchoolRole()
-  const { cards, hasCards } = useMissingCards()
+  const { cards } = useMissingCards()
 
   const [days, setDays] = useState(14)
+
+  const { data: cardsData } = usePostCardsQuery({
+    variables: { schoolId: schoolRole!.school.id },
+  })
 
   const { data } = useStatsForSchoolQuery({
     variables: { schoolId: schoolRole!.school.id, days },
@@ -66,16 +54,34 @@ export function HomeStatsForCoach() {
         <Grid item xs={12}>
           <WelcomeCard />
         </Grid>
-        {hasCards && (
-          <Grid item xs={12}>
-            <Typography variant="h5" flexGrow={1}>
-              Cards
-            </Typography>
-          </Grid>
-        )}
+        <Grid item xs={12}>
+          <Typography variant="h5" flexGrow={1}>
+            Cards
+          </Typography>
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InfoCard
+            severity="info"
+            title="Total Posts"
+            message={cardsData?.totalPosts.page.total ?? 0}
+            href={schoolRole!.type === 'ADMIN' ? '/dashboard/admin/posts' : '/dashboard/coach/posts'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InfoCard
+            severity="error"
+            title="Concerning Posts"
+            message={cardsData?.flaggedPosts.page.total ?? 0}
+            href={
+              schoolRole!.type === 'ADMIN'
+                ? { pathname: '/dashboard/admin/posts', query: { flagged: 'true' } }
+                : { pathname: '/dashboard/coach/posts', query: { flagged: 'true' } }
+            }
+          />
+        </Grid>
         {cards.map((card, index) => (
           <Grid key={String(index)} item xs={12} sm={6} md={4}>
-            <MissingInfoCard {...card} />
+            <InfoCard {...card} />
           </Grid>
         ))}
         <Grid item xs={12}>
@@ -89,7 +95,7 @@ export function HomeStatsForCoach() {
               onChange={(e) => setDays(e.target.value as number)}
               startAdornment={
                 <InputAdornment position="start">
-                  <CalendarIcon />
+                  <CalendarIcon fontSize="small" />
                 </InputAdornment>
               }
             >

@@ -6,11 +6,11 @@ import Head from 'next/head'
 import { useMemo } from 'react'
 import { Alerts } from '../components/common/Alerts'
 import { NProgress } from '../components/common/NProgress'
-import { ScrollToTop } from '../components/common/ScrollToTop'
 import { Config } from '../helpers/config'
 import { ApolloClientProvider } from '../libs/apollo'
 import createEmotionCache from '../utils/cache'
 import { AlertContextProvider } from '../utils/context/alert'
+import { IntercomProvider } from '../utils/intercom'
 import { createTheme } from '../utils/theme'
 
 const clientSideEmotionCache = createEmotionCache()
@@ -38,9 +38,11 @@ export default function MyApp(props: MyAppProps) {
         <AlertContextProvider>
           <Alerts />
           <ApolloClientProvider>
-            <Component {...pageProps} />
+            <IntercomProvider>
+              <Component {...pageProps} />
+            </IntercomProvider>
             <NProgress />
-            <ScrollToTop />
+            {/* <ScrollToTop /> */}
           </ApolloClientProvider>
         </AlertContextProvider>
       </ThemeProvider>

@@ -1,8 +1,8 @@
-import { EmptyFileAnimation } from '../../../../components/common/EmptyFileAnimation'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { PostsForAdminAndCoach } from '../../../../components/shared/PostsForAdminAndCoach'
 
 function Posts() {
-  return <EmptyFileAnimation />
+  return <PostsForAdminAndCoach />
 }
 
 export default withDashboardLayout(Posts, {

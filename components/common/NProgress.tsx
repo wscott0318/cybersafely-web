@@ -55,7 +55,7 @@ export function NProgress() {
       unmountOnExit
       sx={(theme) => ({
         backdropFilter: 'blur(10px)',
-        zIndex: theme.zIndex.drawer + 10,
+        zIndex: theme.zIndex.modal + 10,
         background: alpha(theme.palette.background.paper, 0.5),
       })}
     >

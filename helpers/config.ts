@@ -8,4 +8,7 @@ export const Config = {
   email: {
     support: process.env.NEXT_PUBLIC_EMAIL_SUPPORT ?? 'annettef@cybersafely.ai',
   },
+  intercom: {
+    appId: process.env.NEXT_PUBLIC_INTERCOM_APP_ID,
+  },
 }
