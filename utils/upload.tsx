@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { usePrepareUploadMutation } from '../schema'
 
-type Accept = 'image/*'
+type Accept = 'image/*' | string
 
 export function useFilePicker() {
   const pick = useCallback(async (accept?: Accept) => {

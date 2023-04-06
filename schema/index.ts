@@ -109,6 +109,17 @@ export type Image = {
   url: Scalars['String'];
 };
 
+export type ImportAthletesAndParentsHeader = {
+  athleteEmail: Scalars['String'];
+  parentEmail: Scalars['String'];
+};
+
+export type ImportAthletesAndParentsInput = {
+  header: ImportAthletesAndParentsHeader;
+  type: PreviewImportTypeEnum;
+  uploadId: Scalars['ID'];
+};
+
 export type LoginWithEmailInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -137,8 +148,10 @@ export type Mutation = {
   executeAction: Scalars['Boolean'];
   finalizeAccount: UserWithToken;
   forgotPassword: Scalars['Boolean'];
+  importAthletesAndParents: Scalars['Boolean'];
   loginWithEmail: UserWithToken;
   prepareUpload: Upload;
+  previewImport: PreviewImport;
   readNotifications: Scalars['Boolean'];
   registerWithEmail: UserWithToken;
   removeAddress: Scalars['Boolean'];
@@ -194,8 +207,19 @@ export type MutationForgotPasswordArgs = {
 };
 
 
+export type MutationImportAthletesAndParentsArgs = {
+  input: ImportAthletesAndParentsInput;
+  schoolId: Scalars['ID'];
+};
+
+
 export type MutationLoginWithEmailArgs = {
   input: LoginWithEmailInput;
+};
+
+
+export type MutationPreviewImportArgs = {
+  input: PreviewImportInput;
 };
 
 
@@ -345,6 +369,28 @@ export type PostPage = {
   page: Page;
 };
 
+export type PreviewImport = {
+  __typename?: 'PreviewImport';
+  headers: Array<Scalars['String']>;
+  rows: Array<PreviewImportRow>;
+};
+
+export type PreviewImportInput = {
+  type: PreviewImportTypeEnum;
+  uploadId: Scalars['ID'];
+};
+
+export type PreviewImportRow = {
+  __typename?: 'PreviewImportRow';
+  values: Array<Scalars['String']>;
+};
+
+export const PreviewImportTypeEnum = {
+  Csv: 'CSV',
+  Excel: 'EXCEL'
+} as const;
+
+export type PreviewImportTypeEnum = typeof PreviewImportTypeEnum[keyof typeof PreviewImportTypeEnum];
 export type Query = {
   __typename?: 'Query';
   emailSettings: EmailSettings;
@@ -924,6 +970,21 @@ export type UpdateUserParentalApprovalMutationVariables = Exact<{
 
 
 export type UpdateUserParentalApprovalMutation = { __typename?: 'Mutation', updateUserParentalApproval: boolean };
+
+export type PreviewImportMutationVariables = Exact<{
+  input: PreviewImportInput;
+}>;
+
+
+export type PreviewImportMutation = { __typename?: 'Mutation', previewImport: { __typename?: 'PreviewImport', headers: Array<string>, rows: Array<{ __typename?: 'PreviewImportRow', values: Array<string> }> } };
+
+export type ImportAthletesAndParentsMutationVariables = Exact<{
+  schoolId: Scalars['ID'];
+  input: ImportAthletesAndParentsInput;
+}>;
+
+
+export type ImportAthletesAndParentsMutation = { __typename?: 'Mutation', importAthletesAndParents: boolean };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -2445,6 +2506,74 @@ export function useUpdateUserParentalApprovalMutation(baseOptions?: Apollo.Mutat
 export type UpdateUserParentalApprovalMutationHookResult = ReturnType<typeof useUpdateUserParentalApprovalMutation>;
 export type UpdateUserParentalApprovalMutationResult = Apollo.MutationResult<UpdateUserParentalApprovalMutation>;
 export type UpdateUserParentalApprovalMutationOptions = Apollo.BaseMutationOptions<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>;
+export const PreviewImportDocument = gql`
+    mutation previewImport($input: PreviewImportInput!) {
+  previewImport(input: $input) {
+    headers
+    rows {
+      values
+    }
+  }
+}
+    `;
+export type PreviewImportMutationFn = Apollo.MutationFunction<PreviewImportMutation, PreviewImportMutationVariables>;
+
+/**
+ * __usePreviewImportMutation__
+ *
+ * To run a mutation, you first call `usePreviewImportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePreviewImportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [previewImportMutation, { data, loading, error }] = usePreviewImportMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function usePreviewImportMutation(baseOptions?: Apollo.MutationHookOptions<PreviewImportMutation, PreviewImportMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PreviewImportMutation, PreviewImportMutationVariables>(PreviewImportDocument, options);
+      }
+export type PreviewImportMutationHookResult = ReturnType<typeof usePreviewImportMutation>;
+export type PreviewImportMutationResult = Apollo.MutationResult<PreviewImportMutation>;
+export type PreviewImportMutationOptions = Apollo.BaseMutationOptions<PreviewImportMutation, PreviewImportMutationVariables>;
+export const ImportAthletesAndParentsDocument = gql`
+    mutation importAthletesAndParents($schoolId: ID!, $input: ImportAthletesAndParentsInput!) {
+  importAthletesAndParents(schoolId: $schoolId, input: $input)
+}
+    `;
+export type ImportAthletesAndParentsMutationFn = Apollo.MutationFunction<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>;
+
+/**
+ * __useImportAthletesAndParentsMutation__
+ *
+ * To run a mutation, you first call `useImportAthletesAndParentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useImportAthletesAndParentsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [importAthletesAndParentsMutation, { data, loading, error }] = useImportAthletesAndParentsMutation({
+ *   variables: {
+ *      schoolId: // value for 'schoolId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useImportAthletesAndParentsMutation(baseOptions?: Apollo.MutationHookOptions<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>(ImportAthletesAndParentsDocument, options);
+      }
+export type ImportAthletesAndParentsMutationHookResult = ReturnType<typeof useImportAthletesAndParentsMutation>;
+export type ImportAthletesAndParentsMutationResult = Apollo.MutationResult<ImportAthletesAndParentsMutation>;
+export type ImportAthletesAndParentsMutationOptions = Apollo.BaseMutationOptions<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2486,7 +2615,9 @@ export const namedOperations = {
     removeTwitter: 'removeTwitter',
     updateEmailSettings: 'updateEmailSettings',
     executeAction: 'executeAction',
-    updateUserParentalApproval: 'updateUserParentalApproval'
+    updateUserParentalApproval: 'updateUserParentalApproval',
+    previewImport: 'previewImport',
+    importAthletesAndParents: 'importAthletesAndParents'
   },
   Fragment: {
     PageFragment: 'PageFragment',

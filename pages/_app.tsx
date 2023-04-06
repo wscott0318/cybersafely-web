@@ -36,8 +36,8 @@ export default function MyApp(props: MyAppProps) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AlertContextProvider>
-          <Alerts />
           <ApolloClientProvider>
+            <Alerts />
             <IntercomProvider>
               <Component {...pageProps} />
             </IntercomProvider>

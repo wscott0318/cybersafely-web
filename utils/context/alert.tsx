@@ -1,8 +1,10 @@
+import { Breakpoint } from '@mui/material'
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 
 type Alert<P, T> = {
   title: string
   message?: string
+  maxWidth?: Breakpoint
 } & (
   | {
       type: 'alert'

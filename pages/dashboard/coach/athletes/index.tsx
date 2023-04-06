@@ -8,7 +8,7 @@ import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { InviteAthleteForm } from '../../../../components/forms/InviteAthleteForm'
-import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
+import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 import { useSchoolRole } from '../../../../utils/context/auth'
 
@@ -105,6 +105,7 @@ function Athletes() {
                 type: 'custom',
                 title: 'Invite Athlete',
                 content: InviteAthleteForm,
+                props: { schoolId: schoolRole!.school.id },
                 result: async ({ email, parentEmail }) => {
                   const { data } = await createUserRole({
                     variables: {
