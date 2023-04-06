@@ -1,16 +1,23 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
-import { Button, Stack } from '@mui/material'
+import UploadIcon from '@mui/icons-material/UploadFileOutlined'
+import { ListItemIcon, ListItemText, MenuItem, Stack } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
+import { ButtonSplitMenu } from '../../../../components/common/ButtonSplitMenu'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { PlatformChip } from '../../../../components/common/PlatformChip'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { InviteAthleteForm } from '../../../../components/forms/InviteAthleteForm'
-import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../../../schema'
+import { InviteAthleteAndParentForm } from '../../../../components/forms/InviteAthleteAndParentForm'
+import {
+  IMPORT_ACCEPT,
+  InviteAthleteAndParentTableForm,
+} from '../../../../components/forms/InviteAthleteAndParentTableForm'
+import { UsersQuery, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 import { useSchoolRole } from '../../../../utils/context/auth'
+import { useFilePicker } from '../../../../utils/upload'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
@@ -70,6 +77,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
 ]
 
 function Athletes() {
+  const { pick } = useFilePicker()
   const { pushAlert } = useAlert()
   const schoolRole = useSchoolRole()
 
@@ -83,10 +91,6 @@ function Athletes() {
     },
   })
 
-  const [createUserRole] = useCreateUserRoleMutation({
-    refetchQueries: [namedOperations.Query.users],
-  })
-
   return (
     <DataGridViewer
       query={query}
@@ -97,40 +101,39 @@ function Athletes() {
       href={(e) => ({ pathname: '/dashboard/coach/members/[memberId]', query: { memberId: e.id } })}
       actions={
         <DataGridActions>
-          <Button
-            fullWidth
+          <ButtonSplitMenu
+            title="Invite Athlete"
             startIcon={<AddIcon />}
             onClick={() => {
               pushAlert({
                 type: 'custom',
                 title: 'Invite Athlete',
-                content: InviteAthleteForm,
+                content: InviteAthleteAndParentForm,
                 props: { schoolId: schoolRole!.school.id },
-                result: async ({ email, parentEmail }) => {
-                  const { data } = await createUserRole({
-                    variables: {
-                      input: {
-                        email,
-                        type: 'ATHLETE',
-                        relationId: schoolRole!.school.id,
-                      },
-                    },
-                  })
-                  await createUserRole({
-                    variables: {
-                      input: {
-                        email: parentEmail,
-                        type: 'PARENT',
-                        relationId: data!.createUserRole.id,
-                      },
-                    },
-                  })
-                },
               })
             }}
           >
-            Invite Athlete
-          </Button>
+            <MenuItem
+              onClick={async () => {
+                const file = await pick(IMPORT_ACCEPT)
+
+                if (file) {
+                  pushAlert({
+                    type: 'custom',
+                    maxWidth: 'lg',
+                    title: 'Import from File',
+                    content: InviteAthleteAndParentTableForm,
+                    props: { schoolId: schoolRole!.school.id, file },
+                  })
+                }
+              }}
+            >
+              <ListItemIcon>
+                <UploadIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Import from File...</ListItemText>
+            </MenuItem>
+          </ButtonSplitMenu>
           <SearchBar onSearch={(search) => query.refetch({ filter: { ...query.variables?.filter, search } })} />
         </DataGridActions>
       }

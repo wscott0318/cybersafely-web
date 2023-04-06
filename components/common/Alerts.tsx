@@ -52,7 +52,7 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
           <alert.content
             {...alert.props}
             onSubmit={(value) => {
-              alert.result(value)
+              alert.result?.(value)
               onClose()
             }}
           />
