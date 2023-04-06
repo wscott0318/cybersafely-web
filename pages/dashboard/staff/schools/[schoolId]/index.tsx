@@ -16,10 +16,11 @@ import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
+import { AthletesTable } from '../../../../../components/shared/AthletesTable'
 import {
+  UsersQuery,
   namedOperations,
   useCreateUserRoleMutation,
-  UsersQuery,
   useSchoolQuery,
   useUsersQuery,
 } from '../../../../../schema'
@@ -109,7 +110,10 @@ function SchoolMembers({ schoolId }: Props) {
       columns={columns}
       data={query.data?.users}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
-      href={(e) => `/dashboard/staff/schools/${schoolId}/members/${e.id}`}
+      href={(e) => ({
+        pathname: '/dashboard/staff/schools/[schoolId]/members/[memberId]',
+        query: { schoolId, memberId: e.id },
+      })}
       actions={
         <DataGridActions>
           <Button
@@ -171,6 +175,7 @@ function School(props: Props) {
               <NavigationActions>
                 <TabList onChange={(_, tab) => setTab(tab)}>
                   <Tab label="Members" value="members" />
+                  <Tab label="Athletes" value="athletes" />
                   <Tab label="Details" value="details" />
                   <Tab label="Posts" value="posts" />
                 </TabList>
@@ -179,6 +184,15 @@ function School(props: Props) {
           >
             <TabPanel value="members">
               <SchoolMembers {...props} />
+            </TabPanel>
+            <TabPanel value="athletes">
+              <AthletesTable
+                schoolId={props.schoolId}
+                href={(memberId) => ({
+                  pathname: '/dashboard/staff/schools/[schoolId]/members/[memberId]',
+                  query: { schoolId: props.schoolId, memberId },
+                })}
+              />
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">

@@ -14,6 +14,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/auth/register">
     | DynamicRoute<"/auth/reset/[token]", { "token": string }>
     | StaticRoute<"/auth/reset">
+    | StaticRoute<"/dashboard/admin/athletes">
     | StaticRoute<"/dashboard/admin/home">
     | DynamicRoute<"/dashboard/admin/members/[memberId]", { "memberId": string }>
     | StaticRoute<"/dashboard/admin/members">

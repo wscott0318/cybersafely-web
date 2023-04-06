@@ -364,6 +364,7 @@ function Sidebar() {
         <CollapsableList>
           <SidebarLink href="/dashboard/admin/home" icon={<HomeIcon />} title="Home" />
           <SidebarLink href="/dashboard/admin/members" icon={<PersonIcon />} title="Members" />
+          <SidebarLink href="/dashboard/admin/athletes" icon={<PersonIcon />} title="Athletes" />
           <SidebarLink href="/dashboard/admin/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
