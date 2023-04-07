@@ -1,10 +1,11 @@
 import { Divider, Link, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { z } from 'zod'
 import { CoverLayout } from '../../../components/common/CoverLayout'
+import { NextLink } from '../../../components/common/NextLink'
 import { Form } from '../../../components/common/form/Form'
 import { FormText } from '../../../components/common/form/FormText'
-import { NextLink } from '../../../components/common/NextLink'
 import { useLoginWithEmailMutation, useSettingsQuery } from '../../../schema'
 import { StorageManager } from '../../../utils/storage'
 
@@ -49,6 +50,12 @@ export default function Login() {
       router.push('/dashboard')
     },
   })
+
+  useEffect(() => {
+    if (!!StorageManager.get('token')) {
+      router.push('/dashboard')
+    }
+  }, [])
 
   return (
     <CoverLayout>

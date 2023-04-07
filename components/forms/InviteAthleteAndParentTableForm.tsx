@@ -12,6 +12,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  selectClasses,
   tableCellClasses,
 } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
@@ -107,9 +108,15 @@ export function InviteAthleteAndParentTableForm({ schoolId, file, onSubmit }: In
 
   return (
     <Stack>
-      <Typography variant="body2" color="text.secondary">
-        You need to map which column should be used for Athlete E-mail and Parent E-mail
-      </Typography>
+      <div>
+        <Typography variant="body2" color="text.secondary">
+          * You need to map which column should be used for Athlete E-mail and Parent E-mail.
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          * You can invite multiple parents to the same athlete by having duplicated rows of the same athlete and
+          different parents.
+        </Typography>
+      </div>
       <TableContainer>
         <Table
           sx={{
@@ -121,10 +128,15 @@ export function InviteAthleteAndParentTableForm({ schoolId, file, onSubmit }: In
           <TableHead>
             <TableRow>
               {data.preview.headers.map((header, index) => (
-                <TableCell key={String(index)}>
+                <TableCell key={'header' + index}>
                   <Select
-                    variant="outlined"
+                    disableUnderline
                     value={reverseHeaderMap[header] ?? '-'}
+                    sx={{
+                      ['.' + selectClasses.standard]: {
+                        padding: 0,
+                      },
+                    }}
                     onChange={(e) => {
                       if (e.target.value === '-') {
                         setHeaderMap(
@@ -148,9 +160,9 @@ export function InviteAthleteAndParentTableForm({ schoolId, file, onSubmit }: In
           </TableHead>
           <TableBody>
             {data.preview.rows.map(({ values }, index) => (
-              <TableRow key={String(index)}>
-                {values.map((value) => (
-                  <TableCell key={String(index)}>{value}</TableCell>
+              <TableRow key={'row' + index}>
+                {values.map((value, cellIndex) => (
+                  <TableCell key={'row' + index + 'cell' + cellIndex}>{value}</TableCell>
                 ))}
               </TableRow>
             ))}
