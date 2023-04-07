@@ -8,7 +8,7 @@ function Athletes() {
   return (
     <AthletesTable
       schoolId={schoolRole!.school.id}
-      href={(memberId) => ({ pathname: '/dashboard/coach/members/[memberId]', query: { memberId } })}
+      href={(memberId) => ({ pathname: '/dashboard/admin/members/[memberId]', query: { memberId } })}
     />
   )
 }

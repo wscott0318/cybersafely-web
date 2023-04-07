@@ -22,8 +22,8 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
     <Dialog
       fullWidth
       open={open}
-      maxWidth="xs"
       onClose={onClose}
+      maxWidth={alert.maxWidth ?? 'xs'}
       TransitionProps={{
         onExited: onRemove,
       }}
@@ -52,7 +52,7 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
           <alert.content
             {...alert.props}
             onSubmit={(value) => {
-              alert.result(value)
+              alert.result?.(value)
               onClose()
             }}
           />

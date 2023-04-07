@@ -1,8 +1,10 @@
+import { Breakpoint } from '@mui/material'
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 
 type Alert<P, T> = {
   title: string
   message?: string
+  maxWidth?: Breakpoint
 } & (
   | {
       type: 'alert'
@@ -15,7 +17,7 @@ type Alert<P, T> = {
       type: 'custom'
       content: (props: { onSubmit: (value: P) => void } & T) => JSX.Element
       props?: Omit<T, 'onSubmit'>
-      result: (value: P) => void
+      result?: (value: P) => void
     }
 )
 
@@ -58,9 +60,22 @@ export function AlertContextProvider(props: AlertProviderProps) {
 export function useAlert() {
   const context = useContext(AlertContext)
 
+  const pushError = useCallback(
+    (error: unknown) => {
+      if (context) {
+        context.pushAlert({
+          type: 'alert',
+          title: 'Error',
+          message: error instanceof Error ? error.message : String(error),
+        })
+      }
+    },
+    [context]
+  )
+
   if (!context) {
     throw new Error('Alert parent context not found')
   }
 
-  return context
+  return { ...context, pushError }
 }

@@ -455,3 +455,16 @@ mutation executeAction($type: ActionEnum!, $postId: ID!) {
 mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
   updateUserParentalApproval(id: $id, approve: $approve)
 }
+
+mutation previewImport($input: PreviewImportInput!) {
+  previewImport(input: $input) {
+    headers
+    rows {
+      values
+    }
+  }
+}
+
+mutation importAthletesAndParents($schoolId: ID!, $input: ImportAthletesAndParentsInput!) {
+  importAthletesAndParents(schoolId: $schoolId, input: $input)
+}

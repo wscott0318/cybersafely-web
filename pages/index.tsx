@@ -1,6 +1,7 @@
 import { alpha, AppBar, Box, Button, Container, Divider, Stack, Toolbar, Typography } from '@mui/material'
 import NextImage from 'next/image'
 import NextLink from 'next/link'
+import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { Form } from '../components/common/form/Form'
 import { FormSelect } from '../components/common/form/FormSelect'
@@ -11,6 +12,30 @@ import { useContactMutation } from '../schema'
 import { useAlert } from '../utils/context/alert'
 
 const TOOLBAR_HEIGHT = 88.5
+
+function LoginButton() {
+  const [loggedIn, setLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if (!!StorageManager) {
+      setLoggedIn(true)
+    }
+  }, [])
+
+  if (loggedIn) {
+    return (
+      <NextLink href="/dashboard" passHref legacyBehavior>
+        <Button size="large">Dashboard</Button>
+      </NextLink>
+    )
+  }
+
+  return (
+    <NextLink href="/auth/login" passHref legacyBehavior>
+      <Button size="large">Login</Button>
+    </NextLink>
+  )
+}
 
 function Header() {
   const logoUrl = useLogoUrl()
@@ -49,9 +74,7 @@ function Header() {
             {/* TODO: This can be removed in the future */}
             {Config.enableLogin && (
               <Box pl={1}>
-                <NextLink href="/auth/login" passHref legacyBehavior>
-                  <Button size="large">Login</Button>
-                </NextLink>
+                <LoginButton />
               </Box>
             )}
           </Stack>
