@@ -1,18 +1,18 @@
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
-import { AthletesTable } from '../../../../components/shared/AthletesTable'
+import { StudentsTable } from '../../../../components/shared/StudentsTable'
 import { useSchoolRole } from '../../../../utils/context/auth'
 
-function Athletes() {
+function Students() {
   const schoolRole = useSchoolRole()
 
   return (
-    <AthletesTable
+    <StudentsTable
       schoolId={schoolRole!.school.id}
       href={(memberId) => ({ pathname: '/dashboard/coach/members/[memberId]', query: { memberId } })}
     />
   )
 }
 
-export default withDashboardLayout(Athletes, {
-  title: 'Athletes',
+export default withDashboardLayout(Students, {
+  title: 'Students',
 })

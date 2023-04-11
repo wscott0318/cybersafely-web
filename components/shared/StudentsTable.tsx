@@ -12,8 +12,8 @@ import { DataGridActions, DataGridViewer, InferNodeType } from '../common/DataGr
 import { PlatformChip } from '../common/PlatformChip'
 import { SearchBar } from '../common/SearchBar'
 import { UserScore } from '../common/UserScore'
-import { InviteAthleteAndParentForm } from '../forms/InviteAthleteAndParentForm'
-import { IMPORT_ACCEPT, InviteAthleteAndParentTableForm } from '../forms/InviteAthleteAndParentTableForm'
+import { InviteStudentAndParentForm } from '../forms/InviteStudentAndParentForm'
+import { IMPORT_ACCEPT, InviteStudentAndParentTableForm } from '../forms/InviteStudentAndParentTableForm'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   {
@@ -72,7 +72,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
 ]
 
-export function AthletesTable({ schoolId, href }: { schoolId: string; href?: (id: string) => LinkProps['href'] }) {
+export function StudentsTable({ schoolId, href }: { schoolId: string; href?: (id: string) => LinkProps['href'] }) {
   const { pick } = useFilePicker()
   const { pushAlert } = useAlert()
 
@@ -80,7 +80,7 @@ export function AthletesTable({ schoolId, href }: { schoolId: string; href?: (id
     variables: {
       filter: {
         from: 'SCHOOL',
-        roles: ['ATHLETE'],
+        roles: ['STUDENT'],
         fromId: schoolId,
       },
     },
@@ -89,7 +89,7 @@ export function AthletesTable({ schoolId, href }: { schoolId: string; href?: (id
   return (
     <DataGridViewer
       query={query}
-      title="Athletes"
+      title="Students"
       columns={columns}
       data={query.data?.users}
       href={href ? (e) => href(e.id) : undefined}
@@ -97,14 +97,14 @@ export function AthletesTable({ schoolId, href }: { schoolId: string; href?: (id
       actions={
         <DataGridActions>
           <ButtonSplitMenu
-            title="Invite Athlete"
+            title="Invite Student"
             startIcon={<AddIcon />}
             onClick={() => {
               pushAlert({
                 type: 'custom',
                 props: { schoolId },
-                title: 'Invite Athlete',
-                content: InviteAthleteAndParentForm,
+                title: 'Invite Student',
+                content: InviteStudentAndParentForm,
               })
             }}
           >
@@ -118,7 +118,7 @@ export function AthletesTable({ schoolId, href }: { schoolId: string; href?: (id
                     maxWidth: 'lg',
                     title: 'Import from File',
                     props: { schoolId, file },
-                    content: InviteAthleteAndParentTableForm,
+                    content: InviteStudentAndParentTableForm,
                   })
                 }
               }}

@@ -465,6 +465,6 @@ mutation previewImport($input: PreviewImportInput!) {
   }
 }
 
-mutation importAthletesAndParents($schoolId: ID!, $input: ImportAthletesAndParentsInput!) {
-  importAthletesAndParents(schoolId: $schoolId, input: $input)
+mutation importStudentsAndParents($schoolId: ID!, $input: ImportStudentsAndParentsInput!) {
+  importStudentsAndParents(schoolId: $schoolId, input: $input)
 }

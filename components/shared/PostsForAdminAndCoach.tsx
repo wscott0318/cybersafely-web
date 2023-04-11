@@ -16,7 +16,7 @@ import {
 } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { useQueryParam } from '../../helpers/hooks'
-import { namedOperations, PostsQuery, useExecuteActionMutation, usePostsQuery } from '../../schema'
+import { PostsQuery, namedOperations, useExecuteActionMutation, usePostsQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { useSchoolRole } from '../../utils/context/auth'
 import { AvatarWithName } from '../common/AvatarWithName'
@@ -64,13 +64,13 @@ export function PostActions({ postId, url }: { postId: string; url: string }) {
       <Divider />
       <MenuItem
         onClick={() => {
-          executeAction({ variables: { type: 'NOTIFY_ATHLETE', postId } })
+          executeAction({ variables: { type: 'NOTIFY_STUDENT', postId } })
         }}
       >
         <ListItemIcon>
           <NotifyIcon fontSize="small" />
         </ListItemIcon>
-        <ListItemText>Notify Athlete</ListItemText>
+        <ListItemText>Notify Student</ListItemText>
       </MenuItem>
       <MenuItem
         sx={(theme) => ({ color: theme.palette.error.main })}
@@ -160,8 +160,10 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
 
       return (
         <Stack spacing={0}>
-          {params.row.flag.reasons.map((e) => (
-            <Typography variant="body2">{e}</Typography>
+          {params.row.flag.reasons.map((e, index) => (
+            <Typography key={String(index)} variant="body2">
+              {e}
+            </Typography>
           ))}
         </Stack>
       )

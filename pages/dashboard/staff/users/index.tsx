@@ -74,7 +74,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
 
 function Users() {
   const query = useUsersQuery({
-    variables: { filter: { roles: ['ADMIN', 'COACH', 'ATHLETE'] } },
+    variables: { filter: { roles: ['ADMIN', 'COACH', 'STUDENT'] } },
   })
 
   return (

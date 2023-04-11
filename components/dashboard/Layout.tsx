@@ -223,10 +223,10 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     const staff = user.roles.find((e) => e.type === 'STAFF')
     const admin = user.roles.find((e) => e.type === 'ADMIN')
     const coach = user.roles.find((e) => e.type === 'COACH')
-    const athlete = user.roles.find((e) => e.type === 'ATHLETE')
+    const student = user.roles.find((e) => e.type === 'STUDENT')
     const parent = user.roles.find((e) => e.type === 'PARENT')
 
-    return staff ?? admin ?? coach ?? athlete ?? parent
+    return staff ?? admin ?? coach ?? student ?? parent
   }, [user])
 
   if (!user) {
@@ -364,7 +364,7 @@ function Sidebar() {
         <CollapsableList>
           <SidebarLink href="/dashboard/admin/home" icon={<HomeIcon />} title="Home" />
           <SidebarLink href="/dashboard/admin/members" icon={<PersonIcon />} title="Members" />
-          <SidebarLink href="/dashboard/admin/athletes" icon={<PersonIcon />} title="Athletes" />
+          <SidebarLink href="/dashboard/admin/students" icon={<PersonIcon />} title="Students" />
           <SidebarLink href="/dashboard/admin/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
@@ -374,16 +374,16 @@ function Sidebar() {
         <CollapsableList>
           <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
           <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
-          <SidebarLink href="/dashboard/coach/athletes" icon={<PersonIcon />} title="Athletes" />
+          <SidebarLink href="/dashboard/coach/students" icon={<PersonIcon />} title="Students" />
           <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
 
-    case 'ATHLETE':
+    case 'STUDENT':
       return (
         <CollapsableList>
-          <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
-          <SidebarLink href="/dashboard/athlete/posts" icon={<FeedIcon />} title="Posts" />
+          <SidebarLink href="/dashboard/student/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/student/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
 

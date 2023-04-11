@@ -13,8 +13,8 @@ export function userRoleDisplayText(role: UserRoleTypeEnum) {
       return 'Admin'
     case 'COACH':
       return 'Coach'
-    case 'ATHLETE':
-      return 'Athlete'
+    case 'STUDENT':
+      return 'Student'
     case 'PARENT':
       return 'Parent'
   }

@@ -14,20 +14,18 @@ declare module "nextjs-routes" {
     | StaticRoute<"/auth/register">
     | DynamicRoute<"/auth/reset/[token]", { "token": string }>
     | StaticRoute<"/auth/reset">
-    | StaticRoute<"/dashboard/admin/athletes">
     | StaticRoute<"/dashboard/admin/home">
     | DynamicRoute<"/dashboard/admin/members/[memberId]", { "memberId": string }>
     | StaticRoute<"/dashboard/admin/members">
     | DynamicRoute<"/dashboard/admin/posts/[postId]", { "postId": string }>
     | StaticRoute<"/dashboard/admin/posts">
-    | StaticRoute<"/dashboard/athlete/home">
-    | StaticRoute<"/dashboard/athlete/posts">
-    | StaticRoute<"/dashboard/coach/athletes">
+    | StaticRoute<"/dashboard/admin/students">
     | StaticRoute<"/dashboard/coach/home">
     | DynamicRoute<"/dashboard/coach/members/[memberId]", { "memberId": string }>
     | StaticRoute<"/dashboard/coach/members">
     | DynamicRoute<"/dashboard/coach/posts/[postId]", { "postId": string }>
     | StaticRoute<"/dashboard/coach/posts">
+    | StaticRoute<"/dashboard/coach/students">
     | StaticRoute<"/dashboard">
     | StaticRoute<"/dashboard/notifications">
     | DynamicRoute<"/dashboard/parent/child/[id]", { "id": string }>
@@ -42,6 +40,8 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/staff/settings">
     | StaticRoute<"/dashboard/staff/staff">
     | StaticRoute<"/dashboard/staff/users">
+    | StaticRoute<"/dashboard/student/home">
+    | StaticRoute<"/dashboard/student/posts">
     | StaticRoute<"/">;
 
   interface StaticRoute<Pathname> {

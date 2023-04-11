@@ -31,7 +31,7 @@ export default function Dashboard() {
           const staff = user.roles.find((e) => e.type === 'STAFF')
           const admin = user.roles.find((e) => e.type === 'ADMIN') as SchoolRole | undefined
           const coach = user.roles.find((e) => e.type === 'COACH') as SchoolRole | undefined
-          const athlete = user.roles.find((e) => e.type === 'ATHLETE') as SchoolRole | undefined
+          const student = user.roles.find((e) => e.type === 'STUDENT') as SchoolRole | undefined
           const parent = user.roles.find((e) => e.type === 'PARENT')
 
           if (staff) {
@@ -42,9 +42,9 @@ export default function Dashboard() {
           } else if (coach) {
             StorageManager.set('schoolId', coach.school.id)
             router.replace('/dashboard/coach/home')
-          } else if (athlete) {
-            StorageManager.set('schoolId', athlete.school.id)
-            router.replace('/dashboard/athlete/home')
+          } else if (student) {
+            StorageManager.set('schoolId', student.school.id)
+            router.replace('/dashboard/student/home')
           } else if (parent) {
             router.replace('/dashboard/parent/home')
           } else {

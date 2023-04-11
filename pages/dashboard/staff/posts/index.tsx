@@ -59,8 +59,10 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
 
       return (
         <Stack spacing={0}>
-          {params.row.flag.reasons.map((e) => (
-            <Typography variant="body2">{e}</Typography>
+          {params.row.flag.reasons.map((e, index) => (
+            <Typography key={String(index)} variant="body2">
+              {e}
+            </Typography>
           ))}
         </Stack>
       )

@@ -4,16 +4,16 @@ import { Form } from '../common/form/Form'
 import { FormText } from '../common/form/FormText'
 
 const schema = z.object({
-  athleteEmail: z.string().email(),
+  studentEmail: z.string().email(),
   parentEmail: z.string().email().nullish(),
 })
 
-type InviteAthleteAndParentFormProps = {
+type InviteStudentAndParentFormProps = {
   schoolId: string
   onSubmit: () => void
 }
 
-export function InviteAthleteAndParentForm({ schoolId, onSubmit }: InviteAthleteAndParentFormProps) {
+export function InviteStudentAndParentForm({ schoolId, onSubmit }: InviteStudentAndParentFormProps) {
   const [createUserRole] = useCreateUserRoleMutation({
     refetchQueries: [namedOperations.Query.users],
   })
@@ -21,12 +21,12 @@ export function InviteAthleteAndParentForm({ schoolId, onSubmit }: InviteAthlete
   return (
     <Form
       schema={schema}
-      onSubmit={async ({ athleteEmail, parentEmail }) => {
+      onSubmit={async ({ studentEmail, parentEmail }) => {
         const { data } = await createUserRole({
           variables: {
             input: {
-              type: 'ATHLETE',
-              email: athleteEmail,
+              type: 'STUDENT',
+              email: studentEmail,
               relationId: schoolId,
             },
           },
@@ -47,7 +47,7 @@ export function InviteAthleteAndParentForm({ schoolId, onSubmit }: InviteAthlete
         onSubmit()
       }}
     >
-      <FormText name="athleteEmail" label="Athlete E-mail" type="email" required />
+      <FormText name="studentEmail" label="Student E-mail" type="email" required />
       <FormText name="parentEmail" label="Parent E-mail" type="email" />
     </Form>
   )

@@ -5,7 +5,7 @@ import { useSchoolRole } from '../../../utils/context/auth'
 function School() {
   const schoolRole = useSchoolRole()
 
-  if (schoolRole && schoolRole.type !== 'ATHLETE') {
+  if (schoolRole && schoolRole.type !== 'STUDENT') {
     return <UpdateSchoolForm schoolId={schoolRole.school.id} />
   }
 

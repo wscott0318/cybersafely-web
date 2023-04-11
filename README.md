@@ -10,7 +10,7 @@ Run `yarn install` and then `yanr dev` to run it locally.
 
 - `/` - this is the landing page
 - `/auth/*` - all pages under this route are for login, register, etc.
-- `/dashboard/*` - all pages under this route are for the dashboard (staff, coach, athlete, parent).
+- `/dashboard/*` - all pages under this route are for the dashboard (staff, coach, student, parent).
 
 ## Libraries
 
@@ -43,7 +43,7 @@ NEXT_PUBLIC_ENABLE_LOGIN=true
 - `staff@wonderkiln.com`
 - `admin@wonderkiln.com`
 - `coach@wonderkiln.com`
-- `athlete@wonderkiln.com`
+- `student@wonderkiln.com`
 - `parent@wonderkiln.com`
 
 The password for all is `password`.

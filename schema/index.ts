@@ -27,7 +27,7 @@ export type Action = {
 export const ActionEnum = {
   MarkAsAcceptable: 'MARK_AS_ACCEPTABLE',
   MarkAsNotAcceptable: 'MARK_AS_NOT_ACCEPTABLE',
-  NotifyAthlete: 'NOTIFY_ATHLETE',
+  NotifyStudent: 'NOTIFY_STUDENT',
   TakeDownPost: 'TAKE_DOWN_POST'
 } as const;
 
@@ -109,13 +109,13 @@ export type Image = {
   url: Scalars['String'];
 };
 
-export type ImportAthletesAndParentsHeader = {
-  athleteEmail: Scalars['String'];
+export type ImportStudentsAndParentsHeader = {
   parentEmail: Scalars['String'];
+  studentEmail: Scalars['String'];
 };
 
-export type ImportAthletesAndParentsInput = {
-  header: ImportAthletesAndParentsHeader;
+export type ImportStudentsAndParentsInput = {
+  header: ImportStudentsAndParentsHeader;
   type: PreviewImportTypeEnum;
   uploadId: Scalars['ID'];
 };
@@ -148,7 +148,7 @@ export type Mutation = {
   executeAction: Scalars['Boolean'];
   finalizeAccount: UserWithToken;
   forgotPassword: Scalars['Boolean'];
-  importAthletesAndParents: Scalars['Boolean'];
+  importStudentsAndParents: Scalars['Boolean'];
   loginWithEmail: UserWithToken;
   prepareUpload: Upload;
   previewImport: PreviewImport;
@@ -207,8 +207,8 @@ export type MutationForgotPasswordArgs = {
 };
 
 
-export type MutationImportAthletesAndParentsArgs = {
-  input: ImportAthletesAndParentsInput;
+export type MutationImportStudentsAndParentsArgs = {
+  input: ImportStudentsAndParentsInput;
   schoolId: Scalars['ID'];
 };
 
@@ -546,8 +546,8 @@ export type SchoolRole = {
 
 export const SchoolRoleTypeEnum = {
   Admin: 'ADMIN',
-  Athlete: 'ATHLETE',
-  Coach: 'COACH'
+  Coach: 'COACH',
+  Student: 'STUDENT'
 } as const;
 
 export type SchoolRoleTypeEnum = typeof SchoolRoleTypeEnum[keyof typeof SchoolRoleTypeEnum];
@@ -678,10 +678,10 @@ export const UserRoleStatusEnum = {
 export type UserRoleStatusEnum = typeof UserRoleStatusEnum[keyof typeof UserRoleStatusEnum];
 export const UserRoleTypeEnum = {
   Admin: 'ADMIN',
-  Athlete: 'ATHLETE',
   Coach: 'COACH',
   Parent: 'PARENT',
-  Staff: 'STAFF'
+  Staff: 'STAFF',
+  Student: 'STUDENT'
 } as const;
 
 export type UserRoleTypeEnum = typeof UserRoleTypeEnum[keyof typeof UserRoleTypeEnum];
@@ -978,13 +978,13 @@ export type PreviewImportMutationVariables = Exact<{
 
 export type PreviewImportMutation = { __typename?: 'Mutation', previewImport: { __typename?: 'PreviewImport', headers: Array<string>, rows: Array<{ __typename?: 'PreviewImportRow', values: Array<string> }> } };
 
-export type ImportAthletesAndParentsMutationVariables = Exact<{
+export type ImportStudentsAndParentsMutationVariables = Exact<{
   schoolId: Scalars['ID'];
-  input: ImportAthletesAndParentsInput;
+  input: ImportStudentsAndParentsInput;
 }>;
 
 
-export type ImportAthletesAndParentsMutation = { __typename?: 'Mutation', importAthletesAndParents: boolean };
+export type ImportStudentsAndParentsMutation = { __typename?: 'Mutation', importStudentsAndParents: boolean };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -2542,38 +2542,38 @@ export function usePreviewImportMutation(baseOptions?: Apollo.MutationHookOption
 export type PreviewImportMutationHookResult = ReturnType<typeof usePreviewImportMutation>;
 export type PreviewImportMutationResult = Apollo.MutationResult<PreviewImportMutation>;
 export type PreviewImportMutationOptions = Apollo.BaseMutationOptions<PreviewImportMutation, PreviewImportMutationVariables>;
-export const ImportAthletesAndParentsDocument = gql`
-    mutation importAthletesAndParents($schoolId: ID!, $input: ImportAthletesAndParentsInput!) {
-  importAthletesAndParents(schoolId: $schoolId, input: $input)
+export const ImportStudentsAndParentsDocument = gql`
+    mutation importStudentsAndParents($schoolId: ID!, $input: ImportStudentsAndParentsInput!) {
+  importStudentsAndParents(schoolId: $schoolId, input: $input)
 }
     `;
-export type ImportAthletesAndParentsMutationFn = Apollo.MutationFunction<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>;
+export type ImportStudentsAndParentsMutationFn = Apollo.MutationFunction<ImportStudentsAndParentsMutation, ImportStudentsAndParentsMutationVariables>;
 
 /**
- * __useImportAthletesAndParentsMutation__
+ * __useImportStudentsAndParentsMutation__
  *
- * To run a mutation, you first call `useImportAthletesAndParentsMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useImportAthletesAndParentsMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useImportStudentsAndParentsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useImportStudentsAndParentsMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [importAthletesAndParentsMutation, { data, loading, error }] = useImportAthletesAndParentsMutation({
+ * const [importStudentsAndParentsMutation, { data, loading, error }] = useImportStudentsAndParentsMutation({
  *   variables: {
  *      schoolId: // value for 'schoolId'
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useImportAthletesAndParentsMutation(baseOptions?: Apollo.MutationHookOptions<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>) {
+export function useImportStudentsAndParentsMutation(baseOptions?: Apollo.MutationHookOptions<ImportStudentsAndParentsMutation, ImportStudentsAndParentsMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>(ImportAthletesAndParentsDocument, options);
+        return Apollo.useMutation<ImportStudentsAndParentsMutation, ImportStudentsAndParentsMutationVariables>(ImportStudentsAndParentsDocument, options);
       }
-export type ImportAthletesAndParentsMutationHookResult = ReturnType<typeof useImportAthletesAndParentsMutation>;
-export type ImportAthletesAndParentsMutationResult = Apollo.MutationResult<ImportAthletesAndParentsMutation>;
-export type ImportAthletesAndParentsMutationOptions = Apollo.BaseMutationOptions<ImportAthletesAndParentsMutation, ImportAthletesAndParentsMutationVariables>;
+export type ImportStudentsAndParentsMutationHookResult = ReturnType<typeof useImportStudentsAndParentsMutation>;
+export type ImportStudentsAndParentsMutationResult = Apollo.MutationResult<ImportStudentsAndParentsMutation>;
+export type ImportStudentsAndParentsMutationOptions = Apollo.BaseMutationOptions<ImportStudentsAndParentsMutation, ImportStudentsAndParentsMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2617,7 +2617,7 @@ export const namedOperations = {
     executeAction: 'executeAction',
     updateUserParentalApproval: 'updateUserParentalApproval',
     previewImport: 'previewImport',
-    importAthletesAndParents: 'importAthletesAndParents'
+    importStudentsAndParents: 'importStudentsAndParents'
   },
   Fragment: {
     PageFragment: 'PageFragment',

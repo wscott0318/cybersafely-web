@@ -8,10 +8,10 @@ import { UserScore } from '../../../../components/common/UserScore'
 import { WelcomeCard } from '../../../../components/common/WelcomeCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import {
-  namedOperations,
   SchoolRole,
   UpdateUserParentalApprovalMutationHookResult,
   UsersQuery,
+  namedOperations,
   useUpdateUserParentalApprovalMutation,
   useUsersQuery,
 } from '../../../../schema'
@@ -35,7 +35,7 @@ const getColumns: (props: {
     field: 'school',
     headerName: 'School',
     valueGetter(params) {
-      const roles = params.row.roles.filter((e) => e.type === 'ATHLETE') as SchoolRole[]
+      const roles = params.row.roles.filter((e) => e.type === 'STUDENT') as SchoolRole[]
       return roles.map((e) => e.school.name)
     },
     valueFormatter(params) {

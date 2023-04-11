@@ -16,7 +16,7 @@ import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
-import { AthletesTable } from '../../../../../components/shared/AthletesTable'
+import { StudentsTable } from '../../../../../components/shared/StudentsTable'
 import {
   UsersQuery,
   namedOperations,
@@ -124,7 +124,7 @@ function SchoolMembers({ schoolId }: Props) {
                 type: 'custom',
                 title: 'Invite Member',
                 content: InviteUserForm,
-                props: { allow: ['ADMIN', 'COACH', 'ATHLETE'] },
+                props: { allow: ['ADMIN', 'COACH', 'STUDENT'] },
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: schoolId } } })
                 },
@@ -175,7 +175,7 @@ function School(props: Props) {
               <NavigationActions>
                 <TabList onChange={(_, tab) => setTab(tab)}>
                   <Tab label="Members" value="members" />
-                  <Tab label="Athletes" value="athletes" />
+                  <Tab label="Students" value="students" />
                   <Tab label="Details" value="details" />
                   <Tab label="Posts" value="posts" />
                 </TabList>
@@ -185,8 +185,8 @@ function School(props: Props) {
             <TabPanel value="members">
               <SchoolMembers {...props} />
             </TabPanel>
-            <TabPanel value="athletes">
-              <AthletesTable
+            <TabPanel value="students">
+              <StudentsTable
                 schoolId={props.schoolId}
                 href={(memberId) => ({
                   pathname: '/dashboard/staff/schools/[schoolId]/members/[memberId]',
