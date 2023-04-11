@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Skeleton, Stack, Typography } from '@mui/material'
+import { Accordion, AccordionDetails, AccordionSummary, Box, Skeleton, Stack, Typography } from '@mui/material'
 import { useCallback } from 'react'
 import { z } from 'zod'
 import {
@@ -9,11 +9,11 @@ import {
   useUpdateSchoolMutation,
 } from '../../schema'
 import { AccordionContext } from '../common/AccordionContext'
+import { QueryLoader, QueryLoaderRenderProps } from '../common/QueryLoader'
 import { Form } from '../common/form/Form'
 import { FormAvatar } from '../common/form/FormAvatar'
 import { FormImage } from '../common/form/FormImage'
 import { FormText } from '../common/form/FormText'
-import { QueryLoader, QueryLoaderRenderProps } from '../common/QueryLoader'
 
 function Loading() {
   return (
@@ -156,20 +156,12 @@ function Render({
             </AccordionDetails>
           </Accordion>
         )}
-        {isShown('billing') && (
-          <Accordion>
-            <AccordionSummary>Billing</AccordionSummary>
-            <AccordionDetails>
-              <Alert severity="info">Billing coming soon</Alert>
-            </AccordionDetails>
-          </Accordion>
-        )}
       </AccordionContext>
     </Stack>
   )
 }
 
-type Section = 'information' | 'address' | 'billing'
+type Section = 'information' | 'address'
 
 type UpdateSchoolFormProps = {
   schoolId: string

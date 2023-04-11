@@ -20,7 +20,7 @@ function Home() {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Typography variant="h5" flexGrow={1}>
-            Cards
+            Highlights
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>

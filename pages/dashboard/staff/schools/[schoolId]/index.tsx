@@ -196,7 +196,7 @@ function School(props: Props) {
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <UpdateSchoolForm schoolId={school.id} exclude={['billing']} />
+                <UpdateSchoolForm schoolId={school.id} />
               </Container>
             </TabPanel>
             <TabPanel value="posts">
