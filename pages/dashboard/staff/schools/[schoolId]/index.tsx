@@ -7,7 +7,6 @@ import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
-import { EmptyFileAnimation } from '../../../../../components/common/EmptyFileAnimation'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
 import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
@@ -15,6 +14,7 @@ import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
+import { StudentPostsTable } from '../../../../../components/shared/StudentPostsTable'
 import { StudentsTable } from '../../../../../components/shared/StudentsTable'
 import {
   UsersQuery,
@@ -189,11 +189,17 @@ function School(props: Props) {
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <UpdateSchoolForm schoolId={school.id} />
+                <UpdateSchoolForm schoolId={props.schoolId} />
               </Container>
             </TabPanel>
             <TabPanel value="posts">
-              <EmptyFileAnimation />
+              <StudentPostsTable
+                schoolId={props.schoolId}
+                href={(postId) => ({
+                  pathname: '/dashboard/staff/posts/[postId]',
+                  query: { postId },
+                })}
+              />
             </TabPanel>
           </NavigationView>
         )}

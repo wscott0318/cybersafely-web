@@ -437,6 +437,7 @@ export type QueryPostsArgs = {
   filter?: InputMaybe<PostFilter>;
   page?: InputMaybe<PageInput>;
   schoolId?: InputMaybe<Scalars['ID']>;
+  userId?: InputMaybe<Scalars['ID']>;
 };
 
 
@@ -937,6 +938,7 @@ export type UpdateEmailSettingsMutation = { __typename?: 'Mutation', updateEmail
 
 export type PostsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
+  userId?: InputMaybe<Scalars['ID']>;
   page?: InputMaybe<PageInput>;
   filter?: InputMaybe<PostFilter>;
 }>;
@@ -2250,8 +2252,8 @@ export type UpdateEmailSettingsMutationHookResult = ReturnType<typeof useUpdateE
 export type UpdateEmailSettingsMutationResult = Apollo.MutationResult<UpdateEmailSettingsMutation>;
 export type UpdateEmailSettingsMutationOptions = Apollo.BaseMutationOptions<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>;
 export const PostsDocument = gql`
-    query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
-  posts(schoolId: $schoolId, page: $page, filter: $filter) {
+    query posts($schoolId: ID, $userId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(schoolId: $schoolId, userId: $userId, page: $page, filter: $filter) {
     page {
       ...PageFragment
     }
@@ -2296,6 +2298,7 @@ export const PostsDocument = gql`
  * const { data, loading, error } = usePostsQuery({
  *   variables: {
  *      schoolId: // value for 'schoolId'
+ *      userId: // value for 'userId'
  *      page: // value for 'page'
  *      filter: // value for 'filter'
  *   },
