@@ -86,12 +86,6 @@ export type EmailSettings = {
   receivePostFlagged: Scalars['Boolean'];
 };
 
-export type FinalizeAccountInput = {
-  name: Scalars['String'];
-  password: Scalars['String'];
-  token: Scalars['String'];
-};
-
 export type Flag = {
   __typename?: 'Flag';
   reasons: Array<Scalars['String']>;
@@ -120,6 +114,14 @@ export type ImportStudentsAndParentsInput = {
   uploadId: Scalars['ID'];
 };
 
+export type InvitedRole = {
+  __typename?: 'InvitedRole';
+  isNewUser: Scalars['Boolean'];
+  schoolLogoURL?: Maybe<Scalars['String']>;
+  schoolName?: Maybe<Scalars['String']>;
+  type: UserRoleTypeEnum;
+};
+
 export type LoginWithEmailInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -146,7 +148,6 @@ export type Mutation = {
   createSchool: School;
   createUserRole: User;
   executeAction: Scalars['Boolean'];
-  finalizeAccount: UserWithToken;
   forgotPassword: Scalars['Boolean'];
   importStudentsAndParents: Scalars['Boolean'];
   loginWithEmail: UserWithToken;
@@ -159,6 +160,7 @@ export type Mutation = {
   removeTwitter: Scalars['Boolean'];
   removeUserRole: Scalars['Boolean'];
   resetPassword: UserWithToken;
+  respondToInvitedRole: Scalars['Boolean'];
   updateAddress: Address;
   updateEmailSettings: Scalars['Boolean'];
   updateImage: Image;
@@ -194,11 +196,6 @@ export type MutationCreateUserRoleArgs = {
 export type MutationExecuteActionArgs = {
   postId: Scalars['ID'];
   type: ActionEnum;
-};
-
-
-export type MutationFinalizeAccountArgs = {
-  input: FinalizeAccountInput;
 };
 
 
@@ -250,6 +247,14 @@ export type MutationRemoveUserRoleArgs = {
 
 export type MutationResetPasswordArgs = {
   input: ResetPasswordInput;
+};
+
+
+export type MutationRespondToInvitedRoleArgs = {
+  accept: Scalars['Boolean'];
+  name?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
+  token: Scalars['String'];
 };
 
 
@@ -394,6 +399,7 @@ export type PreviewImportTypeEnum = typeof PreviewImportTypeEnum[keyof typeof Pr
 export type Query = {
   __typename?: 'Query';
   emailSettings: EmailSettings;
+  invitedRole: InvitedRole;
   notifications: NotificationPage;
   post: Post;
   posts: PostPage;
@@ -409,6 +415,11 @@ export type Query = {
   statsOfInvitedMembersInSchool: StatsByDay;
   user: User;
   users: UserPage;
+};
+
+
+export type QueryInvitedRoleArgs = {
+  token: Scalars['String'];
 };
 
 
@@ -632,7 +643,6 @@ export type User = {
   avatar?: Maybe<Image>;
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
-  emailConfirmed: Scalars['Boolean'];
   id: Scalars['ID'];
   name: Scalars['String'];
   notificationCount: Scalars['Int'];
@@ -715,7 +725,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, emailConfirmed: boolean, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, twitter?: { __typename?: 'Twitter', id: string, username: string } | null } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, twitter?: { __typename?: 'Twitter', id: string, username: string } | null } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -764,14 +774,14 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, parentalApproval?: boolean | null, platforms: Array<PlatformEnum>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, platforms: Array<PlatformEnum>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, emailConfirmed: boolean, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> } };
 
 export type UpdateUserMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -855,13 +865,6 @@ export type UpdatePasswordMutationVariables = Exact<{
 
 
 export type UpdatePasswordMutation = { __typename?: 'Mutation', updatePassword: boolean };
-
-export type FinalizeAccountMutationVariables = Exact<{
-  input: FinalizeAccountInput;
-}>;
-
-
-export type FinalizeAccountMutation = { __typename?: 'Mutation', finalizeAccount: { __typename?: 'UserWithToken', user: { __typename?: 'User', id: string } } };
 
 export type ResetPasswordMutationVariables = Exact<{
   input: ResetPasswordInput;
@@ -986,6 +989,23 @@ export type ImportStudentsAndParentsMutationVariables = Exact<{
 
 export type ImportStudentsAndParentsMutation = { __typename?: 'Mutation', importStudentsAndParents: boolean };
 
+export type InvitedRoleQueryVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type InvitedRoleQuery = { __typename?: 'Query', invitedRole: { __typename?: 'InvitedRole', type: UserRoleTypeEnum, schoolName?: string | null, schoolLogoURL?: string | null, isNewUser: boolean } };
+
+export type RespondToInvitedRoleMutationVariables = Exact<{
+  token: Scalars['String'];
+  accept: Scalars['Boolean'];
+  name?: InputMaybe<Scalars['String']>;
+  password?: InputMaybe<Scalars['String']>;
+}>;
+
+
+export type RespondToInvitedRoleMutation = { __typename?: 'Mutation', respondToInvitedRole: boolean };
+
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
   index
@@ -1081,7 +1101,6 @@ export const MyUserDocument = gql`
   user(id: $id) {
     id
     email
-    emailConfirmed
     name
     notificationCount
     avatar {
@@ -1362,7 +1381,6 @@ export const UsersDocument = gql`
       createdAt
       name
       email
-      emailConfirmed
       parentalApproval
       platforms
       avatar {
@@ -1433,7 +1451,6 @@ export const UserDocument = gql`
     createdAt
     name
     email
-    emailConfirmed
     avatar {
       id
       url
@@ -1887,41 +1904,6 @@ export function useUpdatePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type UpdatePasswordMutationHookResult = ReturnType<typeof useUpdatePasswordMutation>;
 export type UpdatePasswordMutationResult = Apollo.MutationResult<UpdatePasswordMutation>;
 export type UpdatePasswordMutationOptions = Apollo.BaseMutationOptions<UpdatePasswordMutation, UpdatePasswordMutationVariables>;
-export const FinalizeAccountDocument = gql`
-    mutation finalizeAccount($input: FinalizeAccountInput!) {
-  finalizeAccount(input: $input) {
-    user {
-      id
-    }
-  }
-}
-    `;
-export type FinalizeAccountMutationFn = Apollo.MutationFunction<FinalizeAccountMutation, FinalizeAccountMutationVariables>;
-
-/**
- * __useFinalizeAccountMutation__
- *
- * To run a mutation, you first call `useFinalizeAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useFinalizeAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [finalizeAccountMutation, { data, loading, error }] = useFinalizeAccountMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useFinalizeAccountMutation(baseOptions?: Apollo.MutationHookOptions<FinalizeAccountMutation, FinalizeAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<FinalizeAccountMutation, FinalizeAccountMutationVariables>(FinalizeAccountDocument, options);
-      }
-export type FinalizeAccountMutationHookResult = ReturnType<typeof useFinalizeAccountMutation>;
-export type FinalizeAccountMutationResult = Apollo.MutationResult<FinalizeAccountMutation>;
-export type FinalizeAccountMutationOptions = Apollo.BaseMutationOptions<FinalizeAccountMutation, FinalizeAccountMutationVariables>;
 export const ResetPasswordDocument = gql`
     mutation resetPassword($input: ResetPasswordInput!) {
   resetPassword(input: $input) {
@@ -2574,6 +2556,83 @@ export function useImportStudentsAndParentsMutation(baseOptions?: Apollo.Mutatio
 export type ImportStudentsAndParentsMutationHookResult = ReturnType<typeof useImportStudentsAndParentsMutation>;
 export type ImportStudentsAndParentsMutationResult = Apollo.MutationResult<ImportStudentsAndParentsMutation>;
 export type ImportStudentsAndParentsMutationOptions = Apollo.BaseMutationOptions<ImportStudentsAndParentsMutation, ImportStudentsAndParentsMutationVariables>;
+export const InvitedRoleDocument = gql`
+    query invitedRole($token: String!) {
+  invitedRole(token: $token) {
+    type
+    schoolName
+    schoolLogoURL
+    isNewUser
+  }
+}
+    `;
+
+/**
+ * __useInvitedRoleQuery__
+ *
+ * To run a query within a React component, call `useInvitedRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useInvitedRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useInvitedRoleQuery({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useInvitedRoleQuery(baseOptions: Apollo.QueryHookOptions<InvitedRoleQuery, InvitedRoleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<InvitedRoleQuery, InvitedRoleQueryVariables>(InvitedRoleDocument, options);
+      }
+export function useInvitedRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<InvitedRoleQuery, InvitedRoleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<InvitedRoleQuery, InvitedRoleQueryVariables>(InvitedRoleDocument, options);
+        }
+export type InvitedRoleQueryHookResult = ReturnType<typeof useInvitedRoleQuery>;
+export type InvitedRoleLazyQueryHookResult = ReturnType<typeof useInvitedRoleLazyQuery>;
+export type InvitedRoleQueryResult = Apollo.QueryResult<InvitedRoleQuery, InvitedRoleQueryVariables>;
+export const RespondToInvitedRoleDocument = gql`
+    mutation respondToInvitedRole($token: String!, $accept: Boolean!, $name: String, $password: String) {
+  respondToInvitedRole(
+    token: $token
+    accept: $accept
+    name: $name
+    password: $password
+  )
+}
+    `;
+export type RespondToInvitedRoleMutationFn = Apollo.MutationFunction<RespondToInvitedRoleMutation, RespondToInvitedRoleMutationVariables>;
+
+/**
+ * __useRespondToInvitedRoleMutation__
+ *
+ * To run a mutation, you first call `useRespondToInvitedRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRespondToInvitedRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [respondToInvitedRoleMutation, { data, loading, error }] = useRespondToInvitedRoleMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *      accept: // value for 'accept'
+ *      name: // value for 'name'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useRespondToInvitedRoleMutation(baseOptions?: Apollo.MutationHookOptions<RespondToInvitedRoleMutation, RespondToInvitedRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RespondToInvitedRoleMutation, RespondToInvitedRoleMutationVariables>(RespondToInvitedRoleDocument, options);
+      }
+export type RespondToInvitedRoleMutationHookResult = ReturnType<typeof useRespondToInvitedRoleMutation>;
+export type RespondToInvitedRoleMutationResult = Apollo.MutationResult<RespondToInvitedRoleMutation>;
+export type RespondToInvitedRoleMutationOptions = Apollo.BaseMutationOptions<RespondToInvitedRoleMutation, RespondToInvitedRoleMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2588,7 +2647,8 @@ export const namedOperations = {
     emailSettings: 'emailSettings',
     posts: 'posts',
     post: 'post',
-    postCards: 'postCards'
+    postCards: 'postCards',
+    invitedRole: 'invitedRole'
   },
   Mutation: {
     readNotifications: 'readNotifications',
@@ -2606,7 +2666,6 @@ export const namedOperations = {
     removeUserRole: 'removeUserRole',
     updateSettings: 'updateSettings',
     updatePassword: 'updatePassword',
-    finalizeAccount: 'finalizeAccount',
     resetPassword: 'resetPassword',
     forgotPassword: 'forgotPassword',
     registerWithEmail: 'registerWithEmail',
@@ -2617,7 +2676,8 @@ export const namedOperations = {
     executeAction: 'executeAction',
     updateUserParentalApproval: 'updateUserParentalApproval',
     previewImport: 'previewImport',
-    importStudentsAndParents: 'importStudentsAndParents'
+    importStudentsAndParents: 'importStudentsAndParents',
+    respondToInvitedRole: 'respondToInvitedRole'
   },
   Fragment: {
     PageFragment: 'PageFragment',

@@ -12,7 +12,6 @@ import PersonIcon from '@mui/icons-material/PeopleOutlined'
 import SchoolIcon from '@mui/icons-material/SchoolOutlined'
 import SettingsIcon from '@mui/icons-material/SettingsOutlined'
 import {
-  Alert,
   AppBar,
   Avatar,
   Badge,
@@ -29,7 +28,6 @@ import {
   ListItemText,
   ListSubheader,
   MenuItem,
-  Snackbar,
   Stack,
   Toolbar,
   Typography,
@@ -59,19 +57,6 @@ function HeaderAccount() {
 
   return (
     <>
-      <Snackbar
-        sx={{ maxWidth: 350 }}
-        open={!user.emailConfirmed && hideConfirm !== 'true'}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        TransitionProps={{
-          mountOnEnter: true,
-          unmountOnExit: true,
-        }}
-      >
-        <Alert severity="warning" sx={{ width: '100%' }} onClose={() => setHideConfirm('true')}>
-          Please confirm your e-mail address at <b>{user.email}</b>.
-        </Alert>
-      </Snackbar>
       <NextLink href="/dashboard/notifications">
         <IconButton sx={{ mr: 1 }}>
           <Badge color="primary" badgeContent={user.notificationCount ?? 0}>

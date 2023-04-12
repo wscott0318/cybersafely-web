@@ -8,13 +8,12 @@ import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../c
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
-import { UserEmail } from '../../../../../components/common/UserEmail'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import {
+  UsersQuery,
   namedOperations,
   useCreateUserRoleMutation,
-  UsersQuery,
   useUserQuery,
   useUsersQuery,
 } from '../../../../../schema'
@@ -33,12 +32,6 @@ const getColumns: (childId: string) => GridColumns<InferNodeType<UsersQuery['use
     width: 300,
     field: 'email',
     headerName: 'E-mail',
-    valueGetter(params) {
-      return params.row
-    },
-    renderCell(params) {
-      return <UserEmail {...params.value} />
-    },
   },
   {
     width: 200,

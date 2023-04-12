@@ -4,7 +4,6 @@ import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { NextLink } from '../../../../components/common/NextLink'
 import { SearchBar } from '../../../../components/common/SearchBar'
-import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { UsersQuery, useUsersQuery } from '../../../../schema'
@@ -22,12 +21,6 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     width: 300,
     field: 'email',
     headerName: 'E-mail',
-    valueGetter(params) {
-      return params.row
-    },
-    renderCell(params) {
-      return <UserEmail {...params.value} />
-    },
   },
   {
     width: 300,

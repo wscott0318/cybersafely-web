@@ -7,7 +7,6 @@ import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../comp
 import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { RemoveUserRoleMenuItem } from '../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../components/common/SearchBar'
-import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
@@ -28,12 +27,6 @@ const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['us
     width: 300,
     field: 'email',
     headerName: 'E-mail',
-    valueGetter(params) {
-      return params.row
-    },
-    renderCell(params) {
-      return <UserEmail {...params.value} />
-    },
   },
   {
     width: 200,

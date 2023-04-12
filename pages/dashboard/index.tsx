@@ -55,6 +55,7 @@ export default function Dashboard() {
         }
       } catch (error) {
         console.error(error)
+        localStorage.clear()
         router.replace('/auth/login')
       }
     }

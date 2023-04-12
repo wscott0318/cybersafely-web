@@ -8,7 +8,6 @@ declare module "nextjs-routes" {
   export type Route =
     | StaticRoute<"/404">
     | StaticRoute<"/500">
-    | DynamicRoute<"/auth/activate/[token]", { "token": string }>
     | StaticRoute<"/auth">
     | StaticRoute<"/auth/login">
     | StaticRoute<"/auth/register">
@@ -42,7 +41,8 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/staff/users">
     | StaticRoute<"/dashboard/student/home">
     | StaticRoute<"/dashboard/student/posts">
-    | StaticRoute<"/">;
+    | StaticRoute<"/">
+    | DynamicRoute<"/invite/[token]", { "token": string }>;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;
