@@ -17,6 +17,7 @@ import {
   Badge,
   Box,
   Breakpoint,
+  Button,
   Collapse,
   Container,
   Divider,
@@ -38,7 +39,7 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
-import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
+import { useLogoUrl, useMobile } from '../../helpers/hooks'
 import { MyUserDocument, MyUserQuery, MyUserQueryVariables } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
@@ -52,8 +53,6 @@ function HeaderAccount() {
   const schoolRole = useSchoolRole()
   const { user, logout } = useUser()
   const { pushAlert } = useAlert()
-
-  const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
 
   return (
     <>
@@ -154,11 +153,30 @@ export type DashboardLayoutProps = {
   maxWidth?: Breakpoint
 }
 
+function WelcomeModal({ onSubmit }: { onSubmit: () => void }) {
+  return (
+    <Stack>
+      <Box>
+        <Typography variant="h6">Welcome to the CyberSafely.ai Pilot Program</Typography>
+        <Typography mt={1}>
+          We are happy to have you join us on refining CyberSafely.ai - please use the chat button in the bottom right
+          to connect with us on any questions and we will get back to you promptly. We are around 24/7!
+        </Typography>
+        <Typography variant="body2" color="text.secondary" mt={2}>
+          CyberSafely.ai Team
+        </Typography>
+      </Box>
+      <Button onClick={onSubmit}>Understood</Button>
+    </Stack>
+  )
+}
+
 export function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter()
   const client = useApolloClient()
   const logoUrl = useLogoUrl()
   const { isMobile, isTablet } = useMobile()
+  const { pushAlert } = useAlert()
 
   const [user, setUser] = useState<MyUserQuery['user']>()
   const [open, setOpen] = useState(true)
@@ -213,6 +231,19 @@ export function DashboardLayout(props: DashboardLayoutProps) {
 
     return staff ?? admin ?? coach ?? student ?? parent
   }, [user])
+
+  useEffect(() => {
+    if (userRole && userRole.type !== 'STAFF' && !localStorage.getItem('hide_welcome')) {
+      pushAlert({
+        title: '',
+        type: 'custom',
+        content: WelcomeModal,
+        result: () => {
+          localStorage.setItem('hide_welcome', 'true')
+        },
+      })
+    }
+  }, [userRole?.type])
 
   if (!user) {
     return (
