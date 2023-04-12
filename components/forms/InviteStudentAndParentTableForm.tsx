@@ -1,6 +1,8 @@
-import UploadIcon from '@mui/icons-material/UploadFileOutlined'
+import ArrowIcon from '@mui/icons-material/ArrowBackOutlined'
+import CheckIcon from '@mui/icons-material/CheckOutlined'
 import { LoadingButton } from '@mui/lab'
 import {
+  Button,
   CircularProgress,
   MenuItem,
   Select,
@@ -44,9 +46,15 @@ type InviteStudentAndParentTableFormProps = {
   schoolId: string
   file: File
   onSubmit: () => void
+  onClearFile?: () => void
 }
 
-export function InviteStudentAndParentTableForm({ schoolId, file, onSubmit }: InviteStudentAndParentTableFormProps) {
+export function InviteStudentAndParentTableForm({
+  schoolId,
+  file,
+  onSubmit,
+  onClearFile,
+}: InviteStudentAndParentTableFormProps) {
   const onSubmitRef = useCallbackRef(onSubmit)
 
   const { upload } = useUpload()
@@ -99,7 +107,7 @@ export function InviteStudentAndParentTableForm({ schoolId, file, onSubmit }: In
 
   if (!data) {
     return (
-      <Stack alignItems="center">
+      <Stack alignItems="center" spacing={1}>
         <CircularProgress size={32} />
         <Typography color="text.secondary">Generating Preview...</Typography>
       </Stack>
@@ -108,15 +116,6 @@ export function InviteStudentAndParentTableForm({ schoolId, file, onSubmit }: In
 
   return (
     <Stack>
-      <div>
-        <Typography variant="body2" color="text.secondary">
-          * You need to map which column should be used for Student E-mail and Parent E-mail.
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          * You can invite multiple parents to the same student by having duplicated rows of the same student and
-          different parents.
-        </Typography>
-      </div>
       <TableContainer>
         <Table
           sx={{
@@ -169,33 +168,37 @@ export function InviteStudentAndParentTableForm({ schoolId, file, onSubmit }: In
           </TableBody>
         </Table>
       </TableContainer>
-      <LoadingButton
-        loading={loading}
-        startIcon={<UploadIcon />}
-        sx={{ alignSelf: 'flex-start' }}
-        onClick={async () => {
-          try {
-            const { studentEmail, parentEmail } = schema.parse(headerMap)
-            const header = { studentEmail, parentEmail }
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Button startIcon={<ArrowIcon />} variant="text" onClick={onClearFile}>
+          Pick Other File
+        </Button>
+        <LoadingButton
+          loading={loading}
+          endIcon={<CheckIcon />}
+          onClick={async () => {
+            try {
+              const { studentEmail, parentEmail } = schema.parse(headerMap)
+              const header = { studentEmail, parentEmail }
 
-            const { uploadId, type } = data
+              const { uploadId, type } = data
 
-            await importStudentsAndParents({
-              variables: { schoolId, input: { uploadId, type, header } },
-            })
+              await importStudentsAndParents({
+                variables: { schoolId, input: { uploadId, type, header } },
+              })
 
-            onSubmitRef.current()
-          } catch (error) {
-            if (error instanceof z.ZodError) {
-              pushError('Please select which headers should be mapped to the Student E-mail and Parent E-mail')
-            } else {
-              pushError(error)
+              onSubmitRef.current()
+            } catch (error) {
+              if (error instanceof z.ZodError) {
+                pushError('Please select which headers should be mapped to the Student E-mail and Parent E-mail')
+              } else {
+                pushError(error)
+              }
             }
-          }
-        }}
-      >
-        Import from File
-      </LoadingButton>
+          }}
+        >
+          Upload &amp; Invite
+        </LoadingButton>
+      </Stack>
     </Stack>
   )
 }
