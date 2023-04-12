@@ -5,7 +5,6 @@ import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../comp
 import { PlatformChip } from '../../../../components/common/PlatformChip'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
-import { WelcomeCard } from '../../../../components/common/WelcomeCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { DashboardIntroText } from '../../../../components/shared/DashboardIntroText'
 import {
@@ -104,9 +103,6 @@ function Home() {
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <WelcomeCard />
-        </Grid>
         <Grid item xs={12}>
           <DashboardIntroText />
         </Grid>

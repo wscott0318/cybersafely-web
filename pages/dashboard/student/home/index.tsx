@@ -1,20 +1,24 @@
-import { Grid, Stack, Typography } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
 import { SocialButton } from '../../../../components/common/SocialButton'
-import { WelcomeCard } from '../../../../components/common/WelcomeCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { DashboardIntroText } from '../../../../components/shared/DashboardIntroText'
 import { useUser } from '../../../../utils/context/auth'
 
-function StudentConnectedSocialNetworks() {
+function Home() {
   const router = useRouter()
 
   const { user } = useUser()
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Typography variant="h5">Connected Social Networks</Typography>
+        <DashboardIntroText />
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h5" flexGrow={1}>
+          Connected Social Networks
+        </Typography>
       </Grid>
       <Grid item xs={3}>
         <SocialButton
@@ -62,16 +66,6 @@ function StudentConnectedSocialNetworks() {
         />
       </Grid>
     </Grid>
-  )
-}
-
-function Home() {
-  return (
-    <Stack>
-      <WelcomeCard />
-      <DashboardIntroText />
-      <StudentConnectedSocialNetworks />
-    </Stack>
   )
 }
 

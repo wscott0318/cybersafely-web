@@ -5,7 +5,6 @@ import { usePostCardsQuery, useStatsForSchoolQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { InfoCard, InfoCardProps } from '../common/InfoCard'
-import { WelcomeCard } from '../common/WelcomeCard'
 import { DashboardIntroText } from './DashboardIntroText'
 
 function useMissingCards() {
@@ -50,9 +49,6 @@ export function HomeStatsForAdminAndCoach() {
   return (
     <Box>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <WelcomeCard />
-        </Grid>
         <Grid item xs={12}>
           <DashboardIntroText />
         </Grid>
