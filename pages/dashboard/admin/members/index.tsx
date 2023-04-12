@@ -88,7 +88,10 @@ function Members() {
       title="Members"
       columns={columns}
       data={query.data?.users}
-      href={(e) => `/dashboard/admin/members/${e.id}`}
+      href={(e) => ({
+        pathname: '/dashboard/admin/members/[memberId]',
+        query: { memberId: e.id },
+      })}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>

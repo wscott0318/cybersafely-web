@@ -6,6 +6,7 @@ import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { InfoCard, InfoCardProps } from '../common/InfoCard'
 import { WelcomeCard } from '../common/WelcomeCard'
+import { DashboardIntroText } from './DashboardIntroText'
 
 function useMissingCards() {
   const schoolRole = useSchoolRole()
@@ -51,6 +52,9 @@ export function HomeStatsForAdminAndCoach() {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <WelcomeCard />
+        </Grid>
+        <Grid item xs={12}>
+          <DashboardIntroText />
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h5" flexGrow={1}>

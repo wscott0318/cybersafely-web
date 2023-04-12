@@ -7,6 +7,7 @@ import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserScore } from '../../../../components/common/UserScore'
 import { WelcomeCard } from '../../../../components/common/WelcomeCard'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { DashboardIntroText } from '../../../../components/shared/DashboardIntroText'
 import {
   SchoolRole,
   UpdateUserParentalApprovalMutationHookResult,
@@ -107,12 +108,18 @@ function Home() {
           <WelcomeCard />
         </Grid>
         <Grid item xs={12}>
+          <DashboardIntroText />
+        </Grid>
+        <Grid item xs={12}>
           <DataGridViewer
             title="Children"
             query={query}
             columns={columns}
             data={query.data?.users}
-            href={(e) => `/dashboard/parent/child/${e.id}`}
+            href={(e) => ({
+              pathname: '/dashboard/parent/child/[id]',
+              query: { id: e.id },
+            })}
             initialSortModel={{ field: 'createdAt', sort: 'desc' }}
             actions={
               <DataGridActions>
