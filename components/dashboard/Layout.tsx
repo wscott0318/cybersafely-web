@@ -154,10 +154,15 @@ export type DashboardLayoutProps = {
 }
 
 function WelcomeModal({ onSubmit }: { onSubmit: () => void }) {
+  const logoUrl = useLogoUrl()
+
   return (
     <Stack>
       <Box>
-        <Typography variant="h6">Welcome to the CyberSafely.ai Pilot Program</Typography>
+        <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
+        <Typography variant="h6" mt={2}>
+          Welcome to the CyberSafely.ai Pilot Program
+        </Typography>
         <Typography mt={1}>
           We are happy to have you join us on refining CyberSafely.ai - please use the chat button in the bottom right
           to connect with us on any questions and we will get back to you promptly. We are around 24/7!
