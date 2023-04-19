@@ -441,8 +441,8 @@ mutation executeAction($type: ActionEnum!, $postId: ID!) {
   executeAction(type: $type, postId: $postId)
 }
 
-mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
-  updateUserParentalApproval(id: $id, approve: $approve)
+mutation updateUserParentalApproval($id: ID!, $approve: Boolean!, $signatureUploadId: ID) {
+  updateUserParentalApproval(id: $id, approve: $approve, signatureUploadId: $signatureUploadId)
 }
 
 mutation previewImport($input: PreviewImportInput!) {

@@ -299,6 +299,7 @@ export type MutationUpdateUserArgs = {
 export type MutationUpdateUserParentalApprovalArgs = {
   approve: Scalars['Boolean'];
   id: Scalars['ID'];
+  signatureUploadId?: InputMaybe<Scalars['ID']>;
 };
 
 export type Notification = {
@@ -971,6 +972,7 @@ export type ExecuteActionMutation = { __typename?: 'Mutation', executeAction: bo
 export type UpdateUserParentalApprovalMutationVariables = Exact<{
   id: Scalars['ID'];
   approve: Scalars['Boolean'];
+  signatureUploadId?: InputMaybe<Scalars['ID']>;
 }>;
 
 
@@ -2460,8 +2462,12 @@ export type ExecuteActionMutationHookResult = ReturnType<typeof useExecuteAction
 export type ExecuteActionMutationResult = Apollo.MutationResult<ExecuteActionMutation>;
 export type ExecuteActionMutationOptions = Apollo.BaseMutationOptions<ExecuteActionMutation, ExecuteActionMutationVariables>;
 export const UpdateUserParentalApprovalDocument = gql`
-    mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
-  updateUserParentalApproval(id: $id, approve: $approve)
+    mutation updateUserParentalApproval($id: ID!, $approve: Boolean!, $signatureUploadId: ID) {
+  updateUserParentalApproval(
+    id: $id
+    approve: $approve
+    signatureUploadId: $signatureUploadId
+  )
 }
     `;
 export type UpdateUserParentalApprovalMutationFn = Apollo.MutationFunction<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>;
@@ -2481,6 +2487,7 @@ export type UpdateUserParentalApprovalMutationFn = Apollo.MutationFunction<Updat
  *   variables: {
  *      id: // value for 'id'
  *      approve: // value for 'approve'
+ *      signatureUploadId: // value for 'signatureUploadId'
  *   },
  * });
  */

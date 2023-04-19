@@ -412,6 +412,7 @@ function Sidebar() {
       return (
         <CollapsableList>
           <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/parent/children" icon={<PersonIcon />} title="Children" />
         </CollapsableList>
       )
 

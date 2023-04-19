@@ -27,7 +27,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/coach/students">
     | StaticRoute<"/dashboard">
     | StaticRoute<"/dashboard/notifications">
-    | DynamicRoute<"/dashboard/parent/child/[id]", { "id": string }>
+    | StaticRoute<"/dashboard/parent/children">
     | StaticRoute<"/dashboard/parent/home">
     | StaticRoute<"/dashboard/profile">
     | StaticRoute<"/dashboard/school">

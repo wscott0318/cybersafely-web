@@ -31,6 +31,7 @@
     "check-password-strength": "^2.0.7",
     "date-fns": "^2.29.3",
     "graphql": "^16.6.0",
+    "html2canvas": "^1.4.1",
     "next": "13.2.3",
     "next-mdx-remote": "^4.4.1",
     "nextjs-routes": "^1.0.8",
