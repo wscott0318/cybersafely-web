@@ -42,8 +42,12 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/staff/users">
     | StaticRoute<"/dashboard/student/home">
     | StaticRoute<"/dashboard/student/posts">
+    | StaticRoute<"/how-it-works">
     | StaticRoute<"/">
-    | DynamicRoute<"/invite/[token]", { "token": string }>;
+    | DynamicRoute<"/invite/[token]", { "token": string }>
+    | StaticRoute<"/parental-consent">
+    | StaticRoute<"/privacy-policy">
+    | StaticRoute<"/terms">;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;
