@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Config } from '../helpers/config'
+import { useUser } from './context/auth'
 
 // prettier-ignore
 function loadIntercom() {
@@ -19,19 +20,24 @@ function updateIntercom() {
 }
 
 type IntercomProviderProps = {
-  children: JSX.Element
+  children: React.ReactNode
 }
 
 export function IntercomProvider({ children }: IntercomProviderProps) {
   const router = useRouter()
 
-  if (typeof window !== 'undefined') {
-    loadIntercom()
-    bootIntercom()
-  }
+  const { user } = useUser()
 
   useEffect(() => {
-    const handleRouteChange = (url: string) => {
+    loadIntercom()
+    bootIntercom({
+      name: user.name,
+      email: user.email,
+    })
+  }, [user])
+
+  useEffect(() => {
+    const handleRouteChange = () => {
       if (typeof window !== 'undefined') {
         updateIntercom()
       }
@@ -44,5 +50,5 @@ export function IntercomProvider({ children }: IntercomProviderProps) {
     }
   }, [router.events])
 
-  return children
+  return children as JSX.Element
 }
