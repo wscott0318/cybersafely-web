@@ -1,12 +1,12 @@
 import { Typography } from '@mui/material'
-import { Dancing_Script } from 'next/font/google'
+import { Pacifico } from 'next/font/google'
 import { forwardRef } from 'react'
 import { useFormContext } from 'react-hook-form'
 
-const cursive = Dancing_Script({
+const cursive = Pacifico({
   preload: true,
   display: 'swap',
-  weight: ['500'],
+  weight: ['400'],
   subsets: ['latin'],
   fallback: ['Helvetica', 'Arial', 'sans-serif'],
 })
