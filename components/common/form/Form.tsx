@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LoadingButton } from '@mui/lab'
-import { Stack } from '@mui/material'
+import { ButtonProps, Stack } from '@mui/material'
 import { useCallback, useState } from 'react'
 import { DeepPartial, FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -11,6 +11,7 @@ type FormProps<T> = {
   submit?: string
   onSubmit: (data: T, dirty: Partial<T>) => void | Promise<void>
   defaultValues?: Partial<T>
+  buttonProps?: ButtonProps
 }
 
 export function Form<T extends {}>(props: FormProps<T>) {
@@ -42,7 +43,7 @@ export function Form<T extends {}>(props: FormProps<T>) {
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Stack>
           {props.children}
-          <LoadingButton loading={loading} type="submit">
+          <LoadingButton {...props.buttonProps} loading={loading} type="submit">
             {props.submit ?? 'Submit'}
           </LoadingButton>
         </Stack>
