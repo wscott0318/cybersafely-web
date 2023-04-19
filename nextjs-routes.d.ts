@@ -11,19 +11,19 @@ declare module "nextjs-routes" {
     | StaticRoute<"/auth">
     | StaticRoute<"/auth/login">
     | StaticRoute<"/auth/register">
-    | DynamicRoute<"/auth/reset/[token]", { "token": string }>
     | StaticRoute<"/auth/reset">
+    | DynamicRoute<"/auth/reset/[token]", { "token": string }>
     | StaticRoute<"/dashboard/admin/home">
-    | DynamicRoute<"/dashboard/admin/members/[memberId]", { "memberId": string }>
     | StaticRoute<"/dashboard/admin/members">
-    | DynamicRoute<"/dashboard/admin/posts/[postId]", { "postId": string }>
+    | DynamicRoute<"/dashboard/admin/members/[memberId]", { "memberId": string }>
     | StaticRoute<"/dashboard/admin/posts">
+    | DynamicRoute<"/dashboard/admin/posts/[postId]", { "postId": string }>
     | StaticRoute<"/dashboard/admin/students">
     | StaticRoute<"/dashboard/coach/home">
-    | DynamicRoute<"/dashboard/coach/members/[memberId]", { "memberId": string }>
     | StaticRoute<"/dashboard/coach/members">
-    | DynamicRoute<"/dashboard/coach/posts/[postId]", { "postId": string }>
+    | DynamicRoute<"/dashboard/coach/members/[memberId]", { "memberId": string }>
     | StaticRoute<"/dashboard/coach/posts">
+    | DynamicRoute<"/dashboard/coach/posts/[postId]", { "postId": string }>
     | StaticRoute<"/dashboard/coach/students">
     | StaticRoute<"/dashboard">
     | StaticRoute<"/dashboard/notifications">
@@ -32,18 +32,19 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/profile">
     | StaticRoute<"/dashboard/school">
     | StaticRoute<"/dashboard/staff/home">
-    | DynamicRoute<"/dashboard/staff/posts/[postId]", { "postId": string }>
     | StaticRoute<"/dashboard/staff/posts">
+    | DynamicRoute<"/dashboard/staff/posts/[postId]", { "postId": string }>
+    | StaticRoute<"/dashboard/staff/schools">
     | DynamicRoute<"/dashboard/staff/schools/[schoolId]", { "schoolId": string }>
     | DynamicRoute<"/dashboard/staff/schools/[schoolId]/members/[memberId]", { "schoolId": string; "memberId": string }>
-    | StaticRoute<"/dashboard/staff/schools">
     | StaticRoute<"/dashboard/staff/settings">
     | StaticRoute<"/dashboard/staff/staff">
     | StaticRoute<"/dashboard/staff/users">
     | StaticRoute<"/dashboard/student/home">
     | StaticRoute<"/dashboard/student/posts">
     | StaticRoute<"/">
-    | DynamicRoute<"/invite/[token]", { "token": string }>;
+    | DynamicRoute<"/invite/[token]", { "token": string }>
+    | StaticRoute<"/why">;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;
