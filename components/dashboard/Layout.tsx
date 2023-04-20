@@ -43,6 +43,7 @@ import { useLogoUrl, useMobile } from '../../helpers/hooks'
 import { MyUserDocument, MyUserQuery, MyUserQueryVariables } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
+import { IntercomProvider } from '../../utils/intercom'
 import { StorageManager } from '../../utils/storage'
 import { DropDownButton } from '../common/DropDownButton'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
@@ -324,7 +325,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
           </Drawer>
           {open && !isTablet && <Box width={width} flexShrink={0} />}
           <Container maxWidth={props.maxWidth ?? 'xl'} sx={{ py: 2 }}>
-            {props.children}
+            <IntercomProvider>{props.children}</IntercomProvider>
             <Footer />
           </Container>
         </Stack>
@@ -412,6 +413,7 @@ function Sidebar() {
       return (
         <CollapsableList>
           <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/parent/children" icon={<PersonIcon />} title="Children" />
         </CollapsableList>
       )
 

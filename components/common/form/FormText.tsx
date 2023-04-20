@@ -30,6 +30,7 @@ type FormTextProps = {
   hidePasswordStrength?: boolean
   multiline?: boolean
   inputProps?: TextFieldProps
+  disabled?: boolean
 }
 
 function PasswordStrengthAdornment(props: FormTextProps) {
@@ -60,6 +61,7 @@ export function FormText(props: FormTextProps) {
             type={props.type}
             label={props.label}
             onChange={onChange}
+            disabled={props.disabled}
             required={props.required}
             error={!!errors[props.name]}
             InputProps={{ inputComponent: CustomPhoneInput }}
@@ -77,6 +79,7 @@ export function FormText(props: FormTextProps) {
       fullWidth
       type={props.type}
       label={props.label}
+      disabled={props.disabled}
       required={props.required}
       multiline={props.multiline}
       error={!!errors[props.name]}
@@ -91,4 +94,3 @@ export function FormText(props: FormTextProps) {
     />
   )
 }
-546545

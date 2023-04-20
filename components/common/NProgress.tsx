@@ -7,7 +7,14 @@ export function LoadingLogo() {
   return (
     <Box position="relative" display="flex" alignItems="center" justifyContent="center">
       <CircularProgress size={128} thickness={1.5} sx={{ opacity: 0.5 }} />
-      <NextImage alt="Logo" src="/images/logo-loading.png" width={72} height={72} style={{ position: 'absolute' }} />
+      <NextImage
+        priority
+        alt="Logo"
+        width={72}
+        height={72}
+        src="/images/logo-loading.png"
+        style={{ position: 'absolute' }}
+      />
     </Box>
   )
 }

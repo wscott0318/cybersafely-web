@@ -27,7 +27,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/coach/students">
     | StaticRoute<"/dashboard">
     | StaticRoute<"/dashboard/notifications">
-    | DynamicRoute<"/dashboard/parent/child/[id]", { "id": string }>
+    | StaticRoute<"/dashboard/parent/children">
     | StaticRoute<"/dashboard/parent/home">
     | StaticRoute<"/dashboard/profile">
     | StaticRoute<"/dashboard/school">
@@ -42,9 +42,13 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/staff/users">
     | StaticRoute<"/dashboard/student/home">
     | StaticRoute<"/dashboard/student/posts">
+    | StaticRoute<"/how-it-works">
     | StaticRoute<"/">
     | DynamicRoute<"/invite/[token]", { "token": string }>
-    | StaticRoute<"/why">;
+    | StaticRoute<"/why">
+    | StaticRoute<"/parental-consent">
+    | StaticRoute<"/privacy-policy">
+    | StaticRoute<"/terms">;
 
   interface StaticRoute<Pathname> {
     pathname: Pathname;
@@ -79,8 +83,8 @@ declare module "nextjs-routes" {
 
 // prettier-ignore
 declare module "next/link" {
-  import type { Route } from "nextjs-routes";
   import type { LinkProps as NextLinkProps } from "next/dist/client/link";
+  import type { Route } from "nextjs-routes";
   import type {
     AnchorHTMLAttributes,
     DetailedReactHTMLElement,
@@ -116,8 +120,8 @@ declare module "next/link" {
 
 // prettier-ignore
 declare module "next/router" {
-  import type { Locale, Route, RoutedQuery } from "nextjs-routes";
   import type { NextRouter as Router } from "next/dist/client/router";
+  import type { Locale, Route } from "nextjs-routes";
   export * from "next/dist/client/router";
   export { default } from "next/dist/client/router";
 

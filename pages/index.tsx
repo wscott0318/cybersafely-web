@@ -1,11 +1,13 @@
-import { Box, Button, Container, Divider, List, ListItem, Stack, Typography } from '@mui/material'
+import { Box, Button, Container, Divider, Link, List, ListItem, Stack, Typography } from '@mui/material'
 import NextImage from 'next/image'
+import NextLink from 'next/link'
 import { z } from 'zod'
 import { Form } from '../components/common/form/Form'
 import { FormSelect } from '../components/common/form/FormSelect'
 import { FormText } from '../components/common/form/FormText'
 import { TOOLBAR_HEIGHT } from '../components/layout/LandingHeader'
 import LandingLayout from '../components/layout/LandingLayout'
+import { Config } from '../helpers/config'
 import { useLogoUrl, useMobile } from '../helpers/hooks'
 import { useContactMutation } from '../schema'
 import { useAlert } from '../utils/context/alert'
@@ -316,6 +318,34 @@ function Contact() {
               />
             </Form>
           </Box>
+        </Stack>
+      </Container>
+    </Box>
+  )
+}
+
+function Footer() {
+  const logoUrl = useLogoUrl()
+
+  return (
+    <Box textAlign="center" bgcolor="background.paper" py={4} component="footer">
+      <Container disableGutters>
+        <Stack px={2} alignItems="center" textAlign="center">
+          <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
+          <Typography>
+            &copy; 2022 - {new Date().getFullYear()} {Config.app.name}
+          </Typography>
+          <Stack justifyContent="center" direction="row" flexWrap="wrap" gap={2} spacing={0}>
+            <NextLink href="/privacy-policy" passHref legacyBehavior>
+              <Link>Privacy Policy</Link>
+            </NextLink>
+            <NextLink href="/terms" passHref legacyBehavior>
+              <Link>Terms</Link>
+            </NextLink>
+            <NextLink href="/how-it-works" passHref legacyBehavior>
+              <Link>How It Works</Link>
+            </NextLink>
+          </Stack>
         </Stack>
       </Container>
     </Box>
