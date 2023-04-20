@@ -1,6 +1,5 @@
 import { Box, Container, Stack, Typography } from '@mui/material'
 import NextImage from 'next/image'
-import { TOOLBAR_HEIGHT } from '../components/layout/LandingHeader'
 import LandingLayout from '../components/layout/LandingLayout'
 import { useLogoUrl, useMobile } from '../helpers/hooks'
 
@@ -49,7 +48,6 @@ function Section2() {
 
   return (
     <Box position="relative" bgcolor="primary.main" overflow="hidden">
-      <Box id="mission" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start">
           <Typography variant="h4" fontWeight="bold" textAlign="left" mb={3}>
@@ -163,7 +161,6 @@ function Section3() {
 
   return (
     <Box position="relative">
-      <Box id="mission" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start">
           <Typography variant="h4" fontWeight="bold" textAlign="left">

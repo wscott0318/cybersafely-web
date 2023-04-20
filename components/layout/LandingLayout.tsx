@@ -1,12 +1,15 @@
-import { Box } from '@mui/material'
+import { Box, Toolbar } from '@mui/material'
 import Footer from './LandingFooter'
 import Header from './LandingHeader'
 
-function LandingLayout({ children }: { children: React.ReactNode }) {
+function LandingLayout({ children, enableMargin }: { children: React.ReactNode; enableMargin?: boolean }) {
   return (
     <Box>
       <Header />
-      <Box component="main">{children}</Box>
+      {!!enableMargin && <Toolbar />}
+      <Box component="main" sx={{ minHeight: '100vh' }}>
+        {children}
+      </Box>
       <Footer />
     </Box>
   )

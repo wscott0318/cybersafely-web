@@ -4,7 +4,6 @@ import { z } from 'zod'
 import { Form } from '../components/common/form/Form'
 import { FormSelect } from '../components/common/form/FormSelect'
 import { FormText } from '../components/common/form/FormText'
-import { TOOLBAR_HEIGHT } from '../components/layout/LandingHeader'
 import LandingLayout from '../components/layout/LandingLayout'
 import { useLogoUrl, useMobile } from '../helpers/hooks'
 import { useContactMutation } from '../schema'
@@ -52,7 +51,6 @@ function Section1() {
 
   return (
     <Box position="relative" bgcolor="primary.main">
-      <Box id="mission" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
           <Typography variant="h4" fontWeight="bold" textAlign="left">
@@ -81,7 +79,6 @@ function Section2() {
 
   return (
     <Box position="relative">
-      <Box id="mission" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
           <Typography variant="h4" fontWeight="bold" textAlign="left">
@@ -145,7 +142,6 @@ function Section3() {
 
   return (
     <Box position="relative" bgcolor="primary.main">
-      <Box id="mission" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
           <Typography variant="h4" fontWeight="bold" textAlign="left">
@@ -181,7 +177,6 @@ function Section4() {
 
   return (
     <Box position="relative">
-      <Box id="mission" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
           <Typography variant="h4" fontWeight="bold" textAlign="left">
@@ -229,7 +224,6 @@ function Contact() {
 
   return (
     <Box position="relative">
-      <Box id="contact" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={2} py={16} alignItems="center" textAlign="center">
           <Typography variant="h4">Contact</Typography>
