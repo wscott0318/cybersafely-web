@@ -1,4 +1,4 @@
-import { TextField } from '@mui/material'
+import { TextField, TextFieldProps } from '@mui/material'
 import { forwardRef } from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
 import PhoneInput from 'react-phone-number-input/input'
@@ -29,6 +29,7 @@ type FormTextProps = {
   type?: 'email' | 'password' | 'phone'
   hidePasswordStrength?: boolean
   multiline?: boolean
+  inputProps?: TextFieldProps
   disabled?: boolean
 }
 
@@ -54,6 +55,7 @@ export function FormText(props: FormTextProps) {
         control={control}
         render={({ field: { value, onChange } }) => (
           <TextField
+            {...props.inputProps}
             fullWidth
             value={value}
             type={props.type}
@@ -73,6 +75,7 @@ export function FormText(props: FormTextProps) {
   return (
     <TextField
       {...register(props.name)}
+      {...props.inputProps}
       fullWidth
       type={props.type}
       label={props.label}

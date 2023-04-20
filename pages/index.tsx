@@ -1,88 +1,13 @@
-import { alpha, AppBar, Box, Button, Container, Divider, Link, Stack, Toolbar, Typography } from '@mui/material'
+import { Box, Button, Container, Divider, List, ListItem, Stack, Typography } from '@mui/material'
 import NextImage from 'next/image'
-import NextLink from 'next/link'
-import { useEffect, useState } from 'react'
 import { z } from 'zod'
 import { Form } from '../components/common/form/Form'
 import { FormSelect } from '../components/common/form/FormSelect'
 import { FormText } from '../components/common/form/FormText'
-import { Config } from '../helpers/config'
-import { useLogoUrl, useOnTop } from '../helpers/hooks'
+import LandingLayout from '../components/layout/LandingLayout'
+import { useLogoUrl, useMobile } from '../helpers/hooks'
 import { useContactMutation } from '../schema'
 import { useAlert } from '../utils/context/alert'
-
-const TOOLBAR_HEIGHT = 88.5
-
-function LoginButton() {
-  const [loggedIn, setLoggedIn] = useState(false)
-
-  useEffect(() => {
-    if (!!StorageManager) {
-      setLoggedIn(true)
-    }
-  }, [])
-
-  if (loggedIn) {
-    return (
-      <NextLink href="/dashboard" passHref legacyBehavior>
-        <Button size="large">Dashboard</Button>
-      </NextLink>
-    )
-  }
-
-  return (
-    <NextLink href="/auth/login" passHref legacyBehavior>
-      <Button size="large">Login</Button>
-    </NextLink>
-  )
-}
-
-function Header() {
-  const logoUrl = useLogoUrl()
-  const { isOnTop } = useOnTop(50)
-
-  return (
-    <AppBar
-      variant="elevation"
-      elevation={isOnTop ? 0 : 2}
-      sx={(theme) => ({
-        transition: 'all 0.25s linear',
-        color: theme.palette.text.primary,
-        backdropFilter: isOnTop ? undefined : 'blur(10px)',
-        background: isOnTop ? 'transparent' : alpha(theme.palette.background.paper, 0.95),
-      })}
-    >
-      <Toolbar disableGutters>
-        <Container disableGutters>
-          <Stack spacing={1} alignItems="center" direction="row" px={2} py={2}>
-            <NextLink href="/">
-              <NextImage
-                alt="Logo"
-                src={logoUrl}
-                height={isOnTop ? 75 : 50}
-                width={isOnTop ? 162 : 108}
-                style={{ transition: 'all 0.25s linear' }}
-              />
-            </NextLink>
-            <Box flexGrow={1} />
-            <Button color="inherit" variant="text" size="large" href="#mission">
-              Mission
-            </Button>
-            <Button color="inherit" variant="text" size="large" href="#contact">
-              Contact
-            </Button>
-            {/* TODO: This can be removed in the future */}
-            {Config.enableLogin && (
-              <Box pl={1}>
-                <LoginButton />
-              </Box>
-            )}
-          </Stack>
-        </Container>
-      </Toolbar>
-    </AppBar>
-  )
-}
 
 function Hero() {
   const logoUrl = useLogoUrl()
@@ -103,17 +28,16 @@ function Hero() {
       <Box minHeight="100vh" display="flex" alignItems="center">
         <Container disableGutters>
           <Stack alignItems="center" textAlign="center" spacing={8} px={2} py={16}>
-            <Typography variant="h3">Coming Soon!</Typography>
             <Box width="100%" maxWidth={540}>
               <Box position="relative" paddingTop="46%">
                 <NextImage fill sizes="540px" alt="Logo" src={logoUrl} style={{ objectFit: 'contain' }} />
               </Box>
             </Box>
-            <Typography variant="h5">
-              A tool to help schools educate students on how to pivot negative behavior online
+            <Typography variant="h5" fontWeight="bold">
+              A tool to help schools increase student safety
             </Typography>
-            <Button size="large" href="#mission">
-              Learn More
+            <Button sx={{ py: 2 }} size="large" href="https://forms.office.com/r/ggKZYL0acy" target="_blank">
+              Join our pilot program!
             </Button>
           </Stack>
         </Container>
@@ -122,19 +46,158 @@ function Hero() {
   )
 }
 
-function Mission() {
+function Section1() {
+  const { isMobile } = useMobile()
+
+  return (
+    <Box position="relative" bgcolor="primary.main">
+      <Container disableGutters>
+        <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
+          <Typography variant="h4" fontWeight="bold" textAlign="left">
+            Help protect today’s youth and their future success
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            One of the most concerning areas for parents and schools has been students’ use of social media. Online
+            threats and other harmful activity directed toward our youth has increased at an alarming rate.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            Promising young athletes have had their lives and careers negatively impacted by certain activity on social
+            media.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            CyberSafely.ai™ is a multifaceted approach to help schools, parents, and other youth organizations, identify
+            and respond to these threats.
+          </Typography>
+        </Stack>
+      </Container>
+    </Box>
+  )
+}
+
+function Section2() {
+  const { isMobile } = useMobile()
+
   return (
     <Box position="relative">
-      <Box id="mission" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
-        <Stack px={2} py={16} alignItems="center" textAlign="center">
-          <Typography variant="h4">Our Mission</Typography>
-          <Typography variant="h6">
-            We are dedicated to support today’s youth by identifying and educating them on how their future can be
-            affected by their behavior on social media. Our mission is designed to help them protect their future
-            success by addressing critical societal issues such as bullying, sexual content, suicide and the illegal use
-            of weapons.
+        <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
+          <Typography variant="h4" fontWeight="bold" textAlign="left">
+            The intent is to help students, not to invade their privacy
           </Typography>
+          <Typography variant="h6" textAlign="left">
+            CyberSafely.ai™ is designed to help protect student safety and welfare by teaching them to be aware of and
+            identify harmful activity received.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            In addition, by choosing to pivot negative behavior before it is sent, students will benefit, and have an
+            edge as they compete toward college and career.
+          </Typography>
+          <Typography variant="h5" fontWeight="bold">
+            How It Works:
+          </Typography>
+          <List sx={{ px: 4 }}>
+            <ListItem
+              sx={{
+                padding: 0,
+                listStyleType: 'disc',
+                display: 'list-item',
+              }}
+            >
+              <Typography variant="h6" textAlign="left">
+                CyberSafely.ai™ provides real-time information on the student’s social media accounts
+              </Typography>
+            </ListItem>
+            <ListItem
+              sx={{
+                padding: 0,
+                listStyleType: 'disc',
+                display: 'list-item',
+              }}
+            >
+              <Typography variant="h6" textAlign="left">
+                It scans for pre-determined, variable areas of concern such as bullying, suicide, sexual content, and
+                illegal use of weapons
+              </Typography>
+            </ListItem>
+            <ListItem
+              sx={{
+                padding: 0,
+                listStyleType: 'disc',
+                display: 'list-item',
+              }}
+            >
+              <Typography variant="h6" textAlign="left">
+                The software will identify and send a report to designated recipients for review and response
+              </Typography>
+            </ListItem>
+          </List>
+        </Stack>
+      </Container>
+    </Box>
+  )
+}
+
+function Section3() {
+  const { isMobile } = useMobile()
+
+  return (
+    <Box position="relative" bgcolor="primary.main">
+      <Container disableGutters>
+        <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
+          <Typography variant="h4" fontWeight="bold" textAlign="left">
+            About Us
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            We are dedicated to support today’s youth by identifying and educating them on how their future can be
+            affected by their behavior on social media.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            Our founder, Neal Alexander, has spent many years in the security industry, and in coaching youth sports
+            teams. His experience is what led him to create CyberSafely.ai™.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            <Typography display="inline" sx={{ fontStyle: 'italic' }}>
+              “I received a letter many, many years ago from a parent thanking me for the time I spent with their child
+              as a coach and letting me know the influence I had. This sticks with me and I think about it often.
+              Coaches truly have a great opportunity to influence, for the rest of their lives, our youth and we can
+              help them do that.”, -{' '}
+            </Typography>
+            <Typography display="inline" fontWeight="bold">
+              Neal Alexander, Founder, CyberSafely.ai™
+            </Typography>
+          </Typography>
+        </Stack>
+      </Container>
+    </Box>
+  )
+}
+
+function Section4() {
+  const { isMobile } = useMobile()
+
+  return (
+    <Box position="relative">
+      <Container disableGutters>
+        <Stack px={isMobile ? 2 : 16} py={16} alignItems="flex-start" textAlign="center">
+          <Typography variant="h4" fontWeight="bold" textAlign="left">
+            Pilot School Program
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            CyberSafely.ai™ is currently selecting schools to participate in the Pilot School Program.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            Participating schools are asked to serve in an advisory role and testing of the web-based application. We
+            are suggesting each school select 100-200 students.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
+            To show our appreciation to all of our Pilot Schools, CyberSafely.ai™ is proud to offer a $500 Scholarship
+            awarded to a student of their choice, every year the school is in the program.
+          </Typography>
+          <Box sx={{ alignSelf: 'center' }}>
+            <Button sx={{ mt: 2, px: 4 }} size="large" href="mailto:tonyf@cybersafely.ai" target="_blank">
+              Contact Us
+            </Button>
+          </Box>
         </Stack>
       </Container>
     </Box>
@@ -161,7 +224,6 @@ function Contact() {
 
   return (
     <Box position="relative">
-      <Box id="contact" position="absolute" top={-TOOLBAR_HEIGHT} />
       <Container disableGutters>
         <Stack px={2} py={16} alignItems="center" textAlign="center">
           <Typography variant="h4">Contact</Typography>
@@ -170,6 +232,7 @@ function Contact() {
           </Typography>
           <Box maxWidth={500} width="100%" textAlign="left">
             <Form
+              buttonProps={{ sx: { fontSize: 18, py: 1.5 } }}
               schema={schema}
               onSubmit={async (input) => {
                 await contact({ variables: { input } })
@@ -182,16 +245,54 @@ function Contact() {
               }}
             >
               <Stack direction="row">
-                <FormText name="firstName" label="First Name" required />
-                <FormText name="lastName" label="Last Name" required />
+                <FormText
+                  inputProps={{ variant: 'outlined', size: 'medium' }}
+                  name="firstName"
+                  label="First Name"
+                  required
+                />
+                <FormText
+                  inputProps={{ variant: 'outlined', size: 'medium' }}
+                  name="lastName"
+                  label="Last Name"
+                  required
+                />
               </Stack>
-              <FormText name="email" label="E-mail Address" type="email" required />
-              <FormText name="phone" label="Phone Number" type="phone" />
-              <FormText name="jobTitle" label="Job Title" />
-              <FormText name="schoolName" label="School Name" required />
-              <FormText name="state" label="State/Region" required />
-              <FormText name="students" label="Number of Students" required />
+              <FormText
+                inputProps={{ variant: 'outlined', size: 'medium' }}
+                name="email"
+                label="E-mail Address"
+                type="email"
+                required
+              />
+              <FormText
+                inputProps={{ variant: 'outlined', size: 'medium' }}
+                name="phone"
+                label="Phone Number"
+                type="phone"
+              />
+              <FormText inputProps={{ variant: 'outlined', size: 'medium' }} name="jobTitle" label="Job Title" />
+              <FormText
+                inputProps={{ variant: 'outlined', size: 'medium' }}
+                name="schoolName"
+                label="School Name"
+                required
+              />
+              <FormText
+                inputProps={{ variant: 'outlined', size: 'medium' }}
+                name="state"
+                label="State/Region"
+                required
+              />
+              <FormText
+                inputProps={{ variant: 'outlined', size: 'medium' }}
+                name="students"
+                label="Number of Students"
+                required
+              />
               <FormSelect
+                variant="outlined"
+                inputProps={{ variant: 'outlined', size: 'medium', label: 'What best describes your school?' }}
                 required
                 name="describe"
                 label="What best describes your school?"
@@ -201,7 +302,12 @@ function Contact() {
                   { value: 'Other', title: 'Other' },
                 ]}
               />
-              <FormText name="comments" label="Comments, questions, concerns?" multiline />
+              <FormText
+                inputProps={{ variant: 'outlined', size: 'medium' }}
+                name="comments"
+                label="Comments, questions, concerns?"
+                multiline
+              />
             </Form>
           </Box>
         </Stack>
@@ -210,45 +316,16 @@ function Contact() {
   )
 }
 
-function Footer() {
-  const logoUrl = useLogoUrl()
-
-  return (
-    <Box textAlign="center" bgcolor="background.paper" py={4} component="footer">
-      <Container disableGutters>
-        <Stack px={2} alignItems="center" textAlign="center">
-          <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
-          <Typography>
-            &copy; 2022 - {new Date().getFullYear()} {Config.app.name}
-          </Typography>
-          <Stack justifyContent="center" direction="row" flexWrap="wrap" gap={2} spacing={0}>
-            <NextLink href="/privacy-policy" passHref legacyBehavior>
-              <Link>Privacy Policy</Link>
-            </NextLink>
-            <NextLink href="/terms" passHref legacyBehavior>
-              <Link>Terms</Link>
-            </NextLink>
-            <NextLink href="/how-it-works" passHref legacyBehavior>
-              <Link>How It Works</Link>
-            </NextLink>
-          </Stack>
-        </Stack>
-      </Container>
-    </Box>
-  )
-}
-
 export default function Landing() {
   return (
-    <Box>
-      <Header />
-      <Box component="main">
-        <Hero />
-        <Mission />
-        <Divider />
-        <Contact />
-      </Box>
-      <Footer />
-    </Box>
+    <LandingLayout>
+      <Hero />
+      <Section1 />
+      <Section2 />
+      <Section3 />
+      <Section4 />
+      <Divider />
+      <Contact />
+    </LandingLayout>
   )
 }
