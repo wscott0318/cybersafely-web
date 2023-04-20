@@ -3,6 +3,9 @@ import NextImage from 'next/image'
 import LandingLayout from '../components/layout/LandingLayout'
 import { useLogoUrl, useMobile } from '../helpers/hooks'
 
+import dynamic from 'next/dynamic'
+const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
+
 function Section1() {
   const logoUrl = useLogoUrl()
 
@@ -169,9 +172,7 @@ function Section3() {
           <Typography variant="h6" textAlign="left">
             CyberSafely.ai™ addresses issues such as bullying, sexual content, suicide, and the illegal use of weapons.
           </Typography>
-          <Typography variant="h6" textAlign="left">
-            [Testimonial video]
-          </Typography>
+          <ReactPlayer url="/TestimonialVideo.mp4" controls={true} width="100%" height="100%" />
           <Typography variant="h6" textAlign="left" sx={{ fontStyle: 'italic' }}>
             “We, as coaches, are often surrogate parents, mentors and the difference-makers in the lives of our
             athletes.” Coach Don Montgomery from his article “Lessons from Leaders”
