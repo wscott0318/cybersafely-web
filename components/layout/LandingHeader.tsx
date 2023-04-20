@@ -62,9 +62,14 @@ function Header() {
             </NextLink>
             <Box flexGrow={1} />
             {!isMobile && (
-              <Button color="inherit" variant="text" size="large" href="/why">
-                WHY CYBERSAFELY.ai
-              </Button>
+              <>
+                <Button color="inherit" variant="text" size="large" href="/resources">
+                  Resources
+                </Button>
+                <Button color="inherit" variant="text" size="large" href="/why">
+                  WHY CYBERSAFELY.ai
+                </Button>
+              </>
             )}
             {/* TODO: This can be removed in the future */}
             {Config.enableLogin && (
