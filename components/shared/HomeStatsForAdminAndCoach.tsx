@@ -5,7 +5,7 @@ import { usePostCardsQuery, useStatsForSchoolQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { InfoCard, InfoCardProps } from '../common/InfoCard'
-import { WelcomeCard } from '../common/WelcomeCard'
+import { DashboardIntroText } from './DashboardIntroText'
 
 function useMissingCards() {
   const schoolRole = useSchoolRole()
@@ -21,8 +21,6 @@ function useMissingCards() {
       if (!schoolRole.school.cover) {
         cards.push({ href: '/dashboard/school', message: 'School Cover' })
       }
-
-      cards.push({ href: '/dashboard/school', message: 'Billing' })
     }
 
     return cards
@@ -52,11 +50,11 @@ export function HomeStatsForAdminAndCoach() {
     <Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <WelcomeCard />
+          <DashboardIntroText />
         </Grid>
         <Grid item xs={12}>
           <Typography variant="h5" flexGrow={1}>
-            Cards
+            Highlights
           </Typography>
         </Grid>
         <Grid item xs={12} sm={6} md={4}>

@@ -20,7 +20,6 @@ query myUser($id: ID!) {
   user(id: $id) {
     id
     email
-    emailConfirmed
     name
     notificationCount
     avatar {
@@ -137,7 +136,6 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
       createdAt
       name
       email
-      emailConfirmed
       parentalApproval
       platforms
       avatar {
@@ -177,7 +175,6 @@ query user($id: ID!) {
     createdAt
     name
     email
-    emailConfirmed
     avatar {
       id
       url
@@ -276,14 +273,6 @@ mutation updatePassword($input: UpdatePasswordInput!) {
   updatePassword(input: $input)
 }
 
-mutation finalizeAccount($input: FinalizeAccountInput!) {
-  finalizeAccount(input: $input) {
-    user {
-      id
-    }
-  }
-}
-
 mutation resetPassword($input: ResetPasswordInput!) {
   resetPassword(input: $input) {
     user {
@@ -362,8 +351,8 @@ mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
   updateEmailSettings(input: $input)
 }
 
-query posts($schoolId: ID, $page: PageInput, $filter: PostFilter) {
-  posts(schoolId: $schoolId, page: $page, filter: $filter) {
+query posts($schoolId: ID, $userId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(schoolId: $schoolId, userId: $userId, page: $page, filter: $filter) {
     page {
       ...PageFragment
     }
@@ -452,8 +441,8 @@ mutation executeAction($type: ActionEnum!, $postId: ID!) {
   executeAction(type: $type, postId: $postId)
 }
 
-mutation updateUserParentalApproval($id: ID!, $approve: Boolean!) {
-  updateUserParentalApproval(id: $id, approve: $approve)
+mutation updateUserParentalApproval($id: ID!, $approve: Boolean!, $signatureUploadId: ID) {
+  updateUserParentalApproval(id: $id, approve: $approve, signatureUploadId: $signatureUploadId)
 }
 
 mutation previewImport($input: PreviewImportInput!) {
@@ -465,6 +454,19 @@ mutation previewImport($input: PreviewImportInput!) {
   }
 }
 
-mutation importAthletesAndParents($schoolId: ID!, $input: ImportAthletesAndParentsInput!) {
-  importAthletesAndParents(schoolId: $schoolId, input: $input)
+mutation importStudentsAndParents($schoolId: ID!, $input: ImportStudentsAndParentsInput!) {
+  importStudentsAndParents(schoolId: $schoolId, input: $input)
+}
+
+query invitedRole($token: String!) {
+  invitedRole(token: $token) {
+    type
+    schoolName
+    schoolLogoURL
+    isNewUser
+  }
+}
+
+mutation respondToInvitedRole($token: String!, $accept: Boolean!, $name: String, $password: String) {
+  respondToInvitedRole(token: $token, accept: $accept, name: $name, password: $password)
 }

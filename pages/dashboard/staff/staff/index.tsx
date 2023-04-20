@@ -4,11 +4,10 @@ import { GridColumns } from '@mui/x-data-grid'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
-import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
-import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
+import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
@@ -24,12 +23,6 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
     width: 300,
     field: 'email',
     headerName: 'E-mail',
-    valueGetter(params) {
-      return params.row
-    },
-    renderCell(params) {
-      return <UserEmail {...params.value} />
-    },
   },
   {
     width: 350,

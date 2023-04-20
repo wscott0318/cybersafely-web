@@ -31,7 +31,9 @@
     "check-password-strength": "^2.0.7",
     "date-fns": "^2.29.3",
     "graphql": "^16.6.0",
+    "html2canvas": "^1.4.1",
     "next": "13.2.3",
+    "next-mdx-remote": "^4.4.1",
     "nextjs-routes": "^1.0.8",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
@@ -39,6 +41,8 @@
     "react-hook-form": "^7.43.3",
     "react-lottie": "^1.2.3",
     "react-phone-number-input": "^3.2.19",
+    "react-player": "^2.12.0",
+    "remark-gfm": "^3.0.1",
     "typescript": "4.9.5",
     "zod": "^3.20.6"
   },

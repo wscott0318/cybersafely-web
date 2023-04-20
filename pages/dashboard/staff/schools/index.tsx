@@ -6,7 +6,7 @@ import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../comp
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { CreateSchoolForm } from '../../../../components/forms/CreateSchoolForm'
-import { namedOperations, SchoolsQuery, useCreateSchoolMutation, useSchoolsQuery } from '../../../../schema'
+import { SchoolsQuery, namedOperations, useCreateSchoolMutation, useSchoolsQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
 const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
@@ -61,7 +61,10 @@ function Schools() {
       query={query}
       columns={columns}
       data={query.data?.schools}
-      href={(e) => `/dashboard/staff/schools/${e.id}`}
+      href={(e) => ({
+        pathname: '/dashboard/staff/schools/[schoolId]',
+        query: { schoolId: e.id },
+      })}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>

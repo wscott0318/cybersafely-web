@@ -10,7 +10,6 @@ import { Config } from '../helpers/config'
 import { ApolloClientProvider } from '../libs/apollo'
 import createEmotionCache from '../utils/cache'
 import { AlertContextProvider } from '../utils/context/alert'
-import { IntercomProvider } from '../utils/intercom'
 import { createTheme } from '../utils/theme'
 
 const clientSideEmotionCache = createEmotionCache()
@@ -38,9 +37,7 @@ export default function MyApp(props: MyAppProps) {
         <AlertContextProvider>
           <ApolloClientProvider>
             <Alerts />
-            <IntercomProvider>
-              <Component {...pageProps} />
-            </IntercomProvider>
+            <Component {...pageProps} />
             <NProgress />
             {/* <ScrollToTop /> */}
           </ApolloClientProvider>

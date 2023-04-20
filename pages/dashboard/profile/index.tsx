@@ -9,7 +9,7 @@ function Profile() {
   const exclude = useMemo(() => {
     const values: Section[] = []
 
-    if (role !== 'ATHLETE') {
+    if (role !== 'STUDENT') {
       values.push('socials')
     }
     if (role !== 'COACH') {

@@ -7,16 +7,15 @@ import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
-import { EmptyFileAnimation } from '../../../../../components/common/EmptyFileAnimation'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
 import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
-import { UserEmail } from '../../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../../components/forms/InviteUserForm'
 import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolForm'
-import { AthletesTable } from '../../../../../components/shared/AthletesTable'
+import { StudentPostsTable } from '../../../../../components/shared/StudentPostsTable'
+import { StudentsTable } from '../../../../../components/shared/StudentsTable'
 import {
   UsersQuery,
   namedOperations,
@@ -43,12 +42,6 @@ const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['us
     width: 300,
     field: 'email',
     headerName: 'E-mail',
-    valueGetter(params) {
-      return params.row
-    },
-    renderCell(params) {
-      return <UserEmail {...params.value} />
-    },
   },
   {
     width: 200,
@@ -124,7 +117,7 @@ function SchoolMembers({ schoolId }: Props) {
                 type: 'custom',
                 title: 'Invite Member',
                 content: InviteUserForm,
-                props: { allow: ['ADMIN', 'COACH', 'ATHLETE'] },
+                props: { allow: ['ADMIN', 'COACH', 'STUDENT'] },
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: schoolId } } })
                 },
@@ -175,7 +168,7 @@ function School(props: Props) {
               <NavigationActions>
                 <TabList onChange={(_, tab) => setTab(tab)}>
                   <Tab label="Members" value="members" />
-                  <Tab label="Athletes" value="athletes" />
+                  <Tab label="Students" value="students" />
                   <Tab label="Details" value="details" />
                   <Tab label="Posts" value="posts" />
                 </TabList>
@@ -185,8 +178,8 @@ function School(props: Props) {
             <TabPanel value="members">
               <SchoolMembers {...props} />
             </TabPanel>
-            <TabPanel value="athletes">
-              <AthletesTable
+            <TabPanel value="students">
+              <StudentsTable
                 schoolId={props.schoolId}
                 href={(memberId) => ({
                   pathname: '/dashboard/staff/schools/[schoolId]/members/[memberId]',
@@ -196,11 +189,17 @@ function School(props: Props) {
             </TabPanel>
             <TabPanel value="details">
               <Container disableGutters maxWidth="sm">
-                <UpdateSchoolForm schoolId={school.id} exclude={['billing']} />
+                <UpdateSchoolForm schoolId={props.schoolId} />
               </Container>
             </TabPanel>
             <TabPanel value="posts">
-              <EmptyFileAnimation />
+              <StudentPostsTable
+                schoolId={props.schoolId}
+                href={(postId) => ({
+                  pathname: '/dashboard/staff/posts/[postId]',
+                  query: { postId },
+                })}
+              />
             </TabPanel>
           </NavigationView>
         )}

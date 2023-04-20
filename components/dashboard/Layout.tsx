@@ -12,12 +12,12 @@ import PersonIcon from '@mui/icons-material/PeopleOutlined'
 import SchoolIcon from '@mui/icons-material/SchoolOutlined'
 import SettingsIcon from '@mui/icons-material/SettingsOutlined'
 import {
-  Alert,
   AppBar,
   Avatar,
   Badge,
   Box,
   Breakpoint,
+  Button,
   Collapse,
   Container,
   Divider,
@@ -29,7 +29,6 @@ import {
   ListItemText,
   ListSubheader,
   MenuItem,
-  Snackbar,
   Stack,
   Toolbar,
   Typography,
@@ -40,10 +39,11 @@ import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { Config } from '../../helpers/config'
-import { useLogoUrl, useMobile, useSessionStorage } from '../../helpers/hooks'
+import { useLogoUrl, useMobile } from '../../helpers/hooks'
 import { MyUserDocument, MyUserQuery, MyUserQueryVariables } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
+import { IntercomProvider } from '../../utils/intercom'
 import { StorageManager } from '../../utils/storage'
 import { DropDownButton } from '../common/DropDownButton'
 import { NextLink as NextLinkLegacy } from '../common/NextLink'
@@ -55,23 +55,8 @@ function HeaderAccount() {
   const { user, logout } = useUser()
   const { pushAlert } = useAlert()
 
-  const [hideConfirm, setHideConfirm] = useSessionStorage('hideConfirmAlert')
-
   return (
     <>
-      <Snackbar
-        sx={{ maxWidth: 350 }}
-        open={!user.emailConfirmed && hideConfirm !== 'true'}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        TransitionProps={{
-          mountOnEnter: true,
-          unmountOnExit: true,
-        }}
-      >
-        <Alert severity="warning" sx={{ width: '100%' }} onClose={() => setHideConfirm('true')}>
-          Please confirm your e-mail address at <b>{user.email}</b>.
-        </Alert>
-      </Snackbar>
       <NextLink href="/dashboard/notifications">
         <IconButton sx={{ mr: 1 }}>
           <Badge color="primary" badgeContent={user.notificationCount ?? 0}>
@@ -169,11 +154,35 @@ export type DashboardLayoutProps = {
   maxWidth?: Breakpoint
 }
 
+function WelcomeModal({ onSubmit }: { onSubmit: () => void }) {
+  const logoUrl = useLogoUrl()
+
+  return (
+    <Stack>
+      <Box>
+        <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
+        <Typography variant="h6" mt={2}>
+          Welcome to the CyberSafely.ai Pilot Program
+        </Typography>
+        <Typography mt={1}>
+          We are happy to have you join us on refining CyberSafely.ai - please use the chat button in the bottom right
+          to connect with us on any questions and we will get back to you promptly. We are around 24/7!
+        </Typography>
+        <Typography variant="body2" color="text.secondary" mt={2}>
+          CyberSafely.ai Team
+        </Typography>
+      </Box>
+      <Button onClick={onSubmit}>Understood</Button>
+    </Stack>
+  )
+}
+
 export function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter()
   const client = useApolloClient()
   const logoUrl = useLogoUrl()
   const { isMobile, isTablet } = useMobile()
+  const { pushAlert } = useAlert()
 
   const [user, setUser] = useState<MyUserQuery['user']>()
   const [open, setOpen] = useState(true)
@@ -223,11 +232,24 @@ export function DashboardLayout(props: DashboardLayoutProps) {
     const staff = user.roles.find((e) => e.type === 'STAFF')
     const admin = user.roles.find((e) => e.type === 'ADMIN')
     const coach = user.roles.find((e) => e.type === 'COACH')
-    const athlete = user.roles.find((e) => e.type === 'ATHLETE')
+    const student = user.roles.find((e) => e.type === 'STUDENT')
     const parent = user.roles.find((e) => e.type === 'PARENT')
 
-    return staff ?? admin ?? coach ?? athlete ?? parent
+    return staff ?? admin ?? coach ?? student ?? parent
   }, [user])
+
+  useEffect(() => {
+    if (userRole && userRole.type !== 'STAFF' && !localStorage.getItem('hide_welcome')) {
+      pushAlert({
+        title: '',
+        type: 'custom',
+        content: WelcomeModal,
+        result: () => {
+          localStorage.setItem('hide_welcome', 'true')
+        },
+      })
+    }
+  }, [userRole?.type])
 
   if (!user) {
     return (
@@ -303,7 +325,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
           </Drawer>
           {open && !isTablet && <Box width={width} flexShrink={0} />}
           <Container maxWidth={props.maxWidth ?? 'xl'} sx={{ py: 2 }}>
-            {props.children}
+            <IntercomProvider>{props.children}</IntercomProvider>
             <Footer />
           </Container>
         </Stack>
@@ -364,7 +386,7 @@ function Sidebar() {
         <CollapsableList>
           <SidebarLink href="/dashboard/admin/home" icon={<HomeIcon />} title="Home" />
           <SidebarLink href="/dashboard/admin/members" icon={<PersonIcon />} title="Members" />
-          <SidebarLink href="/dashboard/admin/athletes" icon={<PersonIcon />} title="Athletes" />
+          <SidebarLink href="/dashboard/admin/students" icon={<PersonIcon />} title="Students" />
           <SidebarLink href="/dashboard/admin/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
@@ -374,16 +396,16 @@ function Sidebar() {
         <CollapsableList>
           <SidebarLink href="/dashboard/coach/home" icon={<HomeIcon />} title="Home" />
           <SidebarLink href="/dashboard/coach/members" icon={<PersonIcon />} title="Members" />
-          <SidebarLink href="/dashboard/coach/athletes" icon={<PersonIcon />} title="Athletes" />
+          <SidebarLink href="/dashboard/coach/students" icon={<PersonIcon />} title="Students" />
           <SidebarLink href="/dashboard/coach/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
 
-    case 'ATHLETE':
+    case 'STUDENT':
       return (
         <CollapsableList>
-          <SidebarLink href="/dashboard/athlete/home" icon={<HomeIcon />} title="Home" />
-          <SidebarLink href="/dashboard/athlete/posts" icon={<FeedIcon />} title="Posts" />
+          <SidebarLink href="/dashboard/student/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/student/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )
 
@@ -391,6 +413,7 @@ function Sidebar() {
       return (
         <CollapsableList>
           <SidebarLink href="/dashboard/parent/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/parent/children" icon={<PersonIcon />} title="Children" />
         </CollapsableList>
       )
 

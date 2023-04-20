@@ -48,7 +48,7 @@ export function useSchoolRole() {
       const schoolId = StorageManager.get('schoolId')
 
       if (schoolId) {
-        const userRole = context.user.roles.find((e) => ['ADMIN', 'COACH', 'ATHLETE'].includes(e.type)) as
+        const userRole = context.user.roles.find((e) => ['ADMIN', 'COACH', 'STUDENT'].includes(e.type)) as
           | SchoolRole
           | undefined
 

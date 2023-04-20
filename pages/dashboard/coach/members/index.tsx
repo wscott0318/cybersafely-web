@@ -5,11 +5,10 @@ import { useMemo } from 'react'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
-import { UserEmail } from '../../../../components/common/UserEmail'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
-import { namedOperations, useCreateUserRoleMutation, UsersQuery, useUsersQuery } from '../../../../schema'
+import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 import { useSchoolRole } from '../../../../utils/context/auth'
 
@@ -26,12 +25,6 @@ const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['us
     width: 300,
     field: 'email',
     headerName: 'E-mail',
-    valueGetter(params) {
-      return params.row
-    },
-    renderCell(params) {
-      return <UserEmail {...params.value} />
-    },
   },
   {
     width: 200,
@@ -80,7 +73,10 @@ function Members() {
       title="Members"
       columns={columns}
       data={query.data?.users}
-      href={(e) => `/dashboard/coach/members/${e.id}`}
+      href={(e) => ({
+        pathname: '/dashboard/coach/members/[memberId]',
+        query: { memberId: e.id },
+      })}
       initialSortModel={{ field: 'createdAt', sort: 'desc' }}
       actions={
         <DataGridActions>
@@ -92,7 +88,7 @@ function Members() {
                 type: 'custom',
                 title: 'Invite Member',
                 content: InviteUserForm,
-                props: { allow: ['COACH', 'ATHLETE'] },
+                props: { allow: ['COACH', 'STUDENT'] },
                 result: ({ email, type }) => {
                   createUserRole({ variables: { input: { email, type, relationId: schoolRole!.school.id } } })
                 },

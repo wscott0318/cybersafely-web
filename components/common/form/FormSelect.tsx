@@ -1,4 +1,4 @@
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
+import { FormControl, FormControlProps, FormHelperText, InputLabel, MenuItem, Select, SelectProps } from '@mui/material'
 import { Controller, useFormContext } from 'react-hook-form'
 
 type FormSelectProps = {
@@ -6,6 +6,8 @@ type FormSelectProps = {
   label: string
   required?: boolean
   options: { value: string; title: string }[]
+  variant?: FormControlProps['variant']
+  inputProps?: SelectProps
 }
 
 export function FormSelect(props: FormSelectProps) {
@@ -17,17 +19,17 @@ export function FormSelect(props: FormSelectProps) {
   return (
     <FormControl
       fullWidth
-      variant="standard"
+      variant={props.variant || 'standard'}
       required={props.required}
       error={!!errors[props.name]}
       disabled={props.options.length === 1}
     >
-      <InputLabel>{props.label}</InputLabel>
+      <InputLabel id={props.name + '-label'}>{props.label}</InputLabel>
       <Controller
         name={props.name}
         control={control}
         render={({ field: { value, onChange } }) => (
-          <Select value={value ?? ''} onChange={onChange}>
+          <Select labelId={props.name + '-label'} {...props.inputProps} value={value ?? ''} onChange={onChange}>
             {props.options.map((option, index) => (
               <MenuItem key={String(index)} value={option.value}>
                 {option.title}

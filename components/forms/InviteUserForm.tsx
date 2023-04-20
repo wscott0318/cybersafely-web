@@ -6,7 +6,7 @@ import { FormText } from '../common/form/FormText'
 
 const schema = z.object({
   email: z.string().email(),
-  type: z.enum(['STAFF', 'ADMIN', 'COACH', 'ATHLETE', 'PARENT']),
+  type: z.enum(['STAFF', 'ADMIN', 'COACH', 'STUDENT', 'PARENT']),
 })
 
 type Schema = z.infer<typeof schema>
@@ -20,7 +20,7 @@ const values: { value: Schema['type']; title: string }[] = [
   { value: 'STAFF', title: 'Staff' },
   { value: 'ADMIN', title: 'Admin' },
   { value: 'COACH', title: 'Coach' },
-  { value: 'ATHLETE', title: 'Athlete' },
+  { value: 'STUDENT', title: 'Student' },
   { value: 'PARENT', title: 'Parent' },
 ]
 
