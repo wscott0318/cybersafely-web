@@ -5,6 +5,7 @@ import FeedIcon from '@mui/icons-material/FeedOutlined'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
+import LinkIcon from '@mui/icons-material/LinkOutlined'
 import LogoutIcon from '@mui/icons-material/LogoutOutlined'
 import MenuIcon from '@mui/icons-material/MenuOutlined'
 import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
@@ -405,6 +406,7 @@ function Sidebar() {
       return (
         <CollapsableList>
           <SidebarLink href="/dashboard/student/home" icon={<HomeIcon />} title="Home" />
+          <SidebarLink href="/dashboard/student/social" icon={<LinkIcon />} title="Social" />
           <SidebarLink href="/dashboard/student/posts" icon={<FeedIcon />} title="Posts" />
         </CollapsableList>
       )

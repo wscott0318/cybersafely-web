@@ -4,7 +4,6 @@ import {
   AccordionSummary,
   FormControlLabel,
   FormGroup,
-  Grid,
   Skeleton,
   Stack,
   Switch,
@@ -182,53 +181,43 @@ function Render({
         <Accordion>
           <AccordionSummary>Socials</AccordionSummary>
           <AccordionDetails>
-            <Grid container spacing={1}>
-              <Grid item xs={6}>
-                <SocialButton
-                  icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
-                  name="Twitter"
-                  color="#1d9bf0"
-                  linked={!!user.twitter}
-                  username={user.twitter?.username}
-                  onLink={() => authWithTwitter().then(({ data }) => data!.authWithTwitter)}
-                  onUnlink={async () => {
-                    await removeTwitter({ variables: { id: user.twitter!.id } })
-                  }}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <SocialButton
-                  icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
-                  name="TikTok"
-                  color="#000"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <SocialButton
-                  icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
-                  name="Instagram"
-                  color="#ff543e"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <SocialButton
-                  icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
-                  name="Facebook"
-                  color="#0062e0"
-                  disabled
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <SocialButton
-                  icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
-                  name="YouTube"
-                  color="#f61c0d"
-                  disabled
-                />
-              </Grid>
-            </Grid>
+            <Stack spacing={1}>
+              <SocialButton
+                icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
+                name="Twitter"
+                color="#1d9bf0"
+                linked={!!user.twitter}
+                username={user.twitter?.username}
+                onLink={() => authWithTwitter().then(({ data }) => data!.authWithTwitter)}
+                onUnlink={async () => {
+                  await removeTwitter({ variables: { id: user.twitter!.id } })
+                }}
+              />
+              <SocialButton
+                icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
+                name="TikTok"
+                color="#000"
+                disabled
+              />
+              <SocialButton
+                icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
+                name="Instagram"
+                color="#ff543e"
+                disabled
+              />
+              <SocialButton
+                icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
+                name="Facebook"
+                color="#0062e0"
+                disabled
+              />
+              <SocialButton
+                icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
+                name="YouTube"
+                color="#f61c0d"
+                disabled
+              />
+            </Stack>
           </AccordionDetails>
         </Accordion>
       )}
