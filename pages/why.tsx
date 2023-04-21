@@ -114,9 +114,9 @@ function Section2() {
                 REAL-TIME
               </Typography>
               <Typography textAlign="left">
-                Parents, teachers, coaches, or anyone designated to help protect a & student, receive real-time alerts
-                depending on the level of Teacher urgency the threat or post identifies, such as bullying, sexual
-                content, (graphic) suicide and illegal use of weapons. It takes a village!
+                CyberSafely.ai sends an alert to the pre-determined parent(s) and school staff. In an urgent situation
+                from a threat such as bullying, sexual content, suicide, or illegal use of weapons, having more than one
+                person receive an alert may result in a faster response when time is of the essence.
               </Typography>
               <Typography
                 color="#ffffff2e"
