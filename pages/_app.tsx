@@ -1,6 +1,7 @@
 import { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
 import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material'
+import { Analytics } from '@vercel/analytics/react'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useMemo } from 'react'
@@ -39,6 +40,7 @@ export default function MyApp(props: MyAppProps) {
             <Alerts />
             <Component {...pageProps} />
             <NProgress />
+            <Analytics />
             {/* <ScrollToTop /> */}
           </ApolloClientProvider>
         </AlertContextProvider>
