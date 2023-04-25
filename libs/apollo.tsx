@@ -41,7 +41,7 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
       if (error) {
         pushAlert({
           type: 'alert',
-          title: 'Error',
+          title: 'Server Error',
           message: error.message,
         })
       }

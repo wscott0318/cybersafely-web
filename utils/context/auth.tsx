@@ -48,11 +48,11 @@ export function useSchoolRole() {
       const roleId = StorageManager.get('roleId')
 
       if (roleId) {
-        const userRole = context.user.roles.find((e) => ['ADMIN', 'COACH', 'STUDENT'].includes(e.type)) as
-          | SchoolRole
-          | undefined
+        const userRole = context.user.roles.find(
+          (e) => ['ADMIN', 'COACH', 'STUDENT'].includes(e.type) && e.id === roleId
+        ) as SchoolRole | undefined
 
-        if (userRole && userRole.id === roleId) {
+        if (userRole) {
           return userRole
         }
       }
