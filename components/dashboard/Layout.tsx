@@ -12,6 +12,7 @@ import NotificationIcon from '@mui/icons-material/NotificationsOutlined'
 import PersonIcon from '@mui/icons-material/PeopleOutlined'
 import SchoolIcon from '@mui/icons-material/SchoolOutlined'
 import SettingsIcon from '@mui/icons-material/SettingsOutlined'
+import SwitchIcon from '@mui/icons-material/SyncOutlined'
 import {
   AppBar,
   Avatar,
@@ -103,6 +104,16 @@ function HeaderAccount() {
         <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
           Account
         </MenuItem>
+        {user.roles.length > 1 && (
+          <NextLinkLegacy href="/dashboard">
+            <MenuItem>
+              <ListItemIcon>
+                <SwitchIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Switch Account</ListItemText>
+            </MenuItem>
+          </NextLinkLegacy>
+        )}
         <NextLinkLegacy href="/dashboard/profile">
           <MenuItem>
             <ListItemIcon>
@@ -228,15 +239,8 @@ export function DashboardLayout(props: DashboardLayoutProps) {
   }, [])
 
   const userRole = useMemo(() => {
-    if (!user) return
-
-    const staff = user.roles.find((e) => e.type === 'STAFF')
-    const admin = user.roles.find((e) => e.type === 'ADMIN')
-    const coach = user.roles.find((e) => e.type === 'COACH')
-    const student = user.roles.find((e) => e.type === 'STUDENT')
-    const parent = user.roles.find((e) => e.type === 'PARENT')
-
-    return staff ?? admin ?? coach ?? student ?? parent
+    const roleId = StorageManager.get('roleId')
+    return user?.roles.find((e) => e.id === roleId)
   }, [user])
 
   useEffect(() => {

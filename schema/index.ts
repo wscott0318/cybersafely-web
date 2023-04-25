@@ -727,7 +727,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', type: UserRoleTypeEnum } | { __typename?: 'ParentRole', type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, twitter?: { __typename?: 'Twitter', id: string, username: string } | null } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, twitter?: { __typename?: 'Twitter', id: string, username: string } | null } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -1113,9 +1113,11 @@ export const MyUserDocument = gql`
     }
     roles(status: ACCEPTED) {
       ... on AnyUserRole {
+        id
         type
       }
       ... on SchoolRole {
+        id
         type
         school {
           id
@@ -1129,6 +1131,7 @@ export const MyUserDocument = gql`
         }
       }
       ... on ParentRole {
+        id
         type
       }
     }

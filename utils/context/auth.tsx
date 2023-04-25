@@ -45,14 +45,14 @@ export function useSchoolRole() {
 
   const userRole = useMemo(() => {
     if (context?.user) {
-      const schoolId = StorageManager.get('schoolId')
+      const roleId = StorageManager.get('roleId')
 
-      if (schoolId) {
+      if (roleId) {
         const userRole = context.user.roles.find((e) => ['ADMIN', 'COACH', 'STUDENT'].includes(e.type)) as
           | SchoolRole
           | undefined
 
-        if (userRole && userRole.school.id === schoolId) {
+        if (userRole && userRole.id === roleId) {
           return userRole
         }
       }

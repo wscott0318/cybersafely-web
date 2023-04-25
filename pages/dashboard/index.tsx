@@ -1,87 +1,104 @@
-import { useApolloClient } from '@apollo/client'
-import { Box, Button, Divider, Link, Stack, Typography } from '@mui/material'
+import { MenuItem, Select, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { CoverLayout } from '../../components/common/CoverLayout'
-import { NextLink } from '../../components/common/NextLink'
-import { Config } from '../../helpers/config'
-import { MyUserDocument, MyUserQuery, MyUserQueryVariables, SchoolRole } from '../../schema'
+import React, { useCallback, useEffect } from 'react'
+import { SchoolRole, useMyUserLazyQuery } from '../../schema'
 import { StorageManager } from '../../utils/storage'
+
+function Center({ children }: { children: React.ReactNode }) {
+  return (
+    <Stack minHeight="100vh" alignItems="center" justifyContent="center">
+      {children}
+    </Stack>
+  )
+}
 
 export default function Dashboard() {
   const router = useRouter()
 
-  const client = useApolloClient()
-
-  const [error, setError] = useState(false)
+  const [fetch, { data, loading }] = useMyUserLazyQuery({
+    onError: (error) => {
+      console.error(error)
+      localStorage.clear()
+      router.replace('/auth/login')
+    },
+  })
 
   useEffect(() => {
-    async function check() {
-      try {
-        const id = StorageManager.get('userId')
-
-        if (typeof id === 'string') {
-          const { data } = await client.query<MyUserQuery, MyUserQueryVariables>({
-            variables: { id },
-            query: MyUserDocument,
-          })
-
-          const { user } = data!
-
-          const staff = user.roles.find((e) => e.type === 'STAFF')
-          const admin = user.roles.find((e) => e.type === 'ADMIN') as SchoolRole | undefined
-          const coach = user.roles.find((e) => e.type === 'COACH') as SchoolRole | undefined
-          const student = user.roles.find((e) => e.type === 'STUDENT') as SchoolRole | undefined
-          const parent = user.roles.find((e) => e.type === 'PARENT')
-
-          if (staff) {
-            router.replace('/dashboard/staff/home')
-          } else if (admin) {
-            StorageManager.set('schoolId', admin.school.id)
-            router.replace('/dashboard/admin/home')
-          } else if (coach) {
-            StorageManager.set('schoolId', coach.school.id)
-            router.replace('/dashboard/coach/home')
-          } else if (student) {
-            StorageManager.set('schoolId', student.school.id)
-            router.replace('/dashboard/student/home')
-          } else if (parent) {
-            router.replace('/dashboard/parent/home')
-          } else {
-            setError(true)
-          }
-        } else {
-          throw new Error('No user')
-        }
-      } catch (error) {
-        console.error(error)
-        localStorage.clear()
-        router.replace('/auth/login')
-      }
-    }
-
-    check()
+    const id = StorageManager.get('userId')!
+    fetch({ variables: { id } })
   }, [])
 
-  if (!error) {
-    return null
+  const onSelect = useCallback(
+    (id: string) => {
+      const userRole = data!.user.roles.find((e) => e.id === id)!
+
+      StorageManager.set('roleId', userRole.id)
+
+      switch (userRole.type) {
+        case 'STAFF':
+          return router.push('/dashboard/staff/home')
+        case 'ADMIN':
+          return router.push('/dashboard/admin/home')
+        case 'COACH':
+          return router.push('/dashboard/coach/home')
+        case 'STUDENT':
+          return router.push('/dashboard/student/home')
+        case 'PARENT':
+          return router.push('/dashboard/parent/home')
+      }
+    },
+    [data]
+  )
+
+  useEffect(() => {
+    if (data && data.user.roles.length === 1) {
+      onSelect(data.user.roles[0].id)
+    }
+  }, [data, onSelect])
+
+  if (loading || !data) {
+    return (
+      <Center>
+        <Typography>Checking user role...</Typography>
+      </Center>
+    )
+  }
+
+  if (data.user.roles.length === 0) {
+    return (
+      <Center>
+        <Typography>No user roles found</Typography>
+      </Center>
+    )
   }
 
   return (
-    <CoverLayout>
-      <Stack spacing={4}>
-        <Box>
-          <Typography variant="h4">No user role!</Typography>
-          <Typography>The current logged in user does not have any valid roles.</Typography>
-        </Box>
-        <NextLink href="/auth/login">
-          <Button size="large">Login Again</Button>
-        </NextLink>
-        <Divider />
-        <Typography>
-          Something wrong? <Link href={'mailto:' + Config.email.support}>Report an issue</Link>
-        </Typography>
+    <Center>
+      <Stack spacing={1} width={300}>
+        <Typography>Select an user role:</Typography>
+        <Select variant="outlined" onChange={(e) => onSelect(e.target.value as string)}>
+          {data.user.roles.map((userRole) => {
+            switch (userRole.type) {
+              case 'STAFF':
+                return <MenuItem value={userRole.id}>Staff</MenuItem>
+              case 'ADMIN': {
+                const schoolRole = userRole as SchoolRole
+                return <MenuItem value={userRole.id}>Admin at {schoolRole.school.name}</MenuItem>
+              }
+              case 'COACH': {
+                const schoolRole = userRole as SchoolRole
+                return <MenuItem value={userRole.id}>Coach at {schoolRole.school.name}</MenuItem>
+              }
+              case 'STUDENT': {
+                const schoolRole = userRole as SchoolRole
+                return <MenuItem value={userRole.id}>Student at {schoolRole.school.name}</MenuItem>
+              }
+              case 'PARENT':
+                return <MenuItem value={userRole.id}>Parent</MenuItem>
+            }
+          })}
+        </Select>
       </Stack>
-    </CoverLayout>
+    </Center>
   )
 }

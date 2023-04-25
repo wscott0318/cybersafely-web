@@ -28,9 +28,11 @@ query myUser($id: ID!) {
     }
     roles(status: ACCEPTED) {
       ... on AnyUserRole {
+        id
         type
       }
       ... on SchoolRole {
+        id
         type
         school {
           id
@@ -44,6 +46,7 @@ query myUser($id: ID!) {
         }
       }
       ... on ParentRole {
+        id
         type
       }
     }
