@@ -471,5 +471,10 @@ query invitedRole($token: String!) {
 }
 
 mutation respondToInvitedRole($token: String!, $accept: Boolean!, $name: String, $password: String) {
-  respondToInvitedRole(token: $token, accept: $accept, name: $name, password: $password)
+  respondToInvitedRole(token: $token, accept: $accept, name: $name, password: $password) {
+    token
+    user {
+      id
+    }
+  }
 }

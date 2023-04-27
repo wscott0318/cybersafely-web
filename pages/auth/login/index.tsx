@@ -66,6 +66,7 @@ export default function Login() {
             await login({ variables: { input } })
           }}
         >
+          <Typography variant="h5">Login to CyberSafely.ai</Typography>
           <FormText name="email" label="E-mail" type="email" required />
           <FormText name="password" label="Password" type="password" required hidePasswordStrength />
         </Form>

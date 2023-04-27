@@ -9,6 +9,7 @@ import { FormText } from '../../components/common/form/FormText'
 import { Config } from '../../helpers/config'
 import { useInvitedRoleQuery, useRespondToInvitedRoleMutation } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
+import { StorageManager } from '../../utils/storage'
 
 const schema = z.object({
   name: z.string().nullish(),
@@ -38,6 +39,17 @@ function Invite({ token }: Props) {
     onError: (error) => {
       pushError(error)
     },
+    onCompleted: async (data, options) => {
+      const { token, user } = data.respondToInvitedRole
+
+      StorageManager.clear()
+      StorageManager.set('token', token)
+      StorageManager.set('userId', user.id)
+
+      await options?.client?.clearStore()
+
+      router.push('/dashboard')
+    },
   })
 
   if (!data) {
@@ -61,7 +73,7 @@ function Invite({ token }: Props) {
             router.push('/auth/login')
           }}
         >
-          <Typography variant="h4">Invitation</Typography>
+          <Typography variant="h5">Accept CyberSafely.ai Invite</Typography>
           {type === 'STAFF' && <Typography>You are invited to join as staff of {Config.app.shortName}</Typography>}
           {type === 'PARENT' && <Typography>You are invited to join as a parent</Typography>}
           {['ADMIN', 'COACH', 'STUDENT'].includes(type) && !!schoolName && (

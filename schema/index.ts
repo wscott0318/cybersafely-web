@@ -160,7 +160,7 @@ export type Mutation = {
   removeTwitter: Scalars['Boolean'];
   removeUserRole: Scalars['Boolean'];
   resetPassword: UserWithToken;
-  respondToInvitedRole: Scalars['Boolean'];
+  respondToInvitedRole: UserWithToken;
   updateAddress: Address;
   updateEmailSettings: Scalars['Boolean'];
   updateImage: Image;
@@ -1008,7 +1008,7 @@ export type RespondToInvitedRoleMutationVariables = Exact<{
 }>;
 
 
-export type RespondToInvitedRoleMutation = { __typename?: 'Mutation', respondToInvitedRole: boolean };
+export type RespondToInvitedRoleMutation = { __typename?: 'Mutation', respondToInvitedRole: { __typename?: 'UserWithToken', token: string, user: { __typename?: 'User', id: string } } };
 
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
@@ -2614,7 +2614,12 @@ export const RespondToInvitedRoleDocument = gql`
     accept: $accept
     name: $name
     password: $password
-  )
+  ) {
+    token
+    user {
+      id
+    }
+  }
 }
     `;
 export type RespondToInvitedRoleMutationFn = Apollo.MutationFunction<RespondToInvitedRoleMutation, RespondToInvitedRoleMutationVariables>;
