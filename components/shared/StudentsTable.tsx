@@ -99,9 +99,9 @@ export function StudentsTable({ schoolId, href }: { schoolId: string; href?: (id
             startIcon={<AddIcon />}
             onClick={() => {
               pushAlert({
+                title: '',
                 type: 'custom',
                 props: { schoolId },
-                title: 'Invite Student',
                 content: InviteStudentAndParentForm,
               })
             }}
