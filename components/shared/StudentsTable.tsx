@@ -30,6 +30,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
   {
     width: 350,
+    sortable: false,
     field: 'platforms',
     headerName: 'Platforms',
     renderCell(params) {
@@ -44,6 +45,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
   {
     width: 200,
+    sortable: false,
     field: 'parentalApproval',
     headerName: 'Parental Approval',
     valueFormatter(params) {
@@ -55,6 +57,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
   {
     width: 150,
+    sortable: false,
     field: 'posts',
     headerName: 'Posts',
     valueGetter() {
@@ -63,6 +66,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
   },
   {
     width: 200,
+    sortable: false,
     field: 'score',
     headerName: 'Score',
     renderCell() {
@@ -81,6 +85,7 @@ export function StudentsTable({ schoolId, href }: { schoolId: string; href?: (id
         roles: ['STUDENT'],
         fromId: schoolId,
       },
+      order: {},
     },
   })
 
