@@ -77,7 +77,7 @@ function Section2() {
               </Typography>
               <Typography
                 color="#ffffff2e"
-                fontSize="150px"
+                fontSize="110px"
                 variant="h1"
                 fontWeight="bold"
                 position="absolute"
@@ -98,7 +98,7 @@ function Section2() {
               </Typography>
               <Typography
                 color="#ffffff2e"
-                fontSize="150px"
+                fontSize="110px"
                 variant="h1"
                 fontWeight="bold"
                 position="absolute"
@@ -107,6 +107,28 @@ function Section2() {
                 z-index="1"
               >
                 24/7
+              </Typography>
+            </Stack>
+            <Stack spacing={0} maxWidth="300px" position="relative">
+              <Typography variant="h6" fontWeight="bold" textAlign="left">
+                Student Privacy
+              </Typography>
+              <Typography textAlign="left">
+                Student privacy is of the highest priority. Social media activity is neither stored nor reviewed by
+                anyone. We use AI models to scan the contents of a post for dangerous or harmful activity only. Our
+                people are not intervening or even able to see posts on any social platform.
+              </Typography>
+              <Typography
+                color="#ffffff2e"
+                fontSize="110px"
+                variant="h1"
+                fontWeight="bold"
+                position="absolute"
+                left="30%"
+                top="-15%"
+                z-index="1"
+              >
+                Privacy
               </Typography>
             </Stack>
             <Stack spacing={0} maxWidth="300px" position="relative">
@@ -120,7 +142,7 @@ function Section2() {
               </Typography>
               <Typography
                 color="#ffffff2e"
-                fontSize="120px"
+                fontSize="110px"
                 variant="h1"
                 fontWeight="bold"
                 position="absolute"
@@ -141,7 +163,7 @@ function Section2() {
               </Typography>
               <Typography
                 color="#ffffff2e"
-                fontSize="150px"
+                fontSize="110px"
                 variant="h1"
                 fontWeight="bold"
                 position="absolute"

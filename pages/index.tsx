@@ -85,6 +85,10 @@ function Section2() {
             The intent is to help students, not to invade their privacy
           </Typography>
           <Typography variant="h6" textAlign="left">
+            CyberSafely.ai does not monitor or view texts, emails, or any device. It is an assistant to help identify
+            harmful or dangerous activity on social media accounts only.
+          </Typography>
+          <Typography variant="h6" textAlign="left">
             CyberSafely.ai™ is designed to help protect student safety and welfare by teaching them to be aware of and
             identify harmful activity received.
           </Typography>
