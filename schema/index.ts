@@ -583,6 +583,7 @@ export type StatsByDay = {
 
 export type Twitter = {
   __typename?: 'Twitter';
+  createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   username: Scalars['String'];
 };
@@ -783,7 +784,7 @@ export type UserQueryVariables = Exact<{
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }> } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }>, twitter?: { __typename?: 'Twitter', id: string, createdAt: string, username: string } | null } };
 
 export type UpdateUserMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -1484,6 +1485,11 @@ export const UserDocument = gql`
           id
         }
       }
+    }
+    twitter {
+      id
+      createdAt
+      username
     }
   }
 }

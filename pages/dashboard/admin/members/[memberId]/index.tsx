@@ -4,6 +4,7 @@ import { GetServerSideProps } from 'next'
 import { useState } from 'react'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
+import { StudentDetails } from '../../../../../components/shared/StudentDetails'
 import { StudentParentsTable } from '../../../../../components/shared/StudentParentsTable'
 import { StudentPostsTable } from '../../../../../components/shared/StudentPostsTable'
 import { useUserQuery } from '../../../../../schema'
@@ -29,6 +30,7 @@ function Member({ memberId }: Props) {
             <TabList onChange={(_, tab) => setTab(tab)}>
               <Tab label="Parents" value="parents" />
               <Tab label="Posts" value="posts" />
+              <Tab label="Details" value="details" />
             </TabList>
           </NavigationActions>
         }
@@ -44,6 +46,9 @@ function Member({ memberId }: Props) {
               query: { postId },
             })}
           />
+        </TabPanel>
+        <TabPanel value="details">
+          <StudentDetails userId={memberId} />
         </TabPanel>
       </NavigationView>
     </TabContext>

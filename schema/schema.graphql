@@ -205,6 +205,11 @@ query user($id: ID!) {
         }
       }
     }
+    twitter {
+      id
+      createdAt
+      username
+    }
   }
 }
 
