@@ -16,7 +16,7 @@ function Home() {
           Highlights
         </Typography>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={12} sm={6} md={4}>
         <NextLink href="/dashboard/student/social">
           <Paper component="a" sx={{ p: 1, pr: 1.5, display: 'block', textDecoration: 'none' }}>
             <Stack direction="row" alignItems="center">
