@@ -10,16 +10,18 @@ import {
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { z } from 'zod'
 import { addIssue } from '../../helpers/zod'
 import {
   MyUserQuery,
+  SocialFragmentFragment,
+  SocialName,
   namedOperations,
-  useAuthWithTwitterMutation,
+  useAuthWithSocialMutation,
   useEmailSettingsQuery,
   useMyUserQuery,
-  useRemoveTwitterMutation,
+  useRemoveSocialMutation,
   useUpdateEmailSettingsMutation,
   useUpdatePasswordMutation,
   useUpdateUserMutation,
@@ -69,6 +71,78 @@ const passwordSchema = z
     }
   })
 
+const SocialConfig = {
+  twitter: {
+    icon: <img alt="Twitter" src="/images/logos/twitter.svg" height={16} />,
+    name: 'Twitter',
+    color: '#1d9bf0',
+  },
+  tiktok: {
+    icon: <img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />,
+    name: 'TikTok',
+    color: '#000',
+  },
+  instagram: {
+    icon: <img alt="Instagram" src="/images/logos/instagram.svg" height={16} />,
+    name: 'Instagram',
+    color: '#ff543e',
+  },
+  facebook: {
+    icon: <img alt="Facebook" src="/images/logos/facebook.svg" height={16} />,
+    name: 'Facebook',
+    color: '#0062e0',
+  },
+  youtube: {
+    icon: <img alt="YouTube" src="/images/logos/youtube.svg" height={16} />,
+    name: 'YouTube',
+    color: '#f61c0d',
+  },
+}
+
+export function SocialButtonConfig({
+  name,
+  user,
+  refetch,
+}: {
+  name: keyof typeof SocialConfig
+  user: { socials: SocialFragmentFragment[] }
+  refetch: () => void
+}) {
+  const [authWithSocial] = useAuthWithSocialMutation()
+  const [removeSocial] = useRemoveSocialMutation({
+    onCompleted: () => {
+      refetch()
+    },
+  })
+
+  const social = useMemo(() => {
+    switch (name) {
+      case 'twitter':
+        return user.socials.find((e) => e.__typename === 'Twitter')
+      case 'facebook':
+        return user.socials.find((e) => e.__typename === 'Facebook')
+    }
+  }, [name, user])
+
+  return (
+    <SocialButton
+      {...SocialConfig[name]}
+      linked={!!social}
+      username={social?.username}
+      onLink={() => {
+        return authWithSocial({
+          variables: { name: name as SocialName },
+        }).then(({ data }) => {
+          return data!.authWithSocial
+        })
+      }}
+      onUnlink={async () => {
+        await removeSocial({ variables: { name: name as SocialName } })
+      }}
+    />
+  )
+}
+
 function Render({
   onChange,
   include,
@@ -86,13 +160,6 @@ function Render({
 
   const [updateUser] = useUpdateUserMutation()
   const [updatePassword] = useUpdatePasswordMutation()
-
-  const [authWithTwitter] = useAuthWithTwitterMutation()
-  const [removeTwitter] = useRemoveTwitterMutation({
-    onCompleted: () => {
-      refetch()
-    },
-  })
 
   const { data: emailSettingsData } = useEmailSettingsQuery()
   const [updateEmailSettings] = useUpdateEmailSettingsMutation({
@@ -189,41 +256,11 @@ function Render({
           <AccordionSummary>Socials</AccordionSummary>
           <AccordionDetails>
             <Stack spacing={1}>
-              <SocialButton
-                icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
-                name="Twitter"
-                color="#1d9bf0"
-                linked={!!user.twitter}
-                username={user.twitter?.username}
-                onLink={() => authWithTwitter().then(({ data }) => data!.authWithTwitter)}
-                onUnlink={async () => {
-                  await removeTwitter({ variables: { id: user.twitter!.id } })
-                }}
-              />
-              <SocialButton
-                icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
-                name="TikTok"
-                color="#000"
-                disabled
-              />
-              <SocialButton
-                icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
-                name="Instagram"
-                color="#ff543e"
-                disabled
-              />
-              <SocialButton
-                icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
-                name="Facebook"
-                color="#0062e0"
-                disabled
-              />
-              <SocialButton
-                icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
-                name="YouTube"
-                color="#f61c0d"
-                disabled
-              />
+              <SocialButtonConfig name="twitter" user={user} refetch={refetch} />
+              <SocialButtonConfig name="facebook" user={user} refetch={refetch} />
+              <SocialButtonConfig name="instagram" user={user} refetch={refetch} />
+              <SocialButtonConfig name="tiktok" user={user} refetch={refetch} />
+              <SocialButtonConfig name="youtube" user={user} refetch={refetch} />
             </Stack>
           </AccordionDetails>
         </Accordion>

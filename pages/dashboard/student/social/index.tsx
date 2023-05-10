@@ -1,13 +1,13 @@
 import { Alert, Grid, Stack, Typography } from '@mui/material'
 import { useRouter } from 'next/router'
-import { SocialButton } from '../../../../components/common/SocialButton'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
+import { SocialButtonConfig } from '../../../../components/forms/UpdateUserForm'
 import { useUser } from '../../../../utils/context/auth'
 
 function Social() {
   const router = useRouter()
 
-  const { user } = useUser()
+  const { user, refetchUser } = useUser()
 
   return (
     <Grid container spacing={2}>
@@ -21,49 +21,19 @@ function Social() {
         </Stack>
       </Grid>
       <Grid item xs={12} sm={4} md={3}>
-        <SocialButton
-          icon={<img alt="Twitter" src="/images/logos/twitter.svg" height={16} />}
-          name="Twitter"
-          color="#1d9bf0"
-          linked={!!user.twitter}
-          username={user.twitter?.username}
-          onLink={async () => '/dashboard/profile'}
-          onUnlink={async () => {
-            router.push('/dashboard/profile')
-          }}
-        />
+        <SocialButtonConfig name="twitter" user={user} refetch={refetchUser} />
       </Grid>
       <Grid item xs={12} sm={4} md={3}>
-        <SocialButton
-          icon={<img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />}
-          name="TikTok"
-          color="#000"
-          disabled
-        />
+        <SocialButtonConfig name="facebook" user={user} refetch={refetchUser} />
       </Grid>
       <Grid item xs={12} sm={4} md={3}>
-        <SocialButton
-          icon={<img alt="Instagram" src="/images/logos/instagram.svg" height={16} />}
-          name="Instagram"
-          color="#ff543e"
-          disabled
-        />
+        <SocialButtonConfig name="instagram" user={user} refetch={refetchUser} />
       </Grid>
       <Grid item xs={12} sm={4} md={3}>
-        <SocialButton
-          icon={<img alt="Facebook" src="/images/logos/facebook.svg" height={16} />}
-          name="Facebook"
-          color="#0062e0"
-          disabled
-        />
+        <SocialButtonConfig name="tiktok" user={user} refetch={refetchUser} />
       </Grid>
       <Grid item xs={12} sm={4} md={3}>
-        <SocialButton
-          icon={<img alt="YouTube" src="/images/logos/youtube.svg" height={16} />}
-          name="YouTube"
-          color="#f61c0d"
-          disabled
-        />
+        <SocialButtonConfig name="youtube" user={user} refetch={refetchUser} />
       </Grid>
     </Grid>
   )
