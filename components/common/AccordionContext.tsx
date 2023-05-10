@@ -1,31 +1,33 @@
 import { Box, Stack, Typography } from '@mui/material'
-import React, { useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
+import { useCallbackRef } from '../../helpers/hooks'
 
 type AccordionContextProps = {
   children: React.ReactNode
-  initialSelected?: number
   title?: string
+  index?: number
+  setIndex?: (index: number | undefined) => void
 }
 
 export function AccordionContext(props: AccordionContextProps) {
-  const [selected, setSelected] = useState(props.initialSelected)
+  const setIndex = useCallbackRef(props.setIndex)
 
   const children = useMemo(() => {
     return React.Children.map(props.children, (child, index) => {
       if (React.isValidElement<any>(child)) {
         return React.cloneElement(child, {
           ...child.props,
-          expanded: selected === index,
+          expanded: props.index === index,
           onChange: (_: any, expanded: boolean) => {
-            if (expanded) setSelected(index)
-            else setSelected(undefined)
+            if (expanded) setIndex.current?.(index)
+            else setIndex.current?.(undefined)
           },
         })
       }
 
       return child
     })
-  }, [props.children, selected])
+  }, [props.children, props.index, setIndex])
 
   return (
     <Stack>

@@ -9,6 +9,7 @@ import {
   Switch,
   Typography,
 } from '@mui/material'
+import { useRouter } from 'next/router'
 import { useCallback } from 'react'
 import { z } from 'zod'
 import { addIssue } from '../../helpers/zod'
@@ -74,7 +75,13 @@ function Render({
   exclude,
   data: { user },
   query: { refetch },
-}: UpdateUserFormProps & QueryLoaderRenderProps<MyUserQuery>) {
+  index,
+  setIndex,
+}: UpdateUserFormProps &
+  QueryLoaderRenderProps<MyUserQuery> & {
+    index: number | undefined
+    setIndex: (index: number | undefined) => void
+  }) {
   const { pushAlert } = useAlert()
 
   const [updateUser] = useUpdateUserMutation()
@@ -106,7 +113,7 @@ function Render({
   )
 
   return (
-    <AccordionContext title="Profile">
+    <AccordionContext title="Profile" index={index} setIndex={setIndex}>
       {isShown('information') && (
         <Accordion>
           <AccordionSummary>Information</AccordionSummary>
@@ -257,12 +264,30 @@ type UpdateUserFormProps = {
 }
 
 export function UpdateUserForm(props: UpdateUserFormProps) {
+  const router = useRouter()
+
+  const index = parseInt(router.query.index as string)
+
   const query = useMyUserQuery({
     variables: { id: props.userId },
     notifyOnNetworkStatusChange: false,
   })
 
   return (
-    <QueryLoader query={query} loading={Loading} render={(renderProps) => <Render {...props} {...renderProps} />} />
+    <QueryLoader
+      query={query}
+      loading={Loading}
+      render={(renderProps) => (
+        <Render
+          {...props}
+          {...renderProps}
+          index={index}
+          setIndex={(index) => {
+            router.query.index = String(index)
+            router.replace(router)
+          }}
+        />
+      )}
+    />
   )
 }
