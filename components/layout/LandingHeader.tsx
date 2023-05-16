@@ -1,4 +1,6 @@
-import { AppBar, Box, Button, Container, Stack, Toolbar, alpha } from '@mui/material'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
+import MenuIcon from '@mui/icons-material/MenuOutlined'
+import { AppBar, Box, Button, Container, Drawer, IconButton, Stack, Toolbar, alpha } from '@mui/material'
 import NextImage from 'next/image'
 import NextLink from 'next/link'
 import { useEffect, useState } from 'react'
@@ -32,10 +34,70 @@ function LoginButton() {
   )
 }
 
+function Menu() {
+  const logoUrl = useLogoUrl()
+  const { isMobile } = useMobile()
+
+  const [open, setOpen] = useState(false)
+
+  if (isMobile) {
+    return (
+      <>
+        <IconButton onClick={() => setOpen(true)} color="primary" size="large">
+          <MenuIcon fontSize="large" />
+        </IconButton>
+        <Drawer
+          open={open}
+          anchor="right"
+          onClose={() => setOpen(false)}
+          PaperProps={{
+            sx: {
+              p: 2,
+              width: '100vw',
+              border: 'none',
+            },
+          }}
+        >
+          <Stack>
+            <IconButton onClick={() => setOpen(false)} sx={{ alignSelf: 'flex-end' }}>
+              <CloseIcon />
+            </IconButton>
+            <NextImage alt="Logo" src={logoUrl} height={75} width={162} style={{ alignSelf: 'center' }} />
+            <Button color="inherit" variant="text" size="large" href="/resources">
+              Resources
+            </Button>
+            <Button color="inherit" variant="text" size="large" href="/why">
+              WHY CYBERSAFELY.ai
+            </Button>
+            {/* TODO: This can be removed in the future */}
+            {Config.enableLogin && <LoginButton />}
+          </Stack>
+        </Drawer>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Button color="inherit" variant="text" size="large" href="/resources">
+        Resources
+      </Button>
+      <Button color="inherit" variant="text" size="large" href="/why">
+        WHY CYBERSAFELY.ai
+      </Button>
+      {/* TODO: This can be removed in the future */}
+      {Config.enableLogin && (
+        <Box pl={1}>
+          <LoginButton />
+        </Box>
+      )}
+    </>
+  )
+}
+
 function Header() {
   const logoUrl = useLogoUrl()
   const { isOnTop } = useOnTop(50)
-  const { isMobile } = useMobile()
 
   return (
     <AppBar
@@ -61,22 +123,7 @@ function Header() {
               />
             </NextLink>
             <Box flexGrow={1} />
-            {!isMobile && (
-              <>
-                <Button color="inherit" variant="text" size="large" href="/resources">
-                  Resources
-                </Button>
-                <Button color="inherit" variant="text" size="large" href="/why">
-                  WHY CYBERSAFELY.ai
-                </Button>
-              </>
-            )}
-            {/* TODO: This can be removed in the future */}
-            {Config.enableLogin && (
-              <Box pl={1}>
-                <LoginButton />
-              </Box>
-            )}
+            <Menu />
           </Stack>
         </Container>
       </Toolbar>
