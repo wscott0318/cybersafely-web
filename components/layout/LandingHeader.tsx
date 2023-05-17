@@ -63,6 +63,9 @@ function Menu() {
               <CloseIcon />
             </IconButton>
             <NextImage alt="Logo" src={logoUrl} height={75} width={162} style={{ alignSelf: 'center' }} />
+            <Button color="inherit" variant="text" size="large" href="/funding">
+              Funding
+            </Button>
             <Button color="inherit" variant="text" size="large" href="/resources">
               Resources
             </Button>
@@ -79,6 +82,9 @@ function Menu() {
 
   return (
     <>
+      <Button color="inherit" variant="text" size="large" href="/funding">
+        Funding
+      </Button>
       <Button color="inherit" variant="text" size="large" href="/resources">
         Resources
       </Button>
