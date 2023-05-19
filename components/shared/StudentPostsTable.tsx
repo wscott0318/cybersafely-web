@@ -106,6 +106,9 @@ const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
     sortable: false,
     headerName: 'Platform',
     renderCell(params) {
+      if (!params.row.platform) {
+        return '-'
+      }
       return <PlatformChip platform={params.row.platform} />
     },
   },

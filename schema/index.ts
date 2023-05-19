@@ -179,7 +179,7 @@ export type Mutation = {
 
 
 export type MutationAuthWithSocialArgs = {
-  name: SocialName;
+  name: SocialNameEnum;
 };
 
 
@@ -247,7 +247,7 @@ export type MutationRemoveImageArgs = {
 
 
 export type MutationRemoveSocialArgs = {
-  name: SocialName;
+  name: SocialNameEnum;
 };
 
 
@@ -354,12 +354,6 @@ export type ParentRole = {
   type: UserRoleTypeEnum;
 };
 
-export const PlatformEnum = {
-  Twitter: 'TWITTER',
-  Unknown: 'UNKNOWN'
-} as const;
-
-export type PlatformEnum = typeof PlatformEnum[keyof typeof PlatformEnum];
 export type Post = {
   __typename?: 'Post';
   actions: Array<Action>;
@@ -370,7 +364,7 @@ export type Post = {
   latestAction?: Maybe<Scalars['String']>;
   manualReview: Scalars['Boolean'];
   media: Array<Media>;
-  platform: PlatformEnum;
+  platform?: Maybe<SocialNameEnum>;
   text: Scalars['String'];
   url: Scalars['String'];
   user: User;
@@ -582,12 +576,12 @@ export type Settings = {
 
 export type Social = Facebook | Twitter;
 
-export const SocialName = {
-  Facebook: 'facebook',
-  Twitter: 'twitter'
+export const SocialNameEnum = {
+  Facebook: 'FACEBOOK',
+  Twitter: 'TWITTER'
 } as const;
 
-export type SocialName = typeof SocialName[keyof typeof SocialName];
+export type SocialNameEnum = typeof SocialNameEnum[keyof typeof SocialNameEnum];
 export type StatByDay = {
   __typename?: 'StatByDay';
   day: Scalars['String'];
@@ -668,9 +662,8 @@ export type User = {
   name: Scalars['String'];
   notificationCount: Scalars['Int'];
   parentalApproval?: Maybe<Scalars['Boolean']>;
-  platforms: Array<PlatformEnum>;
+  platforms: Array<Social>;
   roles: Array<UserRole>;
-  socials: Array<Social>;
 };
 
 
@@ -752,7 +745,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, socials: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -801,14 +794,14 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, platforms: Array<PlatformEnum>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }>, socials: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }>, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
 
 export type UpdateUserMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -939,14 +932,14 @@ export type StatsForSchoolQueryVariables = Exact<{
 export type StatsForSchoolQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
 
 export type AuthWithSocialMutationVariables = Exact<{
-  name: SocialName;
+  name: SocialNameEnum;
 }>;
 
 
 export type AuthWithSocialMutation = { __typename?: 'Mutation', authWithSocial: string };
 
 export type RemoveSocialMutationVariables = Exact<{
-  name: SocialName;
+  name: SocialNameEnum;
 }>;
 
 
@@ -972,14 +965,14 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform?: SocialNameEnum | null, latestAction?: string | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform?: SocialNameEnum | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
 
 export type PostCardsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
@@ -1174,7 +1167,7 @@ export const MyUserDocument = gql`
         type
       }
     }
-    socials {
+    platforms {
       ...SocialFragment
     }
   }
@@ -1427,7 +1420,9 @@ export const UsersDocument = gql`
       name
       email
       parentalApproval
-      platforms
+      platforms {
+        ...SocialFragment
+      }
       avatar {
         url
       }
@@ -1458,7 +1453,8 @@ export const UsersDocument = gql`
     }
   }
 }
-    ${PageFragmentFragmentDoc}`;
+    ${PageFragmentFragmentDoc}
+${SocialFragmentFragmentDoc}`;
 
 /**
  * __useUsersQuery__
@@ -1523,7 +1519,7 @@ export const UserDocument = gql`
         }
       }
     }
-    socials {
+    platforms {
       ...SocialFragment
     }
   }
@@ -2172,7 +2168,7 @@ export type StatsForSchoolQueryHookResult = ReturnType<typeof useStatsForSchoolQ
 export type StatsForSchoolLazyQueryHookResult = ReturnType<typeof useStatsForSchoolLazyQuery>;
 export type StatsForSchoolQueryResult = Apollo.QueryResult<StatsForSchoolQuery, StatsForSchoolQueryVariables>;
 export const AuthWithSocialDocument = gql`
-    mutation authWithSocial($name: SocialName!) {
+    mutation authWithSocial($name: SocialNameEnum!) {
   authWithSocial(name: $name)
 }
     `;
@@ -2203,7 +2199,7 @@ export type AuthWithSocialMutationHookResult = ReturnType<typeof useAuthWithSoci
 export type AuthWithSocialMutationResult = Apollo.MutationResult<AuthWithSocialMutation>;
 export type AuthWithSocialMutationOptions = Apollo.BaseMutationOptions<AuthWithSocialMutation, AuthWithSocialMutationVariables>;
 export const RemoveSocialDocument = gql`
-    mutation removeSocial($name: SocialName!) {
+    mutation removeSocial($name: SocialNameEnum!) {
   removeSocial(name: $name)
 }
     `;

@@ -3,7 +3,7 @@ import UploadIcon from '@mui/icons-material/UploadFileOutlined'
 import { ListItemIcon, ListItemText, MenuItem, Stack } from '@mui/material'
 import { GridColumns } from '@mui/x-data-grid'
 import { LinkProps } from 'next/link'
-import { UsersQuery, useUsersQuery } from '../../schema'
+import { SocialNameEnum, UsersQuery, useUsersQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AvatarWithName } from '../common/AvatarWithName'
 import { ButtonSplitMenu } from '../common/ButtonSplitMenu'
@@ -37,7 +37,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
       return (
         <Stack direction="row" spacing={0.5}>
           {params.row.platforms.map((platform) => (
-            <PlatformChip key={platform} platform={platform} />
+            <PlatformChip key={platform.id} platform={platform.__typename!.toUpperCase() as SocialNameEnum} />
           ))}
         </Stack>
       )

@@ -16,7 +16,7 @@ import { addIssue } from '../../helpers/zod'
 import {
   MyUserQuery,
   SocialFragmentFragment,
-  SocialName,
+  SocialNameEnum,
   namedOperations,
   useAuthWithSocialMutation,
   useEmailSettingsQuery,
@@ -27,6 +27,7 @@ import {
   useUpdateUserMutation,
 } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
+import { SocialConfig } from '../../utils/social'
 import { AccordionContext } from '../common/AccordionContext'
 import { checkPasswordStrength } from '../common/PasswordStrength'
 import { QueryLoader, QueryLoaderRenderProps } from '../common/QueryLoader'
@@ -71,41 +72,13 @@ const passwordSchema = z
     }
   })
 
-const SocialConfig = {
-  twitter: {
-    icon: <img alt="Twitter" src="/images/logos/twitter.svg" height={16} />,
-    name: 'Twitter',
-    color: '#1d9bf0',
-  },
-  tiktok: {
-    icon: <img alt="TikTok" src="/images/logos/tiktok.svg" height={16} />,
-    name: 'TikTok',
-    color: '#000',
-  },
-  instagram: {
-    icon: <img alt="Instagram" src="/images/logos/instagram.svg" height={16} />,
-    name: 'Instagram',
-    color: '#ff543e',
-  },
-  facebook: {
-    icon: <img alt="Facebook" src="/images/logos/facebook.svg" height={16} />,
-    name: 'Facebook',
-    color: '#0062e0',
-  },
-  youtube: {
-    icon: <img alt="YouTube" src="/images/logos/youtube.svg" height={16} />,
-    name: 'YouTube',
-    color: '#f61c0d',
-  },
-}
-
 export function SocialButtonConfig({
   name,
   user,
   refetch,
 }: {
   name: keyof typeof SocialConfig
-  user: { socials: SocialFragmentFragment[] }
+  user: { platforms: SocialFragmentFragment[] }
   refetch: () => void
 }) {
   const [authWithSocial] = useAuthWithSocialMutation()
@@ -117,10 +90,10 @@ export function SocialButtonConfig({
 
   const social = useMemo(() => {
     switch (name) {
-      case 'twitter':
-        return user.socials.find((e) => e.__typename === 'Twitter')
-      case 'facebook':
-        return user.socials.find((e) => e.__typename === 'Facebook')
+      case 'TWITTER':
+        return user.platforms.find((e) => e.__typename === 'Twitter')
+      case 'FACEBOOK':
+        return user.platforms.find((e) => e.__typename === 'Facebook')
     }
   }, [name, user])
 
@@ -130,14 +103,12 @@ export function SocialButtonConfig({
       linked={!!social}
       username={social?.username}
       onLink={() => {
-        return authWithSocial({
-          variables: { name: name as SocialName },
-        }).then(({ data }) => {
+        return authWithSocial({ variables: { name: name as SocialNameEnum } }).then(({ data }) => {
           return data!.authWithSocial
         })
       }}
       onUnlink={async () => {
-        await removeSocial({ variables: { name: name as SocialName } })
+        await removeSocial({ variables: { name: name as SocialNameEnum } })
       }}
     />
   )
@@ -256,11 +227,11 @@ function Render({
           <AccordionSummary>Socials</AccordionSummary>
           <AccordionDetails>
             <Stack spacing={1}>
-              <SocialButtonConfig name="twitter" user={user} refetch={refetch} />
-              <SocialButtonConfig name="facebook" user={user} refetch={refetch} />
-              <SocialButtonConfig name="instagram" user={user} refetch={refetch} />
-              <SocialButtonConfig name="tiktok" user={user} refetch={refetch} />
-              <SocialButtonConfig name="youtube" user={user} refetch={refetch} />
+              <SocialButtonConfig name="TWITTER" user={user} refetch={refetch} />
+              <SocialButtonConfig name="FACEBOOK" user={user} refetch={refetch} />
+              <SocialButtonConfig name="INSTAGRAM" user={user} refetch={refetch} />
+              <SocialButtonConfig name="TIKTOK" user={user} refetch={refetch} />
+              <SocialButtonConfig name="YOUTUBE" user={user} refetch={refetch} />
             </Stack>
           </AccordionDetails>
         </Accordion>

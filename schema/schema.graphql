@@ -61,7 +61,7 @@ query myUser($id: ID!) {
         type
       }
     }
-    socials {
+    platforms {
       ...SocialFragment
     }
   }
@@ -150,7 +150,9 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
       name
       email
       parentalApproval
-      platforms
+      platforms {
+        ...SocialFragment
+      }
       avatar {
         url
       }
@@ -215,7 +217,7 @@ query user($id: ID!) {
         }
       }
     }
-    socials {
+    platforms {
       ...SocialFragment
     }
   }
@@ -349,11 +351,11 @@ query statsForSchool($schoolId: ID!, $days: Int!) {
   }
 }
 
-mutation authWithSocial($name: SocialName!) {
+mutation authWithSocial($name: SocialNameEnum!) {
   authWithSocial(name: $name)
 }
 
-mutation removeSocial($name: SocialName!) {
+mutation removeSocial($name: SocialNameEnum!) {
   removeSocial(name: $name)
 }
 

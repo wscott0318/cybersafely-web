@@ -22,9 +22,9 @@ export function StudentDetails({ userId: id }: { userId: string }) {
       </Box>
       <Box>
         <Typography variant="body2">Socials</Typography>
-        {data.user.socials.map((social) => (
-          <Typography key={social.id} fontWeight={600}>
-            {social.__typename} ({social.username})
+        {data.user.platforms.map((platforms) => (
+          <Typography key={platforms.id} fontWeight={600}>
+            {platforms.__typename} ({platforms.username})
           </Typography>
         ))}
       </Box>
