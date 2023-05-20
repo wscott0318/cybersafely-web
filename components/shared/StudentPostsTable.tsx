@@ -14,12 +14,11 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { LinkProps } from 'next/link'
 import { useQueryParam } from '../../helpers/hooks'
 import { PostsQuery, namedOperations, useExecuteActionMutation, usePostsQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
 import { PlatformChip } from '../common/PlatformChip'
 
@@ -93,7 +92,7 @@ export function PostActions({ postId, url }: { postId: string; url: string }) {
   )
 }
 
-const columns: GridColumns<InferNodeType<PostsQuery['posts']>> = [
+const columns: InferColType<PostsQuery['posts']> = [
   {
     width: 300,
     field: 'text',

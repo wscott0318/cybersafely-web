@@ -1,15 +1,14 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { CreateSchoolForm } from '../../../../components/forms/CreateSchoolForm'
 import { SchoolsQuery, namedOperations, useCreateSchoolMutation, useSchoolsQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
-const columns: GridColumns<InferNodeType<SchoolsQuery['schools']>> = [
+const columns: InferColType<SchoolsQuery['schools']> = [
   {
     width: 250,
     field: 'name',

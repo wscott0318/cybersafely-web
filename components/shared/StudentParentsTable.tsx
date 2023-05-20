@@ -1,16 +1,15 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AvatarWithName } from '../common/AvatarWithName'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
 import { RemoveUserRoleMenuItem } from '../common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../common/SearchBar'
 import { InviteUserForm } from '../forms/InviteUserForm'
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const columns: InferColType<UsersQuery['users']> = [
   {
     width: 250,
     field: 'name',

@@ -1,6 +1,6 @@
 import { QueryResult } from '@apollo/client'
 import { Alert, LinearProgress, Pagination, Stack } from '@mui/material'
-import { DataGrid, GridColumns, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridSortItem, GridSortModel, GridValidRowModel } from '@mui/x-data-grid'
 import { LinkProps } from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -43,14 +43,15 @@ function DataGridErrorOverlay(props: DataGridErrorOverlayProps) {
   )
 }
 
-export type InferNodeType<TData> = TData extends { nodes: Array<infer TNode> } ? TNode : unknown
+export type InferNodeType<TData> = TData extends { nodes: Array<infer TNode> } ? TNode : any
+export type InferColType<T extends GridValidRowModel> = GridColDef<InferNodeType<T>>[]
 
 export const DataGridActions = NavigationActions
 
 type DataGridViewerProps<TQuery, TData, TNode extends GridValidRowModel> = {
   query: QueryResult<TQuery, any>
   data: TData | undefined
-  columns: GridColumns<TNode>
+  columns: GridColDef<TNode>[]
   href?: (node: TNode) => LinkProps['href']
   title: string
   actions?: React.ReactNode
@@ -98,6 +99,7 @@ export function DataGridViewer<
       subtitle={data ? `${data.page.total} in total` : undefined}
     >
       <Stack>
+        {props.query.error && <DataGridErrorOverlay error={props.query.error} />}
         <DataGrid
           autoHeight
           hideFooter
@@ -107,9 +109,8 @@ export function DataGridViewer<
           sortModel={sortModel}
           getRowId={(e) => e.id}
           rows={data?.nodes ?? []}
-          error={props.query.error}
           loading={props.query.loading}
-          columns={props.columns as GridColumns}
+          columns={props.columns as GridColDef<GridValidRowModel>[]}
           onSortModelChange={(model) => {
             setIndex(0)
             setSortModel(model)
@@ -122,7 +123,6 @@ export function DataGridViewer<
           }
           components={{
             LoadingOverlay: LinearProgress,
-            ErrorOverlay: DataGridErrorOverlay,
           }}
           sx={
             props.href && {

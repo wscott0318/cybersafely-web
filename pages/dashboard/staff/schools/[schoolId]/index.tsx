@@ -1,11 +1,10 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Button, CircularProgress, Container, Stack, Tab } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { GetServerSideProps } from 'next'
 import { useMemo, useState } from 'react'
 import { AvatarWithName } from '../../../../../components/common/AvatarWithName'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
 import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
@@ -29,7 +28,7 @@ type Props = {
   schoolId: string
 }
 
-const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (schoolId) => [
+const getColumns: (schoolId: string) => InferColType<UsersQuery['users']> = (schoolId) => [
   {
     width: 250,
     field: 'name',

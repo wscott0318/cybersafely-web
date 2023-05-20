@@ -1,8 +1,7 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../../../../components/common/DataGridViewer'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
@@ -10,7 +9,7 @@ import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
 import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const columns: InferColType<UsersQuery['users']> = [
   {
     width: 250,
     field: 'name',

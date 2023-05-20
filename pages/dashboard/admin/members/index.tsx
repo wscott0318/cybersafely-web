@@ -1,9 +1,8 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { useMemo } from 'react'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { RemoveUserRoleMenuItem } from '../../../../components/common/RemoveUserRoleMenuItem'
 import { SearchBar } from '../../../../components/common/SearchBar'
@@ -14,7 +13,7 @@ import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery }
 import { useAlert } from '../../../../utils/context/alert'
 import { useSchoolRole } from '../../../../utils/context/auth'
 
-const getColumns: (schoolId: string) => GridColumns<InferNodeType<UsersQuery['users']>> = (schoolId) => [
+const getColumns: (schoolId: string) => InferColType<UsersQuery['users']> = (schoolId) => [
   {
     width: 250,
     field: 'name',
