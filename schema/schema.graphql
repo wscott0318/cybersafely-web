@@ -7,6 +7,10 @@ fragment SocialFragment on Social {
     id
     username
   }
+  ... on Instagram {
+    id
+    username
+  }
 }
 
 query notifications($page: PageInput) {
