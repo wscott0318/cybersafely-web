@@ -16,19 +16,19 @@ declare module "nextjs-routes" {
     | StaticRoute<"/auth">
     | StaticRoute<"/auth/login">
     | StaticRoute<"/auth/register">
-    | StaticRoute<"/auth/reset">
     | DynamicRoute<"/auth/reset/[token]", { "token": string }>
+    | StaticRoute<"/auth/reset">
     | StaticRoute<"/dashboard/admin/home">
-    | StaticRoute<"/dashboard/admin/members">
     | DynamicRoute<"/dashboard/admin/members/[memberId]", { "memberId": string }>
-    | StaticRoute<"/dashboard/admin/posts">
+    | StaticRoute<"/dashboard/admin/members">
     | DynamicRoute<"/dashboard/admin/posts/[postId]", { "postId": string }>
+    | StaticRoute<"/dashboard/admin/posts">
     | StaticRoute<"/dashboard/admin/students">
     | StaticRoute<"/dashboard/coach/home">
-    | StaticRoute<"/dashboard/coach/members">
     | DynamicRoute<"/dashboard/coach/members/[memberId]", { "memberId": string }>
-    | StaticRoute<"/dashboard/coach/posts">
+    | StaticRoute<"/dashboard/coach/members">
     | DynamicRoute<"/dashboard/coach/posts/[postId]", { "postId": string }>
+    | StaticRoute<"/dashboard/coach/posts">
     | StaticRoute<"/dashboard/coach/students">
     | StaticRoute<"/dashboard">
     | StaticRoute<"/dashboard/notifications">
@@ -37,11 +37,11 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/profile">
     | StaticRoute<"/dashboard/school">
     | StaticRoute<"/dashboard/staff/home">
-    | StaticRoute<"/dashboard/staff/posts">
     | DynamicRoute<"/dashboard/staff/posts/[postId]", { "postId": string }>
-    | StaticRoute<"/dashboard/staff/schools">
+    | StaticRoute<"/dashboard/staff/posts">
     | DynamicRoute<"/dashboard/staff/schools/[schoolId]", { "schoolId": string }>
     | DynamicRoute<"/dashboard/staff/schools/[schoolId]/members/[memberId]", { "schoolId": string; "memberId": string }>
+    | StaticRoute<"/dashboard/staff/schools">
     | StaticRoute<"/dashboard/staff/settings">
     | StaticRoute<"/dashboard/staff/staff">
     | StaticRoute<"/dashboard/staff/users">
