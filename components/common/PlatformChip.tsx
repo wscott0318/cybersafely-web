@@ -1,21 +1,14 @@
 import { Chip } from '@mui/material'
 import { useMemo } from 'react'
-import { PlatformEnum } from '../../schema'
-
-const Platforms: Record<string, { name: string; color: string; logo: string }> = {
-  TWITTER: {
-    name: 'Twitter',
-    color: '#1d9bf0',
-    logo: '/images/logos/twitter.svg',
-  },
-}
+import { SocialNameEnum } from '../../schema'
+import { SocialConfig } from '../../utils/social'
 
 type PlatformChipProps = {
-  platform: PlatformEnum
+  platform: SocialNameEnum
 }
 
 export function PlatformChip({ platform }: PlatformChipProps) {
-  const value = useMemo(() => Platforms[platform], [platform])
+  const value = useMemo(() => SocialConfig[platform], [platform])
 
   if (!value) {
     return null
@@ -26,7 +19,7 @@ export function PlatformChip({ platform }: PlatformChipProps) {
       variant="filled"
       label={value.name}
       sx={{ background: value.color }}
-      icon={<img alt={value.name} src={value.logo} height={14} style={{ marginLeft: 6 }} />}
+      icon={<img alt={value.name} src={value.icon} height={14} style={{ marginLeft: 6 }} />}
     />
   )
 }

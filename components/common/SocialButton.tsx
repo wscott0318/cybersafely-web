@@ -3,7 +3,7 @@ import { default as CloseIcon } from '@mui/icons-material/CloseOutlined'
 import { Box, IconButton, Paper, Stack, Typography } from '@mui/material'
 
 type SocialButtonProps = {
-  icon: React.ReactNode
+  icon: string
   name: string
   color: string
   linked?: boolean
@@ -19,7 +19,7 @@ export function SocialButton(props: SocialButtonProps) {
       <Paper sx={{ p: 1, pr: 1.5, display: 'block', textDecoration: 'none' }}>
         <Stack direction="row" alignItems="center">
           <Box bgcolor={props.color} borderRadius={1} p={1} sx={{ '& > *': { display: 'block' } }}>
-            {props.icon}
+            <img src={props.icon} alt={props.name} height={16} />
           </Box>
           <Typography flexGrow={1} overflow="hidden" textOverflow="ellipsis">
             {props.username}
@@ -62,7 +62,7 @@ export function SocialButton(props: SocialButtonProps) {
     >
       <Stack direction="row" alignItems="center">
         <Box bgcolor={props.color} borderRadius={1} p={1} sx={{ '& > *': { display: 'block' } }}>
-          {props.icon}
+          <img src={props.icon} alt={props.name} height={16} />
         </Box>
         <Typography flexGrow={1} overflow="hidden" textOverflow="ellipsis">
           {props.name}

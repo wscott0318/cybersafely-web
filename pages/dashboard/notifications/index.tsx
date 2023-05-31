@@ -1,18 +1,17 @@
 import CheckIcon from '@mui/icons-material/DoneAllOutlined'
 import { LoadingButton } from '@mui/lab'
-import { GridColumns } from '@mui/x-data-grid'
 import { LinkProps } from 'next/link'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../../../components/common/DataGridViewer'
 import { withDashboardLayout } from '../../../components/dashboard/Layout'
 import {
-  namedOperations,
   NotificationsQuery,
+  namedOperations,
   useNotificationsQuery,
   useReadNotificationsMutation,
 } from '../../../schema'
 import { useUser } from '../../../utils/context/auth'
 
-const columns: GridColumns<InferNodeType<NotificationsQuery['notifications']>> = [
+const columns: InferColType<NotificationsQuery['notifications']> = [
   {
     width: 500,
     field: 'body',

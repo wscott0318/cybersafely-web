@@ -1,20 +1,19 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import UploadIcon from '@mui/icons-material/UploadFileOutlined'
 import { ListItemIcon, ListItemText, MenuItem, Stack } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { LinkProps } from 'next/link'
-import { UsersQuery, useUsersQuery } from '../../schema'
+import { SocialNameEnum, UsersQuery, useUsersQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AvatarWithName } from '../common/AvatarWithName'
 import { ButtonSplitMenu } from '../common/ButtonSplitMenu'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { PlatformChip } from '../common/PlatformChip'
 import { SearchBar } from '../common/SearchBar'
 import { UserScore } from '../common/UserScore'
 import { InviteStudentAndParentForm } from '../forms/InviteStudentAndParentForm'
 import { ImportStudentsModal } from './ImportStudentsModal'
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const columns: InferColType<UsersQuery['users']> = [
   {
     width: 250,
     field: 'name',
@@ -37,7 +36,7 @@ const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
       return (
         <Stack direction="row" spacing={0.5}>
           {params.row.platforms.map((platform) => (
-            <PlatformChip key={platform} platform={platform} />
+            <PlatformChip key={platform.id} platform={platform.__typename!.toUpperCase() as SocialNameEnum} />
           ))}
         </Stack>
       )

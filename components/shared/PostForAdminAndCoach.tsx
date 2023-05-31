@@ -83,7 +83,7 @@ export function PostForAdminAndCoachWrapper({
               ))}
               <Row title="Text" message={post.text} />
               <Row title="Date" message={new Date(post.createdAt).toLocaleString()} />
-              <Row title="Platform" message={<PlatformChip platform={post.platform} />} />
+              {!!post.platform && <Row title="Platform" message={<PlatformChip platform={post.platform} />} />}
               <Row
                 last
                 title="User"

@@ -20,14 +20,14 @@ export function StudentDetails({ userId: id }: { userId: string }) {
         <Typography variant="body2">E-mail</Typography>
         <Typography fontWeight={600}>{data.user.email}</Typography>
       </Box>
-      {data.user.twitter && (
-        <Box>
-          <Typography variant="body2">
-            Twitter ({new Date(data.user.twitter.createdAt).toLocaleDateString()})
+      <Box>
+        <Typography variant="body2">Socials</Typography>
+        {data.user.platforms.map((platforms) => (
+          <Typography key={platforms.id} fontWeight={600}>
+            {platforms.__typename} ({platforms.username})
           </Typography>
-          <Typography fontWeight={600}>{data.user.twitter.username}</Typography>
-        </Box>
-      )}
+        ))}
+      </Box>
     </Stack>
   )
 }

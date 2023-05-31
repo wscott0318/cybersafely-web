@@ -1,3 +1,22 @@
+fragment SocialFragment on Social {
+  ... on Facebook {
+    id
+    username
+  }
+  ... on Twitter {
+    id
+    username
+  }
+  ... on Instagram {
+    id
+    username
+  }
+  ... on TikTok {
+    id
+    username
+  }
+}
+
 query notifications($page: PageInput) {
   notifications(page: $page) {
     page {
@@ -50,9 +69,8 @@ query myUser($id: ID!) {
         type
       }
     }
-    twitter {
-      id
-      username
+    platforms {
+      ...SocialFragment
     }
   }
 }
@@ -140,7 +158,9 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
       name
       email
       parentalApproval
-      platforms
+      platforms {
+        ...SocialFragment
+      }
       avatar {
         url
       }
@@ -205,10 +225,8 @@ query user($id: ID!) {
         }
       }
     }
-    twitter {
-      id
-      createdAt
-      username
+    platforms {
+      ...SocialFragment
     }
   }
 }
@@ -341,12 +359,12 @@ query statsForSchool($schoolId: ID!, $days: Int!) {
   }
 }
 
-mutation authWithTwitter {
-  authWithTwitter
+mutation authWithSocial($name: SocialNameEnum!) {
+  authWithSocial(name: $name)
 }
 
-mutation removeTwitter($id: ID!) {
-  removeTwitter(id: $id)
+mutation removeSocial($name: SocialNameEnum!) {
+  removeSocial(name: $name)
 }
 
 query emailSettings {

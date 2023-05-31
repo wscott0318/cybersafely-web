@@ -86,6 +86,12 @@ export type EmailSettings = {
   receivePostFlagged: Scalars['Boolean'];
 };
 
+export type Facebook = {
+  __typename?: 'Facebook';
+  id: Scalars['ID'];
+  username: Scalars['String'];
+};
+
 export type Flag = {
   __typename?: 'Flag';
   reasons: Array<Scalars['String']>;
@@ -112,6 +118,12 @@ export type ImportStudentsAndParentsInput = {
   header: ImportStudentsAndParentsHeader;
   type: PreviewImportTypeEnum;
   uploadId: Scalars['ID'];
+};
+
+export type Instagram = {
+  __typename?: 'Instagram';
+  id: Scalars['ID'];
+  username: Scalars['String'];
 };
 
 export type InvitedRole = {
@@ -142,7 +154,7 @@ export const MediaTypeEnum = {
 export type MediaTypeEnum = typeof MediaTypeEnum[keyof typeof MediaTypeEnum];
 export type Mutation = {
   __typename?: 'Mutation';
-  authWithTwitter: Scalars['String'];
+  authWithSocial: Scalars['String'];
   contact: Scalars['Boolean'];
   createAddress: Address;
   createSchool: School;
@@ -157,7 +169,7 @@ export type Mutation = {
   registerWithEmail: UserWithToken;
   removeAddress: Scalars['Boolean'];
   removeImage: Scalars['Boolean'];
-  removeTwitter: Scalars['Boolean'];
+  removeSocial: Scalars['Boolean'];
   removeUserRole: Scalars['Boolean'];
   resetPassword: UserWithToken;
   respondToInvitedRole: UserWithToken;
@@ -169,6 +181,11 @@ export type Mutation = {
   updateSettings: Scalars['Boolean'];
   updateUser: User;
   updateUserParentalApproval: Scalars['Boolean'];
+};
+
+
+export type MutationAuthWithSocialArgs = {
+  name: SocialNameEnum;
 };
 
 
@@ -235,8 +252,8 @@ export type MutationRemoveImageArgs = {
 };
 
 
-export type MutationRemoveTwitterArgs = {
-  id: Scalars['ID'];
+export type MutationRemoveSocialArgs = {
+  name: SocialNameEnum;
 };
 
 
@@ -343,12 +360,6 @@ export type ParentRole = {
   type: UserRoleTypeEnum;
 };
 
-export const PlatformEnum = {
-  Twitter: 'TWITTER',
-  Unknown: 'UNKNOWN'
-} as const;
-
-export type PlatformEnum = typeof PlatformEnum[keyof typeof PlatformEnum];
 export type Post = {
   __typename?: 'Post';
   actions: Array<Action>;
@@ -359,7 +370,7 @@ export type Post = {
   latestAction?: Maybe<Scalars['String']>;
   manualReview: Scalars['Boolean'];
   media: Array<Media>;
-  platform: PlatformEnum;
+  platform?: Maybe<SocialNameEnum>;
   text: Scalars['String'];
   url: Scalars['String'];
   user: User;
@@ -569,6 +580,16 @@ export type Settings = {
   enableSignUps: Scalars['Boolean'];
 };
 
+export type Social = Facebook | Instagram | TikTok | Twitter;
+
+export const SocialNameEnum = {
+  Facebook: 'FACEBOOK',
+  Instagram: 'INSTAGRAM',
+  Tiktok: 'TIKTOK',
+  Twitter: 'TWITTER'
+} as const;
+
+export type SocialNameEnum = typeof SocialNameEnum[keyof typeof SocialNameEnum];
 export type StatByDay = {
   __typename?: 'StatByDay';
   day: Scalars['String'];
@@ -581,9 +602,14 @@ export type StatsByDay = {
   total: Scalars['Int'];
 };
 
+export type TikTok = {
+  __typename?: 'TikTok';
+  id: Scalars['ID'];
+  username: Scalars['String'];
+};
+
 export type Twitter = {
   __typename?: 'Twitter';
-  createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   username: Scalars['String'];
 };
@@ -650,9 +676,8 @@ export type User = {
   name: Scalars['String'];
   notificationCount: Scalars['Int'];
   parentalApproval?: Maybe<Scalars['Boolean']>;
-  platforms: Array<PlatformEnum>;
+  platforms: Array<Social>;
   roles: Array<UserRole>;
-  twitter?: Maybe<Twitter>;
 };
 
 
@@ -711,6 +736,16 @@ export const UsersFromEnum = {
 } as const;
 
 export type UsersFromEnum = typeof UsersFromEnum[keyof typeof UsersFromEnum];
+type SocialFragment_Facebook_Fragment = { __typename?: 'Facebook', id: string, username: string };
+
+type SocialFragment_Instagram_Fragment = { __typename?: 'Instagram', id: string, username: string };
+
+type SocialFragment_TikTok_Fragment = { __typename?: 'TikTok', id: string, username: string };
+
+type SocialFragment_Twitter_Fragment = { __typename?: 'Twitter', id: string, username: string };
+
+export type SocialFragmentFragment = SocialFragment_Facebook_Fragment | SocialFragment_Instagram_Fragment | SocialFragment_TikTok_Fragment | SocialFragment_Twitter_Fragment;
+
 export type NotificationsQueryVariables = Exact<{
   page?: InputMaybe<PageInput>;
 }>;
@@ -728,7 +763,7 @@ export type MyUserQueryVariables = Exact<{
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, twitter?: { __typename?: 'Twitter', id: string, username: string } | null } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -777,14 +812,14 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, platforms: Array<PlatformEnum>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }>, twitter?: { __typename?: 'Twitter', id: string, createdAt: string, username: string } | null } };
+export type UserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, createdAt: string, name: string, email: string, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string } }>, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
 
 export type UpdateUserMutationVariables = Exact<{
   id: Scalars['ID'];
@@ -914,17 +949,19 @@ export type StatsForSchoolQueryVariables = Exact<{
 
 export type StatsForSchoolQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
 
-export type AuthWithTwitterMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type AuthWithTwitterMutation = { __typename?: 'Mutation', authWithTwitter: string };
-
-export type RemoveTwitterMutationVariables = Exact<{
-  id: Scalars['ID'];
+export type AuthWithSocialMutationVariables = Exact<{
+  name: SocialNameEnum;
 }>;
 
 
-export type RemoveTwitterMutation = { __typename?: 'Mutation', removeTwitter: boolean };
+export type AuthWithSocialMutation = { __typename?: 'Mutation', authWithSocial: string };
+
+export type RemoveSocialMutationVariables = Exact<{
+  name: SocialNameEnum;
+}>;
+
+
+export type RemoveSocialMutation = { __typename?: 'Mutation', removeSocial: boolean };
 
 export type EmailSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -946,14 +983,14 @@ export type PostsQueryVariables = Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, latestAction?: string | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform?: SocialNameEnum | null, latestAction?: string | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform: PlatformEnum, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform?: SocialNameEnum | null, flagged: boolean, manualReview: boolean, flag?: { __typename?: 'Flag', reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string, url: string, type: MediaTypeEnum }>, actions: Array<{ __typename?: 'Action', id: string, createdAt: string, name: string, user?: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null } | null }> } };
 
 export type PostCardsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
@@ -1011,6 +1048,26 @@ export type RespondToInvitedRoleMutationVariables = Exact<{
 
 export type RespondToInvitedRoleMutation = { __typename?: 'Mutation', respondToInvitedRole: { __typename?: 'UserWithToken', token: string, user: { __typename?: 'User', id: string } } };
 
+export const SocialFragmentFragmentDoc = gql`
+    fragment SocialFragment on Social {
+  ... on Facebook {
+    id
+    username
+  }
+  ... on Twitter {
+    id
+    username
+  }
+  ... on Instagram {
+    id
+    username
+  }
+  ... on TikTok {
+    id
+    username
+  }
+}
+    `;
 export const PageFragmentFragmentDoc = gql`
     fragment PageFragment on Page {
   index
@@ -1136,13 +1193,12 @@ export const MyUserDocument = gql`
         type
       }
     }
-    twitter {
-      id
-      username
+    platforms {
+      ...SocialFragment
     }
   }
 }
-    `;
+    ${SocialFragmentFragmentDoc}`;
 
 /**
  * __useMyUserQuery__
@@ -1390,7 +1446,9 @@ export const UsersDocument = gql`
       name
       email
       parentalApproval
-      platforms
+      platforms {
+        ...SocialFragment
+      }
       avatar {
         url
       }
@@ -1421,7 +1479,8 @@ export const UsersDocument = gql`
     }
   }
 }
-    ${PageFragmentFragmentDoc}`;
+    ${PageFragmentFragmentDoc}
+${SocialFragmentFragmentDoc}`;
 
 /**
  * __useUsersQuery__
@@ -1486,14 +1545,12 @@ export const UserDocument = gql`
         }
       }
     }
-    twitter {
-      id
-      createdAt
-      username
+    platforms {
+      ...SocialFragment
     }
   }
 }
-    `;
+    ${SocialFragmentFragmentDoc}`;
 
 /**
  * __useUserQuery__
@@ -2136,67 +2193,68 @@ export function useStatsForSchoolLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type StatsForSchoolQueryHookResult = ReturnType<typeof useStatsForSchoolQuery>;
 export type StatsForSchoolLazyQueryHookResult = ReturnType<typeof useStatsForSchoolLazyQuery>;
 export type StatsForSchoolQueryResult = Apollo.QueryResult<StatsForSchoolQuery, StatsForSchoolQueryVariables>;
-export const AuthWithTwitterDocument = gql`
-    mutation authWithTwitter {
-  authWithTwitter
+export const AuthWithSocialDocument = gql`
+    mutation authWithSocial($name: SocialNameEnum!) {
+  authWithSocial(name: $name)
 }
     `;
-export type AuthWithTwitterMutationFn = Apollo.MutationFunction<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>;
+export type AuthWithSocialMutationFn = Apollo.MutationFunction<AuthWithSocialMutation, AuthWithSocialMutationVariables>;
 
 /**
- * __useAuthWithTwitterMutation__
+ * __useAuthWithSocialMutation__
  *
- * To run a mutation, you first call `useAuthWithTwitterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAuthWithTwitterMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAuthWithSocialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAuthWithSocialMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [authWithTwitterMutation, { data, loading, error }] = useAuthWithTwitterMutation({
+ * const [authWithSocialMutation, { data, loading, error }] = useAuthWithSocialMutation({
  *   variables: {
+ *      name: // value for 'name'
  *   },
  * });
  */
-export function useAuthWithTwitterMutation(baseOptions?: Apollo.MutationHookOptions<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>) {
+export function useAuthWithSocialMutation(baseOptions?: Apollo.MutationHookOptions<AuthWithSocialMutation, AuthWithSocialMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>(AuthWithTwitterDocument, options);
+        return Apollo.useMutation<AuthWithSocialMutation, AuthWithSocialMutationVariables>(AuthWithSocialDocument, options);
       }
-export type AuthWithTwitterMutationHookResult = ReturnType<typeof useAuthWithTwitterMutation>;
-export type AuthWithTwitterMutationResult = Apollo.MutationResult<AuthWithTwitterMutation>;
-export type AuthWithTwitterMutationOptions = Apollo.BaseMutationOptions<AuthWithTwitterMutation, AuthWithTwitterMutationVariables>;
-export const RemoveTwitterDocument = gql`
-    mutation removeTwitter($id: ID!) {
-  removeTwitter(id: $id)
+export type AuthWithSocialMutationHookResult = ReturnType<typeof useAuthWithSocialMutation>;
+export type AuthWithSocialMutationResult = Apollo.MutationResult<AuthWithSocialMutation>;
+export type AuthWithSocialMutationOptions = Apollo.BaseMutationOptions<AuthWithSocialMutation, AuthWithSocialMutationVariables>;
+export const RemoveSocialDocument = gql`
+    mutation removeSocial($name: SocialNameEnum!) {
+  removeSocial(name: $name)
 }
     `;
-export type RemoveTwitterMutationFn = Apollo.MutationFunction<RemoveTwitterMutation, RemoveTwitterMutationVariables>;
+export type RemoveSocialMutationFn = Apollo.MutationFunction<RemoveSocialMutation, RemoveSocialMutationVariables>;
 
 /**
- * __useRemoveTwitterMutation__
+ * __useRemoveSocialMutation__
  *
- * To run a mutation, you first call `useRemoveTwitterMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveTwitterMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRemoveSocialMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveSocialMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [removeTwitterMutation, { data, loading, error }] = useRemoveTwitterMutation({
+ * const [removeSocialMutation, { data, loading, error }] = useRemoveSocialMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      name: // value for 'name'
  *   },
  * });
  */
-export function useRemoveTwitterMutation(baseOptions?: Apollo.MutationHookOptions<RemoveTwitterMutation, RemoveTwitterMutationVariables>) {
+export function useRemoveSocialMutation(baseOptions?: Apollo.MutationHookOptions<RemoveSocialMutation, RemoveSocialMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RemoveTwitterMutation, RemoveTwitterMutationVariables>(RemoveTwitterDocument, options);
+        return Apollo.useMutation<RemoveSocialMutation, RemoveSocialMutationVariables>(RemoveSocialDocument, options);
       }
-export type RemoveTwitterMutationHookResult = ReturnType<typeof useRemoveTwitterMutation>;
-export type RemoveTwitterMutationResult = Apollo.MutationResult<RemoveTwitterMutation>;
-export type RemoveTwitterMutationOptions = Apollo.BaseMutationOptions<RemoveTwitterMutation, RemoveTwitterMutationVariables>;
+export type RemoveSocialMutationHookResult = ReturnType<typeof useRemoveSocialMutation>;
+export type RemoveSocialMutationResult = Apollo.MutationResult<RemoveSocialMutation>;
+export type RemoveSocialMutationOptions = Apollo.BaseMutationOptions<RemoveSocialMutation, RemoveSocialMutationVariables>;
 export const EmailSettingsDocument = gql`
     query emailSettings {
   emailSettings {
@@ -2694,8 +2752,8 @@ export const namedOperations = {
     forgotPassword: 'forgotPassword',
     registerWithEmail: 'registerWithEmail',
     contact: 'contact',
-    authWithTwitter: 'authWithTwitter',
-    removeTwitter: 'removeTwitter',
+    authWithSocial: 'authWithSocial',
+    removeSocial: 'removeSocial',
     updateEmailSettings: 'updateEmailSettings',
     executeAction: 'executeAction',
     updateUserParentalApproval: 'updateUserParentalApproval',
@@ -2704,6 +2762,7 @@ export const namedOperations = {
     respondToInvitedRole: 'respondToInvitedRole'
   },
   Fragment: {
+    SocialFragment: 'SocialFragment',
     PageFragment: 'PageFragment',
     StatsByDayFragment: 'StatsByDayFragment'
   }

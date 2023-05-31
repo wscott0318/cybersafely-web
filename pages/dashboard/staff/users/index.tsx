@@ -1,14 +1,13 @@
 import { Link } from '@mui/material'
-import { GridColumns } from '@mui/x-data-grid'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
-import { DataGridActions, DataGridViewer, InferNodeType } from '../../../../components/common/DataGridViewer'
+import { DataGridActions, DataGridViewer, InferColType } from '../../../../components/common/DataGridViewer'
 import { NextLink } from '../../../../components/common/NextLink'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { UsersQuery, useUsersQuery } from '../../../../schema'
 
-const columns: GridColumns<InferNodeType<UsersQuery['users']>> = [
+const columns: InferColType<UsersQuery['users']> = [
   {
     width: 250,
     field: 'name',
