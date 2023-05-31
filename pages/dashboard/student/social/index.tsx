@@ -26,13 +26,13 @@ function Social() {
       <Grid item xs={12} sm={4} md={3}>
         <SocialButtonConfig name="FACEBOOK" user={user} refetch={refetchUser} />
       </Grid>
-      {/* <Grid item xs={12} sm={4} md={3}>
+      <Grid item xs={12} sm={4} md={3}>
         <SocialButtonConfig name="INSTAGRAM" user={user} refetch={refetchUser} />
       </Grid>
       <Grid item xs={12} sm={4} md={3}>
         <SocialButtonConfig name="TIKTOK" user={user} refetch={refetchUser} />
       </Grid>
-      <Grid item xs={12} sm={4} md={3}>
+      {/* <Grid item xs={12} sm={4} md={3}>
         <SocialButtonConfig name="YOUTUBE" user={user} refetch={refetchUser} />
       </Grid> */}
     </Grid>

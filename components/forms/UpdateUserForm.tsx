@@ -96,6 +96,8 @@ export function SocialButtonConfig({
         return user.platforms.find((e) => e.__typename === 'Facebook')
       case 'INSTAGRAM':
         return user.platforms.find((e) => e.__typename === 'Instagram')
+      case 'TIKTOK':
+        return user.platforms.find((e) => e.__typename === 'TikTok')
     }
   }, [name, user])
 

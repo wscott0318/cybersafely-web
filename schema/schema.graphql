@@ -11,6 +11,10 @@ fragment SocialFragment on Social {
     id
     username
   }
+  ... on TikTok {
+    id
+    username
+  }
 }
 
 query notifications($page: PageInput) {
