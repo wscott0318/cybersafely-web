@@ -12,6 +12,7 @@ function Footer() {
       <Container disableGutters>
         <Stack px={2} alignItems="center" textAlign="center">
           <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
+          <Typography>Super Cooper 19 LLC</Typography>
           <Typography>
             &copy; 2022 - {new Date().getFullYear()} {Config.app.name}
           </Typography>
