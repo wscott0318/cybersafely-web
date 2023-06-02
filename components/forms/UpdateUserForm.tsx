@@ -235,7 +235,7 @@ function Render({
               <SocialButtonConfig name="FACEBOOK" user={user} refetch={refetch} />
               <SocialButtonConfig name="INSTAGRAM" user={user} refetch={refetch} />
               <SocialButtonConfig name="TIKTOK" user={user} refetch={refetch} />
-              <SocialButtonConfig name="YOUTUBE" user={user} refetch={refetch} />
+              {/* <SocialButtonConfig name="YOUTUBE" user={user} refetch={refetch} /> */}
             </Stack>
           </AccordionDetails>
         </Accordion>
