@@ -26,6 +26,9 @@ function Footer() {
             <NextLink href="/how-it-works" passHref legacyBehavior>
               <Link>How It Works</Link>
             </NextLink>
+            <NextLink href="/faq" passHref legacyBehavior>
+              <Link>FAQ</Link>
+            </NextLink>
           </Stack>
         </Stack>
       </Container>

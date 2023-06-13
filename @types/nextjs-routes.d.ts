@@ -48,6 +48,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/student/home">
     | StaticRoute<"/dashboard/student/posts">
     | StaticRoute<"/dashboard/student/social">
+    | StaticRoute<"/faq">
     | StaticRoute<"/funding">
     | StaticRoute<"/how-it-works">
     | StaticRoute<"/">
