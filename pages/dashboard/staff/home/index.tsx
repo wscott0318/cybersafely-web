@@ -25,17 +25,25 @@ function Home() {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <InfoCard
-            severity="info"
-            title="Total Posts"
+            severity="error"
+            title="Critical Posts"
             href="/dashboard/staff/posts"
-            message={cardsData?.totalPosts.page.total ?? 0}
+            message={cardsData?.severityHighPosts.page.total ?? 0}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <InfoCard
-            severity="error"
-            title="Concerning Posts"
-            message={cardsData?.flaggedPosts.page.total ?? 0}
+            severity="warning"
+            title="Warning Posts"
+            message={cardsData?.severityLowPosts.page.total ?? 0}
+            href={{ pathname: '/dashboard/staff/posts', query: { flagged: 'true' } }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <InfoCard
+            severity="info"
+            title="No Issue Posts"
+            message={cardsData?.severityNonePosts.page.total ?? 0}
             href={{ pathname: '/dashboard/staff/posts', query: { flagged: 'true' } }}
           />
         </Grid>

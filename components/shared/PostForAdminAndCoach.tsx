@@ -11,9 +11,10 @@ import {
   timelineOppositeContentClasses,
   TimelineSeparator,
 } from '@mui/lab'
-import { CircularProgress, Divider, Grid, Paper, Tab, Typography } from '@mui/material'
+import { Chip, CircularProgress, Divider, Grid, Paper, Tab, Typography } from '@mui/material'
 import { LinkProps } from 'next/link'
 import { useState } from 'react'
+import { severityChipProps } from '../../helpers/formatters'
 import { PostQuery, usePostQuery } from '../../schema'
 import { AvatarWithName } from '../common/AvatarWithName'
 import { NavigationActions, NavigationView } from '../common/NavigationView'
@@ -95,7 +96,7 @@ export function PostForAdminAndCoachWrapper({
         <TabPanel value="actions">
           <Paper sx={{ py: 2 }}>
             <Grid container spacing={2}>
-              <Row title="Flagged" message={post.flagged ? 'Yes' : 'No'} />
+              <Row title="Severity" message={<Chip {...severityChipProps(post.severity)} />} />
               <Row title="Manual Review" message={post.manualReview ? 'Yes' : 'No'} />
               <Row title="Reasons" message={post.flag?.reasons.join(', ') || '-'} />
               <Row title="Actions" message={<PostActions url={post.url} postId={post.id} />} />
