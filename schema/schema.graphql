@@ -369,7 +369,9 @@ mutation removeSocial($name: SocialNameEnum!) {
 
 query emailSettings {
   emailSettings {
-    receivePostFlagged
+    receivePostNoneSeverity
+    receivePostLowSeverity
+    receivePostHighSeverity
   }
 }
 

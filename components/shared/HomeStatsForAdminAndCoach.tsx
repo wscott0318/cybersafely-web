@@ -64,8 +64,8 @@ export function HomeStatsForAdminAndCoach() {
             message={cardsData?.severityHighPosts.page.total ?? 0}
             href={
               schoolRole!.type === 'ADMIN'
-                ? { pathname: '/dashboard/admin/posts', query: { flagged: 'true' } }
-                : { pathname: '/dashboard/coach/posts', query: { flagged: 'true' } }
+                ? { pathname: '/dashboard/admin/posts', query: { severity: 'HIGH' } }
+                : { pathname: '/dashboard/coach/posts', query: { severity: 'HIGH' } }
             }
           />
         </Grid>
@@ -76,8 +76,8 @@ export function HomeStatsForAdminAndCoach() {
             message={cardsData?.severityLowPosts.page.total ?? 0}
             href={
               schoolRole!.type === 'ADMIN'
-                ? { pathname: '/dashboard/admin/posts', query: { flagged: 'true' } }
-                : { pathname: '/dashboard/coach/posts', query: { flagged: 'true' } }
+                ? { pathname: '/dashboard/admin/posts', query: { severity: 'LOW' } }
+                : { pathname: '/dashboard/coach/posts', query: { severity: 'LOW' } }
             }
           />
         </Grid>
@@ -86,7 +86,11 @@ export function HomeStatsForAdminAndCoach() {
             severity="info"
             title="No Issue Posts"
             message={cardsData?.severityNonePosts.page.total ?? 0}
-            href={schoolRole!.type === 'ADMIN' ? '/dashboard/admin/posts' : '/dashboard/coach/posts'}
+            href={
+              schoolRole!.type === 'ADMIN'
+                ? { pathname: '/dashboard/admin/posts', query: { severity: 'NONE' } }
+                : { pathname: '/dashboard/coach/posts', query: { severity: 'NONE' } }
+            }
           />
         </Grid>
         {cards.map((card, index) => (

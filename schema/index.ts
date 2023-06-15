@@ -90,7 +90,9 @@ export type CreateUserRoleInput = {
 
 export type EmailSettings = {
   __typename?: 'EmailSettings';
-  receivePostFlagged: Scalars['Boolean'];
+  receivePostHighSeverity: Scalars['Boolean'];
+  receivePostLowSeverity: Scalars['Boolean'];
+  receivePostNoneSeverity: Scalars['Boolean'];
 };
 
 export type Facebook = {
@@ -630,7 +632,9 @@ export type UpdateAddressInput = {
 };
 
 export type UpdateEmailSettingsInput = {
-  receivePostFlagged?: InputMaybe<Scalars['Boolean']>;
+  receivePostHighSeverity?: InputMaybe<Scalars['Boolean']>;
+  receivePostLowSeverity?: InputMaybe<Scalars['Boolean']>;
+  receivePostNoneSeverity?: InputMaybe<Scalars['Boolean']>;
 };
 
 export const UpdateImageForEnum = {
@@ -974,7 +978,7 @@ export type RemoveSocialMutation = { __typename?: 'Mutation', removeSocial: bool
 export type EmailSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type EmailSettingsQuery = { __typename?: 'Query', emailSettings: { __typename?: 'EmailSettings', receivePostFlagged: boolean } };
+export type EmailSettingsQuery = { __typename?: 'Query', emailSettings: { __typename?: 'EmailSettings', receivePostNoneSeverity: boolean, receivePostLowSeverity: boolean, receivePostHighSeverity: boolean } };
 
 export type UpdateEmailSettingsMutationVariables = Exact<{
   input: UpdateEmailSettingsInput;
@@ -2266,7 +2270,9 @@ export type RemoveSocialMutationOptions = Apollo.BaseMutationOptions<RemoveSocia
 export const EmailSettingsDocument = gql`
     query emailSettings {
   emailSettings {
-    receivePostFlagged
+    receivePostNoneSeverity
+    receivePostLowSeverity
+    receivePostHighSeverity
   }
 }
     `;

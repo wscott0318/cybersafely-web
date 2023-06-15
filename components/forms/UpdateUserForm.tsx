@@ -31,6 +31,7 @@ import { SocialConfig } from '../../utils/social'
 import { AccordionContext } from '../common/AccordionContext'
 import { checkPasswordStrength } from '../common/PasswordStrength'
 import { QueryLoader, QueryLoaderRenderProps } from '../common/QueryLoader'
+import { SeverityImage } from '../common/SeverityImage'
 import { SocialButton } from '../common/SocialButton'
 import { Form } from '../common/form/Form'
 import { FormAvatar } from '../common/form/FormAvatar'
@@ -247,12 +248,53 @@ function Render({
             <Stack spacing={1}>
               <FormGroup>
                 <FormControlLabel
-                  label="Receive Post Flagged"
+                  label={
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <SeverityImage severity="NONE" size={24} />
+                      <Typography>Send no issue posts email</Typography>
+                    </Stack>
+                  }
                   control={
                     <Switch
-                      checked={emailSettingsData?.emailSettings.receivePostFlagged ?? false}
-                      onChange={(_, receivePostFlagged) => {
-                        updateEmailSettings({ variables: { input: { receivePostFlagged } } })
+                      checked={emailSettingsData?.emailSettings.receivePostNoneSeverity ?? false}
+                      onChange={(_, receivePostNoneSeverity) => {
+                        updateEmailSettings({ variables: { input: { receivePostNoneSeverity } } })
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormControlLabel
+                  label={
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <SeverityImage severity="LOW" size={24} />
+                      <Typography>Send warning posts email</Typography>
+                    </Stack>
+                  }
+                  control={
+                    <Switch
+                      checked={emailSettingsData?.emailSettings.receivePostLowSeverity ?? false}
+                      onChange={(_, receivePostLowSeverity) => {
+                        updateEmailSettings({ variables: { input: { receivePostLowSeverity } } })
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormControlLabel
+                  label={
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <SeverityImage severity="HIGH" size={24} />
+                      <Typography>Send critical posts email</Typography>
+                    </Stack>
+                  }
+                  control={
+                    <Switch
+                      checked={emailSettingsData?.emailSettings.receivePostHighSeverity ?? false}
+                      onChange={(_, receivePostHighSeverity) => {
+                        updateEmailSettings({ variables: { input: { receivePostHighSeverity } } })
                       }}
                     />
                   }
