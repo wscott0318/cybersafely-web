@@ -5,7 +5,6 @@ import NotifyIcon from '@mui/icons-material/NotificationsOutlined'
 import OpenIcon from '@mui/icons-material/OpenInNewOutlined'
 import {
   Checkbox,
-  Chip,
   Divider,
   InputAdornment,
   ListItemIcon,
@@ -15,7 +14,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material'
-import { severityChipProps } from '../../helpers/formatters'
 import { useQueryParam } from '../../helpers/hooks'
 import {
   AnalysisItemSeverityEnum,
@@ -30,6 +28,7 @@ import { AvatarWithName } from '../common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
 import { PlatformChip } from '../common/PlatformChip'
+import { SeverityImage } from '../common/SeverityImage'
 
 export function PostActions({ postId, url }: { postId: string; url: string }) {
   const { pushAlert } = useAlert()
@@ -146,7 +145,7 @@ const columns: InferColType<PostsQuery['posts']> = [
     sortable: false,
     headerName: 'Severity',
     renderCell(params) {
-      return <Chip {...severityChipProps(params.row.severity)} />
+      return <SeverityImage severity={params.row.severity} />
     },
   },
   {
