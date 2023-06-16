@@ -369,7 +369,9 @@ mutation removeSocial($name: SocialNameEnum!) {
 
 query emailSettings {
   emailSettings {
-    receivePostFlagged
+    receivePostNoneSeverity
+    receivePostLowSeverity
+    receivePostHighSeverity
   }
 }
 
@@ -389,9 +391,10 @@ query posts($schoolId: ID, $userId: ID, $page: PageInput, $filter: PostFilter) {
       text
       platform
       latestAction
-      flagged
+      severity
       manualReview
       flag {
+        severity
         reasons
       }
       user {
@@ -416,7 +419,7 @@ query post($id: ID!) {
     url
     text
     platform
-    flagged
+    severity
     manualReview
     flag {
       reasons
@@ -451,12 +454,17 @@ query post($id: ID!) {
 }
 
 query postCards($schoolId: ID) {
-  totalPosts: posts(schoolId: $schoolId) {
+  severityNonePosts: posts(schoolId: $schoolId, filter: { severity: NONE }) {
     page {
       total
     }
   }
-  flaggedPosts: posts(schoolId: $schoolId, filter: { flagged: true }) {
+  severityLowPosts: posts(schoolId: $schoolId, filter: { severity: LOW }) {
+    page {
+      total
+    }
+  }
+  severityHighPosts: posts(schoolId: $schoolId, filter: { severity: HIGH }) {
     page {
       total
     }

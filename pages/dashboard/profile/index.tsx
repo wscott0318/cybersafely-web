@@ -12,7 +12,7 @@ function Profile() {
     if (role !== 'STUDENT') {
       values.push('socials')
     }
-    if (role !== 'COACH') {
+    if (role && !['ADMIN', 'COACH', 'PARENT'].includes(role)) {
       values.push('email-settings')
     }
 

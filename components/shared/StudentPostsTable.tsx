@@ -16,11 +16,18 @@ import {
 } from '@mui/material'
 import { LinkProps } from 'next/link'
 import { useQueryParam } from '../../helpers/hooks'
-import { PostsQuery, namedOperations, useExecuteActionMutation, usePostsQuery } from '../../schema'
+import {
+  AnalysisItemSeverityEnum,
+  PostsQuery,
+  namedOperations,
+  useExecuteActionMutation,
+  usePostsQuery,
+} from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
 import { PlatformChip } from '../common/PlatformChip'
+import { SeverityImage } from '../common/SeverityImage'
 
 export function PostActions({ postId, url }: { postId: string; url: string }) {
   const { pushAlert } = useAlert()
@@ -122,11 +129,11 @@ const columns: InferColType<PostsQuery['posts']> = [
   },
   {
     width: 100,
-    field: 'flagged',
+    field: 'severity',
     sortable: false,
-    headerName: 'Flagged',
+    headerName: 'Severity',
     renderCell(params) {
-      return <Checkbox checked={params.row.flagged} />
+      return <SeverityImage severity={params.row.severity} />
     },
   },
   {
@@ -182,13 +189,13 @@ type StudentPostsTableProps = {
 }
 
 export function StudentPostsTable({ userId, schoolId, href }: StudentPostsTableProps) {
-  const [flagged, setFlagged] = useQueryParam('flagged', 'boolean')
+  const [severity, setSeverity] = useQueryParam('severity', 'string')
 
   const query = usePostsQuery({
     variables: {
       userId,
       schoolId,
-      filter: { flagged },
+      filter: { severity: severity as AnalysisItemSeverityEnum },
     },
   })
 
@@ -203,8 +210,8 @@ export function StudentPostsTable({ userId, schoolId, href }: StudentPostsTableP
         <DataGridActions>
           <Select
             variant="outlined"
-            value={flagged === undefined ? '-' : flagged === true ? 'true' : 'false'}
-            onChange={(e) => setFlagged(e.target.value === '-' ? undefined : e.target.value === 'true')}
+            value={severity === undefined ? '-' : severity}
+            onChange={(e) => setSeverity(e.target.value === '-' ? undefined : e.target.value)}
             startAdornment={
               <InputAdornment position="start">
                 <FilterIcon fontSize="small" />
@@ -212,8 +219,9 @@ export function StudentPostsTable({ userId, schoolId, href }: StudentPostsTableP
             }
           >
             <MenuItem value="-">All Posts</MenuItem>
-            <MenuItem value="true">Flagged Posts</MenuItem>
-            <MenuItem value="false">Not Flagged Posts</MenuItem>
+            <MenuItem value="NONE">No Issue Posts</MenuItem>
+            <MenuItem value="LOW">Warning Posts</MenuItem>
+            <MenuItem value="HIGH">Critical Posts</MenuItem>
           </Select>
         </DataGridActions>
       }
