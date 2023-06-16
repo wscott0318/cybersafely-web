@@ -202,5 +202,3 @@ If you have any questions or comments about this notice, the ways in which CYBER
 Data Privacy
 
 privacy@cybersafely.ai
-
-4878-7877-2828, v. 2
