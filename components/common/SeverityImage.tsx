@@ -8,9 +8,9 @@ type Props = {
 }
 
 const URLs: Record<AnalysisItemSeverityEnum, string> = {
-  NONE: '/images/severity/none.png',
-  LOW: '/images/severity/low.png',
-  HIGH: '/images/severity/high.png',
+  NONE: '/images/severity/none.svg',
+  LOW: '/images/severity/low.svg',
+  HIGH: '/images/severity/high.svg',
 }
 
 export function SeverityImage({ severity, size = 32 }: Props) {
