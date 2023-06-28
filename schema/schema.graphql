@@ -509,3 +509,7 @@ mutation respondToInvitedRole($token: String!, $accept: Boolean!, $name: String,
     }
   }
 }
+
+mutation simulateNewFlaggedPost($input: SimulateNewFlaggedPostInput!) {
+  simulateNewFlaggedPost(input: $input)
+}

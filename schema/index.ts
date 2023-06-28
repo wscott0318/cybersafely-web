@@ -183,6 +183,7 @@ export type Mutation = {
   removeUserRole: Scalars['Boolean'];
   resetPassword: UserWithToken;
   respondToInvitedRole: UserWithToken;
+  simulateNewFlaggedPost: Scalars['Boolean'];
   updateAddress: Address;
   updateEmailSettings: Scalars['Boolean'];
   updateImage: Image;
@@ -282,6 +283,11 @@ export type MutationRespondToInvitedRoleArgs = {
   name?: InputMaybe<Scalars['String']>;
   password?: InputMaybe<Scalars['String']>;
   token: Scalars['String'];
+};
+
+
+export type MutationSimulateNewFlaggedPostArgs = {
+  input: SimulateNewFlaggedPostInput;
 };
 
 
@@ -588,6 +594,11 @@ export type SchoolRoleTypeEnum = typeof SchoolRoleTypeEnum[keyof typeof SchoolRo
 export type Settings = {
   __typename?: 'Settings';
   enableSignUps: Scalars['Boolean'];
+};
+
+export type SimulateNewFlaggedPostInput = {
+  severe: Scalars['Boolean'];
+  userId: Scalars['ID'];
 };
 
 export type Social = Facebook | Instagram | TikTok | Twitter;
@@ -1059,6 +1070,13 @@ export type RespondToInvitedRoleMutationVariables = Exact<{
 
 
 export type RespondToInvitedRoleMutation = { __typename?: 'Mutation', respondToInvitedRole: { __typename?: 'UserWithToken', token: string, user: { __typename?: 'User', id: string } } };
+
+export type SimulateNewFlaggedPostMutationVariables = Exact<{
+  input: SimulateNewFlaggedPostInput;
+}>;
+
+
+export type SimulateNewFlaggedPostMutation = { __typename?: 'Mutation', simulateNewFlaggedPost: boolean };
 
 export const SocialFragmentFragmentDoc = gql`
     fragment SocialFragment on Social {
@@ -2735,6 +2753,37 @@ export function useRespondToInvitedRoleMutation(baseOptions?: Apollo.MutationHoo
 export type RespondToInvitedRoleMutationHookResult = ReturnType<typeof useRespondToInvitedRoleMutation>;
 export type RespondToInvitedRoleMutationResult = Apollo.MutationResult<RespondToInvitedRoleMutation>;
 export type RespondToInvitedRoleMutationOptions = Apollo.BaseMutationOptions<RespondToInvitedRoleMutation, RespondToInvitedRoleMutationVariables>;
+export const SimulateNewFlaggedPostDocument = gql`
+    mutation simulateNewFlaggedPost($input: SimulateNewFlaggedPostInput!) {
+  simulateNewFlaggedPost(input: $input)
+}
+    `;
+export type SimulateNewFlaggedPostMutationFn = Apollo.MutationFunction<SimulateNewFlaggedPostMutation, SimulateNewFlaggedPostMutationVariables>;
+
+/**
+ * __useSimulateNewFlaggedPostMutation__
+ *
+ * To run a mutation, you first call `useSimulateNewFlaggedPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSimulateNewFlaggedPostMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [simulateNewFlaggedPostMutation, { data, loading, error }] = useSimulateNewFlaggedPostMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSimulateNewFlaggedPostMutation(baseOptions?: Apollo.MutationHookOptions<SimulateNewFlaggedPostMutation, SimulateNewFlaggedPostMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SimulateNewFlaggedPostMutation, SimulateNewFlaggedPostMutationVariables>(SimulateNewFlaggedPostDocument, options);
+      }
+export type SimulateNewFlaggedPostMutationHookResult = ReturnType<typeof useSimulateNewFlaggedPostMutation>;
+export type SimulateNewFlaggedPostMutationResult = Apollo.MutationResult<SimulateNewFlaggedPostMutation>;
+export type SimulateNewFlaggedPostMutationOptions = Apollo.BaseMutationOptions<SimulateNewFlaggedPostMutation, SimulateNewFlaggedPostMutationVariables>;
 export const namedOperations = {
   Query: {
     notifications: 'notifications',
@@ -2779,7 +2828,8 @@ export const namedOperations = {
     updateUserParentalApproval: 'updateUserParentalApproval',
     previewImport: 'previewImport',
     importStudentsAndParents: 'importStudentsAndParents',
-    respondToInvitedRole: 'respondToInvitedRole'
+    respondToInvitedRole: 'respondToInvitedRole',
+    simulateNewFlaggedPost: 'simulateNewFlaggedPost'
   },
   Fragment: {
     SocialFragment: 'SocialFragment',

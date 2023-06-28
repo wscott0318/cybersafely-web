@@ -4,6 +4,8 @@ import FilterIcon from '@mui/icons-material/FilterAltOutlined'
 import NotifyIcon from '@mui/icons-material/NotificationsOutlined'
 import OpenIcon from '@mui/icons-material/OpenInNewOutlined'
 import {
+  Button,
+  ButtonGroup,
   Checkbox,
   Divider,
   InputAdornment,
@@ -22,8 +24,10 @@ import {
   namedOperations,
   useExecuteActionMutation,
   usePostsQuery,
+  useSimulateNewFlaggedPostMutation,
 } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
+import { useUser } from '../../utils/context/auth'
 import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
 import { PlatformChip } from '../common/PlatformChip'
@@ -199,6 +203,12 @@ export function StudentPostsTable({ userId, schoolId, href }: StudentPostsTableP
     },
   })
 
+  const [simulate] = useSimulateNewFlaggedPostMutation({
+    refetchQueries: [namedOperations.Query.posts],
+  })
+
+  const { role } = useUser()
+
   return (
     <DataGridViewer
       title="Posts"
@@ -208,6 +218,24 @@ export function StudentPostsTable({ userId, schoolId, href }: StudentPostsTableP
       href={href ? (e) => href(e.id) : undefined}
       actions={
         <DataGridActions>
+          {role === 'STAFF' && !!userId && (
+            <ButtonGroup>
+              <Button
+                onClick={() => {
+                  simulate({ variables: { input: { userId, severe: false } } })
+                }}
+              >
+                Simulate Low Flagged
+              </Button>
+              <Button
+                onClick={() => {
+                  simulate({ variables: { input: { userId, severe: true } } })
+                }}
+              >
+                Simulate High Flagged
+              </Button>
+            </ButtonGroup>
+          )}
           <Select
             variant="outlined"
             value={severity === undefined ? '-' : severity}
