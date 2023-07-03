@@ -1,5 +1,5 @@
 import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
-import { Box, Grid, InputAdornment, MenuItem, Select, Stack, Typography } from '@mui/material'
+import { Box, Grid, InputAdornment, MenuItem, Paper, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { usePostCardsQuery, useStatsForSchoolQuery } from '../../schema'
 import { useSchoolRole } from '../../utils/context/auth'
@@ -145,7 +145,14 @@ export function HomeStatsForAdminAndCoach() {
           />
         </Grid>
         <Grid item xs={12} sm={6}>
-          <CumulativeChartCard fillHeight title="Created Posts" data={[]} total={0} />
+          <Paper sx={{ p: 2, height: '100%' }}>
+            <Stack spacing={0} justifyContent="flex-end" height="100%">
+              <Typography color="text.disabled" maxWidth={80}>
+                Social Networks Connected
+              </Typography>
+              <Typography variant="h4">{data?.statsOfSocialsConnected ?? 0}</Typography>
+            </Stack>
+          </Paper>
         </Grid>
       </Grid>
     </Box>

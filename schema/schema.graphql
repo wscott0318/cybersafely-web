@@ -158,6 +158,7 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
       name
       email
       parentalApproval
+      score
       platforms {
         ...SocialFragment
       }
@@ -357,6 +358,7 @@ query statsForSchool($schoolId: ID!, $days: Int!) {
   statsOfAcceptedMembersInSchool(schoolId: $schoolId, days: $days) {
     ...StatsByDayFragment
   }
+  statsOfSocialsConnected(schoolId: $schoolId)
 }
 
 mutation authWithSocial($name: SocialNameEnum!) {
@@ -404,6 +406,10 @@ query posts($schoolId: ID, $userId: ID, $page: PageInput, $filter: PostFilter) {
         avatar {
           url
         }
+      }
+      schools {
+        id
+        name
       }
       media {
         id

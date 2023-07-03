@@ -9,7 +9,6 @@ import { ButtonSplitMenu } from '../common/ButtonSplitMenu'
 import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { PlatformChip } from '../common/PlatformChip'
 import { SearchBar } from '../common/SearchBar'
-import { UserScore } from '../common/UserScore'
 import { InviteStudentAndParentForm } from '../forms/InviteStudentAndParentForm'
 import { ImportStudentsModal } from './ImportStudentsModal'
 
@@ -55,21 +54,12 @@ const columns: InferColType<UsersQuery['users']> = [
     },
   },
   {
-    width: 150,
-    sortable: false,
-    field: 'posts',
-    headerName: 'Posts',
-    valueGetter() {
-      return 100
-    },
-  },
-  {
     width: 200,
     sortable: false,
     field: 'score',
     headerName: 'Score',
-    renderCell() {
-      return <UserScore />
+    renderCell(params) {
+      return Math.round(params.row.score * 100) + '%'
     },
   },
 ]
