@@ -174,11 +174,11 @@ function WelcomeModal({ onSubmit }: { onSubmit: () => void }) {
       <Box>
         <NextImage alt="Logo" width={162} height={75} src={logoUrl} />
         <Typography variant="h6" mt={2}>
-          Welcome to the CyberSafely.ai Pilot Program
+          Welcome to the CyberSafely.ai Beta Testing Program
         </Typography>
         <Typography mt={1}>
           We are happy to have you join us on refining CyberSafely.ai - please use the chat button in the bottom right
-          to connect with us on any questions and we will get back to you promptly. We are around 24/7!
+          to connect with us on any questions and we will get back to you promptly.
         </Typography>
         <Typography variant="body2" color="text.secondary" mt={2}>
           CyberSafely.ai Team
