@@ -381,8 +381,8 @@ mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
   updateEmailSettings(input: $input)
 }
 
-query posts($schoolId: ID, $userId: ID, $page: PageInput, $filter: PostFilter) {
-  posts(schoolId: $schoolId, userId: $userId, page: $page, filter: $filter) {
+query posts($schoolId: ID, $userId: ID, $parentId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(schoolId: $schoolId, userId: $userId, parentId: $parentId, page: $page, filter: $filter) {
     page {
       ...PageFragment
     }
