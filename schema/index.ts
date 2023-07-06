@@ -386,6 +386,7 @@ export type Post = {
   manualReview: Scalars['Boolean'];
   media: Array<Media>;
   platform?: Maybe<SocialNameEnum>;
+  schools: Array<School>;
   severity: AnalysisItemSeverityEnum;
   text: Scalars['String'];
   url: Scalars['String'];
@@ -441,6 +442,7 @@ export type Query = {
   statsOfCreatedSchools: StatsByDay;
   statsOfCreatedUsers: StatsByDay;
   statsOfInvitedMembersInSchool: StatsByDay;
+  statsOfSocialsConnected: Scalars['Int'];
   user: User;
   users: UserPage;
 };
@@ -464,6 +466,7 @@ export type QueryPostArgs = {
 export type QueryPostsArgs = {
   filter?: InputMaybe<PostFilter>;
   page?: InputMaybe<PageInput>;
+  parentId?: InputMaybe<Scalars['ID']>;
   schoolId?: InputMaybe<Scalars['ID']>;
   userId?: InputMaybe<Scalars['ID']>;
 };
@@ -515,6 +518,11 @@ export type QueryStatsOfCreatedUsersArgs = {
 
 export type QueryStatsOfInvitedMembersInSchoolArgs = {
   days?: Scalars['Int'];
+  schoolId: Scalars['ID'];
+};
+
+
+export type QueryStatsOfSocialsConnectedArgs = {
   schoolId: Scalars['ID'];
 };
 
@@ -701,6 +709,7 @@ export type User = {
   parentalApproval?: Maybe<Scalars['Boolean']>;
   platforms: Array<Social>;
   roles: Array<UserRole>;
+  score: Scalars['Float'];
 };
 
 
@@ -835,7 +844,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, score: number, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -970,7 +979,7 @@ export type StatsForSchoolQueryVariables = Exact<{
 }>;
 
 
-export type StatsForSchoolQuery = { __typename?: 'Query', statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
+export type StatsForSchoolQuery = { __typename?: 'Query', statsOfSocialsConnected: number, statsOfCreatedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfInvitedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> }, statsOfAcceptedMembersInSchool: { __typename?: 'StatsByDay', total: number, stats: Array<{ __typename?: 'StatByDay', day: string, value: number }> } };
 
 export type AuthWithSocialMutationVariables = Exact<{
   name: SocialNameEnum;
@@ -1001,12 +1010,13 @@ export type UpdateEmailSettingsMutation = { __typename?: 'Mutation', updateEmail
 export type PostsQueryVariables = Exact<{
   schoolId?: InputMaybe<Scalars['ID']>;
   userId?: InputMaybe<Scalars['ID']>;
+  parentId?: InputMaybe<Scalars['ID']>;
   page?: InputMaybe<PageInput>;
   filter?: InputMaybe<PostFilter>;
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform?: SocialNameEnum | null, latestAction?: string | null, severity: AnalysisItemSeverityEnum, manualReview: boolean, flag?: { __typename?: 'Flag', severity: AnalysisItemSeverityEnum, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, media: Array<{ __typename?: 'Media', id: string }> }> } };
+export type PostsQuery = { __typename?: 'Query', posts: { __typename?: 'PostPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'Post', id: string, createdAt: string, url: string, text: string, platform?: SocialNameEnum | null, latestAction?: string | null, severity: AnalysisItemSeverityEnum, manualReview: boolean, flag?: { __typename?: 'Flag', severity: AnalysisItemSeverityEnum, reasons: Array<string> } | null, user: { __typename?: 'User', id: string, name: string, email: string, avatar?: { __typename?: 'Image', url: string } | null }, schools: Array<{ __typename?: 'School', id: string, name: string }>, media: Array<{ __typename?: 'Media', id: string }> }> } };
 
 export type PostQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1476,6 +1486,7 @@ export const UsersDocument = gql`
       name
       email
       parentalApproval
+      score
       platforms {
         ...SocialFragment
       }
@@ -2192,6 +2203,7 @@ export const StatsForSchoolDocument = gql`
   statsOfAcceptedMembersInSchool(schoolId: $schoolId, days: $days) {
     ...StatsByDayFragment
   }
+  statsOfSocialsConnected(schoolId: $schoolId)
 }
     ${StatsByDayFragmentFragmentDoc}`;
 
@@ -2353,8 +2365,14 @@ export type UpdateEmailSettingsMutationHookResult = ReturnType<typeof useUpdateE
 export type UpdateEmailSettingsMutationResult = Apollo.MutationResult<UpdateEmailSettingsMutation>;
 export type UpdateEmailSettingsMutationOptions = Apollo.BaseMutationOptions<UpdateEmailSettingsMutation, UpdateEmailSettingsMutationVariables>;
 export const PostsDocument = gql`
-    query posts($schoolId: ID, $userId: ID, $page: PageInput, $filter: PostFilter) {
-  posts(schoolId: $schoolId, userId: $userId, page: $page, filter: $filter) {
+    query posts($schoolId: ID, $userId: ID, $parentId: ID, $page: PageInput, $filter: PostFilter) {
+  posts(
+    schoolId: $schoolId
+    userId: $userId
+    parentId: $parentId
+    page: $page
+    filter: $filter
+  ) {
     page {
       ...PageFragment
     }
@@ -2379,6 +2397,10 @@ export const PostsDocument = gql`
           url
         }
       }
+      schools {
+        id
+        name
+      }
       media {
         id
       }
@@ -2401,6 +2423,7 @@ export const PostsDocument = gql`
  *   variables: {
  *      schoolId: // value for 'schoolId'
  *      userId: // value for 'userId'
+ *      parentId: // value for 'parentId'
  *      page: // value for 'page'
  *      filter: // value for 'filter'
  *   },

@@ -14,6 +14,7 @@ import {
   MenuItem,
   Select,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material'
 import { LinkProps } from 'next/link'
@@ -28,6 +29,7 @@ import {
 } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
+import { AvatarWithName } from '../common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
 import { PlatformChip } from '../common/PlatformChip'
@@ -104,6 +106,32 @@ export function PostActions({ postId, url }: { postId: string; url: string }) {
 }
 
 const columns: InferColType<PostsQuery['posts']> = [
+  {
+    width: 250,
+    field: 'name',
+    headerName: 'Name',
+    renderCell(params) {
+      return <AvatarWithName src={params.row.user.avatar?.url} name={params.row.user.name} />
+    },
+  },
+  {
+    width: 250,
+    field: 'school',
+    headerName: 'School',
+    renderCell(params) {
+      const schools = params.row.schools.map((e) => e.name)
+
+      if (schools.length <= 1) {
+        return schools[0]
+      }
+
+      return (
+        <Tooltip title={schools.join(', ')}>
+          <Typography variant="inherit">{schools[0] + ', +' + (schools.length - 1)}</Typography>
+        </Tooltip>
+      )
+    },
+  },
   {
     width: 300,
     field: 'text',

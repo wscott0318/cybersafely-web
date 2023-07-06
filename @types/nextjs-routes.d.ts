@@ -34,6 +34,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/notifications">
     | StaticRoute<"/dashboard/parent/children">
     | StaticRoute<"/dashboard/parent/home">
+    | StaticRoute<"/dashboard/parent/posts">
     | StaticRoute<"/dashboard/profile">
     | StaticRoute<"/dashboard/school">
     | StaticRoute<"/dashboard/staff/home">
