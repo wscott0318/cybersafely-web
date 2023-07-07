@@ -72,6 +72,9 @@ function Menu() {
             <Button color="inherit" variant="text" size="large" href="/why">
               WHY CYBERSAFELY.ai
             </Button>
+            <Button color="inherit" variant="text" size="large" href="/faq">
+              FAQ
+            </Button>
             {/* TODO: This can be removed in the future */}
             {Config.enableLogin && <LoginButton />}
           </Stack>
@@ -90,6 +93,9 @@ function Menu() {
       </Button>
       <Button color="inherit" variant="text" size="large" href="/why">
         WHY CYBERSAFELY.ai
+      </Button>
+      <Button color="inherit" variant="text" size="large" href="/faq">
+        FAQ
       </Button>
       {/* TODO: This can be removed in the future */}
       {Config.enableLogin && (
