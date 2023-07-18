@@ -1,4 +1,5 @@
 export const Config = {
+  demo: process.env.NEXT_PUBLIC_ENVIRONMENT === 'demo',
   enableLogin: process.env.NEXT_PUBLIC_ENABLE_LOGIN === 'true',
   apiUrl: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/graphql',
   app: {

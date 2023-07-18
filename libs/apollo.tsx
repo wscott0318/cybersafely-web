@@ -30,6 +30,11 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
         headers['x-token'] = token
       }
 
+      if (Config.demo) {
+        const demoEmail = StorageManager.get('demoEmail')
+        headers['x-demo-email'] = demoEmail
+      }
+
       operation.setContext({ ...context, headers })
 
       return forward(operation)

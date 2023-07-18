@@ -2,6 +2,7 @@ const Storage = {
   token: 'token',
   userId: 'user_id',
   roleId: 'role_id',
+  demoEmail: 'demo_email',
 }
 
 export class StorageManager {

@@ -24,6 +24,7 @@ Run `yarn install` and then `yanr dev` to run it locally.
 ## Environment Variables
 
 ```bash
+NEXT_PUBLIC_ENVIRONMENT= #demo
 NEXT_PUBLIC_API_URL=
 NEXT_PUBLIC_APP_NAME=
 NEXT_PUBLIC_APP_SHORT_NAME=

@@ -80,6 +80,7 @@ mutation loginWithEmail($input: LoginWithEmailInput!) {
     token
     user {
       id
+      email
     }
   }
 }
