@@ -6,7 +6,9 @@ import { CoverLayout } from '../../../components/common/CoverLayout'
 import { NextLink } from '../../../components/common/NextLink'
 import { Form } from '../../../components/common/form/Form'
 import { FormText } from '../../../components/common/form/FormText'
+import { Config } from '../../../helpers/config'
 import { useLoginWithEmailMutation, useSettingsQuery } from '../../../schema'
+import { useAlert } from '../../../utils/context/alert'
 import { StorageManager } from '../../../utils/storage'
 
 const schema = z.object({
@@ -34,20 +36,55 @@ function RegisterButton() {
   )
 }
 
+const demoSchema = z.object({
+  email: z.string().email(),
+})
+
+function DemoEmailModal({ email, onSubmit }: { email: string; onSubmit: (value: z.infer<typeof demoSchema>) => void }) {
+  return (
+    <Form schema={demoSchema} onSubmit={onSubmit} defaultValues={{ email }}>
+      <Typography>You are in demo mode, enter a temporary valid e-mail address to receive post e-mails:</Typography>
+      <FormText name="email" label="E-mail" type="email" required />
+    </Form>
+  )
+}
+
 export default function Login() {
+  const { pushAlert } = useAlert()
   const router = useRouter()
 
   const [login] = useLoginWithEmailMutation({
     onCompleted: async (data, options) => {
-      const { token, user } = data.loginWithEmail
+      async function login(demoEmail?: string) {
+        const { token, user } = data.loginWithEmail
 
-      StorageManager.clear()
-      StorageManager.set('token', token)
-      StorageManager.set('userId', user.id)
+        StorageManager.clear()
 
-      await options?.client?.clearStore()
+        if (demoEmail) {
+          StorageManager.set('demoEmail', demoEmail)
+        }
 
-      router.push('/dashboard')
+        StorageManager.set('token', token)
+        StorageManager.set('userId', user.id)
+
+        await options?.client?.clearStore()
+
+        router.push('/dashboard')
+      }
+
+      if (Config.demo) {
+        pushAlert({
+          title: '',
+          type: 'custom',
+          props: { email: data.loginWithEmail.user.email },
+          content: DemoEmailModal,
+          result: async ({ email }) => {
+            await login(email)
+          },
+        })
+      } else {
+        await login()
+      }
     },
   })
 
