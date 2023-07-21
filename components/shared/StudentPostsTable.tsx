@@ -18,7 +18,6 @@ import {
   Typography,
 } from '@mui/material'
 import { LinkProps } from 'next/link'
-import { Config } from '../../helpers/config'
 import { useQueryParam } from '../../helpers/hooks'
 import {
   AnalysisItemSeverityEnum,
@@ -247,7 +246,7 @@ export function StudentPostsTable({ userId, schoolId, href }: StudentPostsTableP
       href={href ? (e) => href(e.id) : undefined}
       actions={
         <DataGridActions>
-          {Config.demo && !!userId && (role === 'STAFF' || role === 'ADMIN' || role === 'COACH') && (
+          {!!userId && (role === 'STAFF' || role === 'ADMIN' || role === 'COACH') && (
             <ButtonGroup>
               <Button
                 onClick={() => {

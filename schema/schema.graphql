@@ -35,11 +35,16 @@ mutation readNotifications {
   readNotifications
 }
 
+mutation validatePhoneNumber($token: String!) {
+  validatePhoneNumber(token: $token)
+}
+
 query myUser($id: ID!) {
   user(id: $id) {
     id
     email
     name
+    phoneNumber
     notificationCount
     avatar {
       id
@@ -370,11 +375,14 @@ mutation removeSocial($name: SocialNameEnum!) {
   removeSocial(name: $name)
 }
 
-query emailSettings {
-  emailSettings {
-    receivePostNoneSeverity
-    receivePostLowSeverity
-    receivePostHighSeverity
+query notificationSettings {
+  notificationSettings {
+    receivePostNoneSeverityEmail
+    receivePostLowSeverityEmail
+    receivePostHighSeverityEmail
+    receivePostNoneSeveritySMS
+    receivePostLowSeveritySMS
+    receivePostHighSeveritySMS
   }
 }
 

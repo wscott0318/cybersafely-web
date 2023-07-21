@@ -88,13 +88,6 @@ export type CreateUserRoleInput = {
   type: UserRoleTypeEnum;
 };
 
-export type EmailSettings = {
-  __typename?: 'EmailSettings';
-  receivePostHighSeverity: Scalars['Boolean'];
-  receivePostLowSeverity: Scalars['Boolean'];
-  receivePostNoneSeverity: Scalars['Boolean'];
-};
-
 export type Facebook = {
   __typename?: 'Facebook';
   id: Scalars['ID'];
@@ -192,6 +185,7 @@ export type Mutation = {
   updateSettings: Scalars['Boolean'];
   updateUser: User;
   updateUserParentalApproval: Scalars['Boolean'];
+  validatePhoneNumber: Scalars['Boolean'];
 };
 
 
@@ -335,6 +329,11 @@ export type MutationUpdateUserParentalApprovalArgs = {
   signatureUploadId?: InputMaybe<Scalars['ID']>;
 };
 
+
+export type MutationValidatePhoneNumberArgs = {
+  token: Scalars['String'];
+};
+
 export type Notification = {
   __typename?: 'Notification';
   body: Scalars['String'];
@@ -347,6 +346,16 @@ export type NotificationPage = {
   __typename?: 'NotificationPage';
   nodes: Array<Notification>;
   page: Page;
+};
+
+export type NotificationSettings = {
+  __typename?: 'NotificationSettings';
+  receivePostHighSeverityEmail: Scalars['Boolean'];
+  receivePostHighSeveritySMS: Scalars['Boolean'];
+  receivePostLowSeverityEmail: Scalars['Boolean'];
+  receivePostLowSeveritySMS: Scalars['Boolean'];
+  receivePostNoneSeverityEmail: Scalars['Boolean'];
+  receivePostNoneSeveritySMS: Scalars['Boolean'];
 };
 
 export const OrderDirectionEnum = {
@@ -427,8 +436,8 @@ export const PreviewImportTypeEnum = {
 export type PreviewImportTypeEnum = typeof PreviewImportTypeEnum[keyof typeof PreviewImportTypeEnum];
 export type Query = {
   __typename?: 'Query';
-  emailSettings: EmailSettings;
   invitedRole: InvitedRole;
+  notificationSettings: NotificationSettings;
   notifications: NotificationPage;
   post: Post;
   posts: PostPage;
@@ -651,9 +660,12 @@ export type UpdateAddressInput = {
 };
 
 export type UpdateEmailSettingsInput = {
-  receivePostHighSeverity?: InputMaybe<Scalars['Boolean']>;
-  receivePostLowSeverity?: InputMaybe<Scalars['Boolean']>;
-  receivePostNoneSeverity?: InputMaybe<Scalars['Boolean']>;
+  receivePostHighSeverityEmail?: InputMaybe<Scalars['Boolean']>;
+  receivePostHighSeveritySMS?: InputMaybe<Scalars['Boolean']>;
+  receivePostLowSeverityEmail?: InputMaybe<Scalars['Boolean']>;
+  receivePostLowSeveritySMS?: InputMaybe<Scalars['Boolean']>;
+  receivePostNoneSeverityEmail?: InputMaybe<Scalars['Boolean']>;
+  receivePostNoneSeveritySMS?: InputMaybe<Scalars['Boolean']>;
 };
 
 export const UpdateImageForEnum = {
@@ -688,6 +700,7 @@ export type UpdateSettingsInput = {
 export type UpdateUserInput = {
   name?: InputMaybe<Scalars['String']>;
   newEmail?: InputMaybe<Scalars['String']>;
+  newPhoneNumber?: InputMaybe<Scalars['String']>;
 };
 
 export type Upload = {
@@ -707,6 +720,7 @@ export type User = {
   name: Scalars['String'];
   notificationCount: Scalars['Int'];
   parentalApproval?: Maybe<Scalars['Boolean']>;
+  phoneNumber?: Maybe<Scalars['String']>;
   platforms: Array<Social>;
   roles: Array<UserRole>;
   score: Scalars['Float'];
@@ -790,12 +804,19 @@ export type ReadNotificationsMutationVariables = Exact<{ [key: string]: never; }
 
 export type ReadNotificationsMutation = { __typename?: 'Mutation', readNotifications: boolean };
 
+export type ValidatePhoneNumberMutationVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type ValidatePhoneNumberMutation = { __typename?: 'Mutation', validatePhoneNumber: boolean };
+
 export type MyUserQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
 
 
-export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
+export type MyUserQuery = { __typename?: 'Query', user: { __typename?: 'User', id: string, email: string, name: string, phoneNumber?: string | null, notificationCount: number, avatar?: { __typename?: 'Image', id: string, url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, school: { __typename?: 'School', id: string, name: string, logo?: { __typename?: 'Image', url: string } | null, cover?: { __typename?: 'Image', url: string } | null } }>, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }> } };
 
 export type LoginWithEmailMutationVariables = Exact<{
   input: LoginWithEmailInput;
@@ -995,10 +1016,10 @@ export type RemoveSocialMutationVariables = Exact<{
 
 export type RemoveSocialMutation = { __typename?: 'Mutation', removeSocial: boolean };
 
-export type EmailSettingsQueryVariables = Exact<{ [key: string]: never; }>;
+export type NotificationSettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type EmailSettingsQuery = { __typename?: 'Query', emailSettings: { __typename?: 'EmailSettings', receivePostNoneSeverity: boolean, receivePostLowSeverity: boolean, receivePostHighSeverity: boolean } };
+export type NotificationSettingsQuery = { __typename?: 'Query', notificationSettings: { __typename?: 'NotificationSettings', receivePostNoneSeverityEmail: boolean, receivePostLowSeverityEmail: boolean, receivePostHighSeverityEmail: boolean, receivePostNoneSeveritySMS: boolean, receivePostLowSeveritySMS: boolean, receivePostHighSeveritySMS: boolean } };
 
 export type UpdateEmailSettingsMutationVariables = Exact<{
   input: UpdateEmailSettingsInput;
@@ -1198,12 +1219,44 @@ export function useReadNotificationsMutation(baseOptions?: Apollo.MutationHookOp
 export type ReadNotificationsMutationHookResult = ReturnType<typeof useReadNotificationsMutation>;
 export type ReadNotificationsMutationResult = Apollo.MutationResult<ReadNotificationsMutation>;
 export type ReadNotificationsMutationOptions = Apollo.BaseMutationOptions<ReadNotificationsMutation, ReadNotificationsMutationVariables>;
+export const ValidatePhoneNumberDocument = gql`
+    mutation validatePhoneNumber($token: String!) {
+  validatePhoneNumber(token: $token)
+}
+    `;
+export type ValidatePhoneNumberMutationFn = Apollo.MutationFunction<ValidatePhoneNumberMutation, ValidatePhoneNumberMutationVariables>;
+
+/**
+ * __useValidatePhoneNumberMutation__
+ *
+ * To run a mutation, you first call `useValidatePhoneNumberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useValidatePhoneNumberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [validatePhoneNumberMutation, { data, loading, error }] = useValidatePhoneNumberMutation({
+ *   variables: {
+ *      token: // value for 'token'
+ *   },
+ * });
+ */
+export function useValidatePhoneNumberMutation(baseOptions?: Apollo.MutationHookOptions<ValidatePhoneNumberMutation, ValidatePhoneNumberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ValidatePhoneNumberMutation, ValidatePhoneNumberMutationVariables>(ValidatePhoneNumberDocument, options);
+      }
+export type ValidatePhoneNumberMutationHookResult = ReturnType<typeof useValidatePhoneNumberMutation>;
+export type ValidatePhoneNumberMutationResult = Apollo.MutationResult<ValidatePhoneNumberMutation>;
+export type ValidatePhoneNumberMutationOptions = Apollo.BaseMutationOptions<ValidatePhoneNumberMutation, ValidatePhoneNumberMutationVariables>;
 export const MyUserDocument = gql`
     query myUser($id: ID!) {
   user(id: $id) {
     id
     email
     name
+    phoneNumber
     notificationCount
     avatar {
       id
@@ -2298,42 +2351,45 @@ export function useRemoveSocialMutation(baseOptions?: Apollo.MutationHookOptions
 export type RemoveSocialMutationHookResult = ReturnType<typeof useRemoveSocialMutation>;
 export type RemoveSocialMutationResult = Apollo.MutationResult<RemoveSocialMutation>;
 export type RemoveSocialMutationOptions = Apollo.BaseMutationOptions<RemoveSocialMutation, RemoveSocialMutationVariables>;
-export const EmailSettingsDocument = gql`
-    query emailSettings {
-  emailSettings {
-    receivePostNoneSeverity
-    receivePostLowSeverity
-    receivePostHighSeverity
+export const NotificationSettingsDocument = gql`
+    query notificationSettings {
+  notificationSettings {
+    receivePostNoneSeverityEmail
+    receivePostLowSeverityEmail
+    receivePostHighSeverityEmail
+    receivePostNoneSeveritySMS
+    receivePostLowSeveritySMS
+    receivePostHighSeveritySMS
   }
 }
     `;
 
 /**
- * __useEmailSettingsQuery__
+ * __useNotificationSettingsQuery__
  *
- * To run a query within a React component, call `useEmailSettingsQuery` and pass it any options that fit your needs.
- * When your component renders, `useEmailSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useNotificationSettingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useNotificationSettingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useEmailSettingsQuery({
+ * const { data, loading, error } = useNotificationSettingsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useEmailSettingsQuery(baseOptions?: Apollo.QueryHookOptions<EmailSettingsQuery, EmailSettingsQueryVariables>) {
+export function useNotificationSettingsQuery(baseOptions?: Apollo.QueryHookOptions<NotificationSettingsQuery, NotificationSettingsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<EmailSettingsQuery, EmailSettingsQueryVariables>(EmailSettingsDocument, options);
+        return Apollo.useQuery<NotificationSettingsQuery, NotificationSettingsQueryVariables>(NotificationSettingsDocument, options);
       }
-export function useEmailSettingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<EmailSettingsQuery, EmailSettingsQueryVariables>) {
+export function useNotificationSettingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<NotificationSettingsQuery, NotificationSettingsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<EmailSettingsQuery, EmailSettingsQueryVariables>(EmailSettingsDocument, options);
+          return Apollo.useLazyQuery<NotificationSettingsQuery, NotificationSettingsQueryVariables>(NotificationSettingsDocument, options);
         }
-export type EmailSettingsQueryHookResult = ReturnType<typeof useEmailSettingsQuery>;
-export type EmailSettingsLazyQueryHookResult = ReturnType<typeof useEmailSettingsLazyQuery>;
-export type EmailSettingsQueryResult = Apollo.QueryResult<EmailSettingsQuery, EmailSettingsQueryVariables>;
+export type NotificationSettingsQueryHookResult = ReturnType<typeof useNotificationSettingsQuery>;
+export type NotificationSettingsLazyQueryHookResult = ReturnType<typeof useNotificationSettingsLazyQuery>;
+export type NotificationSettingsQueryResult = Apollo.QueryResult<NotificationSettingsQuery, NotificationSettingsQueryVariables>;
 export const UpdateEmailSettingsDocument = gql`
     mutation updateEmailSettings($input: UpdateEmailSettingsInput!) {
   updateEmailSettings(input: $input)
@@ -2819,7 +2875,7 @@ export const namedOperations = {
     settings: 'settings',
     statsForStaff: 'statsForStaff',
     statsForSchool: 'statsForSchool',
-    emailSettings: 'emailSettings',
+    notificationSettings: 'notificationSettings',
     posts: 'posts',
     post: 'post',
     postCards: 'postCards',
@@ -2827,6 +2883,7 @@ export const namedOperations = {
   },
   Mutation: {
     readNotifications: 'readNotifications',
+    validatePhoneNumber: 'validatePhoneNumber',
     loginWithEmail: 'loginWithEmail',
     createSchool: 'createSchool',
     updateSchool: 'updateSchool',
