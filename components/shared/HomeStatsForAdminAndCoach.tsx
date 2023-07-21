@@ -2,7 +2,7 @@ import CalendarIcon from '@mui/icons-material/CalendarMonthOutlined'
 import { Box, Grid, InputAdornment, MenuItem, Paper, Select, Stack, Typography } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { usePostCardsQuery, useStatsForSchoolQuery } from '../../schema'
-import { useSchoolRole } from '../../utils/context/auth'
+import { useSchoolRole, useUser } from '../../utils/context/auth'
 import { CumulativeChartCard } from '../chart/CumulativeChartCard'
 import { InfoCard, InfoCardProps } from '../common/InfoCard'
 import { DashboardIntroText } from './DashboardIntroText'
@@ -35,6 +35,7 @@ function useMissingCards() {
 export function HomeStatsForAdminAndCoach() {
   const schoolRole = useSchoolRole()
   const { cards } = useMissingCards()
+  const { user } = useUser()
 
   const [days, setDays] = useState(14)
 
@@ -52,6 +53,16 @@ export function HomeStatsForAdminAndCoach() {
         <Grid item xs={12}>
           <DashboardIntroText />
         </Grid>
+        {!user.phoneNumber && (
+          <Grid item xs={12} sm={6} md={4}>
+            <InfoCard
+              severity="info"
+              message="Click the card to open your profile page"
+              title="Add your Phone Number for faster and easier alerts"
+              href={{ pathname: '/dashboard/profile', query: { index: '0' } }}
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Typography variant="h5" flexGrow={1}>
             Highlights

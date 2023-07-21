@@ -1,16 +1,19 @@
+import { LoadingButton } from '@mui/lab'
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Box,
   FormControlLabel,
   FormGroup,
   Skeleton,
   Stack,
   Switch,
+  TextField,
   Typography,
 } from '@mui/material'
 import { useRouter } from 'next/router'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { z } from 'zod'
 import { addIssue } from '../../helpers/zod'
 import {
@@ -19,12 +22,13 @@ import {
   SocialNameEnum,
   namedOperations,
   useAuthWithSocialMutation,
-  useEmailSettingsQuery,
   useMyUserQuery,
+  useNotificationSettingsQuery,
   useRemoveSocialMutation,
   useUpdateEmailSettingsMutation,
   useUpdatePasswordMutation,
   useUpdateUserMutation,
+  useValidatePhoneNumberMutation,
 } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { SocialConfig } from '../../utils/social'
@@ -56,6 +60,7 @@ function Loading() {
 const accountSchema = z.object({
   newEmail: z.string().email(),
   name: z.string().min(4),
+  newPhoneNumber: z.string(),
 })
 
 const passwordSchema = z
@@ -119,6 +124,30 @@ export function SocialButtonConfig({
   )
 }
 
+function VerifyPhoneNumber({ onSubmit }: { onSubmit: () => void }) {
+  const [token, setToken] = useState('')
+
+  const [verify, { loading }] = useValidatePhoneNumberMutation({
+    variables: { token },
+    onCompleted: () => {
+      onSubmit()
+    },
+  })
+
+  return (
+    <Stack>
+      <Box>
+        <Typography variant="h5">We've sent an SMS</Typography>
+        <Typography>Enter below the verification code sent via SMS</Typography>
+      </Box>
+      <TextField label="Verification Code" autoFocus value={token} onChange={(e) => setToken(e.target.value)} />
+      <LoadingButton loading={loading} onClick={() => verify()}>
+        Verify
+      </LoadingButton>
+    </Stack>
+  )
+}
+
 function Render({
   onChange,
   include,
@@ -137,9 +166,9 @@ function Render({
   const [updateUser] = useUpdateUserMutation()
   const [updatePassword] = useUpdatePasswordMutation()
 
-  const { data: emailSettingsData } = useEmailSettingsQuery()
+  const { data: settingsData } = useNotificationSettingsQuery()
   const [updateEmailSettings] = useUpdateEmailSettingsMutation({
-    refetchQueries: [namedOperations.Query.emailSettings],
+    refetchQueries: [namedOperations.Query.notificationSettings],
   })
 
   const isShown = useCallback(
@@ -167,9 +196,19 @@ function Render({
               defaultValues={{
                 name: user.name,
                 newEmail: user.email,
+                newPhoneNumber: user.phoneNumber ?? '',
               }}
               onSubmit={async (data, input) => {
-                await updateUser({ variables: { id: user.id, input } })
+                await updateUser({
+                  variables: {
+                    id: user.id,
+                    input: {
+                      ...input,
+                      newPhoneNumber: input.newPhoneNumber === '' ? null : input.newPhoneNumber,
+                    },
+                  },
+                })
+
                 await refetch()
                 onChange?.()
 
@@ -178,6 +217,18 @@ function Render({
                     type: 'alert',
                     title: 'Verify E-mail',
                     message: 'Please check your inbox and follow the instructions',
+                  })
+                }
+
+                if (!!input.newPhoneNumber) {
+                  pushAlert({
+                    title: '',
+                    type: 'custom',
+                    content: VerifyPhoneNumber,
+                    result: async () => {
+                      await refetch()
+                      onChange?.()
+                    },
                   })
                 }
               }}
@@ -195,6 +246,7 @@ function Render({
                 <Stack flexGrow={1}>
                   <FormText name="newEmail" label="E-mail" type="email" required />
                   <FormText name="name" label="Name" required />
+                  <FormText name="newPhoneNumber" label="Phone Number" type="phone" />
                 </Stack>
               </Stack>
             </Form>
@@ -241,11 +293,12 @@ function Render({
           </AccordionDetails>
         </Accordion>
       )}
-      {isShown('email-settings') && (
+      {isShown('notification-settings') && (
         <Accordion>
-          <AccordionSummary>Email Settings</AccordionSummary>
+          <AccordionSummary>Notification Settings</AccordionSummary>
           <AccordionDetails>
             <Stack spacing={1}>
+              <Typography>Email</Typography>
               <FormGroup>
                 <FormControlLabel
                   label={
@@ -256,9 +309,9 @@ function Render({
                   }
                   control={
                     <Switch
-                      checked={emailSettingsData?.emailSettings.receivePostNoneSeverity ?? false}
-                      onChange={(_, receivePostNoneSeverity) => {
-                        updateEmailSettings({ variables: { input: { receivePostNoneSeverity } } })
+                      checked={settingsData?.notificationSettings.receivePostNoneSeverityEmail ?? false}
+                      onChange={(_, receivePostNoneSeverityEmail) => {
+                        updateEmailSettings({ variables: { input: { receivePostNoneSeverityEmail } } })
                       }}
                     />
                   }
@@ -274,9 +327,9 @@ function Render({
                   }
                   control={
                     <Switch
-                      checked={emailSettingsData?.emailSettings.receivePostLowSeverity ?? false}
-                      onChange={(_, receivePostLowSeverity) => {
-                        updateEmailSettings({ variables: { input: { receivePostLowSeverity } } })
+                      checked={settingsData?.notificationSettings.receivePostLowSeverityEmail ?? false}
+                      onChange={(_, receivePostLowSeverityEmail) => {
+                        updateEmailSettings({ variables: { input: { receivePostLowSeverityEmail } } })
                       }}
                     />
                   }
@@ -292,9 +345,64 @@ function Render({
                   }
                   control={
                     <Switch
-                      checked={emailSettingsData?.emailSettings.receivePostHighSeverity ?? false}
-                      onChange={(_, receivePostHighSeverity) => {
-                        updateEmailSettings({ variables: { input: { receivePostHighSeverity } } })
+                      checked={settingsData?.notificationSettings.receivePostHighSeverityEmail ?? false}
+                      onChange={(_, receivePostHighSeverityEmail) => {
+                        updateEmailSettings({ variables: { input: { receivePostHighSeverityEmail } } })
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+              <Typography>SMS</Typography>
+              <FormGroup>
+                <FormControlLabel
+                  label={
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <SeverityImage severity="NONE" size={24} />
+                      <Typography>Send no issue posts SMS</Typography>
+                    </Stack>
+                  }
+                  control={
+                    <Switch
+                      checked={settingsData?.notificationSettings.receivePostNoneSeveritySMS ?? false}
+                      onChange={(_, receivePostNoneSeveritySMS) => {
+                        updateEmailSettings({ variables: { input: { receivePostNoneSeveritySMS } } })
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormControlLabel
+                  label={
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <SeverityImage severity="LOW" size={24} />
+                      <Typography>Send warning posts SMS</Typography>
+                    </Stack>
+                  }
+                  control={
+                    <Switch
+                      checked={settingsData?.notificationSettings.receivePostLowSeveritySMS ?? false}
+                      onChange={(_, receivePostLowSeveritySMS) => {
+                        updateEmailSettings({ variables: { input: { receivePostLowSeveritySMS } } })
+                      }}
+                    />
+                  }
+                />
+              </FormGroup>
+              <FormGroup>
+                <FormControlLabel
+                  label={
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <SeverityImage severity="HIGH" size={24} />
+                      <Typography>Send critical posts SMS</Typography>
+                    </Stack>
+                  }
+                  control={
+                    <Switch
+                      checked={settingsData?.notificationSettings.receivePostHighSeveritySMS ?? false}
+                      onChange={(_, receivePostHighSeveritySMS) => {
+                        updateEmailSettings({ variables: { input: { receivePostHighSeveritySMS } } })
                       }}
                     />
                   }
@@ -308,7 +416,7 @@ function Render({
   )
 }
 
-export type Section = 'information' | 'password' | 'socials' | 'email-settings'
+export type Section = 'information' | 'password' | 'socials' | 'notification-settings'
 
 type UpdateUserFormProps = {
   userId: string

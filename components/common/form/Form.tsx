@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { LoadingButton } from '@mui/lab'
 import { ButtonProps, Stack } from '@mui/material'
 import { useCallback, useState } from 'react'
-import { DeepPartial, FieldValues, FormProvider, useForm } from 'react-hook-form'
+import { DefaultValues, FieldValues, FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
 
 type FormProps<T> = {
@@ -17,16 +17,18 @@ type FormProps<T> = {
 export function Form<T extends {}>(props: FormProps<T>) {
   const methods = useForm({
     resolver: zodResolver(props.schema),
-    defaultValues: props.defaultValues as DeepPartial<T>,
+    defaultValues: props.defaultValues as DefaultValues<T>,
   })
 
   const [loading, setLoading] = useState(false)
 
   const onSubmit = useCallback(
     async (data: FieldValues) => {
-      const { dirtyFields } = methods.formState
+      const { defaultValues } = methods.formState
 
-      const dirty = Object.fromEntries(Object.entries(data).filter(([key]) => (dirtyFields as any)[key] === true))
+      const dirty = Object.fromEntries(
+        Object.entries(data).filter(([key]) => defaultValues && (defaultValues as any)[key] !== data[key])
+      )
 
       try {
         setLoading(true)
@@ -35,7 +37,7 @@ export function Form<T extends {}>(props: FormProps<T>) {
         setLoading(false)
       }
     },
-    [methods.formState, props]
+    [methods.formState, props.onSubmit]
   )
 
   return (

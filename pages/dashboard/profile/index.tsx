@@ -13,7 +13,7 @@ function Profile() {
       values.push('socials')
     }
     if (role && !['ADMIN', 'COACH', 'PARENT'].includes(role)) {
-      values.push('email-settings')
+      values.push('notification-settings')
     }
 
     return values
