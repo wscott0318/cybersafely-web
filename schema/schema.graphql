@@ -164,6 +164,7 @@ query users($page: PageInput, $order: UserOrder, $filter: UserFilter) {
       name
       email
       parentalApproval
+      shareDataWithSchool
       score
       platforms {
         ...SocialFragment
@@ -492,6 +493,10 @@ mutation executeAction($type: ActionEnum!, $postId: ID!) {
 
 mutation updateUserParentalApproval($id: ID!, $approve: Boolean!, $signatureUploadId: ID) {
   updateUserParentalApproval(id: $id, approve: $approve, signatureUploadId: $signatureUploadId)
+}
+
+mutation updateShareDataWithSchool($id: ID!, $value: Boolean!) {
+  updateShareDataWithSchool(id: $id, value: $value)
 }
 
 mutation previewImport($input: PreviewImportInput!) {

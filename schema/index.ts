@@ -183,6 +183,7 @@ export type Mutation = {
   updatePassword: Scalars['Boolean'];
   updateSchool: School;
   updateSettings: Scalars['Boolean'];
+  updateShareDataWithSchool: Scalars['Boolean'];
   updateUser: User;
   updateUserParentalApproval: Scalars['Boolean'];
   validatePhoneNumber: Scalars['Boolean'];
@@ -314,6 +315,12 @@ export type MutationUpdateSchoolArgs = {
 
 export type MutationUpdateSettingsArgs = {
   input: UpdateSettingsInput;
+};
+
+
+export type MutationUpdateShareDataWithSchoolArgs = {
+  id: Scalars['ID'];
+  value: Scalars['Boolean'];
 };
 
 
@@ -724,6 +731,7 @@ export type User = {
   platforms: Array<Social>;
   roles: Array<UserRole>;
   score: Scalars['Float'];
+  shareDataWithSchool: Scalars['Boolean'];
 };
 
 
@@ -865,7 +873,7 @@ export type UsersQueryVariables = Exact<{
 }>;
 
 
-export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, score: number, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
+export type UsersQuery = { __typename?: 'Query', users: { __typename?: 'UserPage', page: { __typename?: 'Page', index: number, size: number, count: number, total: number }, nodes: Array<{ __typename?: 'User', id: string, createdAt: string, name: string, email: string, parentalApproval?: boolean | null, shareDataWithSchool: boolean, score: number, platforms: Array<{ __typename?: 'Facebook', id: string, username: string } | { __typename?: 'Instagram', id: string, username: string } | { __typename?: 'TikTok', id: string, username: string } | { __typename?: 'Twitter', id: string, username: string }>, avatar?: { __typename?: 'Image', url: string } | null, roles: Array<{ __typename?: 'AnyUserRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum } | { __typename?: 'ParentRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, childUser: { __typename?: 'User', id: string } } | { __typename?: 'SchoolRole', id: string, type: UserRoleTypeEnum, status: UserRoleStatusEnum, school: { __typename?: 'School', id: string, name: string } }> }> } };
 
 export type UserQueryVariables = Exact<{
   id: Scalars['ID'];
@@ -1069,6 +1077,14 @@ export type UpdateUserParentalApprovalMutationVariables = Exact<{
 
 
 export type UpdateUserParentalApprovalMutation = { __typename?: 'Mutation', updateUserParentalApproval: boolean };
+
+export type UpdateShareDataWithSchoolMutationVariables = Exact<{
+  id: Scalars['ID'];
+  value: Scalars['Boolean'];
+}>;
+
+
+export type UpdateShareDataWithSchoolMutation = { __typename?: 'Mutation', updateShareDataWithSchool: boolean };
 
 export type PreviewImportMutationVariables = Exact<{
   input: PreviewImportInput;
@@ -1540,6 +1556,7 @@ export const UsersDocument = gql`
       name
       email
       parentalApproval
+      shareDataWithSchool
       score
       platforms {
         ...SocialFragment
@@ -2683,6 +2700,38 @@ export function useUpdateUserParentalApprovalMutation(baseOptions?: Apollo.Mutat
 export type UpdateUserParentalApprovalMutationHookResult = ReturnType<typeof useUpdateUserParentalApprovalMutation>;
 export type UpdateUserParentalApprovalMutationResult = Apollo.MutationResult<UpdateUserParentalApprovalMutation>;
 export type UpdateUserParentalApprovalMutationOptions = Apollo.BaseMutationOptions<UpdateUserParentalApprovalMutation, UpdateUserParentalApprovalMutationVariables>;
+export const UpdateShareDataWithSchoolDocument = gql`
+    mutation updateShareDataWithSchool($id: ID!, $value: Boolean!) {
+  updateShareDataWithSchool(id: $id, value: $value)
+}
+    `;
+export type UpdateShareDataWithSchoolMutationFn = Apollo.MutationFunction<UpdateShareDataWithSchoolMutation, UpdateShareDataWithSchoolMutationVariables>;
+
+/**
+ * __useUpdateShareDataWithSchoolMutation__
+ *
+ * To run a mutation, you first call `useUpdateShareDataWithSchoolMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateShareDataWithSchoolMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateShareDataWithSchoolMutation, { data, loading, error }] = useUpdateShareDataWithSchoolMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      value: // value for 'value'
+ *   },
+ * });
+ */
+export function useUpdateShareDataWithSchoolMutation(baseOptions?: Apollo.MutationHookOptions<UpdateShareDataWithSchoolMutation, UpdateShareDataWithSchoolMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateShareDataWithSchoolMutation, UpdateShareDataWithSchoolMutationVariables>(UpdateShareDataWithSchoolDocument, options);
+      }
+export type UpdateShareDataWithSchoolMutationHookResult = ReturnType<typeof useUpdateShareDataWithSchoolMutation>;
+export type UpdateShareDataWithSchoolMutationResult = Apollo.MutationResult<UpdateShareDataWithSchoolMutation>;
+export type UpdateShareDataWithSchoolMutationOptions = Apollo.BaseMutationOptions<UpdateShareDataWithSchoolMutation, UpdateShareDataWithSchoolMutationVariables>;
 export const PreviewImportDocument = gql`
     mutation previewImport($input: PreviewImportInput!) {
   previewImport(input: $input) {
@@ -2907,6 +2956,7 @@ export const namedOperations = {
     updateEmailSettings: 'updateEmailSettings',
     executeAction: 'executeAction',
     updateUserParentalApproval: 'updateUserParentalApproval',
+    updateShareDataWithSchool: 'updateShareDataWithSchool',
     previewImport: 'previewImport',
     importStudentsAndParents: 'importStudentsAndParents',
     respondToInvitedRole: 'respondToInvitedRole',
