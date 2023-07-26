@@ -86,6 +86,7 @@ mutation loginWithEmail($input: LoginWithEmailInput!) {
     user {
       id
       email
+      phoneNumber
     }
   }
 }
