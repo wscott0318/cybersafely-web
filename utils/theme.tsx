@@ -2,10 +2,10 @@ import ExpandIcon from '@mui/icons-material/ExpandMoreOutlined'
 import UserIcon from '@mui/icons-material/Person'
 import { accordionClasses, dividerClasses, outlinedInputClasses } from '@mui/material'
 import { common, green, grey, red } from '@mui/material/colors'
-import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
-import { Roboto } from 'next/font/google'
+import { Theme, createTheme as createMUITheme, lighten } from '@mui/material/styles'
+import { Lexend } from 'next/font/google'
 
-export const roboto = Roboto({
+export const lexend = Lexend({
   preload: true,
   display: 'swap',
   subsets: ['latin'],
@@ -18,11 +18,12 @@ export function createTheme(isDark: boolean) {
     palette: {
       mode: isDark ? 'dark' : 'light',
       background: {
-        default: isDark ? common.black : grey[100],
+        default: isDark ? common.black : common.white,
         paper: isDark ? grey[900] : common.white,
       },
       primary: {
         main: '#dd3333',
+        light: lighten('#dd3333', 0.9),
       },
       success: {
         main: green[700],
@@ -32,7 +33,7 @@ export function createTheme(isDark: boolean) {
       },
     },
     typography: {
-      fontFamily: roboto.style.fontFamily,
+      fontFamily: lexend.style.fontFamily,
     },
     shape: {
       borderRadius: 4,
@@ -136,6 +137,13 @@ export function createTheme(isDark: boolean) {
         defaultProps: {
           variant: 'contained',
           disableElevation: true,
+        },
+        styleOverrides: {
+          root: {
+            textTransform: 'none',
+            fontWeight: 400,
+            borderRadius: '8px',
+          },
         },
       },
       MuiButtonGroup: {

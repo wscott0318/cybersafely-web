@@ -1,12 +1,12 @@
 import createEmotionServer from '@emotion/server/create-instance'
 import Document, { Head, Html, Main, NextScript } from 'next/document'
 import createEmotionCache from '../utils/cache'
-import { roboto } from '../utils/theme'
+import { lexend } from '../utils/theme'
 
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html lang="en" className={roboto.className}>
+      <Html lang="en" className={lexend.className}>
         <Head>
           <meta name="emotion-insertion-point" content="" />
           {(this.props as any).emotionStyleTags}

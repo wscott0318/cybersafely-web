@@ -269,7 +269,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
       <Head>
         <title>{props.title}</title>
       </Head>
-      <Box minHeight="100vh" display="flex" flexDirection="column">
+      <Box minHeight="100vh" display="flex" flexDirection="column" sx={{ ml: isTablet ? 0 : 2 }}>
         <AppBar
           color="transparent"
           sx={(theme) => ({
@@ -277,9 +277,10 @@ export function DashboardLayout(props: DashboardLayoutProps) {
             zIndex: theme.zIndex.drawer - 1,
             left: open && !isTablet ? width : 0,
             background: theme.palette.background.paper,
+            border: 'none',
           })}
         >
-          <Toolbar disableGutters sx={{ px: 2 }}>
+          <Toolbar disableGutters sx={{ px: 2, ml: isTablet ? 0 : 2 }}>
             <IconButton sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
               <MenuIcon />
             </IconButton>
@@ -297,15 +298,16 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               flexGrow={1}
               width={width}
               overflow="auto"
-              borderRight={1}
               position="relative"
-              borderColor="divider"
               flexDirection="column"
-              bgcolor="background.paper"
               sx={{
                 ['.' + listClasses.root]: {
                   my: 0.5,
                 },
+                backgroundColor: (theme) => theme.palette.grey[100],
+                borderRadius: '20px',
+                pr: 2,
+                m: isTablet ? 0 : 2,
               }}
             >
               {isTablet && (

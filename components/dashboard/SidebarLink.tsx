@@ -25,24 +25,34 @@ export function SidebarLink(props: SidebarLinkProps) {
           mx: 1,
           my: 0.5,
           color: props.color,
-          borderRadius: theme.shape.borderRadius * 2 + 'px',
+          borderRadius: isSelected
+            ? `0 ${theme.shape.borderRadius * 2 + 'px'} ${theme.shape.borderRadius * 2 + 'px'} 0`
+            : theme.shape.borderRadius * 2 + 'px',
           ['&:not(.' + listItemButtonClasses.selected + ')']: {
             ['.' + listItemIconClasses.root]: {
               color: 'primary.main',
             },
           },
           ['&.' + listItemButtonClasses.selected]: {
-            background: theme.palette.primary.main,
+            background: theme.palette.primary.light,
             color: theme.palette.primary.contrastText,
           },
-          ['&.' + listItemButtonClasses.selected + ':hover']: {
-            background: theme.palette.primary.dark,
-            color: theme.palette.primary.contrastText,
-          },
+          borderLeft: isSelected ? `3px solid ${theme.palette.primary.main}` : 'none',
         })}
       >
-        <ListItemIcon sx={{ color: props.color ?? 'inherit' }}>{props.icon}</ListItemIcon>
-        <ListItemText primary={props.title} secondary={props.subtitle} />
+        <ListItemIcon sx={{ color: (theme) => (isSelected ? theme.palette.primary.main : 'inherit') }}>
+          {props.icon}
+        </ListItemIcon>
+        <ListItemText
+          primary={props.title}
+          secondary={props.subtitle}
+          primaryTypographyProps={{
+            fontWeight: isSelected ? 700 : 400,
+          }}
+          sx={{
+            color: (theme) => (isSelected ? theme.palette.primary.main : 'inherit'),
+          }}
+        />
       </ListItemButton>
     </NextLink>
   )
