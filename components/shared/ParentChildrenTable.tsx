@@ -1,10 +1,16 @@
-import { Alert, Avatar, Box, Button, Grid, Link, Paper, Stack, Typography } from '@mui/material'
+import { Alert, Avatar, Box, Button, Grid, Link, Paper, Stack, Switch, Typography } from '@mui/material'
 import { format } from 'date-fns'
 import Image from 'next/image'
 import { useRef } from 'react'
 import { z } from 'zod'
 import { useLogoUrl } from '../../helpers/hooks'
-import { UsersQuery, namedOperations, useUpdateUserParentalApprovalMutation, useUsersQuery } from '../../schema'
+import {
+  UsersQuery,
+  namedOperations,
+  useUpdateShareDataWithSchoolMutation,
+  useUpdateUserParentalApprovalMutation,
+  useUsersQuery,
+} from '../../schema'
 import { captureElementToBlob } from '../../utils/capture'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
@@ -119,6 +125,10 @@ function ConsentAction({ user: childUser }: { user: UsersQuery['users']['nodes']
 }
 
 function ChildCard({ user }: { user: UsersQuery['users']['nodes'][0] }) {
+  const [updateShareDataWithSchool] = useUpdateShareDataWithSchoolMutation({
+    refetchQueries: [namedOperations.Query.users],
+  })
+
   return (
     <Paper sx={{ p: 2 }}>
       <Stack direction="row" alignItems="center">
@@ -128,13 +138,39 @@ function ChildCard({ user }: { user: UsersQuery['users']['nodes'][0] }) {
           <Typography>{user.email}</Typography>
         </Box>
       </Stack>
-      <Alert
-        sx={{ mt: 2 }}
-        severity={user.parentalApproval ? 'success' : 'error'}
-        action={!user.parentalApproval && <ConsentAction user={user} />}
-      >
-        {user.parentalApproval ? 'Parental Approved' : 'Needs Parental Consent'}
-      </Alert>
+      <Stack spacing={1}>
+        <Alert
+          sx={{ mt: 2 }}
+          severity={user.parentalApproval ? 'success' : 'error'}
+          action={!user.parentalApproval && <ConsentAction user={user} />}
+        >
+          {user.parentalApproval ? 'Parental Approved' : 'Needs Parental Consent'}
+        </Alert>
+        <Alert
+          severity="info"
+          sx={{
+            alignItems: 'center',
+            '.MuiAlert-message': {
+              width: '100%',
+            },
+          }}
+        >
+          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={0}>
+            <Typography>Share Data with School</Typography>
+            <Switch
+              checked={user.shareDataWithSchool}
+              onChange={async (_, value) => {
+                await updateShareDataWithSchool({
+                  variables: {
+                    id: user.id,
+                    value,
+                  },
+                })
+              }}
+            />
+          </Stack>
+        </Alert>
+      </Stack>
     </Paper>
   )
 }
