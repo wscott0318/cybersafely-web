@@ -38,13 +38,23 @@ function RegisterButton() {
 
 const demoSchema = z.object({
   email: z.string().email(),
+  phone: z.string(),
 })
 
-function DemoEmailModal({ email, onSubmit }: { email: string; onSubmit: (value: z.infer<typeof demoSchema>) => void }) {
+function DemoEmailModal({
+  email,
+  phone,
+  onSubmit,
+}: {
+  email: string
+  phone: string
+  onSubmit: (value: z.infer<typeof demoSchema>) => void
+}) {
   return (
-    <Form schema={demoSchema} onSubmit={onSubmit} defaultValues={{ email }}>
+    <Form schema={demoSchema} onSubmit={onSubmit} defaultValues={{ email, phone }}>
       <Typography>You are in demo mode, enter a temporary valid e-mail address to receive post e-mails:</Typography>
       <FormText name="email" label="E-mail" type="email" required />
+      <FormText name="phone" label="Phone Number" type="phone" />
     </Form>
   )
 }
@@ -55,14 +65,13 @@ export default function Login() {
 
   const [login] = useLoginWithEmailMutation({
     onCompleted: async (data, options) => {
-      async function login(demoEmail?: string) {
+      async function login(demoEmail?: string, demoPhone?: string) {
         const { token, user } = data.loginWithEmail
 
         StorageManager.clear()
 
-        if (demoEmail) {
-          StorageManager.set('demoEmail', demoEmail)
-        }
+        if (!!demoEmail) StorageManager.set('demoEmail', demoEmail)
+        if (!!demoPhone) StorageManager.set('demoPhone', demoPhone)
 
         StorageManager.set('token', token)
         StorageManager.set('userId', user.id)
@@ -76,10 +85,13 @@ export default function Login() {
         pushAlert({
           title: '',
           type: 'custom',
-          props: { email: data.loginWithEmail.user.email },
           content: DemoEmailModal,
-          result: async ({ email }) => {
-            await login(email)
+          props: {
+            email: data.loginWithEmail.user.email,
+            phone: data.loginWithEmail.user.phoneNumber ?? '',
+          },
+          result: async ({ email, phone }) => {
+            await login(email, phone)
           },
         })
       } else {

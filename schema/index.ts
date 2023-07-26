@@ -831,7 +831,7 @@ export type LoginWithEmailMutationVariables = Exact<{
 }>;
 
 
-export type LoginWithEmailMutation = { __typename?: 'Mutation', loginWithEmail: { __typename?: 'UserWithToken', token: string, user: { __typename?: 'User', id: string, email: string } } };
+export type LoginWithEmailMutation = { __typename?: 'Mutation', loginWithEmail: { __typename?: 'UserWithToken', token: string, user: { __typename?: 'User', id: string, email: string, phoneNumber?: string | null } } };
 
 export type PageFragmentFragment = { __typename?: 'Page', index: number, size: number, count: number, total: number };
 
@@ -1343,6 +1343,7 @@ export const LoginWithEmailDocument = gql`
     user {
       id
       email
+      phoneNumber
     }
   }
 }

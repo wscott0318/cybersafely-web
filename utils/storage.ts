@@ -3,6 +3,7 @@ const Storage = {
   userId: 'user_id',
   roleId: 'role_id',
   demoEmail: 'demo_email',
+  demoPhone: 'demo_phone',
 }
 
 export class StorageManager {
