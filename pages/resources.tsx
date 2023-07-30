@@ -145,7 +145,6 @@ export default function Resources() {
                     <ButtonBase href={item.url}>
                       <Stack spacing={0}>
                         <Typography fontWeight="bold">{item.name}</Typography>
-                        <Typography variant="body2">{item.phone}</Typography>
                       </Stack>
                     </ButtonBase>
                   </Card>
