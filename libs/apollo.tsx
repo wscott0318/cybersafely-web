@@ -32,7 +32,10 @@ export function ApolloClientProvider(props: ApolloClientProviderProps) {
 
       if (Config.demo) {
         const demoEmail = StorageManager.get('demoEmail')
-        headers['x-demo-email'] = demoEmail
+        const demoPhone = StorageManager.get('demoPhone')
+
+        if (!!demoEmail) headers['x-demo-email'] = demoEmail
+        if (!!demoPhone) headers['x-demo-phone'] = demoPhone
       }
 
       operation.setContext({ ...context, headers })

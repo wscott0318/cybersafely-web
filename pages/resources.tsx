@@ -2,6 +2,25 @@ import { Box, ButtonBase, Card, Container, Stack, Typography } from '@mui/materi
 import LandingLayout from '../components/layout/LandingLayout'
 import { useMobile } from '../helpers/hooks'
 
+const GETTING_STARTED_RESOURCES = [
+  {
+    name: 'Parents Social Media Mistakes',
+    url: '/pdf/Parents_Social_Media_Mistakes.pdf',
+  },
+  {
+    name: 'Snapchat AI Tool',
+    url: '/pdf/Snapchat_AI_Tool.pdf',
+  },
+  {
+    name: 'Surgeon General Warning',
+    url: '/pdf/Surgeon_General_Warning.pdf',
+  },
+  {
+    name: 'Understanding Teen Lingo',
+    url: '/pdf/Understanding_Teen_Lingo.pdf',
+  },
+]
+
 const THIRD_PARTY_RESOURCES = [
   {
     name: 'Suicide and Crisis Lifeline',
@@ -120,6 +139,17 @@ export default function Resources() {
               <Typography variant="h6">
                 Videos or how-to PDF’s on how to sign up and create a CyberSafely.ai account for your school.
               </Typography>
+              <Stack display="inline-flex" direction="row" flexWrap="wrap" spacing={0} gap={1}>
+                {GETTING_STARTED_RESOURCES.map((item) => (
+                  <Card key={item.name} sx={{ p: 2 }}>
+                    <ButtonBase href={item.url}>
+                      <Stack spacing={0}>
+                        <Typography fontWeight="bold">{item.name}</Typography>
+                      </Stack>
+                    </ButtonBase>
+                  </Card>
+                ))}
+              </Stack>
             </Stack>
             <Stack>
               <Typography variant="h6">
