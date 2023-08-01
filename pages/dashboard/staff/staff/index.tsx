@@ -2,11 +2,20 @@ import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
 import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferColType } from '../../../../components/common/DataGridViewer'
+import { DropDownButton } from '../../../../components/common/DropDownButton'
+import { ResendInviteMenuItem } from '../../../../components/common/ResendInviteMenuItem'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
-import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../../../schema'
+import {
+  UserRoleStatusEnum,
+  UserRoleTypeEnum,
+  UsersQuery,
+  namedOperations,
+  useCreateUserRoleMutation,
+  useUsersQuery,
+} from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 
 const columns: InferColType<UsersQuery['users']> = [
@@ -40,6 +49,21 @@ const columns: InferColType<UsersQuery['users']> = [
     headerName: 'Joined',
     valueFormatter(params) {
       return new Date(params.value).toLocaleString()
+    },
+  },
+  {
+    width: 200,
+    field: 'actions',
+    type: 'actions',
+    renderCell(params) {
+      const userRole = params.row.roles.find((e) => e.type === UserRoleTypeEnum.Staff)
+      return (
+        userRole?.status === UserRoleStatusEnum.Pending && (
+          <DropDownButton>
+            <ResendInviteMenuItem title="Resend Invite" userRoleId={userRole!.id} />
+          </DropDownButton>
+        )
+      )
     },
   },
 ]

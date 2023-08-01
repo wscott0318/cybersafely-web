@@ -1,11 +1,12 @@
 import AddIcon from '@mui/icons-material/AddOutlined'
 import { Button } from '@mui/material'
-import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../schema'
+import { UserRoleStatusEnum, UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
 import { AvatarWithName } from '../common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferColType } from '../common/DataGridViewer'
 import { DropDownButton } from '../common/DropDownButton'
 import { RemoveUserRoleMenuItem } from '../common/RemoveUserRoleMenuItem'
+import { ResendInviteMenuItem } from '../common/ResendInviteMenuItem'
 import { SearchBar } from '../common/SearchBar'
 import { InviteUserForm } from '../forms/InviteUserForm'
 
@@ -40,6 +41,9 @@ const columns: InferColType<UsersQuery['users']> = [
       return (
         <DropDownButton>
           <RemoveUserRoleMenuItem title="Remove Parent" userRoleId={userRole!.id} />
+          {userRole?.status === UserRoleStatusEnum.Pending && (
+            <ResendInviteMenuItem title="Resend Invite" userRoleId={userRole!.id} />
+          )}
         </DropDownButton>
       )
     },
