@@ -13,11 +13,7 @@ export function useCallbackRef<T>(callback: T) {
 }
 
 export function useLogoUrl() {
-  const isDark = useMediaQuery('(prefers-color-scheme: dark)')
-
-  return useMemo(() => {
-    return isDark ? '/images/logo-white.png' : '/images/logo-black.png'
-  }, [isDark])
+  return '/images/logo-black.png'
 }
 
 export function useOnTop(offset: number = 0) {

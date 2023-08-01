@@ -19,7 +19,7 @@ export function FormSelect(props: FormSelectProps) {
   return (
     <FormControl
       fullWidth
-      variant={props.variant || 'standard'}
+      variant="outlined"
       required={props.required}
       error={!!errors[props.name]}
       disabled={props.options.length === 1}
@@ -29,7 +29,13 @@ export function FormSelect(props: FormSelectProps) {
         name={props.name}
         control={control}
         render={({ field: { value, onChange } }) => (
-          <Select labelId={props.name + '-label'} {...props.inputProps} value={value ?? ''} onChange={onChange}>
+          <Select
+            variant="outlined"
+            labelId={props.name + '-label'}
+            {...props.inputProps}
+            value={value ?? ''}
+            onChange={onChange}
+          >
             {props.options.map((option, index) => (
               <MenuItem key={String(index)} value={option.value}>
                 {option.title}
