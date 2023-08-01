@@ -174,6 +174,7 @@ export type Mutation = {
   removeImage: Scalars['Boolean'];
   removeSocial: Scalars['Boolean'];
   removeUserRole: Scalars['Boolean'];
+  resendUserRoleInvite: Scalars['Boolean'];
   resetPassword: UserWithToken;
   respondToInvitedRole: UserWithToken;
   simulateNewFlaggedPost: Scalars['Boolean'];
@@ -264,6 +265,11 @@ export type MutationRemoveSocialArgs = {
 
 
 export type MutationRemoveUserRoleArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationResendUserRoleInviteArgs = {
   id: Scalars['ID'];
 };
 
@@ -945,6 +951,13 @@ export type RemoveUserRoleMutationVariables = Exact<{
 
 
 export type RemoveUserRoleMutation = { __typename?: 'Mutation', removeUserRole: boolean };
+
+export type ResendUserRoleInviteMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ResendUserRoleInviteMutation = { __typename?: 'Mutation', resendUserRoleInvite: boolean };
 
 export type SettingsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1991,6 +2004,37 @@ export function useRemoveUserRoleMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemoveUserRoleMutationHookResult = ReturnType<typeof useRemoveUserRoleMutation>;
 export type RemoveUserRoleMutationResult = Apollo.MutationResult<RemoveUserRoleMutation>;
 export type RemoveUserRoleMutationOptions = Apollo.BaseMutationOptions<RemoveUserRoleMutation, RemoveUserRoleMutationVariables>;
+export const ResendUserRoleInviteDocument = gql`
+    mutation resendUserRoleInvite($id: ID!) {
+  resendUserRoleInvite(id: $id)
+}
+    `;
+export type ResendUserRoleInviteMutationFn = Apollo.MutationFunction<ResendUserRoleInviteMutation, ResendUserRoleInviteMutationVariables>;
+
+/**
+ * __useResendUserRoleInviteMutation__
+ *
+ * To run a mutation, you first call `useResendUserRoleInviteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendUserRoleInviteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendUserRoleInviteMutation, { data, loading, error }] = useResendUserRoleInviteMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useResendUserRoleInviteMutation(baseOptions?: Apollo.MutationHookOptions<ResendUserRoleInviteMutation, ResendUserRoleInviteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendUserRoleInviteMutation, ResendUserRoleInviteMutationVariables>(ResendUserRoleInviteDocument, options);
+      }
+export type ResendUserRoleInviteMutationHookResult = ReturnType<typeof useResendUserRoleInviteMutation>;
+export type ResendUserRoleInviteMutationResult = Apollo.MutationResult<ResendUserRoleInviteMutation>;
+export type ResendUserRoleInviteMutationOptions = Apollo.BaseMutationOptions<ResendUserRoleInviteMutation, ResendUserRoleInviteMutationVariables>;
 export const SettingsDocument = gql`
     query settings {
   settings {
@@ -2946,6 +2990,7 @@ export const namedOperations = {
     removeAddress: 'removeAddress',
     createUserRole: 'createUserRole',
     removeUserRole: 'removeUserRole',
+    resendUserRoleInvite: 'resendUserRoleInvite',
     updateSettings: 'updateSettings',
     updatePassword: 'updatePassword',
     resetPassword: 'resetPassword',
