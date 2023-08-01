@@ -294,6 +294,10 @@ mutation removeUserRole($id: ID!) {
   removeUserRole(id: $id)
 }
 
+mutation resendUserRoleInvite($id: ID!) {
+  resendUserRoleInvite(id: $id)
+}
+
 query settings {
   settings {
     enableSignUps

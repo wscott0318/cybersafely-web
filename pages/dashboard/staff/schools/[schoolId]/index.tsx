@@ -8,6 +8,7 @@ import { DataGridActions, DataGridViewer, InferColType } from '../../../../../co
 import { DropDownButton } from '../../../../../components/common/DropDownButton'
 import { NavigationActions, NavigationView } from '../../../../../components/common/NavigationView'
 import { RemoveUserRoleMenuItem } from '../../../../../components/common/RemoveUserRoleMenuItem'
+import { ResendInviteMenuItem } from '../../../../../components/common/ResendInviteMenuItem'
 import { SearchBar } from '../../../../../components/common/SearchBar'
 import { UserRoles } from '../../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
@@ -16,6 +17,7 @@ import { UpdateSchoolForm } from '../../../../../components/forms/UpdateSchoolFo
 import { StudentPostsTable } from '../../../../../components/shared/StudentPostsTable'
 import { StudentsTable } from '../../../../../components/shared/StudentsTable'
 import {
+  UserRoleStatusEnum,
   UsersQuery,
   namedOperations,
   useCreateUserRoleMutation,
@@ -71,6 +73,9 @@ const getColumns: (schoolId: string) => InferColType<UsersQuery['users']> = (sch
       return (
         <DropDownButton>
           <RemoveUserRoleMenuItem title="Remove Member" userRoleId={userRole!.id} />
+          {userRole?.status === UserRoleStatusEnum.Pending && (
+            <ResendInviteMenuItem title="Resend Invite" userRoleId={userRole!.id} />
+          )}
         </DropDownButton>
       )
     },
