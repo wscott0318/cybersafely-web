@@ -19,10 +19,10 @@ export function FormSelect(props: FormSelectProps) {
   return (
     <FormControl
       fullWidth
-      variant="outlined"
       required={props.required}
       error={!!errors[props.name]}
       disabled={props.options.length === 1}
+      size="small"
     >
       <InputLabel id={props.name + '-label'}>{props.label}</InputLabel>
       <Controller
@@ -30,7 +30,7 @@ export function FormSelect(props: FormSelectProps) {
         control={control}
         render={({ field: { value, onChange } }) => (
           <Select
-            variant="outlined"
+            label={props.label}
             labelId={props.name + '-label'}
             {...props.inputProps}
             value={value ?? ''}

@@ -116,20 +116,19 @@ export function createTheme() {
       MuiSelect: {
         defaultProps: {
           size: 'small',
-          variant: 'standard',
+          variant: 'outlined',
           MenuProps: {
             PaperProps: { sx: { mt: 1, mb: 1 } },
           },
         },
-        variants: [
-          {
-            props: { variant: 'outlined' },
-            style: ({ theme }) => ({
-              background: theme.palette.background.paper,
-              borderRadius: '10px',
-            }),
-          },
-        ],
+        styleOverrides: {
+          // @ts-ignore
+          root: ({ theme }) => ({
+            background: theme.palette.background.paper,
+            borderRadius: '10px',
+            height: '46px',
+          }),
+        },
       },
       MuiMenu: {
         defaultProps: {
