@@ -1,4 +1,5 @@
 import { Divider, Link, Stack, Typography } from '@mui/material'
+import NextImage from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { z } from 'zod'
@@ -7,6 +8,7 @@ import { NextLink } from '../../../components/common/NextLink'
 import { Form } from '../../../components/common/form/Form'
 import { FormText } from '../../../components/common/form/FormText'
 import { Config } from '../../../helpers/config'
+import { useLogoUrl } from '../../../helpers/hooks'
 import { useLoginWithEmailMutation, useSettingsQuery } from '../../../schema'
 import { useAlert } from '../../../utils/context/alert'
 import { StorageManager } from '../../../utils/storage'
@@ -60,6 +62,7 @@ function DemoEmailModal({
 }
 
 export default function Login() {
+  const logoUrl = useLogoUrl()
   const { pushAlert } = useAlert()
   const router = useRouter()
 
@@ -109,13 +112,16 @@ export default function Login() {
   return (
     <CoverLayout>
       <Stack>
+        <NextImage alt="Logo" src={logoUrl} height={75} width={162} />
         <Form
           schema={schema}
           onSubmit={async (input) => {
             await login({ variables: { input } })
           }}
         >
-          <Typography variant="h5">Login to CyberSafely.ai</Typography>
+          <Typography variant="h5" fontWeight="bold">
+            Login to CyberSafely.ai
+          </Typography>
           <FormText name="email" label="E-mail" type="email" required />
           <FormText name="password" label="Password" type="password" required hidePasswordStrength />
         </Form>
