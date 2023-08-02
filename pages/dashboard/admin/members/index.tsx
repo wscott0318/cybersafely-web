@@ -5,11 +5,18 @@ import { AvatarWithName } from '../../../../components/common/AvatarWithName'
 import { DataGridActions, DataGridViewer, InferColType } from '../../../../components/common/DataGridViewer'
 import { DropDownButton } from '../../../../components/common/DropDownButton'
 import { RemoveUserRoleMenuItem } from '../../../../components/common/RemoveUserRoleMenuItem'
+import { ResendInviteMenuItem } from '../../../../components/common/ResendInviteMenuItem'
 import { SearchBar } from '../../../../components/common/SearchBar'
 import { UserRoles } from '../../../../components/common/UserRoles'
 import { withDashboardLayout } from '../../../../components/dashboard/Layout'
 import { InviteUserForm } from '../../../../components/forms/InviteUserForm'
-import { UsersQuery, namedOperations, useCreateUserRoleMutation, useUsersQuery } from '../../../../schema'
+import {
+  UserRoleStatusEnum,
+  UsersQuery,
+  namedOperations,
+  useCreateUserRoleMutation,
+  useUsersQuery,
+} from '../../../../schema'
 import { useAlert } from '../../../../utils/context/alert'
 import { useSchoolRole } from '../../../../utils/context/auth'
 
@@ -56,6 +63,9 @@ const getColumns: (schoolId: string) => InferColType<UsersQuery['users']> = (sch
       return (
         <DropDownButton>
           <RemoveUserRoleMenuItem title="Remove Member" userRoleId={userRole!.id} />
+          {userRole?.status === UserRoleStatusEnum.Pending && (
+            <ResendInviteMenuItem title="Resend Invite" userRoleId={userRole!.id} />
+          )}
         </DropDownButton>
       )
     },
