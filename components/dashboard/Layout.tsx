@@ -71,9 +71,10 @@ function HeaderAccount() {
         variant="text"
         color="inherit"
         uppercase={false}
-        startIcon={<Avatar sx={{ width: 36, height: 36 }} src={user.avatar?.url} />}
+        startIcon={<Avatar sx={{ width: 36, height: 36, borderRadius: 2 }} src={user.avatar?.url} />}
+        buttonSx={{ border: (theme) => `1px solid ${theme?.palette?.grey[300]}` }}
         title={
-          <Typography variant="inherit" textAlign="left">
+          <Typography variant="inherit" textAlign="left" fontWeight="bold">
             {user.name}
             {schoolRole && (
               <>
@@ -269,7 +270,7 @@ export function DashboardLayout(props: DashboardLayoutProps) {
       <Head>
         <title>{props.title}</title>
       </Head>
-      <Box minHeight="100vh" display="flex" flexDirection="column" sx={{ ml: isTablet ? 0 : 2 }}>
+      <Box minHeight="100vh" display="flex" flexDirection="column">
         <AppBar
           color="transparent"
           sx={(theme) => ({
@@ -280,10 +281,12 @@ export function DashboardLayout(props: DashboardLayoutProps) {
             border: 'none',
           })}
         >
-          <Toolbar disableGutters sx={{ px: 2, ml: isTablet ? 0 : 2 }}>
-            <IconButton sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
-              <MenuIcon />
-            </IconButton>
+          <Toolbar disableGutters sx={{ px: 2 }}>
+            {isTablet && (
+              <IconButton sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
+                <MenuIcon />
+              </IconButton>
+            )}
             <Typography variant="h6" noWrap flexGrow={1}>
               {props.title}
             </Typography>
@@ -305,9 +308,6 @@ export function DashboardLayout(props: DashboardLayoutProps) {
                   my: 0.5,
                 },
                 backgroundColor: (theme) => theme.palette.grey[100],
-                borderRadius: '20px',
-                pr: 2,
-                m: isTablet ? 0 : 2,
               }}
             >
               {isTablet && (

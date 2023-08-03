@@ -1,12 +1,13 @@
 import ArrowDownIcon from '@mui/icons-material/KeyboardArrowDownOutlined'
 import ArrowUpIcon from '@mui/icons-material/KeyboardArrowUpOutlined'
-import { Button, ButtonProps, Menu } from '@mui/material'
+import { Button, ButtonProps, Menu, SxProps, Theme } from '@mui/material'
 import React, { useCallback, useMemo, useRef, useState } from 'react'
 
 type DropDownButtonProps = {
   title?: React.ReactNode
   children: React.ReactNode
   uppercase?: boolean
+  buttonSx?: SxProps<Theme>
 } & Pick<ButtonProps, 'startIcon' | 'variant' | 'size' | 'fullWidth' | 'color'>
 
 export function DropDownButton(props: DropDownButtonProps) {
@@ -52,6 +53,7 @@ export function DropDownButton(props: DropDownButtonProps) {
         sx={{
           flexShrink: 0,
           textTransform: uppercase === false ? 'unset' : undefined,
+          ...props.buttonSx,
         }}
       >
         {title ?? 'Actions'}
