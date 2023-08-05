@@ -1,11 +1,11 @@
 import ExpandIcon from '@mui/icons-material/ExpandMoreOutlined'
 import UserIcon from '@mui/icons-material/Person'
 import { accordionClasses, dividerClasses, outlinedInputClasses } from '@mui/material'
-import { common, green, grey, red } from '@mui/material/colors'
-import { createTheme as createMUITheme, Theme } from '@mui/material/styles'
-import { Roboto } from 'next/font/google'
+import { common, green, red } from '@mui/material/colors'
+import { Theme, createTheme as createMUITheme, lighten } from '@mui/material/styles'
+import { Lexend } from 'next/font/google'
 
-export const roboto = Roboto({
+export const lexend = Lexend({
   preload: true,
   display: 'swap',
   subsets: ['latin'],
@@ -13,16 +13,17 @@ export const roboto = Roboto({
   fallback: ['Helvetica', 'Arial', 'sans-serif'],
 })
 
-export function createTheme(isDark: boolean) {
+export function createTheme() {
   return createMUITheme({
     palette: {
-      mode: isDark ? 'dark' : 'light',
+      mode: 'light',
       background: {
-        default: isDark ? common.black : grey[100],
-        paper: isDark ? grey[900] : common.white,
+        default: common.white,
+        paper: common.white,
       },
       primary: {
         main: '#dd3333',
+        light: lighten('#dd3333', 0.9),
       },
       success: {
         main: green[700],
@@ -32,7 +33,7 @@ export function createTheme(isDark: boolean) {
       },
     },
     typography: {
-      fontFamily: roboto.style.fontFamily,
+      fontFamily: lexend.style.fontFamily,
     },
     shape: {
       borderRadius: 4,
@@ -67,7 +68,7 @@ export function createTheme(isDark: boolean) {
         },
         styleOverrides: {
           rounded: ({ theme }) => ({
-            borderRadius: theme.shape.borderRadius * 2 + 'px',
+            borderRadius: theme.shape.borderRadius * 2.5 + 'px',
           }),
         },
       },
@@ -100,12 +101,14 @@ export function createTheme(isDark: boolean) {
       MuiTextField: {
         defaultProps: {
           size: 'small',
-          variant: 'standard',
+          variant: 'outlined',
         },
         styleOverrides: {
           root: ({ theme }) => ({
             ['.' + outlinedInputClasses.root]: {
               background: theme.palette.background.paper,
+              borderRadius: '10px',
+              height: '46px',
             },
           }),
         },
@@ -113,19 +116,19 @@ export function createTheme(isDark: boolean) {
       MuiSelect: {
         defaultProps: {
           size: 'small',
-          variant: 'standard',
+          variant: 'outlined',
           MenuProps: {
             PaperProps: { sx: { mt: 1, mb: 1 } },
           },
         },
-        variants: [
-          {
-            props: { variant: 'outlined' },
-            style: ({ theme }) => ({
-              background: theme.palette.background.paper,
-            }),
-          },
-        ],
+        styleOverrides: {
+          // @ts-ignore
+          root: ({ theme }) => ({
+            background: theme.palette.background.paper,
+            borderRadius: '10px',
+            height: '46px',
+          }),
+        },
       },
       MuiMenu: {
         defaultProps: {
@@ -136,6 +139,14 @@ export function createTheme(isDark: boolean) {
         defaultProps: {
           variant: 'contained',
           disableElevation: true,
+        },
+        styleOverrides: {
+          root: ({ theme }) => ({
+            textTransform: 'none',
+            fontWeight: 300,
+            borderRadius: '10px',
+            height: '46px',
+          }),
         },
       },
       MuiButtonGroup: {
@@ -239,6 +250,28 @@ export function createTheme(isDark: boolean) {
             borderRadius: theme.shape.borderRadius * 2 + 'px',
             '*': {
               outline: 'none !important',
+            },
+            '.MuiDataGrid-columnSeparator': {
+              display: 'none',
+            },
+            '&.MuiDataGrid-root': {
+              border: 'none',
+            },
+            '.MuiDataGrid-columnHeaderTitle': {
+              color: lighten(theme.palette.text.primary, 0.5),
+              fontWeight: 300,
+            },
+          }),
+        },
+      },
+      MuiDialogContent: {
+        styleOverrides: { root: { paddingTop: '8px !important' } },
+      },
+      MuiDialog: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            '& .MuiDialog-paper': {
+              borderRadius: theme.shape.borderRadius * 4 + 'px',
             },
           }),
         },

@@ -71,9 +71,10 @@ function HeaderAccount() {
         variant="text"
         color="inherit"
         uppercase={false}
-        startIcon={<Avatar sx={{ width: 36, height: 36 }} src={user.avatar?.url} />}
+        startIcon={<Avatar sx={{ width: 36, height: 36, borderRadius: 2 }} src={user.avatar?.url} />}
+        buttonSx={{ border: (theme) => `1px solid ${theme?.palette?.grey[300]}` }}
         title={
-          <Typography variant="inherit" textAlign="left">
+          <Typography variant="inherit" textAlign="left" fontWeight="bold">
             {user.name}
             {schoolRole && (
               <>
@@ -277,12 +278,15 @@ export function DashboardLayout(props: DashboardLayoutProps) {
             zIndex: theme.zIndex.drawer - 1,
             left: open && !isTablet ? width : 0,
             background: theme.palette.background.paper,
+            border: 'none',
           })}
         >
           <Toolbar disableGutters sx={{ px: 2 }}>
-            <IconButton sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
-              <MenuIcon />
-            </IconButton>
+            {isTablet && (
+              <IconButton sx={{ mr: 1 }} onClick={() => setOpen((open) => !open)}>
+                <MenuIcon />
+              </IconButton>
+            )}
             <Typography variant="h6" noWrap flexGrow={1}>
               {props.title}
             </Typography>
@@ -297,15 +301,13 @@ export function DashboardLayout(props: DashboardLayoutProps) {
               flexGrow={1}
               width={width}
               overflow="auto"
-              borderRight={1}
               position="relative"
-              borderColor="divider"
               flexDirection="column"
-              bgcolor="background.paper"
               sx={{
                 ['.' + listClasses.root]: {
                   my: 0.5,
                 },
+                backgroundColor: (theme) => theme.palette.grey[100],
               }}
             >
               {isTablet && (

@@ -1,6 +1,6 @@
 import { EmotionCache } from '@emotion/cache'
 import { CacheProvider } from '@emotion/react'
-import { CssBaseline, ThemeProvider, useMediaQuery } from '@mui/material'
+import { CssBaseline, ThemeProvider } from '@mui/material'
 import { Analytics } from '@vercel/analytics/react'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
@@ -22,8 +22,7 @@ interface MyAppProps extends AppProps {
 export default function MyApp(props: MyAppProps) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props
 
-  const isDark = useMediaQuery('(prefers-color-scheme: dark)')
-  const theme = useMemo(() => createTheme(isDark), [isDark])
+  const theme = useMemo(() => createTheme(), [])
 
   return (
     <CacheProvider value={emotionCache}>

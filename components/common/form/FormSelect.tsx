@@ -19,17 +19,23 @@ export function FormSelect(props: FormSelectProps) {
   return (
     <FormControl
       fullWidth
-      variant={props.variant || 'standard'}
       required={props.required}
       error={!!errors[props.name]}
       disabled={props.options.length === 1}
+      size="small"
     >
       <InputLabel id={props.name + '-label'}>{props.label}</InputLabel>
       <Controller
         name={props.name}
         control={control}
         render={({ field: { value, onChange } }) => (
-          <Select labelId={props.name + '-label'} {...props.inputProps} value={value ?? ''} onChange={onChange}>
+          <Select
+            label={props.label}
+            labelId={props.name + '-label'}
+            {...props.inputProps}
+            value={value ?? ''}
+            onChange={onChange}
+          >
             {props.options.map((option, index) => (
               <MenuItem key={String(index)} value={option.value}>
                 {option.title}
