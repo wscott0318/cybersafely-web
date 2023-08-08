@@ -32,7 +32,8 @@ function Social() {
               </Stack>
               <Typography fontWeight="bold">Twitter</Typography>
               <Typography variant="body2" fontWeight="300" textAlign="center">
-                Lorem ipsum dolor sit amet, adipiscing elit beatae vitae dicta sunt explicabo.
+                Twitter is a platform where users post short messages called tweets that can include text, photos,
+                videos and links, with a 280 character limit.
               </Typography>
               <Divider sx={{ width: '100%' }} />
               <Box alignSelf="end">
@@ -53,7 +54,8 @@ function Social() {
               </Stack>
               <Typography fontWeight="bold">Facebook</Typography>
               <Typography variant="body2" fontWeight="300" textAlign="center">
-                Lorem ipsum dolor sit amet, adipiscing elit beatae vitae dicta sunt explicabo.
+                Facebook allows users to connect with friends and family, join groups, and share status updates, photos,
+                videos and links on their news feed.
               </Typography>
               <Divider sx={{ width: '100%' }} />
               <Box alignSelf="end">
@@ -74,7 +76,8 @@ function Social() {
               </Stack>
               <Typography fontWeight="bold">Instagram</Typography>
               <Typography variant="body2" fontWeight="300" textAlign="center">
-                Lorem ipsum dolor sit amet, adipiscing elit beatae vitae dicta sunt explicabo.
+                Instagram is a photo and video sharing app where users post content, follow other accounts, use hashtags
+                and filters, and share stories that disappear after 24 hours.
               </Typography>
               <Divider sx={{ width: '100%' }} />
               <Box alignSelf="end">
@@ -95,7 +98,8 @@ function Social() {
               </Stack>
               <Typography fontWeight="bold">Tiktok</Typography>
               <Typography variant="body2" fontWeight="300" textAlign="center">
-                Lorem ipsum dolor sit amet, adipiscing elit beatae vitae dicta sunt explicabo.
+                TikTok is a short form video app where users can create, watch, and share videos typically set to music
+                and can use effects and filters with a 60 second limit.
               </Typography>
               <Divider sx={{ width: '100%' }} />
               <Box alignSelf="end">
