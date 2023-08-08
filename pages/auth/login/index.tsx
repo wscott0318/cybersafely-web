@@ -56,7 +56,7 @@ function DemoEmailModal({
     <Form schema={demoSchema} onSubmit={onSubmit} defaultValues={{ email, phone }}>
       <Typography>You are in demo mode, enter a temporary valid e-mail address to receive post e-mails:</Typography>
       <FormText name="email" label="E-mail" type="email" required />
-      <FormText name="phone" label="Phone Number" type="phone" />
+      {/* <FormText name="phone" label="Phone Number" type="phone" /> */}
     </Form>
   )
 }
