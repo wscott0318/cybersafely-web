@@ -265,7 +265,7 @@ function Render({
                 <Stack flexGrow={1}>
                   <FormText name="newEmail" label="E-mail" type="email" required />
                   <FormText name="name" label="Name" required />
-                  {/* <FormText name="newPhoneNumber" label="Phone Number" type="phone" /> */}
+                  <FormText name="newPhoneNumber" label="Phone Number" type="phone" />
                 </Stack>
               </Stack>
             </Form>
