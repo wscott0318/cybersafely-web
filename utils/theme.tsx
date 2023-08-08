@@ -147,6 +147,13 @@ export function createTheme() {
             borderRadius: '10px',
             height: '46px',
           }),
+          outlined: ({ theme }) => ({
+            border: '2px solid',
+            fontWeight: 'normal',
+            ':hover': {
+              border: '2px solid',
+            },
+          }),
         },
       },
       MuiButtonGroup: {
