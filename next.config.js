@@ -1,10 +1,10 @@
-const withRoutes = require("nextjs-routes/config")()
+const withRoutes = require('nextjs-routes/config')()
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    ignoreDuringBuilds: true
+    ignoreDuringBuilds: true,
   },
   // TODO: This can be removed in the future
   async redirects() {
@@ -13,18 +13,28 @@ const nextConfig = {
         {
           source: '/auth/:sub*',
           destination: '/',
-          permanent: false
+          permanent: false,
         },
         {
           source: '/dashboard/:sub*',
           destination: '/',
-          permanent: false
-        }
+          permanent: false,
+        },
       ]
     }
 
     return []
-  }
+  },
+
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    })
+
+    return config
+  },
 }
 
 module.exports = withRoutes(nextConfig)

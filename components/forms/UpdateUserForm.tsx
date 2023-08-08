@@ -4,6 +4,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   FormControlLabel,
   FormGroup,
   Skeleton,
@@ -82,10 +83,12 @@ export function SocialButtonConfig({
   name,
   user,
   refetch,
+  onlyButton,
 }: {
   name: keyof typeof SocialConfig
   user: { platforms: SocialFragmentFragment[] }
   refetch: () => void
+  onlyButton?: boolean
 }) {
   const [authWithSocial] = useAuthWithSocialMutation()
   const [removeSocial] = useRemoveSocialMutation({
@@ -107,7 +110,23 @@ export function SocialButtonConfig({
     }
   }, [name, user])
 
-  return (
+  return onlyButton ? (
+    <Button
+      variant="outlined"
+      color={!!social ? 'primary' : 'success'}
+      onClick={async () => {
+        if (!!social) {
+          await removeSocial({ variables: { name: name as SocialNameEnum } })
+        } else {
+          await authWithSocial({ variables: { name: name as SocialNameEnum } }).then(({ data }) => {
+            return data!.authWithSocial
+          })
+        }
+      }}
+    >
+      {!!social ? 'Disconnect' : 'Connect'}
+    </Button>
+  ) : (
     <SocialButton
       {...SocialConfig[name]}
       linked={!!social}
