@@ -119,7 +119,7 @@ export function SocialButtonConfig({
           await removeSocial({ variables: { name: name as SocialNameEnum } })
         } else {
           await authWithSocial({ variables: { name: name as SocialNameEnum } }).then(({ data }) => {
-            return data!.authWithSocial
+            document.location = data!.authWithSocial
           })
         }
       }}
