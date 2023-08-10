@@ -5,8 +5,8 @@ import { useRef } from 'react'
 import { z } from 'zod'
 import { useLogoUrl } from '../../helpers/hooks'
 import {
-  UsersQuery,
   namedOperations,
+  UsersQuery,
   useUpdateShareDataWithSchoolMutation,
   useUpdateUserParentalApprovalMutation,
   useUsersQuery,
@@ -15,11 +15,11 @@ import { captureElementToBlob } from '../../utils/capture'
 import { useAlert } from '../../utils/context/alert'
 import { useUser } from '../../utils/context/auth'
 import { useUpload } from '../../utils/upload'
-import { NextLink } from '../common/NextLink'
 import { Form } from '../common/form/Form'
 import { FormCheckbox } from '../common/form/FormCheckbox'
 import { FormSignature } from '../common/form/FormSignature'
 import { FormText } from '../common/form/FormText'
+import { NextLink } from '../common/NextLink'
 
 const schema = z.object({
   agree: z.boolean().refine((e) => e === true, 'Please agree to Parental Consent'),
@@ -106,8 +106,8 @@ function ConsentAction({ user: childUser }: { user: UsersQuery['users']['nodes']
   return (
     <>
       <Button
-        variant="text"
-        color="inherit"
+        variant="contained"
+        color="primary"
         size="small"
         onClick={() => {
           pushAlert({
@@ -140,7 +140,7 @@ function ChildCard({ user }: { user: UsersQuery['users']['nodes'][0] }) {
       </Stack>
       <Stack spacing={1}>
         <Alert
-          sx={{ mt: 2 }}
+          sx={{ mt: 2, alignItems: 'center', height: 64 }}
           severity={user.parentalApproval ? 'success' : 'error'}
           action={!user.parentalApproval && <ConsentAction user={user} />}
         >
