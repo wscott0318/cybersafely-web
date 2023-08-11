@@ -1,4 +1,4 @@
-import { Breakpoint } from '@mui/material'
+import { Breakpoint, SxProps } from '@mui/material'
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 
 type Alert<P, T> = {
@@ -17,6 +17,7 @@ type Alert<P, T> = {
       type: 'custom'
       content: (props: { onSubmit: (value: P) => void } & T) => JSX.Element
       props?: Omit<T, 'onSubmit'>
+      styleProps?: SxProps
       result?: (value: P) => void
     }
 )

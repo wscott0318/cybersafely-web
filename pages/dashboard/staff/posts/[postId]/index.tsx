@@ -17,5 +17,5 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
 export default withDashboardLayout(Post, {
   title: 'Post',
-  maxWidth: 'md',
+  maxWidth: 'lg',
 })
