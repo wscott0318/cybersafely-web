@@ -145,7 +145,7 @@ function ChildCard({ user }: { user: UsersQuery['users']['nodes'][0] }) {
         <Alert
           sx={{ mt: 2, alignItems: 'center', height: 64 }}
           severity={user.parentalApproval ? 'success' : 'error'}
-          action={(!user.parentalApproval || true) && <ConsentAction user={user} />}
+          action={!user.parentalApproval && <ConsentAction user={user} />}
         >
           {user.parentalApproval ? 'Parental Approved' : 'Needs Parental Consent'}
         </Alert>
