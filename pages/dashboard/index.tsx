@@ -1,6 +1,9 @@
-import { MenuItem, Select, Stack, Typography } from '@mui/material'
+import { Button, MenuItem, Select, Stack, Typography } from '@mui/material'
+import NextImage from 'next/image'
 import { useRouter } from 'next/router'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { checkIfRolesSame, filterUserRoles } from '../../helpers'
+import { useLogoUrl } from '../../helpers/hooks'
 import { SchoolRole, useMyUserLazyQuery } from '../../schema'
 import { StorageManager } from '../../utils/storage'
 
@@ -14,6 +17,9 @@ function Center({ children }: { children: React.ReactNode }) {
 
 export default function Dashboard() {
   const router = useRouter()
+  const logoUrl = useLogoUrl()
+
+  const [role, setRole] = useState('')
 
   const [fetch, { data, loading }] = useMyUserLazyQuery({
     onError: (error) => {
@@ -51,7 +57,9 @@ export default function Dashboard() {
   )
 
   useEffect(() => {
-    if (data && data.user.roles.length === 1) {
+    const userRoles = data?.user.roles
+
+    if (data && checkIfRolesSame(userRoles)) {
       onSelect(data.user.roles[0].id)
     }
   }, [data, onSelect])
@@ -75,9 +83,13 @@ export default function Dashboard() {
   return (
     <Center>
       <Stack spacing={1} width={300}>
+        <Stack width={300} alignItems="center" sx={{ marginBottom: `2rem` }}>
+          <NextImage alt="Logo" width={243} height={113} src={logoUrl} />
+        </Stack>
+
         <Typography>Select an user role:</Typography>
-        <Select variant="outlined" onChange={(e) => onSelect(e.target.value as string)}>
-          {data.user.roles.map((userRole) => {
+        <Select variant="outlined" onChange={(e) => setRole(e.target.value as string)}>
+          {filterUserRoles(data.user.roles).map((userRole) => {
             switch (userRole.type) {
               case 'STAFF':
                 return <MenuItem value={userRole.id}>Staff</MenuItem>
@@ -98,6 +110,10 @@ export default function Dashboard() {
             }
           })}
         </Select>
+
+        <Button sx={{ py: 2 }} size="large" disabled={!role || role === ''} onClick={() => onSelect(role)}>
+          Go to Portal
+        </Button>
       </Stack>
     </Center>
   )
