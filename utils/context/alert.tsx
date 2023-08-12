@@ -1,10 +1,16 @@
 import { Breakpoint, SxProps } from '@mui/material'
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 
-type Alert<P, T> = {
+export type Alert<P, T> = {
   title: string
   message?: string
   maxWidth?: Breakpoint
+  styleProps?: {
+    dialogTitle?: SxProps
+    dialogContent?: SxProps
+    dialogActions?: SxProps
+    closeButton?: SxProps
+  }
 } & (
   | {
       type: 'alert'
@@ -17,7 +23,6 @@ type Alert<P, T> = {
       type: 'custom'
       content: (props: { onSubmit: (value: P) => void } & T) => JSX.Element
       props?: Omit<T, 'onSubmit'>
-      styleProps?: SxProps
       result?: (value: P) => void
     }
 )

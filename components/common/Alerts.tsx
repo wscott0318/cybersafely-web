@@ -37,16 +37,19 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
       <IconButton
         size="small"
         onClick={onClose}
-        sx={(theme) => ({
-          position: 'absolute',
-          top: theme.spacing(1),
-          right: theme.spacing(1),
-        })}
+        sx={(theme) =>
+          ({
+            position: 'absolute',
+            top: theme.spacing(1),
+            right: theme.spacing(1),
+            ...(alert?.styleProps?.closeButton || {}),
+          } as any)
+        }
       >
         <CloseIcon fontSize="small" />
       </IconButton>
-      <DialogTitle>{alert.title}</DialogTitle>
-      <DialogContent>
+      <DialogTitle sx={alert?.styleProps?.dialogTitle}>{alert.title}</DialogTitle>
+      <DialogContent sx={alert?.styleProps?.dialogContent}>
         {!!alert.message && <DialogContentText>{alert.message}</DialogContentText>}
         {alert.type === 'custom' && (
           <alert.content
@@ -58,7 +61,7 @@ function SimpleAlert({ alert }: SimpleAlertProps) {
           />
         )}
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={alert?.styleProps?.dialogActions}>
         {alert.type === 'alert' && (
           <Button autoFocus variant="text" onClick={onClose}>
             OK
