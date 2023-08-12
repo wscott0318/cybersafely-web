@@ -8,42 +8,43 @@ import {
   TimelineSeparator,
   timelineOppositeContentClasses,
 } from '@mui/lab'
-import { Box, CircularProgress, Divider, Grid, Paper, Stack, Typography } from '@mui/material'
+import { Box, CircularProgress, Divider, Paper, Stack, Typography } from '@mui/material'
 import { LinkProps } from 'next/link'
 import { useMobile } from '../../helpers/hooks'
-import { PostQuery, usePostQuery } from '../../schema'
+import { MediaTypeEnum, PostQuery, usePostQuery } from '../../schema'
 import { useAlert } from '../../utils/context/alert'
-import { ImagesCarouselModal } from '../common/ImagesCarouselModal'
+import { MediaCarouselModal } from '../common/MediaCarouselModal'
 import { NavigationView } from '../common/NavigationView'
 import { SeverityImage } from '../common/SeverityImage'
 import { PostActions } from './PostsForAdminAndCoach'
 
-function Row(props: { title: string; message: React.ReactNode; last?: boolean }) {
-  return (
-    <>
-      <Grid item xs={12} sm={4}>
-        <Typography color="text.disabled" mx={2}>
-          {props.title}
-        </Typography>
-      </Grid>
-      <Grid item xs={12} sm={8}>
-        <Typography mx={2}>{props.message}</Typography>
-      </Grid>
-      {!props.last && (
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-      )}
-    </>
-  )
+const MediaCarouselStyleProps = {
+  dialogContent: {
+    p: 0,
+  },
+  dialogTitle: {
+    p: 0,
+  },
+  dialogActions: {
+    p: 0,
+  },
+  closeButton: {
+    zIndex: 10,
+    backgroundColor: 'white',
+  },
 }
 
 type DetailedPostViewWrapperProps = {
   postId: string
   backURL: LinkProps['href']
+  hideActions?: boolean
 }
 
-export function DetailedPostViewWrapper({ post, backURL }: DetailedPostViewWrapperProps & { post: PostQuery['post'] }) {
+export function DetailedPostViewWrapper({
+  post,
+  backURL,
+  hideActions,
+}: DetailedPostViewWrapperProps & { post: PostQuery['post'] }) {
   const { isTablet } = useMobile()
   const { pushAlert } = useAlert()
 
@@ -66,10 +67,10 @@ export function DetailedPostViewWrapper({ post, backURL }: DetailedPostViewWrapp
         <Stack direction={isTablet ? 'column' : 'row'} spacing={0}>
           <Stack flex={1}>
             <Box width={isTablet ? '100%' : '500px'} height="100%">
-              {post.media[0].type === 'IMAGE' ? (
+              {post.media?.[0].type === MediaTypeEnum.Image ? (
                 <img
                   alt="Media"
-                  src={post.media[0].url}
+                  src={post.media?.[0].url}
                   style={{
                     width: '100%',
                     height: '100%',
@@ -80,19 +81,27 @@ export function DetailedPostViewWrapper({ post, backURL }: DetailedPostViewWrapp
                     pushAlert({
                       title: '',
                       type: 'custom',
-                      content: () => <ImagesCarouselModal images={post.media.map(({ url }) => url)} />,
-                      styleProps: {
-                        padding: 40,
-                      },
+                      content: () => <MediaCarouselModal media={post.media} />,
+                      maxWidth: 'md',
+                      styleProps: MediaCarouselStyleProps,
                     })
                   }}
                 />
               ) : (
                 <video
-                  src={post.media[0].url}
+                  src={post.media?.[0].url}
                   style={{ width: '100%', height: '100%', borderRadius: isTablet ? '8px 8px 0 0' : '8px 0 0 8px' }}
                   autoPlay={false}
                   controls
+                  onClick={() => {
+                    pushAlert({
+                      title: '',
+                      type: 'custom',
+                      content: () => <MediaCarouselModal media={post.media} />,
+                      maxWidth: 'md',
+                      styleProps: MediaCarouselStyleProps,
+                    })
+                  }}
                 />
               )}
             </Box>
@@ -134,11 +143,15 @@ export function DetailedPostViewWrapper({ post, backURL }: DetailedPostViewWrapp
               <Typography fontWeight="bold">Reasons</Typography>
               <Typography>{post.flag?.reasons.join(', ') || '-'}</Typography>
             </Stack>
-            <Divider sx={{ m: 0 }} />
-            <Stack direction="row" height="50px" alignItems="center" justifyContent="space-between" p={2}>
-              <Typography fontWeight="bold">Actions</Typography>
-              <PostActions url={post.url} postId={post.id} />
-            </Stack>
+            {!hideActions && (
+              <>
+                <Divider sx={{ m: 0 }} />
+                <Stack direction="row" height="50px" alignItems="center" justifyContent="space-between" p={2}>
+                  <Typography fontWeight="bold">Actions</Typography>
+                  <PostActions url={post.url} postId={post.id} />
+                </Stack>
+              </>
+            )}
             <Divider sx={{ m: 0 }} />
             <Stack minHeight="50px" alignItems="center" justifyContent="space-between" p={2}>
               <Typography fontWeight="bold" textAlign="left" width="100%">
