@@ -7,7 +7,7 @@ type Props = {
 }
 
 function Post({ postId }: Props) {
-  return <DetailedPostView postId={postId} backURL="/dashboard/parent/posts" />
+  return <DetailedPostView hideActions postId={postId} backURL="/dashboard/parent/posts" />
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
@@ -17,5 +17,5 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
 export default withDashboardLayout(Post, {
   title: 'Post',
-  maxWidth: 'md',
+  maxWidth: 'lg',
 })
