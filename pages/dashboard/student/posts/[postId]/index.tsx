@@ -7,7 +7,7 @@ type Props = {
 }
 
 function Post({ postId }: Props) {
-  return <DetailedPostView postId={postId} backURL="/dashboard/coach/posts" />
+  return <DetailedPostView hideActions postId={postId} backURL="/dashboard/student/posts" />
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {

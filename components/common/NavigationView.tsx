@@ -23,7 +23,7 @@ export function NavigationActions(props: NavigationActionsProps) {
 
 type NavigationViewProps = {
   children: React.ReactNode
-  title: string
+  title: string | React.ReactNode
   subtitle?: string
   actions?: React.ReactNode
   back?: LinkProps['href']

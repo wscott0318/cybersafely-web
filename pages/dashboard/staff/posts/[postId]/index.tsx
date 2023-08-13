@@ -1,13 +1,13 @@
 import { GetServerSideProps } from 'next'
 import { withDashboardLayout } from '../../../../../components/dashboard/Layout'
-import { PostForAdminAndCoach } from '../../../../../components/shared/PostForAdminAndCoach'
+import { DetailedPostView } from '../../../../../components/shared/DetailedPostView'
 
 type Props = {
   postId: string
 }
 
 function Post({ postId }: Props) {
-  return <PostForAdminAndCoach postId={postId} backURL="/dashboard/staff/posts" />
+  return <DetailedPostView postId={postId} backURL="/dashboard/staff/posts" />
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
@@ -17,5 +17,5 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
 
 export default withDashboardLayout(Post, {
   title: 'Post',
-  maxWidth: 'md',
+  maxWidth: 'lg',
 })

@@ -452,6 +452,9 @@ query post($id: ID!) {
       avatar {
         url
       }
+      platforms {
+        ...SocialFragment
+      }
     }
     media {
       id

@@ -271,9 +271,6 @@ export function createTheme() {
           }),
         },
       },
-      MuiDialogContent: {
-        styleOverrides: { root: { paddingTop: '8px !important' } },
-      },
       MuiDialog: {
         styleOverrides: {
           root: ({ theme }) => ({

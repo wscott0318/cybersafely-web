@@ -94,7 +94,15 @@ function Posts() {
     variables: { parentId: user.id },
   })
 
-  return <DataGridViewer title="Posts" query={query} columns={columns} data={query.data?.posts} />
+  return (
+    <DataGridViewer
+      title="Posts"
+      query={query}
+      columns={columns}
+      data={query.data?.posts}
+      href={(e) => ({ pathname: '/dashboard/parent/posts/[postId]', query: { postId: e.id } })}
+    />
+  )
 }
 
 export default withDashboardLayout(Posts, {

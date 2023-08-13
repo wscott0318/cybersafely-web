@@ -1,10 +1,16 @@
-import { Breakpoint } from '@mui/material'
+import { Breakpoint, SxProps } from '@mui/material'
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react'
 
-type Alert<P, T> = {
+export type Alert<P, T> = {
   title: string
   message?: string
   maxWidth?: Breakpoint
+  styleProps?: {
+    dialogTitle?: SxProps
+    dialogContent?: SxProps
+    dialogActions?: SxProps
+    closeButton?: SxProps
+  }
 } & (
   | {
       type: 'alert'

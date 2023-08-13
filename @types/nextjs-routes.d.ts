@@ -35,6 +35,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/parent/children">
     | StaticRoute<"/dashboard/parent/home">
     | StaticRoute<"/dashboard/parent/posts">
+    | DynamicRoute<"/dashboard/parent/posts/[postId]", { "postId": string }>
     | StaticRoute<"/dashboard/profile">
     | StaticRoute<"/dashboard/school">
     | StaticRoute<"/dashboard/staff/home">
@@ -48,6 +49,7 @@ declare module "nextjs-routes" {
     | StaticRoute<"/dashboard/staff/users">
     | StaticRoute<"/dashboard/student/home">
     | StaticRoute<"/dashboard/student/posts">
+    | DynamicRoute<"/dashboard/student/posts/[postId]", { "postId": string }>
     | StaticRoute<"/dashboard/student/social">
     | StaticRoute<"/faq">
     | StaticRoute<"/funding">
