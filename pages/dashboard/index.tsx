@@ -2,7 +2,7 @@ import { Button, MenuItem, Select, Stack, Typography } from '@mui/material'
 import NextImage from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
-import { checkIfRolesSame, filterUserRoles } from '../../helpers'
+import { filterUserRoles, isEveryElementSameInArray } from '../../helpers'
 import { useLogoUrl } from '../../helpers/hooks'
 import { SchoolRole, useMyUserLazyQuery } from '../../schema'
 import { StorageManager } from '../../utils/storage'
@@ -59,7 +59,7 @@ export default function Dashboard() {
   useEffect(() => {
     const userRoles = data?.user.roles
 
-    if (data && checkIfRolesSame(userRoles)) {
+    if (data && isEveryElementSameInArray(userRoles!.map((role) => role.type))) {
       onSelect(data.user.roles[0].id)
     }
   }, [data, onSelect])

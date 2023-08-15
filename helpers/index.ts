@@ -1,18 +1,18 @@
 import { UserRoleTypeEnum } from '../schema'
 
-interface UserRole {
+type UserRole = {
   id: string
   type: UserRoleTypeEnum
   __typename?: string | undefined
 }
 
-export const checkIfRolesSame = (roles: Array<UserRole> | undefined) => {
-  if (!roles || !roles.length) return false
+export const isEveryElementSameInArray = (elementsArray: Array<any>) => {
+  if (!elementsArray || !elementsArray.length) return false
 
-  const temp = roles[0]
+  const el = elementsArray[0]
 
-  for (let i = 0; i < roles.length; i++) {
-    if (temp.type !== roles[i].type) return false
+  for (let i = 1; i < elementsArray.length; i++) {
+    if (el !== elementsArray[i]) return false
   }
 
   return true
