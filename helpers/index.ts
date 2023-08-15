@@ -1,10 +1,12 @@
-interface userRole {
+import { UserRoleTypeEnum } from '../schema'
+
+interface UserRole {
   id: string
-  type: string
+  type: UserRoleTypeEnum
   __typename?: string | undefined
 }
 
-export const checkIfRolesSame = (roles: Array<userRole> | undefined) => {
+export const checkIfRolesSame = (roles: Array<UserRole> | undefined) => {
   if (!roles || !roles.length) return false
 
   const temp = roles[0]
@@ -16,13 +18,13 @@ export const checkIfRolesSame = (roles: Array<userRole> | undefined) => {
   return true
 }
 
-export const filterUserRoles = (roles: Array<userRole> | undefined) => {
+export const filterUserRoles = (roles: Array<UserRole> | undefined) => {
   if (!roles || !roles.length) return []
 
-  const resArray = [] as Array<userRole>
+  const resArray = [] as Array<UserRole>
 
-  roles.forEach((role: userRole) => {
-    const index = resArray.findIndex((item: userRole) => item.type === role.type)
+  roles.forEach((role: UserRole) => {
+    const index = resArray.findIndex((item: UserRole) => item.type === role.type)
 
     if (index === -1) resArray.push(role)
   })
