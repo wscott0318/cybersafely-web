@@ -2,9 +2,10 @@ import { Button, MenuItem, Select, Stack, Typography } from '@mui/material'
 import NextImage from 'next/image'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useState } from 'react'
-import { filterUserRoles, isEveryElementSameInArray } from '../../helpers'
 import { useLogoUrl } from '../../helpers/hooks'
 import { SchoolRole, useMyUserLazyQuery } from '../../schema'
+import { isEveryElementSameInArray } from '../../utils/array'
+import { filterUserRoles } from '../../utils/role'
 import { StorageManager } from '../../utils/storage'
 
 function Center({ children }: { children: React.ReactNode }) {
