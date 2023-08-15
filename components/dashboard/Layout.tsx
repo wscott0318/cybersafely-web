@@ -40,10 +40,10 @@ import NextImage from 'next/image'
 import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import { checkIfRolesSame } from '../../helpers'
 import { Config } from '../../helpers/config'
 import { useLogoUrl, useMobile } from '../../helpers/hooks'
 import { MyUserDocument, MyUserQuery, MyUserQueryVariables } from '../../schema'
+import { isEveryElementSameInArray } from '../../utils/array'
 import { useAlert } from '../../utils/context/alert'
 import { AuthContextProvider, useSchoolRole, useUser } from '../../utils/context/auth'
 import { IntercomProvider } from '../../utils/intercom'
@@ -106,7 +106,7 @@ function HeaderAccount() {
         <MenuItem disabled sx={{ fontSize: '0.85rem', textTransform: 'uppercase' }}>
           Account
         </MenuItem>
-        {!checkIfRolesSame(user.roles) && (
+        {!isEveryElementSameInArray(user.roles!.map((role) => role.type)) && (
           <NextLinkLegacy href="/dashboard">
             <MenuItem>
               <ListItemIcon>
