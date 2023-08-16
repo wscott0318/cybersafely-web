@@ -414,7 +414,7 @@ function Sidebar() {
         <CollapsableList>
           <SidebarLink href="/dashboard/student/home" icon={<HomeIcon />} title="Home" />
           <SidebarLink href="/dashboard/student/social" icon={<LinkIcon />} title="Social" />
-          <SidebarLink href="/dashboard/student/posts" icon={<FeedIcon />} title="Posts" />
+          {/* <SidebarLink href="/dashboard/student/posts" icon={<FeedIcon />} title="Posts" /> */}
         </CollapsableList>
       )
 
