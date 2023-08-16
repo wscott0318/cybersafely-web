@@ -111,21 +111,28 @@ export function SocialButtonConfig({
   }, [name, user])
 
   return onlyButton ? (
-    <Button
-      variant="outlined"
-      color={!!social ? 'primary' : 'success'}
-      onClick={async () => {
-        if (!!social) {
-          await removeSocial({ variables: { name: name as SocialNameEnum } })
-        } else {
-          await authWithSocial({ variables: { name: name as SocialNameEnum } }).then(({ data }) => {
-            document.location = data!.authWithSocial
-          })
-        }
-      }}
-    >
-      {!!social ? 'Disconnect' : 'Connect'}
-    </Button>
+    <Stack flexDirection={'row'} justifyContent={social ? 'space-between' : 'flex-end'} alignItems={'center'}>
+      {social && <Typography fontWeight="bold">@{social.username}</Typography>}
+
+      <Button
+        variant="outlined"
+        color={!!social ? 'primary' : 'success'}
+        sx={{
+          margin: `0px !important`,
+        }}
+        onClick={async () => {
+          if (!!social) {
+            await removeSocial({ variables: { name: name as SocialNameEnum } })
+          } else {
+            await authWithSocial({ variables: { name: name as SocialNameEnum } }).then(({ data }) => {
+              document.location = data!.authWithSocial
+            })
+          }
+        }}
+      >
+        {!!social ? 'Disconnect' : 'Connect'}
+      </Button>
+    </Stack>
   ) : (
     <SocialButton
       {...SocialConfig[name]}
