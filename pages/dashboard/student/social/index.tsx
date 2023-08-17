@@ -36,7 +36,7 @@ function Social() {
                 videos and links, with a 280 character limit.
               </Typography>
               <Divider sx={{ width: '100%' }} />
-              <Box alignSelf="end">
+              <Box width={'100%'}>
                 <SocialButtonConfig name="TWITTER" user={user} refetch={refetchUser} onlyButton />
               </Box>
             </Stack>
@@ -58,7 +58,7 @@ function Social() {
                 videos and links on their news feed.
               </Typography>
               <Divider sx={{ width: '100%' }} />
-              <Box alignSelf="end">
+              <Box width={'100%'}>
                 <SocialButtonConfig name="FACEBOOK" user={user} refetch={refetchUser} onlyButton />
               </Box>
             </Stack>
@@ -80,7 +80,7 @@ function Social() {
                 and filters, and share stories that disappear after 24 hours.
               </Typography>
               <Divider sx={{ width: '100%' }} />
-              <Box alignSelf="end">
+              <Box width={'100%'}>
                 <SocialButtonConfig name="INSTAGRAM" user={user} refetch={refetchUser} onlyButton />
               </Box>
             </Stack>
@@ -102,7 +102,7 @@ function Social() {
                 and can use effects and filters with a 60 second limit.
               </Typography>
               <Divider sx={{ width: '100%' }} />
-              <Box alignSelf="end">
+              <Box width={'100%'}>
                 <SocialButtonConfig name="TIKTOK" user={user} refetch={refetchUser} onlyButton />
               </Box>
             </Stack>
