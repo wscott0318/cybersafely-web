@@ -111,15 +111,17 @@ export function SocialButtonConfig({
   }, [name, user])
 
   return onlyButton ? (
-    <Stack flexDirection={'row'} justifyContent={social ? 'space-between' : 'flex-end'} alignItems={'center'}>
+    <Stack
+      flexDirection={'row'}
+      justifyContent={social ? 'space-between' : 'flex-end'}
+      alignItems={'center'}
+      spacing={0}
+    >
       {social && <Typography fontWeight="bold">@{social.username}</Typography>}
 
       <Button
         variant="outlined"
         color={!!social ? 'primary' : 'success'}
-        sx={{
-          margin: `0px !important`,
-        }}
         onClick={async () => {
           if (!!social) {
             await removeSocial({ variables: { name: name as SocialNameEnum } })
